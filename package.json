@@ -1,0 +1,30 @@
+{
+  "name": "redux-blueflag",
+  "version": "0.1.0",
+  "description": "An opinionated set of redux tools to cut down on boilerplate",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\"",
+    "build": "babel src -d lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/redux-blueflag.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blueflag/redux-blueflag/issues"
+  },
+  "homepage": "https://github.com/blueflag/redux-blueflag#readme",
+  "dependencies": {
+    "immutable": "^3.8.1",
+    "redux-actions": "^0.11.0",
+    "redux-thunk": "^2.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-preset-blueflag": "0.0.1"
+  }
+}
