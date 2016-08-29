@@ -37,7 +37,7 @@ module.exports = CreateRequestActionSet(api);
 
 ## CreateRequestAction
 ```
-CreateRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Promise) : RequestActionCreator`
+CreateRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Promise) : RequestActionCreator
 ```
 returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
 
