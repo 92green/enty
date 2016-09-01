@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "watch": "babel src -d lib --watch"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,9 @@
   },
   "homepage": "https://github.com/blueflag/redux-blueflag#readme",
   "dependencies": {
+    "denormalizr": "^0.3.2",
     "immutable": "^3.8.1",
+    "normalizr": "^2.2.1",
     "redux-actions": "^0.11.0",
     "redux-thunk": "^2.1.0"
   },

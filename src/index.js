@@ -1,5 +1,6 @@
 export {thunk} from 'redux-thunk';
 export {createAction} from 'redux-actions';
+export * from 'normalizr';
 
 export { 
     CreateRequestAction,
@@ -10,3 +11,7 @@ export {
 export { 
     AsyncStateReducer
 } from './AsyncStateReducer';
+
+export { 
+    createEntityReducer
+} from './EntityReducer';
