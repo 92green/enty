@@ -35,7 +35,10 @@ module.exports = CreateRequestActionSet(api);
 
 
 
-## `function CreateRequestAction(fetchAction<string>, recieveAction<string>, errorAction<string>, sideEffect<promise>) : RequestActionCreator`
+## CreateRequestAction
+```
+CreateRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Promise) : RequestActionCreator
+```
 returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
 
 * dispatch `fetchAction`
@@ -44,7 +47,10 @@ returns a [redux-thunk](thunk) action creator that will dispatch the three state
 * catch dispatch `errorAction`
 
 
-## `function CreateRequestActionSet(actionMap<object>)`
+## CreateRequestActionSet
+```
+CreateRequestActionSet(actionMap: object): object
+```
 Deeply flattens the keys of `actionMap` and uses each pf them to create three action types
 and one `RequestActionCreator`
 
