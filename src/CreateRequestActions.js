@@ -45,14 +45,17 @@ export function CreateRequestActionSet(actionMap) {
 }
 
 export default function CreateRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
+    function action(aa) {
+        return createAction(aa, (payload) => payload, (payload, meta) => meta)
+    }
     return (...args) => (dispatch) => {
-        dispatch(createAction(fetchAction)());
+        dispatch(action(fetchAction)(null, {resultKey: fetchAction}));
         return sideEffect(...args).then(
             (data) => {
-                return Promise.resolve(dispatch(createAction(recieveAction)(data)))
+                return Promise.resolve(dispatch(action(recieveAction)(data, {resultKey: recieveAction})))
             },
             (error) => {
-                return dispatch(createAction(errorAction)(error));
+                return dispatch(createAction(errorAction)(error, {resultKey: errorAction}));
             }
         )
     }

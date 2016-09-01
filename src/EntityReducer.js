@@ -1,4 +1,4 @@
-import {fromJS, Iterable} from 'immutable';
+import {fromJS, Map, Iterable} from 'immutable';
 import {denormalize} from 'denormalizr';
 import {normalize} from 'normalizr';
 
@@ -31,12 +31,14 @@ export function createEntityReducer(schemas, constructor = defaultConstructor) {
         if(schemas[type]) {
             // revive data from raw payload
             var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
-            // normlaize using proved schema
+            // normalize using proved schema
             var {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
+
+            var resultData = (schema._key) ? Map().set(schema._key, result) : result;
 
             return state
                 // set results
-                .setIn(['result', meta.resultKey || type], result)
+                .setIn(['result', meta.resultKey || type], resultData)
                 // merge entities
                 .mergeDeep(entities);
 

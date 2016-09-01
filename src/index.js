@@ -15,3 +15,8 @@ export {
 export { 
     createEntityReducer
 } from './EntityReducer';
+
+export { 
+    EntitySelect,
+    EntitySelectByResult
+} from './EntitySelector';
