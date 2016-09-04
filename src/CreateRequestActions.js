@@ -1,11 +1,11 @@
 import {createAction} from 'redux-actions';
 import {fromJS, Map} from 'immutable';
 
-export function LogRequestActionNames(actionMap, prefix) {
-    console.log(Object.keys(CreateRequestActionSet(actionMap, prefix)).join('\n'));
+export function logRequestActionNames(actionMap, prefix) {
+    console.log(Object.keys(createRequestActionSet(actionMap, prefix)).join('\n'));
 }
 
-export function CreateRequestActionSet(actionMap) {
+export function createRequestActionSet(actionMap) {
 
     //
     // Turns a nested object into a flat 
@@ -25,7 +25,7 @@ export function CreateRequestActionSet(actionMap) {
     return reduceActionMap(fromJS(actionMap))
         .map((sideEffect, action) => {
             const FETCH = `${action}_FETCH`;
-            const RECIEVE = `${action}_RECIEVE`;
+            const RECIEVE = `${action}_RECEIVE`;
             const ERROR = `${action}_ERROR`;
 
             const requestActionName = action
@@ -34,7 +34,7 @@ export function CreateRequestActionSet(actionMap) {
                 .join('');
 
             return Map()
-                .set(`request${requestActionName}`, CreateRequestAction(FETCH, RECIEVE, ERROR, sideEffect))
+                .set(`request${requestActionName}`, createRequestAction(FETCH, RECIEVE, ERROR, sideEffect))
                 .set(FETCH, FETCH)
                 .set(RECIEVE, RECIEVE)
                 .set(ERROR, ERROR);
@@ -44,7 +44,7 @@ export function CreateRequestActionSet(actionMap) {
         .toJS();
 }
 
-export default function CreateRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
+export default function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta)
     }

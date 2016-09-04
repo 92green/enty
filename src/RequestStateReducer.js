@@ -15,33 +15,34 @@ const initialState = Map();
 // e.g. state.async.LEARNING_PLAN_FETCH
 //
 
-export default function AsyncStateReducer(state = initialState, action) {
-
-	const { type } = action;
+export default function RequestStateReducer(state = initialState, {type, payload}) {
 
 	if(!type) {
 		return state;
 	}
 
-	const actionName = type.replace(/(_FETCH|_ERROR|_RECEIVE)$/g,'');
+	const actionName = type.replace(/(_FETCH|_ERROR|_RECEIVE)$/g, '');
 
 	if(/_FETCH$/g.test(type)) {
 		return state
-			.set(actionName + '_FETCH', true)
-			.set(actionName + '_ERROR', null);
+			.set(`${actionName}_FETCH`, true)
+			.set(`${actionName}_ERROR`, null);
 	}
 
 	if(/_ERROR$/g.test(type)) {
-		const { status, message } = action.payload;
+		const {status, message} = payload;
 		return state
-			.set(actionName + '_FETCH', false)
-			.set(actionName + '_ERROR', { status, message });
+			.set(`${actionName}_FETCH`, false)
+			.set(`${actionName}_ERROR`, {
+                status,
+                message
+            });
 	}
 
 	if(/_RECEIVE$/g.test(type)) {
 		return state
-			.set(actionName + '_FETCH', false)
-			.set(actionName + '_ERROR', null);
+			.set(`${actionName}_FETCH`, false)
+			.set(`${actionName}_ERROR`, null);
 	}
 
 	return state;
