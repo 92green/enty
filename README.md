@@ -6,38 +6,47 @@ An opinionated set of redux tools to cut down of boilerplate
 npm install --save redux-blueflag
 ```
 
+## API
+
+### Action Creator Creators
+* createEntityReducer
+* createRequestAction
+* createRequestActionSet
+
+### Reducers
+* RequestStateReducer
+
+### Selectors
+* selectEntity
+* selectEntityByResult
+* selectRequestState
+
+### Misc
+* logRequestActionNames
+
+
+## createEntityReducer
+```
+createEntityReducer(schemaMap: object<ActionType, schema>, constructor?: function) : EntityReducer
+```
+Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
+
+
 ```js
-import {CreateRequestActionSet} from 'redux-blueflag';
+import {createEntityReducer} from 'redux-blueflag';
+import EntitySchema from 'myapp/EntitySchema';
 
-const api = {
-    user: {
-        get: xhr.get('/user')
-    },
-    course: {
-        get: xhr.get('/course')
-    }
-}
-
-module.exports = CreateRequestActionSet(api);
-/* 
-{
-    USER_GET_FETCH: 'USER_GET_FETCH',
-    USER_GET_RECIEVE: 'USER_GET_RECIEVE',
-    USER_GET_ERROR: 'USER_GET_ERROR',
-    COURSE_GET_FETCH: 'COURSE_GET_FETCH',
-    COURSE_GET_RECIEVE: 'COURSE_GET_RECIEVE',
-    COURSE_GET_ERROR: 'COURSE_GET_ERROR',
-    requestUserGet: thunkedActionCreator,
-    requestCoureGet: thunkedActionCreator    
-}
-*/
+export default combineReducers({
+    entity: createEntityReducer({
+		GRAPHQL_RECEIVE: EntitySchema,
+        MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSceham
+    }),
+});
 ```
 
-
-
-## CreateRequestAction
+## createRequestAction
 ```
-CreateRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Promise) : RequestActionCreator
+createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Promise) : RequestActionCreator
 ```
 returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
 
@@ -47,18 +56,18 @@ returns a [redux-thunk](thunk) action creator that will dispatch the three state
 * catch dispatch `errorAction`
 
 
-## CreateRequestActionSet
+## createRequestActionSet
 ```
-CreateRequestActionSet(actionMap: object): object
+createRequestActionSet(actionMap: object): object
 ```
 Deeply flattens the keys of `actionMap` and uses each pf them to create three action types
 and one `RequestActionCreator`
 
 
 ```js
-import {CreateRequestActionSet} from 'redux-blueflag';
+import {createRequestActionSet} from 'redux-blueflag';
 
-CreateRequestActionSet({
+createRequestActionSet({
     user: {
         get: xhr.get('/user')
     },
@@ -66,7 +75,7 @@ CreateRequestActionSet({
         post: xhr.post('/course')
     }
 });
-/* 
+/*
 {
     USER_GET_FETCH: 'USER_GET_FETCH',
     USER_GET_RECIEVE: 'USER_GET_RECIEVE',
@@ -75,10 +84,11 @@ CreateRequestActionSet({
     COURSE_POST_RECIEVE: 'COURSE_POST_RECIEVE',
     COURSE_POST_ERROR: 'COURSE_POST_ERROR',
     requestUserGet: RequestActionCreator,
-    requestCoursePost: RequestActionCreator    
+    requestCoursePost: RequestActionCreator
 }
 */
 ```
+
 ## `LogRequestActionNames(actionMap<object>)`
 
 ## `AsyncStateReducer`
