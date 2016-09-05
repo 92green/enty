@@ -2,9 +2,7 @@ import {fromJS, Map, Iterable} from 'immutable';
 import {denormalize} from 'denormalizr';
 import {normalize} from 'normalizr';
 
-const initialState = fromJS({
-    result: {}
-});
+
 
 function defaultConstructor(key, value) {
     return value;
@@ -23,12 +21,18 @@ function determineReviverType(constructor, schemaKey) {
     }
 }
 
-export function createEntityReducer(schemas, constructor = defaultConstructor) {
+export function createEntityReducer(schemaMap, constructor = defaultConstructor) {
+
+    const initialState = fromJS({
+        _schema: schemaMap,
+        _result: {},
+    });
+
     // Return our constructed reducer
     return function EntityReducer(state = initialState, {type, payload, meta = {}}) {
-        var schema = schemas[type] || {};
+        var schema = meta.schema || schemaMap[type];
 
-        if(schemas[type]) {
+        if(schema && payload) {
             // revive data from raw payload
             var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
             // normalize using proved schema
@@ -38,7 +42,7 @@ export function createEntityReducer(schemas, constructor = defaultConstructor) {
 
             return state
                 // set results
-                .setIn(['result', meta.resultKey || type], resultData)
+                .setIn(['_result', meta.resultKey || type], resultData)
                 // merge entities
                 .mergeDeep(entities);
 

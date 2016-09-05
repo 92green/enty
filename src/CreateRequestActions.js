@@ -55,13 +55,18 @@ export default function createRequestAction(fetchAction, recieveAction, errorAct
             getState
         }
 
-        dispatch(action(fetchAction)(null, {resultKey: fetchAction}));
+        var actionMeta = (resultKey) => ({
+            ...meta,
+            resultKey: meta.resultKey || resultKey
+        });
+
+        dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || resultKey});
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data) => {
-                return Promise.resolve(dispatch(action(recieveAction)(data, {resultKey: meta.resultKey || recieveAction})))
+                return Promise.resolve(dispatch(action(recieveAction)(data, actionMeta(recieveAction))))
             },
             (error) => {
-                return dispatch(createAction(errorAction)(error, {resultKey: errorAction}));
+                return dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || resultKey}));
             }
         )
     }

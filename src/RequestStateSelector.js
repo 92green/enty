@@ -13,7 +13,8 @@ export function selectRequestState(state, actions) {
                 // reduce to just fetch,error,receive
                 .reduce((rr, ii, kk) => {
                     return rr.set(List(kk.split('_')).last().toLowerCase(), ii);
-                }, Map());
+                }, Map())
+                .toObject();
 
         default:
             return requestState
@@ -30,7 +31,8 @@ export function selectRequestState(state, actions) {
                         .replace(/^./, ii => ii.toLowerCase());
 
                     return rr.set(keyPath, value);
-                }, Map());
+                }, Map())
+                .toObject();
     }
 
 

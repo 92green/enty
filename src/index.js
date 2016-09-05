@@ -3,13 +3,13 @@ export {thunk} from 'redux-thunk';
 export {createAction} from 'redux-actions';
 export * from 'normalizr';
 
-// 
+//
 // Reducers
 export {default as RequestStateReducer} from './RequestStateReducer';
 
-// 
+//
 // Creators
-export { 
+export {
     createRequestAction,
     createRequestActionSet,
     logRequestActionNames
@@ -20,11 +20,11 @@ export {createEntityReducer} from './CreateEntityReducer';
 
 //
 // Selectors
-export { 
+export {
     selectEntity,
-    selectEntityByResult
+    selectEntityByPath
 } from './EntitySelector';
 
-export { 
+export {
     selectRequestState
 } from './RequestStateSelector';
