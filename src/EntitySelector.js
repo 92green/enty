@@ -6,6 +6,7 @@ export function selectEntity(schema, state, path) {
 }
 
 export function selectEntityByResult(schema, state, path) {
+    console.log(schema, state, path)
     return state.entity
         .getIn(['result'].concat(path[0]), Map())
         .map((ii, schemaName) => {

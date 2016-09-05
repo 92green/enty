@@ -8,7 +8,7 @@ export function logRequestActionNames(actionMap, prefix) {
 export function createRequestActionSet(actionMap) {
 
     //
-    // Turns a nested object into a flat 
+    // Turns a nested object into a flat
     // UPPER_SNAKE case represention
     function reduceActionMap(branch, parentKey = '') {
         return branch.reduce((rr, ii, key) => {
@@ -38,7 +38,7 @@ export function createRequestActionSet(actionMap) {
                 .set(FETCH, FETCH)
                 .set(RECIEVE, RECIEVE)
                 .set(ERROR, ERROR);
-                
+
         })
         .flatten(1)
         .toJS();
@@ -48,11 +48,11 @@ export default function createRequestAction(fetchAction, recieveAction, errorAct
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta)
     }
-    return (...args) => (dispatch) => {
+    return (requestPayload, meta = {}, ...args) => (dispatch) => {
         dispatch(action(fetchAction)(null, {resultKey: fetchAction}));
-        return sideEffect(...args).then(
+        return sideEffect(requestPayload, ...args).then(
             (data) => {
-                return Promise.resolve(dispatch(action(recieveAction)(data, {resultKey: recieveAction})))
+                return Promise.resolve(dispatch(action(recieveAction)(data, {resultKey: meta.resultKey || recieveAction})))
             },
             (error) => {
                 return dispatch(createAction(errorAction)(error, {resultKey: errorAction}));
