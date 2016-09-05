@@ -1,6 +1,6 @@
 {
   "name": "redux-blueflag",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
   "scripts": {
