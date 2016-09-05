@@ -48,9 +48,15 @@ export default function createRequestAction(fetchAction, recieveAction, errorAct
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta)
     }
-    return (requestPayload, meta = {}, ...args) => (dispatch) => {
+    return (requestPayload, meta = {}) => (dispatch, getState) => {
+        var sideEffectMeta = {
+            ...meta,
+            dispatch,
+            getState
+        }
+
         dispatch(action(fetchAction)(null, {resultKey: fetchAction}));
-        return sideEffect(requestPayload, ...args).then(
+        return sideEffect(requestPayload, sideEffectMeta).then(
             (data) => {
                 return Promise.resolve(dispatch(action(recieveAction)(data, {resultKey: meta.resultKey || recieveAction})))
             },
