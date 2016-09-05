@@ -7,7 +7,7 @@ export function selectEntity(state, resultKey, schema) {
     return denormalize(
         entity.getIn(['_result', resultKey]),
         entity,
-        schema || entity.getIn(['_schema', resultKey])
+        entity.getIn(['_schema', resultKey])
     );
 }
 

@@ -38,7 +38,8 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
             // normalize using proved schema
             var {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
 
-            var resultData = (schema._key) ? Map().set(schema._key, result) : result;
+            // var resultData = (schema._key) ? Map().set(schema._key, result) : result;
+            var resultData = result;
 
             return state
                 // set results

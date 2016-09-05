@@ -18,7 +18,7 @@ npm install --save redux-blueflag
 
 ### Selectors
 * selectEntity
-* selectEntityByResult
+* selectEntityByPath
 * selectRequestState
 
 ### Misc

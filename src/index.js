@@ -18,6 +18,7 @@ export {
 export {createEntityReducer} from './CreateEntityReducer';
 
 
+
 //
 // Selectors
 export {
@@ -28,3 +29,10 @@ export {
 export {
     selectRequestState
 } from './RequestStateSelector';
+
+
+//
+// Misc
+
+export {default as PropChangeHock} from './PropChangeHock';
+export {connectWithQuery} from './QueryConnector';
