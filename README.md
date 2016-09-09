@@ -93,7 +93,13 @@ createRequestActionSet({
 
 ## `AsyncStateReducer`
 
+This listens to all actions and tracks the fetching and error states of all in a generic way. Async state data is kept under the `async` key in redux.
 
+Fetching state is kept in `state.async.<FETCH_ACTION>` and will either be `true` if the action is currently fetching or a falsey value otherwise. `<FETCH_ACTION>` refers to the name (string) of the fetch action, such as `USER_GET_FETCH`.
+
+Error state is kept in `state.async.<ERROR_ACTION>` and will either be an error like `{status: <status code>, message: <message>}`, or `null` otherwise. `<ERROR_ACTION>` refers to the name (string) of the error action, such as `USER_GET_ERROR`.
+
+Actions follow a strict naming convention, each ending in either `_FETCH`, `_RECEIVE` or `_ERROR`. This allows the AsyncStateReducer to listen to the various actions and keep track of async state.
 
 ## `createAction`
 
