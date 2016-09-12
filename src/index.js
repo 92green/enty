@@ -1,4 +1,3 @@
-
 export {thunk} from 'redux-thunk';
 export {createAction} from 'redux-actions';
 export * from 'normalizr';
@@ -17,6 +16,9 @@ export {
 
 export {createEntityReducer} from './CreateEntityReducer';
 
+export {default as createEntityQuery} from './CreateEntityQuery';
+
+export {createSchema} from './CreateSchema';
 
 
 //

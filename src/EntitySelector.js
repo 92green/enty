@@ -2,20 +2,22 @@ import {denormalize} from 'denormalizr';
 import {Map} from 'immutable';
 
 
-export function selectEntity(state, resultKey, schema) {
+export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
     var {entity} = state;
-    return denormalize(
+    var data = denormalize(
         entity.getIn(['_result', resultKey]),
         entity,
-        entity.getIn(['_schema', resultKey])
+        entity.getIn(['_schema', schemaKey]).toJS()
     );
+
+    return data && data.toObject();
 }
 
-export function selectEntityByPath(state, path, schema) {
+export function selectEntityByPath(state, path, schemaKey = 'mainSchema') {
     var {entity} = state;
     return denormalize(
         entity.getIn(path),
         entity,
-        schema || entity.getIn(['_schema', path[0]])
+        entity.getIn(['_schema', schemaKey, path[0]])
     );
 }

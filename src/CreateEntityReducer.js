@@ -31,7 +31,6 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
     // Return our constructed reducer
     return function EntityReducer(state = initialState, {type, payload, meta = {}}) {
         var schema = meta.schema || schemaMap[type];
-
         if(schema && payload) {
             // revive data from raw payload
             var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
