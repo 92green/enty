@@ -4,8 +4,12 @@ import {createEntityReducer} from 'redux-blueflag';
 import thunk from 'redux-thunk'
 import {Provider} from 'react-redux';
 import {compose, createStore, applyMiddleware, combineReducers} from 'redux';
-
 import Playground from './components/Playground';
+
+
+//
+// Schemas
+//
 
 import {Schema, arrayOf} from 'redux-blueflag';
 
@@ -25,6 +29,9 @@ const EntitySchema = {
     subreddit: SubredditSchema
 }
 
+//
+// reducer
+//
 
 var reducers = combineReducers({
     entity: createEntityReducer({
@@ -33,6 +40,7 @@ var reducers = combineReducers({
     })
 });
 
+// store
 var store = compose(
     applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f

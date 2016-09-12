@@ -4,11 +4,6 @@ import {entityQuery} from '../actions';
 
 var Playground = React.createClass({
     displayName: 'Playground',
-    getDefaultProps() {
-        return {
-
-        };
-    },
     render() {
         var {subreddit} = this.props;
         return <pre>{JSON.stringify(subreddit && subreddit.toJS(), null, 4)}</pre>;
