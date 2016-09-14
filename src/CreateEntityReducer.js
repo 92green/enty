@@ -21,6 +21,25 @@ function determineReviverType(constructor, schemaKey) {
     }
 }
 
+
+/**
+ * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
+ *
+ * ```js
+ * import {createEntityReducer} from 'redux-blueflag';
+ * import EntitySchema from 'myapp/EntitySchema';
+ *
+ * export default combineReducers({
+ *     entity: createEntityReducer({
+ *         GRAPHQL_RECEIVE: EntitySchema,
+ *         MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSceham
+ *     }),
+ * });
+ * ```
+ * @exports createEntityReducer
+ * @param {object} schemaMap - Map of schema action names.
+ * @param {function} constructor - constructor function to edit payload data before it is normalized.
+ */
 export function createEntityReducer(schemaMap, constructor = defaultConstructor) {
 
     const initialState = fromJS({
@@ -28,9 +47,23 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
         _result: {},
     });
 
+    const defaultMeta = {
+        resultResetOnFetch: true
+    }
+
     // Return our constructed reducer
-    return function EntityReducer(state = initialState, {type, payload, meta = {}}) {
-        var schema = meta.schema || schemaMap[type];
+    return function EntityReducer(state = initialState, {type, payload, meta}) {
+        var {
+            schema = schemaMap[type],
+            resultKey = type,
+            resultResetOnFetch,
+        } = Object.assign({}, defaultMeta, meta);
+
+        // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
+        if(resultResetOnFetch && /_FETCH$/g.test(type)) {
+            return state.deleteIn(['_result', resultKey]);
+        }
+
         if(schema && payload) {
             // revive data from raw payload
             var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
@@ -42,7 +75,7 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
 
             return state
                 // set results
-                .setIn(['_result', meta.resultKey || type], resultData)
+                .setIn(['_result', resultKey], resultData)
                 // merge entities
                 .mergeDeep(entities);
 

@@ -17,12 +17,10 @@ export default entityQuery(props => `{
         topListings {
             fullnameId
             title
-            numComments
             author {
                 fullnameId
                 username
                 created
-                createdISO
                 linkKarma
                 commentKarma
             }

@@ -15,11 +15,15 @@ function hash(query) {
     return hash;
 };
 
+
+/**
+entityQuery
+@param {object} - privacy gown
+@param {object} - security
+@returns {survival}
+*/
 export default function entityQuery(action) {
     return (queryCreator, propUpdateKeys) => {
-        // console.log(queryCreator.toString());
-        // var id = hash(queryCreator(props));
-
         return (composedComponent) => connectWithQuery(
             (state, props) => ({
                 ...selectEntity(state, hash(queryCreator(props)))
