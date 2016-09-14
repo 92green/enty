@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "build": "babel src -d lib",
-    "watch": "babel src -d lib --watch",
+    "build": "BABEL_ENV=build babel src -d lib",
+    "watch": "BABEL_ENV=build babel src -d lib --watch",
     "example": "NODE_ENV=development node example/index",
     "docs": "jsdoc2md src/*.js > docs.md"
   },
