@@ -1,5 +1,5 @@
 import {denormalize} from 'denormalizr';
-import {Map} from 'immutable';
+import {Map, Iterable} from 'immutable';
 
 
 export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
@@ -7,10 +7,13 @@ export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
     var data = denormalize(
         entity.getIn(['_result', resultKey]),
         entity,
-        entity.getIn(['_schema', schemaKey]).toJS()
+        entity.getIn(['_schema', schemaKey])
     );
 
-    return data && data.toObject();
+    console.log(data);
+    if(data) {
+        return Iterable.isIndexed(data) ? data.toList() : data.toMap();
+    }
 }
 
 export function selectEntityByPath(state, path, schemaKey = 'mainSchema') {
