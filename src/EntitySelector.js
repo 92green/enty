@@ -10,9 +10,8 @@ export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
         entity.getIn(['_schema', schemaKey])
     );
 
-    console.log(data);
     if(data) {
-        return Iterable.isIndexed(data) ? data.toList() : data.toMap();
+        return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
     }
 }
 

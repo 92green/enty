@@ -25,9 +25,11 @@ entityQuery
 export default function entityQuery(action) {
     return (queryCreator, propUpdateKeys) => {
         return (composedComponent) => connectWithQuery(
-            (state, props) => ({
-                ...selectEntity(state, hash(queryCreator(props)))
-            }),
+            (state, props) => {
+                return {
+                    ...selectEntity(state, hash(queryCreator(props)))
+                }
+            },
             props => props.dispatch(action(queryCreator(props), {resultKey: hash(queryCreator(props))})),
             propUpdateKeys
         )(composedComponent)
