@@ -41,4 +41,5 @@ export {
 // Misc
 
 export {default as PropChangeHock} from './PropChangeHock';
+export {default as LocalStateHock} from './LocalStateHock';
 export {connectWithQuery} from './QueryConnector';
