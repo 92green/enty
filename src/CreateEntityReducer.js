@@ -42,9 +42,9 @@ function determineReviverType(constructor, schemaKey) {
  */
 export function createEntityReducer(schemaMap, constructor = defaultConstructor) {
 
-    const initialState = fromJS({
-        _schema: schemaMap,
-        _result: {},
+    const initialState = Map({
+        _schema: Map(schemaMap),
+        _result: Map(),
     });
 
     const defaultMeta = {
