@@ -26,7 +26,10 @@ export default (propKeys = [], outputFunction) => (ComposedComponent) => {
             }
         }
         render() {
-            return <ComposedComponent {...this.props} />;
+            return <ComposedComponent
+                {...this.props}
+                outputFunction={outputFunction.bind(null, this.props)}
+             />;
         }
     }
 }
