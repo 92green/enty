@@ -1,6 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import {fromJS} from 'immutable';
 
+/**
+ * ```js
+ * PropChangeHock(propKeys: [String], sideEffect: function) => (component: Component) => Component
+ * ```
+ * The prop change hock takes a side effect and an array of prop keys paths.
+ * The component then listens for component mount and receive props.
+ * If any of the provided props change the side effect is triggered.
+ * @exports PropChangeHock
+ * @param  {Array}      propKeys            list of strings of prop keys
+ * @param  {function}   outputFunction
+ * @return {function}   componentCreator    function to pass react component
+ */
 export default (propKeys = [], outputFunction) => (ComposedComponent) => {
     return class AutoRequest extends Component {
         constructor(props, context) {

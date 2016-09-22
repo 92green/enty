@@ -15,13 +15,11 @@ function hash(query) {
     return hash;
 };
 
-
 /**
-entityQuery
-@param {object} - privacy gown
-@param {object} - security
-@returns {survival}
-*/
+ * Takes an action creator and gives it a `resultKey`. wraps it in PropChangeHock, entitySelect and requestStateSelect
+ * @param  {function} sideEffect
+ * @return {function} action creator
+ */
 export default function entityQuery(action) {
     return (queryCreator, propUpdateKeys) => {
         return (composedComponent) => connectWithQuery(

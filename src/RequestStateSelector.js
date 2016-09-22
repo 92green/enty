@@ -1,6 +1,11 @@
 import {Map, List} from 'immutable';
 
-
+/**
+ * Returns the state of a current request. Either fetching, error or not yet requested.
+ * @param  {object} state   the current state
+ * @param  {(string|array)} actions either one or many partial action types
+ * @return {object}         the curerent request state
+ */
 export function selectRequestState(state, actions) {
     // use custom request state if not provided
     var requestState = state.requestState || Map(state);
