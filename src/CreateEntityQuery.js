@@ -2,6 +2,11 @@ import {connectWithQuery} from './QueryConnector';
 import {selectEntity} from './EntitySelector';
 
 function hash(query) {
+    if(typeof query !== 'object' && typeof query !== 'string') {
+        throw new TypeError('Invalid query type');
+    }
+
+    query = JSON.stringify(query);
     var hash = 0
     var i;
     var chr;
