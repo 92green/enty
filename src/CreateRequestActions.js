@@ -60,7 +60,7 @@ export function createRequestActionSet(actionMap) {
         .toJS();
 }
 
-export default function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
+export function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta)
     }
