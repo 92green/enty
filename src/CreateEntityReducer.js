@@ -45,6 +45,7 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
     const initialState = Map({
         _schema: Map(schemaMap),
         _result: Map(),
+        _requestState: Map(),
     });
 
     const defaultMeta = {
@@ -59,12 +60,19 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
             resultResetOnFetch,
         } = Object.assign({}, defaultMeta, meta);
 
+
+        state = state.setIn(['_requestState', resultKey], Map({
+            fetch : /_FETCH$/g.test(type),
+            error : /_ERROR$/g.test(type) ? payload : null
+        }));
+
+
         // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
         if(resultResetOnFetch && /_FETCH$/g.test(type)) {
             return state.deleteIn(['_result', resultKey]);
         }
 
-        if(schema && payload) {
+        if(schema && payload && /_RECEIVE$/g.test(type)) {
             // revive data from raw payload
             var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
             // normalize using proved schema

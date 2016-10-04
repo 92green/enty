@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "nyc ava",
-    "build": "BABEL_ENV=build babel src -d lib",
+    "build": "rm -rf lib; BABEL_ENV=build babel src -d lib",
     "watch": "BABEL_ENV=build babel src -d lib --watch",
     "example": "NODE_ENV=development node example/index",
     "docs": "jsdoc2md -t src/readme.hbs lib/**/*.js > README.md"

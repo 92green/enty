@@ -1,5 +1,6 @@
 import {connectWithQuery} from './QueryConnector';
 import {selectEntity} from './EntitySelector';
+import {Map} from 'immutable';
 
 function hash(query) {
     if(typeof query !== 'object' && typeof query !== 'string') {
@@ -31,8 +32,10 @@ export default function entityQuery(action) {
     return (queryCreator, propUpdateKeys) => {
         return (composedComponent) => connectWithQuery(
             (state, props) => {
+                const resultKey = hash(queryCreator(props));
                 return {
-                    ...selectEntity(state, hash(queryCreator(props)))
+                    ...selectEntity(state, resultKey),
+                    requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
                 }
             },
             props => props.dispatch(action(queryCreator(props), {resultKey: hash(queryCreator(props))})),
