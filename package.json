@@ -4,7 +4,7 @@
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
+    "test": "nyc ava",
     "build": "BABEL_ENV=build babel src -d lib",
     "watch": "BABEL_ENV=build babel src -d lib --watch",
     "example": "NODE_ENV=development node example/index",
@@ -30,6 +30,7 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
+    "ava": "^0.16.0",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
@@ -41,13 +42,33 @@
     "graphql": "^0.7.0",
     "graphqlhub-schemas": "^0.1.0",
     "jsdoc-to-markdown": "^1.3.7",
+    "nyc": "^6.6.1",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-transform-hmr": "^1.0.4",
     "redux": "^3.6.0",
+    "sinon": "^1.17.6",
     "superagent": "^2.2.0",
     "webpack": "^1.13.2",
     "webpack-dev-middleware": "^1.7.0",
     "webpack-hot-middleware": "^2.12.2"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ]
+  },
+  "nyc": {
+    "all": true,
+    "require": [
+      "babel-register"
+    ],
+    "include": [
+      "src/*.js"
+    ],
+    "reporter": [
+      "html",
+      "text"
+    ]
   }
 }

@@ -7,4 +7,5 @@ pids
 lib-cov
 coverage
 node_modules
+.nyc_output
 tags

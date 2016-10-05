@@ -10,6 +10,19 @@ export function logRequestActionNames(actionMap, prefix) {
     console.log(Object.keys(createRequestActionSet(actionMap, prefix)).join('\n'));
 }
 
+//
+// Turns a nested object into a flat
+// UPPER_SNAKE case represention
+export function reduceActionMap(branch, parentKey = '') {
+    return branch.reduce((rr, ii, key) => {
+        var prefix = `${parentKey}${key.toUpperCase()}`;
+        if(Map.isMap(ii)) {
+            return rr.merge(reduceActionMap(ii, `${prefix}_`));
+        } else {
+            return rr.set(prefix, ii);
+        }
+    }, Map())
+}
 
 /**
  * returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
@@ -22,26 +35,10 @@ export function logRequestActionNames(actionMap, prefix) {
  * @return {array}            list of action creators and action types
  */
 export function createRequestActionSet(actionMap) {
-
-    //
-    // Turns a nested object into a flat
-    // UPPER_SNAKE case represention
-    function reduceActionMap(branch, parentKey = '') {
-        return branch.reduce((rr, ii, key) => {
-            var prefix = `${parentKey}${key.toUpperCase()}`;
-            if(Map.isMap(ii)) {
-                return rr.merge(reduceActionMap(ii, `${prefix}_`));
-            } else {
-                return rr.set(prefix, ii);
-            }
-        }, Map())
-    }
-
-
     return reduceActionMap(fromJS(actionMap))
         .map((sideEffect, action) => {
             const FETCH = `${action}_FETCH`;
-            const RECIEVE = `${action}_RECEIVE`;
+            const RECEIVE = `${action}_RECEIVE`;
             const ERROR = `${action}_ERROR`;
 
             const requestActionName = action
@@ -50,9 +47,9 @@ export function createRequestActionSet(actionMap) {
                 .join('');
 
             return Map()
-                .set(`request${requestActionName}`, createRequestAction(FETCH, RECIEVE, ERROR, sideEffect))
+                .set(`request${requestActionName}`, createRequestAction(FETCH, RECEIVE, ERROR, sideEffect))
                 .set(FETCH, FETCH)
-                .set(RECIEVE, RECIEVE)
+                .set(RECEIVE, RECEIVE)
                 .set(ERROR, ERROR);
 
         })

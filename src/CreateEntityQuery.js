@@ -20,6 +20,8 @@ function hash(query) {
     return hash;
 };
 
+
+
 /**
  * Takes an action creator and gives it a `resultKey`. wraps it in PropChangeHock, entitySelect and requestStateSelect
  * @param  {function} sideEffect
