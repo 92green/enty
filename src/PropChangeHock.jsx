@@ -23,17 +23,19 @@ export default (propKeys = [], outputFunction) => (ComposedComponent) => {
         }
         componentWillReceiveProps(nextProps) {
             // make props immutable Maps
-            var thisPropsImmutable = fromJS(this.props);
-            var nextPropsImmutable = fromJS(nextProps);
+            const thisPropsImmutable = fromJS(this.props);
+            const nextPropsImmutable = fromJS(nextProps);
 
-            var booleanTest = propKeys
-                .map(ii => {
-                    var keyPath = ii.split('.');
-                    return thisPropsImmutable.getIn(keyPath) !== nextPropsImmutable.getIn(keyPath);
-                })
-                .indexOf(true)
+            const propsHaveChanged = fromJS(propKeys)
+                .some(ii => {
+                    const keyPath = ii.split('.');
+                    return !Immutable.is(
+                        thisPropsImmutable.getIn(keyPath),
+                        nextPropsImmutable.getIn(keyPath)
+                    );
+                });
 
-            if(booleanTest !== -1) {
+            if(propsHaveChanged) {
                 outputFunction(nextProps);
             }
         }
