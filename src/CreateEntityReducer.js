@@ -1,26 +1,11 @@
 import {fromJS, Map, Iterable} from 'immutable';
 import {denormalize} from 'denormalizr';
 import {normalize} from 'normalizr';
-
-
+import DetermineReviverType from './utils/DetermineReviverType';
 
 function defaultConstructor(key, value) {
     return value;
 }
-
-function determineReviverType(constructor, schemaKey) {
-    return (key, value) => {
-        // Check if the value is an array or object and convert to that for them.
-        var isIndexed = Iterable.isIndexed(value);
-        var returnValue = isIndexed ? value.toList() : value.toMap();
-
-        // the key from the schema is used if key is undefined
-        // this is only the case if we are at the top level of our payload
-        // that way the reviver gets knowlege of what type of schema we are using
-        return constructor(key || schemaKey, returnValue);
-    }
-}
-
 
 /**
  * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
@@ -54,7 +39,7 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
 
     // Return our constructed reducer
     return function EntityReducer(state = initialState, {type, payload, meta}) {
-        var {
+        const {
             schema = schemaMap[type],
             resultKey = type,
             resultResetOnFetch,
@@ -74,18 +59,17 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
 
         if(schema && payload && /_RECEIVE$/g.test(type)) {
             // revive data from raw payload
-            var reducedData = fromJS(payload, determineReviverType(constructor, schema._key)).toJS();
+            const reducedData = fromJS(payload, DetermineReviverType(constructor, schema._key)).toJS();
             // normalize using proved schema
-            var {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
-
-            // var resultData = (schema._key) ? Map().set(schema._key, result) : result;
-            var resultData = result;
+            const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
 
             return state
                 // set results
-                .setIn(['_result', resultKey], resultData)
-                // merge entities
-                .mergeDeep(entities);
+                .setIn(['_result', resultKey], result)
+                // merge entities only two layers deep
+                // merges all entity types to state, and merged all entities into each entity type
+                // but will not merge the contents of entities themselves
+                .mergeWith((prev, next) => prev.merge(next), entities);
 
         }
 
