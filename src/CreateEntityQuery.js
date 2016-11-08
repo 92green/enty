@@ -29,18 +29,30 @@ function hash(query) {
  * @return {function} action creator
  */
 export default function entityQuery(action) {
-    return (queryCreator, propUpdateKeys) => {
-        return (composedComponent) => connectWithQuery(
-            (state, props) => {
-                const resultKey = hash(queryCreator(props));
-                return {
-                    ...selectEntity(state, resultKey),
-                    requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
-                }
-            },
-            props => props.dispatch(action(queryCreator(props), {resultKey: hash(queryCreator(props))})),
-            propUpdateKeys
-        )(composedComponent)
+    return (queryCreator, propUpdateKeys, metaOverride) => {
+
+        return (composedComponent) => {
+            const withQuery = connectWithQuery(
+                (state, props) => {
+                    const resultKey = hash(queryCreator(props));
+                    return {
+                        ...selectEntity(state, resultKey),
+                        requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
+                    }
+                },
+                (props) => {
+                    const payload = action(queryCreator(props));
+                    const meta = Object.assign({}, {
+                        resultKey: hash(queryCreator(props))
+                    }, metaOverride);
+
+                    return props.dispatch(payload, meta);
+                },
+                propUpdateKeys
+            );
+
+            return withQuery(composedComponent);
+        }
 
     }
 }
