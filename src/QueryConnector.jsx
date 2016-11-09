@@ -1,6 +1,4 @@
-import React, { Component, PropTypes } from 'react';
 import {connect} from 'react-redux';
-import {fromJS} from 'immutable';
 
 import PropChangeHock from './PropChangeHock'
 

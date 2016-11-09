@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 /**
  * `LocalStateHock(reducer: function(state, action)) => function(component: Component)`

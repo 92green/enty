@@ -168,7 +168,9 @@ test('CreateEntityReducer', tt => {
 
     tt.true(
         is(
-            EntityReducer(exampleState, exampleReceiveAction).getIn(['subreddit', 'MK']).delete('topListings'),
+            EntityReducer(exampleState, exampleReceiveAction)
+                .getIn(['subreddit', 'MK'])
+                .delete('topListings'),
             fromJS(examplePayload.subreddit).delete('topListings')
         ),
         'Normalized entities are stored in state under ENTITYNAME.ID'

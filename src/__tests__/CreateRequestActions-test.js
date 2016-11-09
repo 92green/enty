@@ -1,9 +1,7 @@
 import test from 'ava';
-import {spy} from 'sinon';
 import {fromJS} from 'immutable';
 import {
     reduceActionMap,
-    createRequestAction,
     createRequestActionSet
 } from '../CreateRequestActions';
 
