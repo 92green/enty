@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import {fromJS} from 'immutable';
+import Immutable, {fromJS} from 'immutable';
 
 /**
  * ```js
