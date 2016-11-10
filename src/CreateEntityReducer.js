@@ -66,10 +66,17 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
             return state
                 // set results
                 .setIn(['_result', resultKey], result)
-                // merge entities only two layers deep
-                // merges all entity types to state, and merged all entities into each entity type
-                // but will not merge the contents of entities themselves
-                .mergeWith((prev, next) => prev.merge(next), entities);
+                // merge entities only three layers deep
+                // + merges all entity types to state
+                // + merged all entity items into each entity type
+                // + merges the top-level items on each entity item
+                // but will not merge any deeper contents of entities themselves
+                .mergeWith((prevEntityType, nextEntityType) => {
+                    return prevEntityType
+                        .mergeWith((prevEntityItem, nextEntityItem) => {
+                            return prevEntityItem.merge(nextEntityItem);
+                        }, nextEntityType);
+                }, entities);
 
         }
 

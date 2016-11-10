@@ -196,6 +196,10 @@ test('CreateEntityReducer', tt => {
                     "fullnameId": "NT",
                     "title": "Nice title"
                 }
+            ],
+            tags: [
+                "A",
+                "B"
             ]
         }
     };
@@ -218,6 +222,10 @@ test('CreateEntityReducer', tt => {
                     "fullnameId": "GL",
                     "title": "Good luck"
                 }
+            ],
+            tags: [
+                "C",
+                "D"
             ]
         }
     };
@@ -230,12 +238,24 @@ test('CreateEntityReducer', tt => {
     const mergeStateOne = EntityReducer(exampleState, mergeExampleReceiveActionOne);
     const mergeStateTwo = EntityReducer(mergeStateOne, mergeExampleReceiveActionTwo);
 
+    tt.is(
+        mergeStateTwo.getIn(['subreddit', 'MK', 'name']),
+        mergeExamplePayloadTwo.subreddit.name,
+        'Receiving updated values on the top level of an entity item will replace existing values'
+    );
+
     tt.true(
         is(
-            mergeStateTwo.getIn(['subreddit', 'MK']).delete('topListings'),
-            fromJS(mergeExamplePayloadTwo.subreddit).delete('topListings')
+            mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
+            fromJS(mergeExamplePayloadTwo.subreddit.tags)
         ),
-        'Receiving updated info for an entity will replace entity data'
+        'Receiving updated non-entity values on the second level of an entity are not merged, they are replaced'
+    );
+
+    tt.is(
+        mergeStateTwo.getIn(['subreddit', 'MK', 'code']),
+        mergeExamplePayloadOne.subreddit.code,
+        'Existing top level keys and values on an entity item will remain when subsequent received data does not contain those top level keys'
     );
 
     tt.true(
@@ -243,7 +263,7 @@ test('CreateEntityReducer', tt => {
             mergeStateTwo.getIn(['topListings', 'NT']),
             fromJS(mergeExamplePayloadTwo.subreddit.topListings[0])
         ),
-        'Receiving updated info for an entity will replace nested entity data'
+        'Receiving updated info for an entity will replace nested entities'
     );
 
     tt.true(
