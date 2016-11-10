@@ -4,10 +4,12 @@
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
   "scripts": {
-    "test": "nyc ava",
+    "test": "yarn run lint && nyc ava",
     "ava": "ava",
     "build": "rm -rf lib; BABEL_ENV=build babel src -d lib",
     "watch": "BABEL_ENV=build babel src -d lib --watch",
+    "lint": "eslint src/**/*.jsx src/**/*.js",
+    "lint-fix": "eslint src/**/*.jsx src/**/*.js --fix",
     "example": "NODE_ENV=development node example/index",
     "docs": "jsdoc2md -t src/readme.hbs lib/**/*.js > README.md"
   },
@@ -38,6 +40,8 @@
     "babel-plugin-react-transform": "^2.0.2",
     "babel-preset-blueflag": "0.0.1",
     "babel-register": "^6.14.0",
+    "eslint": "^3.9.1",
+    "eslint-config-blueflag": "^0.2.0",
     "express": "^4.14.0",
     "express-graphql": "^0.5.4",
     "graphql": "^0.7.0",

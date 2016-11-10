@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component} from 'react';
 import Immutable, {fromJS} from 'immutable';
 
 /**
@@ -43,7 +43,7 @@ export default (propKeys = [], outputFunction) => (ComposedComponent) => {
             return <ComposedComponent
                 {...this.props}
                 outputFunction={outputFunction.bind(null, this.props)}
-             />;
+            />;
         }
     }
 }
