@@ -11,7 +11,7 @@ export default (reducer) => (ComposedComponent) => {
     return class LocalStateHock extends Component {
         constructor(props) {
             super(props);
-            this.state = reducer(undefined, {});
+            this.state = reducer(undefined, undefined);
             this.dispatch = this.dispatch.bind(this);
         }
         dispatch(action) {
