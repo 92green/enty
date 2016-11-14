@@ -36,6 +36,6 @@ export function selectEntityByPath(state, path, schemaKey = 'mainSchema') {
     return denormalize(
         entity.getIn(path),
         entity,
-        entity.getIn(['_schema', schemaKey, path[0]])
+        entity.getIn(['_schema', schemaKey])[path[0]]
     );
 }
