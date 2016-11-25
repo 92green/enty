@@ -27,11 +27,15 @@ const EntitySchema = {
 test('CreateEntityReducer', tt => {
 
     const schemaMap = {
-        mainSchema: EntitySchema,
+        ENTITY_RECEIVE: EntitySchema,
         TEST_RECEIVE: EntitySchema
     };
 
-    const EntityReducer = createEntityReducer(schemaMap, (key, value) => value);
+    const EntityReducer = createEntityReducer({
+        schemaMap,
+        beforeNormalize: value => value,
+        afterNormalize: value => value,
+    });
 
     const exampleAction = {
         type: "myType"
