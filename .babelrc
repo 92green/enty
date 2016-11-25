@@ -1,4 +1,8 @@
 {
   "presets": ["blueflag"],
+  "ignore": [
+    "**/*-test.js",
+    "**/*-test.jsx"
+  ],
   "sourceMaps": "inline"
 }

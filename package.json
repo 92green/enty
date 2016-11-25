@@ -60,6 +60,10 @@
   "ava": {
     "require": [
       "babel-register"
+    ],
+    "powerAssert": true,
+    "files": [
+      "src/**/*-test.{js,jsx}"
     ]
   },
   "nyc": {
