@@ -6,10 +6,10 @@ import {Map, Iterable} from 'immutable';
  * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.
  * @param  {object} state
  * @param  {string} resultKey
- * @param  {string} [schemaKey=mainSchema]
+ * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
  */
-export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
+export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
     var {entity} = state;
     var data = denormalize(
         entity.getIn(['_result', resultKey]),
@@ -28,10 +28,10 @@ export function selectEntity(state, resultKey, schemaKey = 'mainSchema') {
  * Most often the request key is more appropriate.
  * @param  {object} state
  * @param  {array} path
- * @param  {string} [schemaKey=mainSchema]
+ * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
  */
-export function selectEntityByPath(state, path, schemaKey = 'mainSchema') {
+export function selectEntityByPath(state, path, schemaKey = 'ENTITY_RECEIVE') {
     var {entity} = state;
     return denormalize(
         entity.getIn(path),

@@ -3,7 +3,7 @@ import {denormalize} from 'denormalizr';
 import {normalize} from 'normalizr';
 import DetermineReviverType from './utils/DetermineReviverType';
 
-function defaultConstructor(key, value) {
+function defaultConstructor(value, key) {
     return value;
 }
 
@@ -16,16 +16,27 @@ function defaultConstructor(key, value) {
  *
  * export default combineReducers({
  *     entity: createEntityReducer({
- *         GRAPHQL_RECEIVE: EntitySchema,
- *         MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSceham
- *     }),
+ *          schemaMap: {
+ *              GRAPHQL_RECEIVE: EntitySchema,
+ *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema
+ *          },
+ *          beforeNormalize: (value, key) => value,
+ *          afterNormalize: (value, key) => value,
+ *     })
  * });
  * ```
  * @exports createEntityReducer
  * @param {object} schemaMap - Map of schema action names.
- * @param {function} constructor - constructor function to edit payload data before it is normalized.
+ * @param {function} config.beforeNormalize - config.beforeNormalize function to edit payload data before it is normalized.
+ * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
  */
-export function createEntityReducer(schemaMap, constructor = defaultConstructor) {
+export function createEntityReducer(config) {
+
+    const {
+        schemaMap,
+        beforeNormalize = defaultConstructor,
+        afterNormalize = defaultConstructor
+    } = config;
 
     const initialState = Map({
         _schema: Map(schemaMap),
@@ -59,9 +70,16 @@ export function createEntityReducer(schemaMap, constructor = defaultConstructor)
 
         if(schema && payload && /_RECEIVE$/g.test(type)) {
             // revive data from raw payload
-            const reducedData = fromJS(payload, DetermineReviverType(constructor, schema._key)).toJS();
+            const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
             // normalize using proved schema
-            const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
+            const {result, entities} = fromJS(normalize(reducedData, schema))
+                // Map through entities and apply afterNormalize function
+                .updateIn(['entities'], entities => {
+                    return entities.map((entity, key) => {
+                        return entity.map(ii => afterNormalize(ii, key));
+                    })
+                })
+                .toObject();
 
             return state
                 // set results

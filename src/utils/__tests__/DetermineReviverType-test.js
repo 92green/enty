@@ -1,32 +1,10 @@
 import test from 'ava';
 import DetermineReviverType from '../DetermineReviverType';
-import {Schema, arrayOf} from 'normalizr';
 import {is, fromJS, Map} from 'immutable';
-
-//
-// Schemas
-//
-
-
-var SubredditSchema = new Schema('subreddit', {idAttribute: 'fullnameId'});
-var AuthorSchema = new Schema('author', {idAttribute: 'fullnameId'});
-var TopListingSchema = new Schema('topListings', {idAttribute: 'fullnameId'});
-
-TopListingSchema.define({
-    author: AuthorSchema
-});
-
-SubredditSchema.define({
-    topListings: arrayOf(TopListingSchema)
-});
-
-const EntitySchema = {
-    subreddit: SubredditSchema
-}
 
 test('DetermineReviverType', tt => {
 
-    const constructor = (key, value) => Map({key, value});
+    const constructor = (value, key) => Map({key, value});
     const schemaKey = 'mySchemaKey';
     const reviver = DetermineReviverType(constructor, schemaKey);
 
@@ -67,7 +45,7 @@ test('DetermineReviverType', tt => {
 
     tt.true(
         is(
-            DetermineReviverType((key, value) => value)('?', exampleMap),
+            DetermineReviverType((value, key) => value)('?', exampleMap),
             exampleMap
         ),
         'reviviers output is passed through constructor'
