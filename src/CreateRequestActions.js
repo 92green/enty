@@ -79,7 +79,7 @@ export function createRequestAction(fetchAction, recieveAction, errorAction, sid
                 return Promise.resolve(dispatch(action(recieveAction)(data, actionMeta(recieveAction))))
             },
             (error) => {
-                return dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
+                return Promise.reject(dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction})));
             }
         )
     }
