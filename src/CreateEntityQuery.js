@@ -1,27 +1,6 @@
 import {connectWithQuery} from './QueryConnector';
 import {selectEntity} from './EntitySelector';
-import {Map} from 'immutable';
-
-function hash(query) {
-    if(typeof query !== 'object' && typeof query !== 'string') {
-        throw new TypeError('Invalid query type');
-    }
-
-    query = JSON.stringify(query);
-    var hash = 0
-    var i;
-    var chr;
-    var len;
-    if (query.length === 0) return hash;
-    for (i = 0, len = query.length; i < len; i++) {
-        chr   = query.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
-};
-
-
+import {fromJS, Map} from 'immutable';
 
 /**
  * Takes an action creator and gives it a `resultKey`. wraps it in PropChangeHock, entitySelect and requestStateSelect
@@ -34,16 +13,15 @@ export default function entityQuery(action) {
         return (composedComponent) => {
             const withQuery = connectWithQuery(
                 function connector(state, props) {
-                    const resultKey = hash(queryCreator(props));
+                    const resultKey = fromJS({hash: queryCreator(props)}).hashCode();
                     return {
                         ...selectEntity(state, resultKey),
                         requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
                     }
                 },
                 function query(props) {
-                    const meta = Object.assign({}, {
-                        resultKey: hash(queryCreator(props))
-                    }, metaOverride);
+                    const resultKey = fromJS({hash: queryCreator(props)}).hashCode();
+                    const meta = Object.assign({}, {resultKey}, metaOverride);
 
                     return props.dispatch(action(queryCreator(props), meta));
                 },

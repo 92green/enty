@@ -26,6 +26,7 @@
   "homepage": "https://github.com/blueflag/redux-blueflag#readme",
   "dependencies": {
     "denormalizr": "^0.3.2",
+    "enzyme": "^2.6.0",
     "immutable": "^3.8.1",
     "normalizr": "^2.2.1",
     "react-redux": "^4.4.5",
@@ -71,8 +72,12 @@
     "require": [
       "babel-register"
     ],
+    "extension": [
+      ".jsx",
+      ".js"
+    ],
     "include": [
-      "src/*.js"
+      "src"
     ],
     "reporter": [
       "html",
