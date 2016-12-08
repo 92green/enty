@@ -1,9 +1,8 @@
-import {fromJS, Map, Iterable} from 'immutable';
-import {denormalize} from 'denormalizr';
+import {fromJS, Map} from 'immutable';
 import {normalize} from 'normalizr';
 import DetermineReviverType from './utils/DetermineReviverType';
 
-function defaultConstructor(value, key) {
+function defaultConstructor(value) {
     return value;
 }
 
