@@ -11,7 +11,8 @@
     "lint": "eslint src/**/*.jsx src/**/*.js",
     "lint-fix": "eslint src/**/*.jsx src/**/*.js --fix",
     "example": "NODE_ENV=development node example/index",
-    "docs": "jsdoc2md -t src/readme.hbs lib/**/*.js > README.md"
+    "docs": "jsdoc2md -t src/readme.hbs lib/**/*.js > README.md",
+    "prepublish": "yarn build"
   },
   "repository": {
     "type": "git",

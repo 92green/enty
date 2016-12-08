@@ -5,6 +5,7 @@ pids
 *.pid
 *.seed
 lib-cov
+lib
 coverage
 node_modules
 .nyc_output

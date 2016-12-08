@@ -4,12 +4,6 @@ export {createAction} from 'redux-actions';
 export * from 'normalizr';
 
 //
-// Reducers
-
-
-export {default as RequestStateReducer} from './RequestStateReducer';
-
-//
 // Creators
 export {
     createRequestAction,
@@ -32,9 +26,7 @@ export {
     selectEntityByPath
 } from './EntitySelector';
 
-export {
-    selectRequestState
-} from './RequestStateSelector';
+export {default as selectRequestState} from './RequestStateSelector';
 
 
 //
