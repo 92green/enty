@@ -32,9 +32,7 @@ export {
     selectEntityByPath
 } from './EntitySelector';
 
-export {
-    selectRequestState
-} from './RequestStateSelector';
+export {default as selectRequestState} from './RequestStateSelector';
 
 
 //

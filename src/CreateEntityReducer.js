@@ -55,12 +55,12 @@ export function createEntityReducer(config) {
             resultResetOnFetch,
         } = Object.assign({}, defaultMeta, meta);
 
+        var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
 
-        state = state.setIn(['_requestState', resultKey], Map({
+        state = state.setIn(['_requestState', actionTypePrefix || resultKey], Map({
             fetch : /_FETCH$/g.test(type),
             error : /_ERROR$/g.test(type) ? payload : null
         }));
-
 
         // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
         if(resultResetOnFetch && /_FETCH$/g.test(type)) {
