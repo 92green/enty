@@ -59,7 +59,7 @@ test('CreateEntityReducer', tt => {
 
     tt.true(
         EntityReducer(undefined, {type: 'TEST_FETCH'})
-            .getIn(['_requestState', 'TEST_FETCH', 'fetch']),
+            .getIn(['_requestState', 'TEST', 'fetch']),
         '_requestState.fetch is true when action type ends with _FETCH'
     );
 
@@ -71,7 +71,7 @@ test('CreateEntityReducer', tt => {
 
     tt.is(
         EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'})
-            .getIn(['_requestState', 'TEST_ERROR', 'error']),
+            .getIn(['_requestState', 'TEST', 'error']),
         'errorPayload',
         '_requestState.error equals payload when action type ends with _ERROR'
     );
