@@ -4,12 +4,6 @@ export {createAction} from 'redux-actions';
 export * from 'normalizr';
 
 //
-// Reducers
-
-
-export {default as RequestStateReducer} from './RequestStateReducer';
-
-//
 // Creators
 export {
     createRequestAction,
