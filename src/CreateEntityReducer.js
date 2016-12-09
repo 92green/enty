@@ -71,14 +71,7 @@ export function createEntityReducer(config) {
             // revive data from raw payload
             const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
             // normalize using proved schema
-            const {result, entities} = fromJS(normalize(reducedData, schema))
-                // Map through entities and apply afterNormalize function
-                .updateIn(['entities'], entities => {
-                    return entities.map((entity, key) => {
-                        return entity.map(ii => afterNormalize(ii, key));
-                    })
-                })
-                .toObject();
+            const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
 
             return state
                 // set results
@@ -88,10 +81,10 @@ export function createEntityReducer(config) {
                 // + merged all entity items into each entity type
                 // + merges the top-level items on each entity item
                 // but will not merge any deeper contents of entities themselves
-                .mergeWith((prevEntityType, nextEntityType) => {
+                .mergeWith((prevEntityType, nextEntityType, entityTypeName) => {
                     return prevEntityType
                         .mergeWith((prevEntityItem, nextEntityItem) => {
-                            return prevEntityItem.merge(nextEntityItem);
+                            return afterNormalize(prevEntityItem.merge(nextEntityItem), entityTypeName);
                         }, nextEntityType);
                 }, entities);
 
