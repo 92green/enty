@@ -1,6 +1,7 @@
 import {fromJS, Map} from 'immutable';
 import {normalize} from 'normalizr';
 import DetermineReviverType from './utils/DetermineReviverType';
+import MergeEntities from './utils/MergeEntities';
 
 function defaultConstructor(value) {
     return value;
@@ -41,7 +42,7 @@ export function createEntityReducer(config) {
         _schema: Map(schemaMap),
         _result: Map(),
         _requestState: Map(),
-    });
+    })
 
     const defaultMeta = {
         resultResetOnFetch: true
@@ -67,6 +68,7 @@ export function createEntityReducer(config) {
             return state.deleteIn(['_result', resultKey]);
         }
 
+
         if(schema && payload && /_RECEIVE$/g.test(type)) {
             // revive data from raw payload
             const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
@@ -76,17 +78,7 @@ export function createEntityReducer(config) {
             return state
                 // set results
                 .setIn(['_result', resultKey], result)
-                // merge entities only three layers deep
-                // + merges all entity types to state
-                // + merged all entity items into each entity type
-                // + merges the top-level items on each entity item
-                // but will not merge any deeper contents of entities themselves
-                .mergeWith((prevEntityType, nextEntityType, entityTypeName) => {
-                    return prevEntityType
-                        .mergeWith((prevEntityItem, nextEntityItem) => {
-                            return afterNormalize(prevEntityItem.merge(nextEntityItem), entityTypeName);
-                        }, nextEntityType);
-                }, entities);
+                .update(MergeEntities(entities, afterNormalize));
 
         }
 
