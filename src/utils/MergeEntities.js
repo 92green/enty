@@ -1,6 +1,17 @@
-import {Map} from 'immutable';
+import {Map, List} from 'immutable';
 
-
+// Reduce data object to
+function toKeyPaths(data) {
+    return data
+        .reduce((paths, entityType, entityTypeKey) => {
+            var path = entityType
+                .reduce((entityTypePaths, entity, entityKey) => {
+                    return entityTypePaths.push(List.of(entityTypeKey, entityKey));
+                }, List())
+            return paths.concat(path);
+        }, List())
+        .toSet();
+}
 /**
  * merge entities only three layers deep
  * + merges all entity types to state
@@ -17,49 +28,48 @@ export default function MergeEntities(entities, afterNormalize) {
 
         // Create sets of the keys from the previous state
         // new normalized entites
-        const previousEntityTypeKeys = state.keySeq().toSet();
-        const nextEntityTypeKeys = entities.keySeq().toSet();
+        const previousEntityTypeKeys = toKeyPaths(state);
+        const nextEntityTypeKeys = toKeyPaths(entities);
 
         // Compare those sets to figure out which keys
         // need to be merged and which need to be created
         //
-        // Merged: Do already exist on state
         // Created: Don't already exist on state
-        const entityTypeKeysToMerge = previousEntityTypeKeys.intersect(nextEntityTypeKeys);
-        const entityTypeKeysToCreate = nextEntityTypeKeys.subtract(previousEntityTypeKeys);
+        // Merged: Do already exist on state
+        const entityKeysToCreate = nextEntityTypeKeys.subtract(previousEntityTypeKeys);
+        const entityKeysToMerge = previousEntityTypeKeys.intersect(nextEntityTypeKeys);
 
-
-        // These two reduce take a list of entityTypeKeys
+        // These two reduce take a list of entityKeysPaths
         // and turn it into a map of the new state
 
         // createdEntityTypes dont already exist and so
-        // can just be mapped through the afterNormalize function
-        const createdEntityTypes = entityTypeKeysToCreate
+        // can just be setIn through the afterNormalize function
+        const createdEntityTypes = entityKeysToCreate
             .reduce((newState, key) => {
-                const created = entities
-                    .get(key)
-                    .map(ii => afterNormalize(ii, key))
-                return newState.set(key, created);
+                return newState.setIn(key, afterNormalize(entities.getIn(key), key.get(0)));
             }, Map());
 
         // mergedEntityTypes entities do exist. We therefore have to
-        // take the previous entityType and the next entityType
-        // and merge them together. We use a mergeWith to allow us to
-        // merge one layer into every entityItem then send that through afterNormalize
-        const mergedEntityTypes = entityTypeKeysToMerge
-            .reduce((entityTypes, entityTypeKey) => {
+        // take the previous state and the next state and merge them together.
+        // As they already exist we dont need to perform after normalize
+        const mergedEntityTypes = entityKeysToMerge
+            .reduce((newState, entityKeyPath) => {
                 const merged = state
-                    .get(entityTypeKey)
-                    .mergeWith((prevEntityItem, nextEntityItem) => {
-                        return afterNormalize(prevEntityItem.merge(nextEntityItem), entityTypeKey);
-                    }, entities.get(entityTypeKey))
+                    .getIn(entityKeyPath)
+                    .merge(entities.getIn(entityKeyPath))
 
-                return entityTypes.set(entityTypeKey, merged);
+                return newState.setIn(entityKeyPath, merged);
             }, Map());
 
-        // Merge all three states togther
+
+        // Deep merge is okay here as the data is normalized so there cant
+        // be any of the same id
+        const newData = createdEntityTypes.mergeDeep(mergedEntityTypes);
+
+        // Merge two layers in
         return state
-            .merge(createdEntityTypes)
-            .merge(mergedEntityTypes);
+            .mergeWith((prevEntityType, nextEntityType) => {
+                return prevEntityType.merge(nextEntityType);
+            }, newData);
     }
 }
