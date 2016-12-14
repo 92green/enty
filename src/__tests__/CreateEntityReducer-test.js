@@ -294,16 +294,11 @@ test('CreateEntityReducer', tt => {
 
 });
 
-test('ENTITY_DELETE will remove string references based on a key path', tt => {
-    var next = EntityReducer(fromJS({foo: {bar: 'id'}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']});
-    var expected = fromJS({foo: {}})
-    tt.true(is(next, expected), `${next}, ${expected}`);
-});
 
 test('ENTITY_DELETE will add a key of entityDeleted if the key path finds a keyedIterable', tt => {
     tt.deepEqual(
         EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']}).toJS(),
-        {foo: {bar:{_deleted:true}}},
+        {foo: {bar:{__deleted:true}}},
     );
 });
 
