@@ -29,6 +29,7 @@
     "denormalizr": "^0.3.2",
     "enzyme": "^2.6.0",
     "immutable": "^3.8.1",
+    "immutable-recursive": "0.0.7",
     "normalizr": "^2.2.1",
     "react-redux": "^4.4.5",
     "redux-actions": "^0.11.0",
