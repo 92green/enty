@@ -1,5 +1,5 @@
 import {denormalize} from 'denormalizr';
-import {Map, Iterable} from 'immutable';
+import {Iterable} from 'immutable';
 
 
 /**
