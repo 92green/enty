@@ -61,7 +61,7 @@ export function createEntityReducer(config) {
 
         if(type === 'ENTITY_DELETE') {
             if(Iterable.isKeyed(state.getIn(payload))) {
-                return state.setIn(payload.concat('entityDeleted'), true);
+                return state.setIn(payload.concat('_deleted'), true);
             } else {
                 return state.deleteIn(payload);
             }
