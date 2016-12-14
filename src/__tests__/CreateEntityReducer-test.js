@@ -303,7 +303,7 @@ test('ENTITY_DELETE will remove string references based on a key path', tt => {
 test('ENTITY_DELETE will add a key of entityDeleted if the key path finds a keyedIterable', tt => {
     tt.deepEqual(
         EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']}).toJS(),
-        {foo: {bar:{entityDeleted:true}}},
+        {foo: {bar:{_deleted:true}}},
     );
 });
 
