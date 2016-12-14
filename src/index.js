@@ -18,6 +18,10 @@ export {default as createEntityQuery} from './CreateEntityQuery';
 
 export {createSchema} from './CreateSchema';
 
+//
+// Actions
+export {default as deleteEntity} from './DeleteEntityAction';
+
 
 //
 // Selectors
