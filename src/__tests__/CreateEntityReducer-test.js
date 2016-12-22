@@ -24,18 +24,20 @@ const EntitySchema = {
     subreddit: SubredditSchema
 }
 
+const schemaMap = {
+    ENTITY_RECEIVE: EntitySchema,
+    TEST_RECEIVE: EntitySchema
+};
+
+const EntityReducer = createEntityReducer({
+    schemaMap,
+    beforeNormalize: value => value,
+    afterNormalize: value => value,
+});
+
 test('CreateEntityReducer', tt => {
 
-    const schemaMap = {
-        ENTITY_RECEIVE: EntitySchema,
-        TEST_RECEIVE: EntitySchema
-    };
 
-    const EntityReducer = createEntityReducer({
-        schemaMap,
-        beforeNormalize: value => value,
-        afterNormalize: value => value,
-    });
 
     const exampleAction = {
         type: "myType"
@@ -288,4 +290,15 @@ test('CreateEntityReducer', tt => {
         'Newly received nested entites are merged into their entity container'
     );
 
+
+
 });
+
+
+test('ENTITY_DELETE will add a key of entityDeleted if the key path finds a keyedIterable', tt => {
+    tt.deepEqual(
+        EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']}).toJS(),
+        {foo: {bar:{__deleted:true}}},
+    );
+});
+

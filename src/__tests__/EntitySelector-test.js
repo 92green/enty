@@ -13,7 +13,7 @@ function constructState() {
     var normalized = normalize(
         {
             single: {foo: {id: 'qux'}},
-            fooList: [{id: 'bar'}, {id: 'baz'}]
+            fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux', __deleted: true}]
         },
         entitySchema
     );
@@ -32,12 +32,34 @@ function constructState() {
 }
 
 
-test('selectEntity', tt => {
-    tt.truthy(selectEntity(constructState(), 'single').foo, 'it should return a map for single items');
-    tt.is(selectEntity(constructState(), 'fooList', 'fooList').length, 2, 'it should return an array for indexed items');
-    tt.is(selectEntity({entity: fromJS({})}), undefined, 'it should return nothing if the denormalize fails');
+//
+// selectEntity()
+
+test('selectEntity() should return a map for single items', tt => {
+    tt.truthy(selectEntity(constructState(), 'single').foo);
 });
 
-test('selectEntityByPath', tt => {
-    tt.is(selectEntityByPath(constructState(), ['foo', 'bar'], 'otherSchema').get('id'), 'bar', 'it should an item from entity state by path');
+test('selectEntity() should return an array for indexed items', tt => {
+    tt.is(selectEntity(constructState(), 'fooList', 'fooList').length, 2);
 });
+
+test('selectEntity() should return nothing if the denormalize fails', tt => {
+    tt.is(selectEntity({entity: fromJS({})}), undefined);
+});
+
+test('selectEntityByPath() will not return deleted items', tt => {
+    tt.is(selectEntity(constructState(), 'fooList', 'fooList')[2], undefined);
+});
+
+
+//
+// selectEntityByPath()
+
+test('selectEntityByPath() should return an item from entity state by path', tt => {
+    tt.is(selectEntityByPath(constructState(), ['foo', 'bar'], 'otherSchema').get('id'), 'bar');
+});
+
+test('selectEntityByPath() will not return deleted items', tt => {
+    tt.is(selectEntityByPath(constructState(), ['foo', 'qux'], 'otherSchema'), undefined);
+});
+

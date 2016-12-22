@@ -1,4 +1,4 @@
-import {fromJS, Map} from 'immutable';
+import {fromJS, Map, List, Iterable} from 'immutable';
 import {normalize} from 'normalizr';
 import DetermineReviverType from './utils/DetermineReviverType';
 import MergeEntities from './utils/MergeEntities';
@@ -57,6 +57,17 @@ export function createEntityReducer(config) {
         } = Object.assign({}, defaultMeta, meta);
 
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
+
+        //
+        // ENTITY_DELETE takes a keypath as its payload
+        // and sets a flag of `__deleted` on the entity
+        //
+        if(type === 'ENTITY_DELETE') {
+            let entityPath = List(payload).take(2);
+            if(state.getIn(entityPath)) {
+                return state.setIn(entityPath.concat('__deleted'), true);
+            }
+        }
 
         state = state.setIn(['_requestState', actionTypePrefix || resultKey], Map({
             fetch : /_FETCH$/g.test(type),

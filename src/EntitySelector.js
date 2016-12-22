@@ -1,6 +1,14 @@
 import {denormalize} from 'denormalizr';
-import {Map, Iterable} from 'immutable';
+import {Iterable} from 'immutable';
+import {deepFilter} from 'immutable-recursive';
 
+var filterDeleted = deepFilter(item => {
+    if(Iterable.isIterable(item)) {
+        return !item.get('__deleted');
+    } else {
+        return true;
+    }
+});
 
 /**
  * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.
@@ -18,7 +26,8 @@ export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
     );
 
     if(data) {
-        return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
+        var newData = data.update(filterDeleted);
+        return Iterable.isIndexed(newData) ? newData.toArray() : newData.toObject();
     }
 }
 
@@ -33,9 +42,13 @@ export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
  */
 export function selectEntityByPath(state, path, schemaKey = 'ENTITY_RECEIVE') {
     var {entity} = state;
-    return denormalize(
+    var data = denormalize(
         entity.getIn(path),
         entity,
         entity.getIn(['_schema', schemaKey])[path[0]]
     );
+
+    if(!data.get('__deleted')) {
+        return data;
+    }
 }
