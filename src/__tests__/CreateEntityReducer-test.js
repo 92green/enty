@@ -295,10 +295,17 @@ test('CreateEntityReducer', tt => {
 });
 
 
-test('ENTITY_DELETE will add a key of entityDeleted if the key path finds a keyedIterable', tt => {
+test('ENTITY_DELETE will add a key of __deleted:true if the key path finds a keyedIterable', tt => {
     tt.deepEqual(
         EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']}).toJS(),
         {foo: {bar:{__deleted:true}}},
+    );
+});
+
+test('ENTITY_UNDO_DELETE will add a key of __deleted:false if the key path finds a keyedIterable', tt => {
+    tt.deepEqual(
+        EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_UNDO_DELETE', payload: ['foo', 'bar']}).toJS(),
+        {foo: {bar:{__deleted:false}}},
     );
 });
 

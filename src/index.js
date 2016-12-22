@@ -20,7 +20,11 @@ export {createSchema} from './CreateSchema';
 
 //
 // Actions
-export {default as deleteEntity} from './DeleteEntityAction';
+export {
+    deleteEntity,
+    undoDeleteEntity
+} from './DeleteEntityAction';
+
 
 
 //

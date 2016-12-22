@@ -48,7 +48,9 @@ export function selectEntityByPath(state, path, schemaKey = 'ENTITY_RECEIVE') {
         entity.getIn(['_schema', schemaKey])[path[0]]
     );
 
-    if(!data.get('__deleted')) {
-        return data;
+    if(data && !data.get('__deleted')) {
+        var newData = data.update(filterDeleted);
+
+        return newData;
     }
 }

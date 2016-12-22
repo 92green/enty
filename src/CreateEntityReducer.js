@@ -62,10 +62,13 @@ export function createEntityReducer(config) {
         // ENTITY_DELETE takes a keypath as its payload
         // and sets a flag of `__deleted` on the entity
         //
-        if(type === 'ENTITY_DELETE') {
+        // ENTITY_UNDO_DELETE will set that flag to `false`
+        //
+        if(type === 'ENTITY_DELETE' || type === 'ENTITY_UNDO_DELETE') {
             let entityPath = List(payload).take(2);
+            let deletedState = type === 'ENTITY_DELETE' ? true : false;
             if(state.getIn(entityPath)) {
-                return state.setIn(entityPath.concat('__deleted'), true);
+                return state.setIn(entityPath.concat('__deleted'), deletedState);
             }
         }
 
