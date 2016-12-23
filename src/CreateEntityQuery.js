@@ -1,5 +1,5 @@
 import {connectWithQuery} from './QueryConnector';
-import {selectEntity} from './EntitySelector';
+import {selectEntityByResult} from './EntitySelector';
 import {fromJS, Map} from 'immutable';
 
 /**
@@ -15,7 +15,7 @@ export default function entityQuery(action) {
                 function connector(state, props) {
                     const resultKey = fromJS({hash: queryCreator(props)}).hashCode();
                     return {
-                        ...selectEntity(state, resultKey),
+                        ...selectEntityByResult(state, resultKey),
                         requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
                     }
                 },

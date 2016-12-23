@@ -30,8 +30,9 @@ export {
 //
 // Selectors
 export {
-    selectEntity,
-    selectEntityByPath
+    selectEntityByResult,
+    selectEntityById,
+    selectEntityByType
 } from './EntitySelector';
 
 export {default as selectRequestState} from './RequestStateSelector';

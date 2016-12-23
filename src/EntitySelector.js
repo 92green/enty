@@ -1,5 +1,6 @@
 import {denormalize} from 'denormalizr';
-import {Iterable} from 'immutable';
+import {arrayOf} from 'normalizr';
+import {Iterable, Map} from 'immutable';
 import {deepFilter} from 'immutable-recursive';
 
 var filterDeleted = deepFilter(item => {
@@ -10,6 +11,8 @@ var filterDeleted = deepFilter(item => {
     }
 });
 
+
+
 /**
  * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.
  * @param  {object} state
@@ -17,8 +20,7 @@ var filterDeleted = deepFilter(item => {
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
  */
-export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
-    var {entity} = state;
+export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
         entity.getIn(['_result', resultKey]),
         entity,
@@ -32,7 +34,7 @@ export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
 }
 
 /**
- * Given a path to entity state it will return the denormalized state.
+ * Given a type and id of and entity in state it will return the denormalized state.
  * This function is only used when you are certain you need the exact id in entity state.
  * Most often the request key is more appropriate.
  * @param  {object} state
@@ -40,17 +42,38 @@ export function selectEntity(state, resultKey, schemaKey = 'ENTITY_RECEIVE') {
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
  */
-export function selectEntityByPath(state, path, schemaKey = 'ENTITY_RECEIVE') {
-    var {entity} = state;
+export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
-        entity.getIn(path),
+        entity.getIn([type, id]),
         entity,
-        entity.getIn(['_schema', schemaKey])[path[0]]
+        entity.getIn(['_schema', schemaKey])[type]
     );
 
     if(data && !data.get('__deleted')) {
         var newData = data.update(filterDeleted);
-
         return newData;
     }
 }
+
+/**
+ * Access a whole entity type as a list
+ * @param  {object} state
+ * @param  {string} type
+ * @param  {string} [schemaKey=ENTITY_RECEIVE]
+ * @return {Immutable.List} entity list
+ */
+export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE') {
+    const data = denormalize(
+        entity
+            .get(type, Map())
+            .keySeq()
+            .toList(),
+        entity,
+        arrayOf(entity.getIn(['_schema', schemaKey])[type])
+    );
+
+    if(data) {
+        return data.update(filterDeleted);
+    }
+}
+
