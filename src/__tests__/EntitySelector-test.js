@@ -1,7 +1,11 @@
 import test from 'ava';
 import {Schema, arrayOf} from 'normalizr';
-import {fromJS} from 'immutable';
-import {selectEntity, selectEntityByPath} from '../EntitySelector';
+import {fromJS, List, Map} from 'immutable';
+import {
+    selectEntityByResult,
+    selectEntityById,
+    selectEntityByType
+} from '../EntitySelector';
 import {normalize} from 'normalizr';
 
 function constructState() {
@@ -22,44 +26,57 @@ function constructState() {
         entity: fromJS({
             ...normalized.entities,
             _result: normalized.result,
-            _schema: {
-                mainSchema: entitySchema,
+            _schema: Map({
+                ENTITY_RECEIVE: entitySchema,
                 otherSchema: entitySchema,
                 fooList: entitySchema.fooList
-            }
+            })
         })
     }
 }
 
 
 //
-// selectEntity()
+// selectEntityByResult()
 
-test('selectEntity() should return a map for single items', tt => {
-    tt.truthy(selectEntity(constructState(), 'single').foo);
+test('selectEntityByResult() should return a map for single items', tt => {
+    tt.truthy(selectEntityByResult(constructState(), 'single').foo);
 });
 
-test('selectEntity() should return an array for indexed items', tt => {
-    tt.is(selectEntity(constructState(), 'fooList', 'fooList').length, 2);
+test('selectEntityByResult() should return an array for indexed items', tt => {
+    tt.is(selectEntityByResult(constructState(), 'fooList', 'fooList').length, 2);
 });
 
-test('selectEntity() should return nothing if the denormalize fails', tt => {
-    tt.is(selectEntity({entity: fromJS({})}), undefined);
+test('selectEntityByResult() should return nothing if the denormalize fails', tt => {
+    tt.is(selectEntityByResult({entity: fromJS({})}), undefined);
 });
 
-test('selectEntityByPath() will not return deleted items', tt => {
-    tt.is(selectEntity(constructState(), 'fooList', 'fooList')[2], undefined);
+test('selectEntityByResult() will not return deleted items', tt => {
+    tt.is(selectEntityByResult(constructState(), 'fooList', 'fooList').length, 2);
 });
 
 
 //
-// selectEntityByPath()
+// selectEntityById()
 
-test('selectEntityByPath() should return an item from entity state by path', tt => {
-    tt.is(selectEntityByPath(constructState(), ['foo', 'bar'], 'otherSchema').get('id'), 'bar');
+test('selectEntityById() should return an item from entity state by path', tt => {
+    tt.is(selectEntityById(constructState(), 'foo', 'bar', 'otherSchema').get('id'), 'bar');
 });
 
-test('selectEntityByPath() will not return deleted items', tt => {
-    tt.is(selectEntityByPath(constructState(), ['foo', 'qux'], 'otherSchema'), undefined);
+test('selectEntityById() will not return deleted items', tt => {
+    tt.is(selectEntityById(constructState(), 'foo', 'qux', 'otherSchema'), undefined);
 });
+
+
+//
+// selectEntityByType()
+
+test('selectEntityByType() should return an list of entities', tt => {
+    tt.true(List.isList(selectEntityByType(constructState(), 'foo')));
+});
+
+test('selectEntityByType() will not return deleted items', tt => {
+    tt.is(selectEntityByType(constructState(), 'foo').size, 2);
+});
+
 
