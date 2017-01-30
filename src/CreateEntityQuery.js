@@ -13,14 +13,20 @@ export default function entityQuery(action) {
         return (composedComponent) => {
             const withQuery = connectWithQuery(
                 function connector(state, props) {
-                    const resultKey = fromJS({hash: queryCreator(props)}).hashCode();
+                    const resultKey = metaOverride && metaOverride.resultKey
+                        ? metaOverride.resultKey
+                        : fromJS({hash: queryCreator(props)}).hashCode();
+
                     return {
                         ...selectEntityByResult(state, resultKey),
                         requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
                     }
                 },
                 function query(props) {
-                    const resultKey = fromJS({hash: queryCreator(props)}).hashCode();
+                    const resultKey = metaOverride && metaOverride.resultKey
+                        ? metaOverride.resultKey
+                        : fromJS({hash: queryCreator(props)}).hashCode();
+
                     const meta = Object.assign({}, {resultKey}, metaOverride);
 
                     return props.dispatch(action(queryCreator(props), meta));
