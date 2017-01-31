@@ -2,6 +2,7 @@ import {fromJS, Map, List, Iterable} from 'immutable';
 import {normalize} from 'normalizr';
 import DetermineReviverType from './utils/DetermineReviverType';
 import MergeEntities from './utils/MergeEntities';
+import Logger from './Logger';
 
 function defaultConstructor(value) {
     return value;
@@ -31,7 +32,6 @@ function defaultConstructor(value) {
  * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
  */
 export function createEntityReducer(config) {
-
     const {
         schemaMap,
         beforeNormalize = defaultConstructor,
@@ -50,6 +50,8 @@ export function createEntityReducer(config) {
 
     // Return our constructed reducer
     return function EntityReducer(state = initialState, {type, payload, meta}) {
+        Logger.info(`\n\nEntity reducer:`);
+
         const {
             schema = schemaMap[type],
             resultKey = type,
@@ -72,30 +74,46 @@ export function createEntityReducer(config) {
             }
         }
 
+        Logger.info(`Attempting to reduce with type "${type}"`);
+
         state = state.setIn(['_requestState', actionTypePrefix || resultKey], Map({
             fetch : /_FETCH$/g.test(type),
             error : /_ERROR$/g.test(type) ? payload : null
         }));
 
+        Logger.info(`Setting _requestState for "${resultKey}"`);
+
         // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
         if(resultResetOnFetch && /_FETCH$/g.test(type)) {
+            Logger.info(`Type is *_FETCH and resultResetOnFetch is true, returning state with deleted _result key`);
             return state.deleteIn(['_result', resultKey]);
         }
 
 
-        if(schema && payload && /_RECEIVE$/g.test(type)) {
-            // revive data from raw payload
-            const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
-            // normalize using proved schema
-            const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
+        if(/_RECEIVE$/g.test(type)) {
+            Logger.info(`Type is *_RECEIVE, will attempt to receive data`);
 
-            return state
-                // set results
-                .setIn(['_result', resultKey], result)
-                .update(MergeEntities(entities, afterNormalize));
+            if(schema && payload) {
 
+                // revive data from raw payload
+                const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
+                // normalize using proved schema
+                const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
+
+                Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
+                Logger.info(`Merging any normalized entities and result into state`);
+
+                return state
+                    // set results
+                    .setIn(['_result', resultKey], result)
+                    .update(MergeEntities(entities, afterNormalize));
+            }
+
+            Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`);
+            Logger.infoIf(!payload, `Payload is not defined, no entity data has been changed`);
         }
 
+        Logger.info(`Type is not *_RECEIVE, no entity data has been changed`);
         return state;
     }
 }
