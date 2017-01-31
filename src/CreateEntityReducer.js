@@ -91,7 +91,7 @@ export function createEntityReducer(config) {
 
 
         if(/_RECEIVE$/g.test(type)) {
-            Logger.info(`Type is *_RECEIVE, will attempt to receive data`);
+            Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
 
             if(schema && payload) {
 
