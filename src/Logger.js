@@ -31,7 +31,7 @@ var Logger = {
         this.logLevel = this.getLevelIndex(level);
 
         // create methods on Logger for each logLevel
-        logLevels.map(({name, consoleMethod}, key) => {
+        logLevels.forEach(({name, consoleMethod}, key) => {
 
             // by default logging should be noops
             var method = () => {};
