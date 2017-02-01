@@ -1,4 +1,5 @@
 import {Map, List} from 'immutable';
+import Logger from '../Logger';
 
 // Reduce data object to
 function toKeyPaths(data) {
@@ -45,8 +46,11 @@ export default function MergeEntities(entities, afterNormalize) {
         // createdEntityTypes dont already exist and so
         // can just be setIn through the afterNormalize function
         const createdEntityTypes = entityKeysToCreate
-            .reduce((newState, key) => {
-                return newState.setIn(key, afterNormalize(entities.getIn(key), key.get(0)));
+            .reduce((newState, entityKeyPath) => {
+                Logger.verbose(`  Creating entity ${entityKeyPath}`, entities.getIn(entityKeyPath));
+                Logger.warnIf(entityKeyPath.get(1) == "undefined", `Warning: An entity of type "${entityKeyPath.get(0)}" was created with an id of undefined!`);
+
+                return newState.setIn(entityKeyPath, afterNormalize(entities.getIn(entityKeyPath), entityKeyPath.get(0)));
             }, Map());
 
         // mergedEntityTypes entities do exist. We therefore have to
@@ -54,9 +58,20 @@ export default function MergeEntities(entities, afterNormalize) {
         // As they already exist we dont need to perform after normalize
         const mergedEntityTypes = entityKeysToMerge
             .reduce((newState, entityKeyPath) => {
-                const merged = state
-                    .getIn(entityKeyPath)
-                    .merge(entities.getIn(entityKeyPath))
+                const existingEntity = state.getIn(entityKeyPath);
+                const newEntity = entities.getIn(entityKeyPath);
+                const merged = existingEntity.merge(newEntity);
+
+                Logger.verbose(`  Merging entity ${entityKeyPath}`);
+                if(Logger.willLog('silly')) {
+                    if(existingEntity.equals(merged)) {
+                        Logger.silly(`    Merged entity is identical to existing entity`);
+                    } else {
+                        Logger.silly(`    Existing entity entity`, existingEntity);
+                        Logger.silly(`    New entity entity`, newEntity);
+                        Logger.silly(`    Merged entity`, merged);
+                    }
+                }
 
                 return newState.setIn(entityKeyPath, merged);
             }, Map());

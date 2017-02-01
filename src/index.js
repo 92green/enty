@@ -44,3 +44,4 @@ export {default as selectRequestState} from './RequestStateSelector';
 export {default as PropChangeHock} from './PropChangeHock';
 export {default as LocalStateHock} from './LocalStateHock';
 export {connectWithQuery} from './QueryConnector';
+export {default as Logger} from './Logger';
