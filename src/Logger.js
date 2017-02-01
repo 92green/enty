@@ -1,4 +1,4 @@
-import {Map, List} from 'immutable';
+import {List} from 'immutable';
 
 const logLevels = List([
     {
@@ -26,6 +26,7 @@ const logLevels = List([
 var Logger = {
 
     logLevel: 0,
+    _console: console,
 
     setLogLevel: function(level) {
         this.logLevel = this.getLevelIndex(level);
@@ -39,14 +40,20 @@ var Logger = {
 
             // if the log level allows logging for the current log level, create actual logging methods
             if(this.willLog(key)) {
-                method = console[consoleMethod];
-                methodIf = (condition, ...args) => condition && console[consoleMethod](...args);
-             }
+                method = this._console[consoleMethod];
+                methodIf = (condition, ...args) => condition && this._console[consoleMethod](...args);
+            }
 
             // set methods on this global Logger instance
             this[name] = method;
             this[`${name}If`] = methodIf;
         });
+    },
+
+    setConsole(newConsole) {
+        this._console = newConsole;
+        // rebuild logging functions
+        this.setLogLevel(this.logLevel);
     },
 
     willLog: function(level) {
