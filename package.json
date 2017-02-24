@@ -7,13 +7,13 @@
   "author": "Allan Hortle",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blueflag/redux-blueflag.git"
+    "url": "git+https://github.com/blueflag/enty.git"
   },
   "files": [
     "lib"
   ],
   "bugs": {
-    "url": "https://github.com/blueflag/redux-blueflag/issues"
+    "url": "https://github.com/blueflag/enty/issues"
   },
   "private": false,
   "scripts": {

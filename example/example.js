@@ -34,7 +34,7 @@ var compiler = webpack({
     resolve: {
         extensions: ['', '.js', '.jsx'],
         alias: {
-            'redux-blueflag': path.resolve(__dirname, '../lib/index.js'),
+            'enty': path.resolve(__dirname, '../lib/index.js'),
             'example': __dirname
         }
     },

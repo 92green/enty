@@ -1,4 +1,4 @@
-# redux-blueflag
+# enty
 
 Redux Blue Flag is a complete [Redux] setup for asynchronous data calls that uses [Normalizr] schemas to handle all client side data management.
 
@@ -27,7 +27,7 @@ export default entitiyQuery(props => `
 ## Install
 
 ```
-npm install --save redux-blueflag
+npm install --save enty
 ```
 
 ## Index
@@ -59,7 +59,7 @@ npm install --save redux-blueflag
 <dt><a href="#module_createEntityReducer">createEntityReducer</a></dt>
 <dd><p>Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in <code>schemaMap</code> the payload is normalized based off the given schema.
 Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called <code>mainSchema</code> returns a reducer that holds the main entity state.</p>
-<pre><code class="language-javascript">import {createEntityReducer} from &#39;redux-blueflag&#39;;
+<pre><code class="language-javascript">import {createEntityReducer} from &#39;enty&#39;;
 import EntitySchema from &#39;myapp/EntitySchema&#39;;
 
 export default combineReducers({
@@ -131,7 +131,7 @@ Most often the request key is more appropriate.</p>
 Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
 Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called `mainSchema` returns a reducer that holds the main entity state.
 ```js
-import {createEntityReducer} from 'redux-blueflag';
+import {createEntityReducer} from 'enty';
 import EntitySchema from 'myapp/EntitySchema';
 
 export default combineReducers({

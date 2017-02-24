@@ -1,5 +1,5 @@
 
-import {createEntityQuery, createAction} from 'redux-blueflag';
+import {createEntityQuery, createAction} from 'enty';
 import request from 'superagent';
 
 function post(url, query) {

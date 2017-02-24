@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {createEntityReducer} from 'redux-blueflag';
+import {createEntityReducer} from 'enty';
 import thunk from 'redux-thunk'
 import {Provider} from 'react-redux';
 import {compose, createStore, applyMiddleware, combineReducers} from 'redux';
@@ -11,7 +11,7 @@ import Playground from './components/Playground';
 // Schemas
 //
 
-import {Schema, arrayOf} from 'redux-blueflag';
+import {Schema, arrayOf} from 'enty';
 
 var SubredditSchema = new Schema('subreddit', {idAttribute: 'fullnameId'});
 var AuthorSchema = new Schema('author', {idAttribute: 'fullnameId'});
