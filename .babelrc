@@ -1,8 +1,16 @@
 {
-  "presets": ["blueflag"],
-  "ignore": [
-    "**/*-test.js",
-    "**/*-test.jsx"
-  ],
-  "sourceMaps": "inline"
+    "presets": [
+        ["blueflag", {"browser": true, "library": true}]
+    ],
+    "ignore": [
+        "./lib",
+        "**/*-test.js"
+    ],
+    "env": {
+        "test": {
+            "plugins": [
+                "istanbul"
+            ]
+        }
+    }
 }

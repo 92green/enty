@@ -1,13 +1,13 @@
-logs
-*.log
-npm-debug.log*
-pids
-*.pid
-*.seed
-lib-cov
-lib
-coverage
-node_modules
+# Config Files
+**/.idea/tasks.xml
+**/.idea/workspace.xml
+.DS_Store
+.env
 .nyc_output
-tags
-*.DS_Store
+
+# Folders
+coverage
+dist
+docs
+lib
+node_modules

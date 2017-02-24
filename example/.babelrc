@@ -1,0 +1,5 @@
+{
+    "presets": [
+        ["blueflag", {"browser": true}]
+    ]
+}
