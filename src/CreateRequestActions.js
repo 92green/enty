@@ -2,13 +2,8 @@ import {createAction} from 'redux-actions';
 import {fromJS, Map} from 'immutable';
 
 /**
- * Given the return value of creatRequestActionSet it will log the names of the created action types and creators
- * @param  {object} actionMap map of actions
- * @param  {string} prefix    String to prefix actions types with
+ * @module Creators
  */
-export function logRequestActionNames(actionMap, prefix) {
-    console.log(Object.keys(createRequestActionSet(actionMap, prefix)).join('\n'));
-}
 
 //
 // Turns a nested object into a flat
@@ -33,6 +28,7 @@ export function reduceActionMap(branch, parentKey = '') {
  *
  * @param  {object} actionMap deep object representation of api functions
  * @return {array}            list of action creators and action types
+ * @memberof module:Creators
  */
 export function createRequestActionSet(actionMap) {
     return reduceActionMap(fromJS(actionMap))
@@ -57,6 +53,15 @@ export function createRequestActionSet(actionMap) {
         .toJS();
 }
 
+/**
+ *
+ * @param {string} fetchAction     action name for fetching action
+ * @param {string} recieveAction   action name for receiving action
+ * @param {string} errorAction     action name for error action
+ * @param {function} sideEffect    Promise returning side effect to call after fetch action.
+ * @return {array}            list of action creators and action types
+ * @memberof module:Creators
+ */
 export function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta)

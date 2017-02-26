@@ -11,7 +11,9 @@ var filterDeleted = deepFilter(item => {
     }
 });
 
-
+/**
+ * @module Selectors
+ */
 
 /**
  * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.
@@ -19,6 +21,7 @@ var filterDeleted = deepFilter(item => {
  * @param  {string} resultKey
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
+ * @memberof module:Selectors
  */
 export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
@@ -41,6 +44,7 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
  * @param  {array} path
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
+ * @memberof module:Selectors
  */
 export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
@@ -61,6 +65,7 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
  * @param  {string} type
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {Immutable.List} entity list
+ * @memberof module:Selectors
  */
 export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE') {
     const data = denormalize(

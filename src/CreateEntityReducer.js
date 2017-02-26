@@ -7,6 +7,9 @@ import Logger from './Logger';
 function defaultConstructor(value) {
     return value;
 }
+/**
+ * @module Creators
+ */
 
 /**
  * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
@@ -26,10 +29,13 @@ function defaultConstructor(value) {
  *     })
  * });
  * ```
- * @exports createEntityReducer
+ *
  * @param {object} schemaMap - Map of schema action names.
  * @param {function} config.beforeNormalize - config.beforeNormalize function to edit payload data before it is normalized.
  * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
+ * @return {function}
+ * @memberof module:Creators
+ *
  */
 export function createEntityReducer(config) {
     const {

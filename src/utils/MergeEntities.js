@@ -13,11 +13,11 @@ function toKeyPaths(data) {
         }, List())
         .toSet();
 }
-/**
+/*
  * merge entities only three layers deep
- * + merges all entity types to state
- * + merged all entity items into each entity type
- * + merges the top-level items on each entity item
+ * - merges all entity types to state
+ * - merged all entity items into each entity type
+ * - merges the top-level items on each entity item
  * but will not merge any deeper contents of entities themselves
  *
  * @param {Map} entities - Entities to merge.

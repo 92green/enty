@@ -3,11 +3,17 @@ import {selectEntityByResult} from './EntitySelector';
 import {fromJS, Map} from 'immutable';
 
 /**
+ * @module Creators
+ */
+
+
+/**
  * Takes an action creator and gives it a `resultKey`. wraps it in PropChangeHock, entitySelect and requestStateSelect
  * @param  {function} sideEffect
  * @return {function} action creator
+ * @memberof module:Creators
  */
-export default function entityQuery(action) {
+export default function createEntityQuery(action) {
     return (queryCreator, propUpdateKeys, metaOverride) => {
 
         return (composedComponent) => {
