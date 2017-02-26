@@ -1,0 +1,158 @@
+body {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 0 1rem;
+    color: #383838;
+    width: 54rem;
+    margin: auto;
+}
+
+a {
+    color: #6CA6CE
+}
+
+h1, h2, h3, h4, h5 {
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-top: 4rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.6rem;
+    margin-top: 4rem;
+}
+
+h4 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding-top: 2rem;
+    margin: 0;
+}
+
+h5 {
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+
+code {
+    background-color: #efefef;
+    padding: 0 .25rem;
+    border-radius: 3px;
+    font-family: inherit;
+}
+
+pre {
+    background-color: #333;
+    color: #e6e6e6;
+    overflow: auto;
+    padding: 1rem;
+    margin: 1rem 0;
+    tab-size: 4;
+    font-family: inherit;
+}
+
+section {
+    margin-bottom: 8rem;
+}
+
+ul {
+    padding: 0;
+}
+
+ul li {
+    margin-top: 1rem;
+    list-style-type: none;
+}
+
+ul.List {
+    padding-left: 2rem;
+}
+
+ul.List li {
+    list-style-type: initial;
+}
+
+.Wrapper {
+    margin-left: 14rem;
+}
+
+.Text-mute {
+    color: #888;
+}
+
+.Doclet {
+    margin-top: 4rem;
+}
+
+.Param-indent {
+    display: block;
+    margin: 0 0 0 2rem;
+}
+
+.ParamTypes {
+    color: #6CA6CE;
+}
+
+
+.ParamListItem p {
+    display: inline;
+}
+
+
+.Navigation {
+    margin-bottom: 1rem;
+    padding: 0;
+    position: fixed;
+    width: 14rem;
+}
+
+.Navigation_section {
+    padding: 0;
+    margin-bottom: 1.25rem;
+}
+
+.Navigation_item {
+    margin: 0;
+}
+
+.FunctionDetail {
+    background-color: #f1f1f1;
+    padding: .5rem;
+}
+/*
+Code Highlighting
+
+blue        #6CA6CE
+green       #86C797
+yellow      #E1AE69
+orange      #E1865A
+white       #e6e6e6
+comment     #6D6D6D
+red         #C55B4E
+
+ */
+
+/* Red */
+.token.keyword {color: #C55B4E;}
+
+/* Yellow */
+.token.tag {color: #E1AE69;}
+
+/* Green */
+.token.string {color: #86C797;}
+
+/* Blue */
+.token.number {color: #6CA6CE;}
+.token.boolean {color: #6CA6CE;}
+
+
+.token.comment {color: #6D6D6D;}
