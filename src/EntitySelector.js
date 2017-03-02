@@ -1,15 +1,8 @@
 import {denormalize} from 'denormalizr';
 import {arrayOf} from 'normalizr';
 import {Iterable, Map} from 'immutable';
-import {deepFilter} from 'immutable-recursive';
 
-var filterDeleted = deepFilter(item => {
-    if(Iterable.isIterable(item)) {
-        return !item.get('__deleted');
-    } else {
-        return true;
-    }
-});
+import safeFilterIterable from './utils/safeFilterIterable';
 
 /**
  * @module Selectors
@@ -31,7 +24,7 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
     );
 
     if(data) {
-        var newData = data.update(filterDeleted);
+        var newData = data.update(safeFilterIterable('__deleted'));
         return Iterable.isIndexed(newData) ? newData.toArray() : newData.toObject();
     }
 }
@@ -54,8 +47,7 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
     );
 
     if(data && !data.get('__deleted')) {
-        var newData = data.update(filterDeleted);
-        return newData;
+        return data.update(safeFilterIterable('__deleted'));
     }
 }
 
@@ -78,7 +70,7 @@ export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE')
     );
 
     if(data) {
-        return data.update(filterDeleted);
+        return data.update(safeFilterIterable('__deleted'));
     }
 }
 

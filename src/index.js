@@ -69,5 +69,5 @@ export {
 
 export {
     default as logRequestActionNames
-} from 'utils/logRequestActionNames';
+} from './utils/logRequestActionNames';
 
