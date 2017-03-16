@@ -1,11 +1,11 @@
 import {connectWithQuery} from './QueryConnector';
 import {selectEntityByResult} from './EntitySelector';
-import {fromJS, Map} from 'immutable';
+import DistinctMemo from './utils/DistinctMemo';
+import {fromJS} from 'immutable';
 
 /**
  * @module Creators
  */
-
 
 /**
  * Takes an action creator and gives it a `resultKey`. wraps it in PropChangeHock, entitySelect and requestStateSelect
@@ -13,8 +13,11 @@ import {fromJS, Map} from 'immutable';
  * @return {function} action creator
  * @memberof module:Creators
  */
-export default function createEntityQuery(action) {
+export default function createEntityQuery(actionCreator) {
     return (queryCreator, propUpdateKeys, metaOverride) => {
+
+        // distinct memo muse be unique to each useage of EntityQuery
+        const distinctToJS = new DistinctMemo(ii => ii ? ii.toJS() : {});
 
         return (composedComponent) => {
             const withQuery = connectWithQuery(
@@ -25,8 +28,8 @@ export default function createEntityQuery(action) {
 
                     return {
                         ...selectEntityByResult(state, resultKey),
-                        requestState : state.entity.getIn(['_requestState', resultKey], Map()).toJS()
-                    }
+                        requestState : distinctToJS.value(state.entity.getIn(['_requestState', resultKey]))
+                    };
                 },
                 function query(props) {
                     const resultKey = metaOverride && metaOverride.resultKey
@@ -35,7 +38,7 @@ export default function createEntityQuery(action) {
 
                     const meta = Object.assign({}, {resultKey}, metaOverride);
 
-                    return props.dispatch(action(queryCreator(props), meta));
+                    return props.dispatch(actionCreator(queryCreator(props), meta));
                 },
                 propUpdateKeys
             );

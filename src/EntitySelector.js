@@ -34,7 +34,8 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
  * This function is only used when you are certain you need the exact id in entity state.
  * Most often the request key is more appropriate.
  * @param  {object} state
- * @param  {array} path
+ * @param  {string} type
+ * @param  {string} id
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
  * @memberof module:Selectors

@@ -19,6 +19,9 @@ export default function PropChangeHock(propKeys = [], outputFunction) {
         return class AutoRequest extends Component {
             constructor(props, context) {
                 super(props, context);
+                this.state = {
+                    outputFunction: outputFunction.bind(null, props)
+                }
             }
             componentWillMount() {
                 outputFunction(this.props);
@@ -38,13 +41,15 @@ export default function PropChangeHock(propKeys = [], outputFunction) {
                     });
 
                 if(propsHaveChanged) {
-                    outputFunction(nextProps);
+                    this.setState({outputFunction: outputFunction.bind(null, nextProps)}, () => {
+                        outputFunction(nextProps);
+                    });
                 }
             }
             render() {
                 return <ComposedComponent
                     {...this.props}
-                    outputFunction={outputFunction.bind(null, this.props)}
+                    outputFunction={this.state.outputFunction}
                 />;
             }
         }
