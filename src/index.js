@@ -49,6 +49,10 @@ export {
     undoDeleteEntity
 } from './DeleteEntityAction';
 
+export {
+    receiveEntity
+} from './ReceiveEntityAction';
+
 
 
 
