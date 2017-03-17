@@ -1,6 +1,5 @@
 import {fromJS, Map, List, Iterable} from 'immutable';
 import {normalize} from 'normalizr';
-import DetermineReviverType from './utils/DetermineReviverType';
 import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
 
@@ -24,14 +23,12 @@ function defaultConstructor(value) {
  *              GRAPHQL_RECEIVE: EntitySchema,
  *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema
  *          },
- *          beforeNormalize: (value, key) => value,
  *          afterNormalize: (value, key) => value,
  *     })
  * });
  * ```
  *
  * @param {object} schemaMap - Map of schema action names.
- * @param {function} config.beforeNormalize - config.beforeNormalize function to edit payload data before it is normalized.
  * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
  * @return {function}
  * @memberof module:Creators

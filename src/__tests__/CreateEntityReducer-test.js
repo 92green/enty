@@ -31,7 +31,6 @@ const schemaMap = {
 
 const EntityReducer = createEntityReducer({
     schemaMap,
-    beforeNormalize: value => value,
     afterNormalize: value => value,
 });
 
