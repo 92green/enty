@@ -62,6 +62,7 @@
     "jsdonk": "^0.4.12",
     "nyc": "^10.0.0",
     "proxyquire": "^1.7.10",
+    "redux": "^3.6.0",
     "require.async": "^0.1.1",
     "sinon": "^1.17.6"
   },

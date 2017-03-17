@@ -40,7 +40,6 @@ function defaultConstructor(value) {
 export function createEntityReducer(config) {
     const {
         schemaMap,
-        beforeNormalize = defaultConstructor,
         afterNormalize = defaultConstructor
     } = config;
 
@@ -100,11 +99,8 @@ export function createEntityReducer(config) {
             Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
 
             if(schema && payload) {
-
-                // revive data from raw payload
-                const reducedData = fromJS(payload, DetermineReviverType(beforeNormalize, schema._key)).toJS();
                 // normalize using proved schema
-                const {result, entities} = fromJS(normalize(reducedData, schema)).toObject();
+                const {result, entities} = fromJS(normalize(payload, schema)).toObject();
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
