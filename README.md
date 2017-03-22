@@ -36,15 +36,15 @@ Enty lets you describe the relationships of your entities through schemas. It is
 The first step in implementing Enty is to define your [normalizr] schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
 
 ```js
-var user = new Schema('user', {idAttribute: 'username'});
+import {schema} from 'normalizr';
 
-user.define({
-    friendList: arrayOf(user)
+var user = new schema.Entity('user', {
+    friendList: [user]
 });
 
 const EntitySchema = {
-   user: user,
-   userList: arrayOf(user)
+   user,
+   userList: [user]
 };
 
 export default EntitySchema;

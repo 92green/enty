@@ -1,5 +1,5 @@
 import test from 'ava';
-import {Schema, arrayOf} from 'normalizr';
+import {schema} from 'normalizr';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
@@ -9,11 +9,11 @@ import {
 import {normalize} from 'normalizr';
 
 function constructState() {
-    var FooSchema = new Schema('foo');
+    var FooSchema = new schema.Entity('foo');
     var entitySchema = {
-        fooList: arrayOf(FooSchema),
+        fooList: [FooSchema],
         foo: FooSchema
-    }
+    };
     var normalized = normalize(
         {
             single: {foo: {id: 'qux'}},
@@ -32,7 +32,7 @@ function constructState() {
                 fooList: entitySchema.fooList
             })
         })
-    }
+    };
 }
 
 

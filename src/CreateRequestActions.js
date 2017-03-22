@@ -16,7 +16,7 @@ export function reduceActionMap(branch, parentKey = '') {
         } else {
             return rr.set(prefix, ii);
         }
-    }, Map())
+    }, Map());
 }
 
 /**
@@ -64,14 +64,14 @@ export function createRequestActionSet(actionMap) {
  */
 export function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
-        return createAction(aa, (payload) => payload, (payload, meta) => meta)
+        return createAction(aa, (payload) => payload, (payload, meta) => meta);
     }
     return (requestPayload, meta = {}) => (dispatch, getState) => {
         var sideEffectMeta = {
             ...meta,
             dispatch,
             getState
-        }
+        };
 
         var actionMeta = (resultKey) => ({
             ...meta,
@@ -81,11 +81,11 @@ export function createRequestAction(fetchAction, recieveAction, errorAction, sid
         dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || fetchAction}));
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data) => {
-                return Promise.resolve(dispatch(action(recieveAction)(data, actionMeta(recieveAction))))
+                return Promise.resolve(dispatch(action(recieveAction)(data, actionMeta(recieveAction))));
             },
             (error) => {
                 return Promise.reject(dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction})));
             }
-        )
-    }
+        );
+    };
 }

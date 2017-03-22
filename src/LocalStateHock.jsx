@@ -22,6 +22,6 @@ export default function LocalStateHock(reducer) {
             render() {
                 return <ComposedComponent {...this.props} {...this.state} localDispatch={this.dispatch} />;
             }
-        }
-    }
+        };
+    };
 }

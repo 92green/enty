@@ -1,28 +1,37 @@
 import test from 'ava';
 import {createEntityReducer} from '../CreateEntityReducer';
-import {Schema, arrayOf} from 'normalizr';
+import {schema, normalize} from 'normalizr';
 import {is, fromJS, Map} from 'immutable';
 
 //
 // Schemas
 //
 
+var AuthorSchema = new schema.Entity(
+    'author',
+    {},
+    {idAttribute: 'fullnameId'}
+);
 
-var SubredditSchema = new Schema('subreddit', {idAttribute: 'fullnameId'});
-var AuthorSchema = new Schema('author', {idAttribute: 'fullnameId'});
-var TopListingSchema = new Schema('topListings', {idAttribute: 'fullnameId'});
+var TopListingSchema = new schema.Entity(
+    'topListings',
+    {
+        author: AuthorSchema
+    },
+    {idAttribute: 'fullnameId'}
+);
 
-TopListingSchema.define({
-    author: AuthorSchema
-});
-
-SubredditSchema.define({
-    topListings: arrayOf(TopListingSchema)
-});
+var subreddit = new schema.Entity(
+    'subreddit',
+    {
+        topListings: [TopListingSchema]
+    },
+    {idAttribute: 'fullnameId'}
+);
 
 const EntitySchema = {
-    subreddit: SubredditSchema
-}
+    subreddit
+};
 
 const schemaMap = {
     ENTITY_RECEIVE: EntitySchema,
@@ -31,11 +40,47 @@ const schemaMap = {
 
 const EntityReducer = createEntityReducer({
     schemaMap,
-    afterNormalize: value => value,
+    afterNormalize: value => value
+});
+
+
+// Mock data
+
+const INITIAL_STATE = fromJS({
+    thing: {
+        abc: '123'
+    }
+});
+
+test('CreateEntityReducer normalizes a reuslt', tt => {
+    const examplePayload = {
+        subreddit: {
+            name: "MechanicalKeyboards",
+            fullnameId: "MK",
+            topListings: [
+                {fullnameId: "CT", title: "Cool title"},
+                {fullnameId: "NT", title: "Nice title"}
+            ]
+        }
+    };
+
+    const exampleReceiveAction = {
+        type: 'TEST_RECEIVE',
+        payload: examplePayload
+    };
+
+
+    tt.true(
+        is(
+            EntityReducer(INITIAL_STATE, exampleReceiveAction)
+                .getIn(['subreddit', 'MK'])
+                .delete('topListings'),
+            fromJS(examplePayload.subreddit).delete('topListings')
+        )
+    );
 });
 
 test('CreateEntityReducer', tt => {
-
 
 
     const exampleAction = {

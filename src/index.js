@@ -1,15 +1,10 @@
 
-export {thunk} from 'redux-thunk';
-export {createAction} from 'redux-actions';
-export * from 'normalizr';
-
-
 //
 // Creators
 
 export {
     createRequestAction,
-    createRequestActionSet,
+    createRequestActionSet
 } from './CreateRequestActions';
 
 export {

@@ -1,5 +1,5 @@
-import {denormalize} from 'denormalizr';
-import {arrayOf} from 'normalizr';
+//@flow
+import {denormalize} from 'normalizr';
 import {Iterable, Map} from 'immutable';
 
 import safeFilterIterable from './utils/safeFilterIterable';
@@ -19,8 +19,8 @@ import safeFilterIterable from './utils/safeFilterIterable';
 export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
         entity.getIn(['_result', resultKey]),
-        entity,
-        entity.getIn(['_schema', schemaKey])
+        entity.getIn(['_schema', schemaKey]),
+        entity
     );
 
     if(data) {
@@ -43,8 +43,8 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
 export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
     var data = denormalize(
         entity.getIn([type, id]),
-        entity,
-        entity.getIn(['_schema', schemaKey])[type]
+        entity.getIn(['_schema', schemaKey])[type],
+        entity
     );
 
     if(data && !data.get('__deleted')) {
@@ -66,8 +66,8 @@ export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE')
             .get(type, Map())
             .keySeq()
             .toList(),
+        [entity.getIn(['_schema', schemaKey])[type]],
         entity,
-        arrayOf(entity.getIn(['_schema', schemaKey])[type])
     );
 
     if(data) {
