@@ -11,7 +11,7 @@ import PropChangeHock from './PropChangeHock';
  * @function
  * @memberof module:Misc
  */
-export function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
+export default function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
     return function hockedConnectWithQuery(ComposedComponent: React.element<any>): React.element<any> {
         const reduxConnect = connect(connector);
         const propChangeListener = PropChangeHock(propChangeList, query);

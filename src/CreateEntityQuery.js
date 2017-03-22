@@ -1,4 +1,4 @@
-import {connectWithQuery} from './QueryConnector';
+import connectWithQuery from './connectWithQuery';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
 import {fromJS} from 'immutable';

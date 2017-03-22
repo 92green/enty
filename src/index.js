@@ -68,8 +68,8 @@ export {
 } from './LocalStateHock';
 
 export {
-    connectWithQuery
-} from './QueryConnector';
+    default as connectWithQuery
+} from './connectWithQuery';
 
 export {
     default as logRequestActionNames
