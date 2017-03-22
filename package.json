@@ -42,7 +42,7 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "app-module-path": "^2.2.0",¡
+    "app-module-path": "^2.2.0",
     "ava": "^0.18.2",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
