@@ -1,6 +1,6 @@
+//@flow
 import {connect} from 'react-redux';
-
-import PropChangeHock from './PropChangeHock'
+import PropChangeHock from './PropChangeHock';
 
 /**
  * @module Misc
@@ -11,10 +11,10 @@ import PropChangeHock from './PropChangeHock'
  * @function
  * @memberof module:Misc
  */
-export const connectWithQuery = (connector, query, propChangeList) => (ComposedComponent) => {
-
-    const reduxConnect = connect(connector);
-    const propChangeListener = PropChangeHock(propChangeList, query);
-
-    return reduxConnect(propChangeListener(ComposedComponent))
+export function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
+    return function hockedConnectWithQuery(ComposedComponent: React.element<any>): React.element<any> {
+        const reduxConnect = connect(connector);
+        const propChangeListener = PropChangeHock(propChangeList, query);
+        return reduxConnect(propChangeListener(ComposedComponent));
+    };
 }

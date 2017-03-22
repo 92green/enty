@@ -60,6 +60,10 @@ pre {
     font-family: inherit;
 }
 
+pre.prettyprint code {
+    background: none;
+}
+
 section {
     margin-bottom: 8rem;
 }

@@ -59,7 +59,7 @@
     "git-url-parse": "^6.0.1",
     "jsdoc": "^3.4.3",
     "jsdoc-babel": "^0.2.1",
-    "jsdonk": "^0.4.12",
+    "jsdonk": "^0.4.13",
     "nyc": "^10.0.0",
     "proxyquire": "^1.7.10",
     "redux": "^3.6.0",

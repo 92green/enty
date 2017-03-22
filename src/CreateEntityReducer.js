@@ -13,7 +13,8 @@ function defaultConstructor(value) {
 /**
  * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
  * Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called `mainSchema` returns a reducer that holds the main entity state.
- * ```js
+ *
+ * @example
  * import {createEntityReducer} from 'enty';
  * import EntitySchema from 'myapp/EntitySchema';
  *
@@ -26,7 +27,6 @@ function defaultConstructor(value) {
  *          afterNormalize: (value, key) => value,
  *     })
  * });
- * ```
  *
  * @param {object} schemaMap - Map of schema action names.
  * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
