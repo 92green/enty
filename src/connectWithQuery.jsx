@@ -12,7 +12,7 @@ import PropChangeHock from './PropChangeHock';
  * @memberof module:Misc
  */
 export default function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
-    return function hockedConnectWithQuery(ComposedComponent: React.element<any>): React.element<any> {
+    return function hockedConnectWithQuery(ComposedComponent) {
         const reduxConnect = connect(connector);
         const propChangeListener = PropChangeHock(propChangeList, query);
         return reduxConnect(propChangeListener(ComposedComponent));

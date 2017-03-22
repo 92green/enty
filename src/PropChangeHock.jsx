@@ -21,7 +21,7 @@ export default function PropChangeHock(propKeys = [], outputFunction) {
                 super(props, context);
                 this.state = {
                     outputFunction: outputFunction.bind(null, props)
-                }
+                };
             }
             componentWillMount() {
                 outputFunction(this.props);
@@ -52,6 +52,6 @@ export default function PropChangeHock(propKeys = [], outputFunction) {
                     outputFunction={this.state.outputFunction}
                 />;
             }
-        }
-    }
+        };
+    };
 }

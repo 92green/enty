@@ -1,4 +1,4 @@
-import {fromJS, Map, List, Iterable} from 'immutable';
+import {fromJS, Map, List} from 'immutable';
 import {normalize} from 'normalizr';
 import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
@@ -43,12 +43,12 @@ export function createEntityReducer(config) {
     const initialState = Map({
         _schema: Map(schemaMap),
         _result: Map(),
-        _requestState: Map(),
-    })
+        _requestState: Map()
+    });
 
     const defaultMeta = {
         resultResetOnFetch: true
-    }
+    };
 
     // Return our constructed reducer
     return function EntityReducer(state = initialState, {type, payload, meta}) {
@@ -57,7 +57,7 @@ export function createEntityReducer(config) {
         const {
             schema = schemaMap[type],
             resultKey = type,
-            resultResetOnFetch,
+            resultResetOnFetch
         } = Object.assign({}, defaultMeta, meta);
 
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
@@ -114,5 +114,5 @@ export function createEntityReducer(config) {
 
         Logger.info(`Type is not *_RECEIVE, no entity data has been changed`);
         return state;
-    }
+    };
 }

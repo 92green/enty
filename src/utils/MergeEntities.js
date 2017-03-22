@@ -8,7 +8,7 @@ function toKeyPaths(data) {
             var path = entityType
                 .reduce((entityTypePaths, entity, entityKey) => {
                     return entityTypePaths.push(List.of(entityTypeKey, entityKey));
-                }, List())
+                }, List());
             return paths.concat(path);
         }, List())
         .toSet();
@@ -86,5 +86,5 @@ export default function MergeEntities(entities, afterNormalize) {
             .mergeWith((prevEntityType, nextEntityType) => {
                 return prevEntityType.merge(nextEntityType);
             }, newData);
-    }
+    };
 }

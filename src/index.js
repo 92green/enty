@@ -4,7 +4,7 @@
 
 export {
     createRequestAction,
-    createRequestActionSet,
+    createRequestActionSet
 } from './CreateRequestActions';
 
 export {
