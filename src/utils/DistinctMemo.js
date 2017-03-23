@@ -11,6 +11,7 @@ export default class DistinctMemo {
         if(value === this.memoValue) {
             return this.cachedValue;
         }
+
         this.cachedValue = this.update(value);
         this.memoValue = value;
         return this.cachedValue;

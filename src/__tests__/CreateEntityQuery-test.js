@@ -1,16 +1,65 @@
 import test from 'ava';
+import React from 'react';
+import {shallow} from 'enzyme';
+import {fromJS} from 'immutable';
 import CreateEntityQuery from '../CreateEntityQuery';
 
+var NOOP = () => {};
+var STORE = {
+    subscribe: () => {},
+    dispatch: () => {},
+    getState: () => ({
+        entity: fromJS({
+            _requestState: {
+                foo: {fetch: false},
+                blah: null
+            }
+        })
+    })
+};
+
+var QUERY_CREATOR = () => `query`;
+var entityQuery = CreateEntityQuery(NOOP);
+var hockedComponent = entityQuery(QUERY_CREATOR, ['keys']);
+
+test('CreateEntityQuery should return a function', tt => {
+    tt.is(typeof entityQuery, 'function');
+});
+
+test('CreateEntityQuerys hockedComponent should be a function', tt => {
+    tt.is(typeof hockedComponent, 'function');
+});
+
+test('CreateEntityQuerys hockedComponent should be an auto request', tt => {
+    var RunTheHock = hockedComponent();
+    tt.is(RunTheHock.displayName, 'Connect(AutoRequest)');
+});
 
 
-test('CreateEntityQuery', tt => {
-    var action = () => {};
-    var queryCreator = () => `query`;
+test('resultKey is derived either from the metaOverride or a hash of the queryCreator', tt => {
+    const sideEffectA = (aa,bb) => {
+        tt.is(bb.resultKey, 'foo');
+    };
 
-    var entityQuery = CreateEntityQuery(action);
-    var hockedComponent = entityQuery(queryCreator, ['keys']);
-    var runTheHock = hockedComponent();
-    tt.is(typeof entityQuery, 'function', 'it should return a function');
-    tt.is(typeof hockedComponent, 'function' , 'its hockedComponent should be a function');
-    tt.is(runTheHock.displayName, 'Connect(AutoRequest)' , 'The hocked component should be an auto request');
+    const sideEffectB = (aa,bb) => {
+        tt.is(bb.resultKey, 469309513);
+    };
+
+    var ComponentA = CreateEntityQuery(sideEffectA)(NOOP, ['keys'], {resultKey: 'foo'})(NOOP);
+    var ComponentB = CreateEntityQuery(sideEffectB)(NOOP, ['keys'])(NOOP);
+
+    shallow(<ComponentA store={STORE}/>).dive();
+    shallow(<ComponentB store={STORE}/>).dive();
+});
+
+
+test('requestState will return empty object for unknown resultKey', tt => {
+    const Child = (props) => {
+        tt.deepEqual(props.requestState, {});
+        return <div></div>;
+    };
+
+    var Component = CreateEntityQuery(NOOP)(NOOP, [], {resultKey: 'blah'})(Child);
+
+    shallow(<Component store={STORE}/>).dive().dive();
 });

@@ -40,7 +40,7 @@ export default function createEntityQuery(actionCreator: Function): Function {
 
                     return {
                         ...selectEntityByResult(state, resultKey),
-                        requestState : distinctToJS.value(state.entity.getIn(['_requestState', resultKey]))
+                        requestState: distinctToJS.value(state.entity.getIn(['_requestState', resultKey]))
                     };
                 },
                 function query(props: Object) {

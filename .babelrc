@@ -4,6 +4,7 @@
     ],
     "ignore": [
         "./lib",
+        "./example",
         "**/*-test.js"
     ],
     "env": {

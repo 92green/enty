@@ -22,7 +22,7 @@
     "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
     "prepublish": "yarn run build",
     "ava": "NODE_ENV=test ava",
-    "check-coverage": "NODE_ENV=test nyc check-coverage --branches 50.0  --functions 50.0 --lines 50.0",
+    "check-coverage": "NODE_ENV=test nyc check-coverage --branches 70.0  --functions 70.0 --lines 70.0",
     "docs": "jsdoc -c jsdoc.json",
     "flow": "flow check",
     "lint": "eslint src --ext js,jsx",
@@ -60,6 +60,8 @@
     "jsdonk": "^0.4.13",
     "nyc": "^10.0.0",
     "proxyquire": "^1.7.10",
+    "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
     "redux": "^3.6.0",
     "require.async": "^0.1.1",
     "sinon": "^1.17.6"

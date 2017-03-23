@@ -15,11 +15,6 @@ export {
     default as createEntityQuery
 } from './CreateEntityQuery';
 
-export {
-    createSchema
-} from './CreateSchema';
-
-
 
 /**
  * @module Selectors
