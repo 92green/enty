@@ -1,4 +1,5 @@
-import {Map} from 'immutable';
+import {RequestEmpty} from 'request-state-monad';
+
 
 /**
  * @module Selectors
@@ -14,6 +15,5 @@ import {Map} from 'immutable';
 export default function selectRequestState(state, requestStateKey) {
     return state
         .entity
-        .getIn(['_requestState', requestStateKey], Map())
-        .toJS();
+        .getIn(['_requestState', requestStateKey], RequestEmpty());
 }

@@ -3,6 +3,7 @@ import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
 import {fromJS} from 'immutable';
 import React from 'react';
+import {RequestEmpty} from 'request-state-monad';
 
 /**
  * @module Creators
@@ -29,7 +30,7 @@ export default function createEntityQuery(actionCreator: Function): Function {
     return (queryCreator: Function, propUpdateKeys: string[], metaOverride: Object): Function => {
 
         // distinct memo must be unique to each useage of EntityQuery
-        const distinctToJS = new DistinctMemo(ii => ii ? ii.toJS() : {});
+        const distinctToJS = new DistinctMemo((value, data) => value.map(() => data));
 
         return (composedComponent: React.Element<any>) => {
             const withQuery = connectWithQuery(
@@ -38,9 +39,11 @@ export default function createEntityQuery(actionCreator: Function): Function {
                         ? metaOverride.resultKey
                         : fromJS({hash: queryCreator(props)}).hashCode();
 
+                    const data = selectEntityByResult(state, resultKey);
+
                     return {
-                        ...selectEntityByResult(state, resultKey),
-                        requestState: distinctToJS.value(state.entity.getIn(['_requestState', resultKey]))
+                        ...data,
+                        requestState: distinctToJS.value(state.entity.getIn(['_requestState', resultKey], RequestEmpty()), data)
                     };
                 },
                 function query(props: Object) {

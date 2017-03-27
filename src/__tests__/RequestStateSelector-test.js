@@ -1,27 +1,19 @@
 import test from 'ava';
 import selectRequestState from '../RequestStateSelector';
 import {fromJS} from 'immutable';
+import RequestState from 'request-state-monad';
 
-test('CreateEntityReducer', tt => {
+test('RequestStateSelector', tt => {
 
     var state = {
         entity: fromJS({
             _requestState: {
-                ACTION: {
-                    rad: 'awesome'
-                }
+                ACTION: 'awesome'
             }
         })
     };
 
-    tt.is(
-        selectRequestState(state, 'ACTION').rad,
-        'awesome'
-    );
-
-    tt.deepEqual(
-        selectRequestState(state, 'BERG'),
-        {}
-    )
+    tt.is(selectRequestState(state, 'ACTION'), 'awesome');
+    tt.truthy(selectRequestState(state, 'BERG') instanceof RequestState);
 
 });

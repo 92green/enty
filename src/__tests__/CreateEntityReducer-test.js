@@ -80,6 +80,12 @@ test('CreateEntityReducer normalizes a reuslt', tt => {
     );
 });
 
+test('CreateEntityReducer _requestState.isFetching is true when action type ends with _FETCH', tt => {
+    tt.true(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching);
+});
+
+
+
 test('CreateEntityReducer', tt => {
 
 
@@ -103,30 +109,27 @@ test('CreateEntityReducer', tt => {
         '_result is empty  when reducer is called with no existing state'
     );
 
-    tt.true(
-        EntityReducer(undefined, {type: 'TEST_FETCH'})
-            .getIn(['_requestState', 'TEST', 'fetch']),
-        '_requestState.fetch is true when action type ends with _FETCH'
-    );
+
 
     tt.false(
         EntityReducer(undefined, exampleAction)
-            .getIn(['_requestState', 'myType', 'fetch']),
-        '_requestState.fetch is false when action type does not end with _FETCH'
+            .getIn(['_requestState', 'myType']).isFetching,
+        '_requestState.isFetching is false when action type does not end with _FETCH'
     );
 
     tt.is(
         EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'})
-            .getIn(['_requestState', 'TEST', 'error']),
+            .getIn(['_requestState', 'TEST'])
+            .errorFlatMap(ii => ii),
         'errorPayload',
         '_requestState.error equals payload when action type ends with _ERROR'
     );
 
     tt.is(
         EntityReducer(undefined, exampleAction)
-            .getIn(['_requestState', 'myType', 'error']),
-        null,
-        '_requestState.error equals is null when action type does not end with _ERROR'
+            .getIn(['_requestState', 'myType']).isError,
+        false,
+        '_requestState.isError equals is null when action type does not end with _ERROR'
     );
 
     const exampleState = fromJS({

@@ -7,12 +7,12 @@ export default class DistinctMemo {
     constructor(update: Function) {
         this.update = update;
     }
-    value(value: any): any {
+    value(value: any, ...rest): any {
         if(value === this.memoValue) {
             return this.cachedValue;
         }
 
-        this.cachedValue = this.update(value);
+        this.cachedValue = this.update(value, ...rest);
         this.memoValue = value;
         return this.cachedValue;
     }

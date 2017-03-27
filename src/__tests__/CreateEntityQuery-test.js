@@ -3,6 +3,7 @@ import React from 'react';
 import {shallow} from 'enzyme';
 import {fromJS} from 'immutable';
 import CreateEntityQuery from '../CreateEntityQuery';
+import RequestState, {RequestFetching} from 'request-state-monad';
 
 var NOOP = () => {};
 var STORE = {
@@ -11,8 +12,7 @@ var STORE = {
     getState: () => ({
         entity: fromJS({
             _requestState: {
-                foo: {fetch: false},
-                blah: null
+                foo: RequestFetching()
             }
         })
     })
@@ -53,9 +53,10 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
 });
 
 
-test('requestState will return empty object for unknown resultKey', tt => {
+test('requestState will return an empty RequestState for unknown resultKey', tt => {
     const Child = (props) => {
-        tt.deepEqual(props.requestState, {});
+        tt.truthy(props.requestState instanceof RequestState);
+        tt.is(props.requestState.orValue('foo'), 'foo');
         return <div></div>;
     };
 

@@ -1,5 +1,11 @@
 import {fromJS, Map, List} from 'immutable';
 import {normalize} from 'normalizr';
+import {
+    RequestEmpty,
+    RequestFetching,
+    RequestError,
+    RequestSuccess
+} from 'request-state-monad';
 import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
 
@@ -43,7 +49,7 @@ export function createEntityReducer(config) {
     const initialState = Map({
         _schema: Map(schemaMap),
         _result: Map(),
-        _requestState: Map()
+        _requestState: Map(),
     });
 
     const defaultMeta = {
@@ -62,6 +68,7 @@ export function createEntityReducer(config) {
 
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
 
+        const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
         //
         // ENTITY_DELETE takes a keypath as its payload
         // and sets a flag of `__deleted` on the entity
@@ -78,10 +85,15 @@ export function createEntityReducer(config) {
 
         Logger.info(`Attempting to reduce with type "${type}"`);
 
-        state = state.setIn(['_requestState', actionTypePrefix || resultKey], Map({
-            fetch : /_FETCH$/g.test(type),
-            error : /_ERROR$/g.test(type) ? payload : null
-        }));
+
+        //
+        // Set Request States for BLANK/FETCH/ERROR
+        state = state.setIn(requestStatePath, RequestEmpty());
+        if(/_FETCH$/g.test(type)) {
+            state = state.setIn(requestStatePath, RequestFetching());
+        } else if(/_ERROR$/g.test(type)) {
+            state = state.setIn(requestStatePath, RequestError(payload));
+        }
 
         Logger.info(`Setting _requestState for "${resultKey}"`);
 
@@ -105,7 +117,8 @@ export function createEntityReducer(config) {
                 return state
                     // set results
                     .setIn(['_result', resultKey], result)
-                    .update(MergeEntities(entities, afterNormalize));
+                    .update(MergeEntities(entities, afterNormalize))
+                    .setIn(requestStatePath, RequestSuccess());
             }
 
             Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`);
