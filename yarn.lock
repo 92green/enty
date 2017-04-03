@@ -3900,9 +3900,9 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request-state-monad@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/request-state-monad/-/request-state-monad-0.1.1.tgz#99c71e17bbdd1443827725d307d26c1f6a228a02"
+request-state-monad@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/request-state-monad/-/request-state-monad-0.2.0.tgz#5ac6d0a0ddf17663ff74ceb5541c78c1450bb70a"
 
 request@^2.79.0:
   version "2.79.0"
