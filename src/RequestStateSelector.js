@@ -1,5 +1,6 @@
 import {RequestEmpty} from 'request-state-monad';
 
+const EMPTY_REQUESTSTATE = RequestEmpty();
 
 /**
  * @module Selectors
@@ -15,5 +16,5 @@ import {RequestEmpty} from 'request-state-monad';
 export default function selectRequestState(state, requestStateKey) {
     return state
         .entity
-        .getIn(['_requestState', requestStateKey], RequestEmpty());
+        .getIn(['_requestState', requestStateKey], EMPTY_REQUESTSTATE);
 }

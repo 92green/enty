@@ -88,7 +88,6 @@ export function createEntityReducer(config) {
 
         //
         // Set Request States for BLANK/FETCH/ERROR
-        state = state.setIn(requestStatePath, RequestEmpty());
         if(/_FETCH$/g.test(type)) {
             state = state.setIn(requestStatePath, RequestFetching());
         } else if(/_ERROR$/g.test(type)) {
@@ -107,6 +106,10 @@ export function createEntityReducer(config) {
         if(/_RECEIVE$/g.test(type)) {
             Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
 
+            // set success action before payload tests
+            // to make sure the request state is still updated even if there is no payload
+            state = state.setIn(requestStatePath, RequestSuccess());
+
             if(schema && payload) {
                 // normalize using proved schema
                 const {result, entities} = fromJS(normalize(payload, schema)).toObject();
@@ -117,9 +120,9 @@ export function createEntityReducer(config) {
                 return state
                     // set results
                     .setIn(['_result', resultKey], result)
-                    .update(MergeEntities(entities, afterNormalize))
-                    .setIn(requestStatePath, RequestSuccess());
+                    .update(MergeEntities(entities, afterNormalize));
             }
+
 
             Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`);
             Logger.infoIf(!payload, `Payload is not defined, no entity data has been changed`);

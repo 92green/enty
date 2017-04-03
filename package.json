@@ -93,7 +93,8 @@
       "src/**"
     ],
     "exclude": [
-      "src/**/*-test.js"
+      "src/**/*-test.js",
+      "example"
     ],
     "reporter": [
       "lcov",

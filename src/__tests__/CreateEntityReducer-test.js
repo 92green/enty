@@ -1,6 +1,6 @@
 import test from 'ava';
 import {createEntityReducer} from '../CreateEntityReducer';
-import {schema, normalize} from 'normalizr';
+import {schema} from 'normalizr';
 import {is, fromJS, Map} from 'immutable';
 
 //
@@ -81,7 +81,7 @@ test('CreateEntityReducer normalizes a reuslt', tt => {
 });
 
 test('CreateEntityReducer _requestState.isFetching is true when action type ends with _FETCH', tt => {
-    tt.true(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching);
+    tt.is(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching, true);
 });
 
 
@@ -111,10 +111,11 @@ test('CreateEntityReducer', tt => {
 
 
 
-    tt.false(
+    tt.is(
         EntityReducer(undefined, exampleAction)
-            .getIn(['_requestState', 'myType']).isFetching,
-        '_requestState.isFetching is false when action type does not end with _FETCH'
+            .getIn(['_requestState', 'myType']),
+        undefined,
+        '_requestState is undefined when action type does not end with _FETCH'
     );
 
     tt.is(
@@ -123,13 +124,6 @@ test('CreateEntityReducer', tt => {
             .errorFlatMap(ii => ii),
         'errorPayload',
         '_requestState.error equals payload when action type ends with _ERROR'
-    );
-
-    tt.is(
-        EntityReducer(undefined, exampleAction)
-            .getIn(['_requestState', 'myType']).isError,
-        false,
-        '_requestState.isError equals is null when action type does not end with _ERROR'
     );
 
     const exampleState = fromJS({
@@ -341,6 +335,8 @@ test('CreateEntityReducer', tt => {
 
 });
 
+//
+// Delete and undo actions.
 
 test('ENTITY_DELETE will add a key of __deleted:true if the key path finds a keyedIterable', tt => {
     tt.deepEqual(
@@ -355,4 +351,22 @@ test('ENTITY_UNDO_DELETE will add a key of __deleted:false if the key path finds
         {foo: {bar:{__deleted:false}}},
     );
 });
+
+
+//
+// Don't update state for other actions.
+
+test("foreign actions will preserve state.entity's strict object equality", tt => {
+    // check bad keys
+    tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO'}), INITIAL_STATE);
+    tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'}), INITIAL_STATE);
+
+    // check the reverse
+    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH'}), INITIAL_STATE);
+    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_ERROR'}), INITIAL_STATE);
+    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_RECEIVE'}), INITIAL_STATE);
+});
+
+
+
 
