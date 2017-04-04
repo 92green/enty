@@ -13,7 +13,9 @@ import PropChangeHock from './PropChangeHock';
  */
 export default function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
     return function hockedConnectWithQuery(ComposedComponent) {
-        const reduxConnect = connect(connector);
+        const reduxConnect = connect(connector, null, null, {
+            areStatesEqual: (prev, next) => prev.entity === next.entity
+        });
         const propChangeListener = PropChangeHock(propChangeList, query);
         return reduxConnect(propChangeListener(ComposedComponent));
     };
