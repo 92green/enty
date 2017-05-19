@@ -1,7 +1,7 @@
 import test from 'ava';
 import selectRequestState from '../RequestStateSelector';
 import {fromJS} from 'immutable';
-import RequestState from 'request-state-monad';
+import {RequestState} from 'fronads';
 
 test('RequestStateSelector', tt => {
 
@@ -14,6 +14,6 @@ test('RequestStateSelector', tt => {
     };
 
     tt.is(selectRequestState(state, 'ACTION'), 'awesome');
-    tt.truthy(selectRequestState(state, 'BERG') instanceof RequestState);
+    tt.truthy(selectRequestState(state, 'BERG') instanceof RequestState().constructor);
 
 });

@@ -2016,6 +2016,10 @@ formatio@1.1.1:
   dependencies:
     samsam "~1.1"
 
+fronads@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.5.0.tgz#c9658d884bf0ab62499004cb1a07f5c0178036d8"
+
 fs-readdir-recursive@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs-readdir-recursive/-/fs-readdir-recursive-1.0.0.tgz#8cd1745c8b4f8a29c8caec392476921ba195f560"
@@ -3900,10 +3904,6 @@ repeating@^2.0.0:
   resolved "https://registry.yarnpkg.com/repeating/-/repeating-2.0.1.tgz#5214c53a926d3552707527fbab415dbc08d06dda"
   dependencies:
     is-finite "^1.0.0"
-
-request-state-monad@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/request-state-monad/-/request-state-monad-0.2.0.tgz#5ac6d0a0ddf17663ff74ceb5541c78c1450bb70a"
 
 request@^2.79.0:
   version "2.79.0"

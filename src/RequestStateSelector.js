@@ -1,4 +1,4 @@
-import {RequestEmpty} from 'request-state-monad';
+import {RequestEmpty} from 'fronads';
 
 const EMPTY_REQUESTSTATE = RequestEmpty();
 

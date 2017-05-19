@@ -1,11 +1,10 @@
 import {fromJS, Map, List} from 'immutable';
 import {normalize} from 'normalizr';
 import {
-    RequestEmpty,
     RequestFetching,
     RequestError,
     RequestSuccess
-} from 'request-state-monad';
+} from 'fronads';
 import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
 
@@ -49,7 +48,7 @@ export function createEntityReducer(config) {
     const initialState = Map({
         _schema: Map(schemaMap),
         _result: Map(),
-        _requestState: Map(),
+        _requestState: Map()
     });
 
     const defaultMeta = {
