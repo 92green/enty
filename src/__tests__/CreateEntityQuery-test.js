@@ -32,7 +32,7 @@ test('CreateEntityQuerys hockedComponent should be a function', tt => {
 
 test('CreateEntityQuerys hockedComponent should be an auto request', tt => {
     var RunTheHock = hockedComponent();
-    tt.is(RunTheHock.displayName, 'Connect(AutoRequest)');
+    tt.is(RunTheHock.displayName, 'Connect(PropChangeHock)');
 });
 
 
