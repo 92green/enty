@@ -3795,7 +3795,7 @@ react-redux@^5.0.3:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
 
-react-select@^1.0.0-rc.3:
+react-select@^1.0.0-rc.4:
   version "1.0.0-rc.4"
   resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.0.0-rc.4.tgz#f28f3bab18196ff8f32337bb52ed015773c90663"
   dependencies:
@@ -4252,9 +4252,9 @@ stack-utils@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-1.0.0.tgz#2392cd8ddbd222492ed6c047960f7414b46c0f83"
 
-stampy@^0.26.0:
-  version "0.26.0"
-  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.26.0.tgz#1a2930b2f16efb9dadc3df11eabb93c8c1893f51"
+stampy@^0.26.1:
+  version "0.26.1"
+  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.26.1.tgz#8a15f32c604fac6a7521932371e72f15bb5d7bec"
   dependencies:
     bruce "^0.9.0"
     classnames "^2.2.5"
@@ -4266,7 +4266,7 @@ stampy@^0.26.0:
     prop-types "^15.5.8"
     proxyquire "^1.7.11"
     react-immutable-proptypes "^2.1.0"
-    react-select "^1.0.0-rc.3"
+    react-select "^1.0.0-rc.4"
     url-search-params "^0.7.0"
 
 string-width@^1.0.1, string-width@^1.0.2:

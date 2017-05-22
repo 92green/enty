@@ -41,7 +41,7 @@
     "react-redux": "^5.0.3",
     "redux-actions": "^2.0.1",
     "redux-thunk": "^2.1.0",
-    "stampy": "^0.26.0"
+    "stampy": "^0.26.1"
   },
   "devDependencies": {
     "app-module-path": "^2.2.0",
