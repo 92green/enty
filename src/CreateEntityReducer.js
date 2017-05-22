@@ -1,4 +1,4 @@
-import {fromJS, Map, List} from 'immutable';
+import {fromJS, Map} from 'immutable';
 import {normalize} from 'normalizr';
 import {
     RequestFetching,
@@ -68,19 +68,7 @@ export function createEntityReducer(config) {
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
 
         const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
-        //
-        // ENTITY_DELETE takes a keypath as its payload
-        // and sets a flag of `__deleted` on the entity
-        //
-        // ENTITY_UNDO_DELETE will set that flag to `false`
-        //
-        if(type === 'ENTITY_DELETE' || type === 'ENTITY_UNDO_DELETE') {
-            let entityPath = List(payload).take(2);
-            let deletedState = type === 'ENTITY_DELETE' ? true : false;
-            if(state.getIn(entityPath)) {
-                return state.setIn(entityPath.concat('__deleted'), deletedState);
-            }
-        }
+
 
         Logger.info(`Attempting to reduce with type "${type}"`);
 

@@ -336,24 +336,6 @@ test('CreateEntityReducer', tt => {
 });
 
 //
-// Delete and undo actions.
-
-test('ENTITY_DELETE will add a key of __deleted:true if the key path finds a keyedIterable', tt => {
-    tt.deepEqual(
-        EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_DELETE', payload: ['foo', 'bar']}).toJS(),
-        {foo: {bar:{__deleted:true}}},
-    );
-});
-
-test('ENTITY_UNDO_DELETE will add a key of __deleted:false if the key path finds a keyedIterable', tt => {
-    tt.deepEqual(
-        EntityReducer(fromJS({foo: {bar: {}}}), {type: 'ENTITY_UNDO_DELETE', payload: ['foo', 'bar']}).toJS(),
-        {foo: {bar:{__deleted:false}}},
-    );
-});
-
-
-//
 // Don't update state for other actions.
 
 test("foreign actions will preserve state.entity's strict object equality", tt => {

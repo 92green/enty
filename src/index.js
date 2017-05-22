@@ -35,11 +35,6 @@ export {
  */
 
 export {
-    deleteEntity,
-    undoDeleteEntity
-} from './DeleteEntityAction';
-
-export {
     receiveEntity
 } from './ReceiveEntityAction';
 

@@ -2,8 +2,6 @@
 import {denormalize} from 'normalizr';
 import {Iterable, Map} from 'immutable';
 
-import safeFilterIterable from './utils/safeFilterIterable';
-
 /**
  * @module Selectors
  */
@@ -24,8 +22,7 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
     );
 
     if(data) {
-        var newData = data.update(safeFilterIterable('__deleted'));
-        return Iterable.isIndexed(newData) ? newData.toArray() : newData.toObject();
+        return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
     }
 }
 
@@ -47,9 +44,7 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
         entity
     );
 
-    if(data && !data.get('__deleted')) {
-        return data.update(safeFilterIterable('__deleted'));
-    }
+    return data;
 }
 
 /**
@@ -70,8 +65,6 @@ export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE')
         entity,
     );
 
-    if(data) {
-        return data.update(safeFilterIterable('__deleted'));
-    }
+    return data;
 }
 
