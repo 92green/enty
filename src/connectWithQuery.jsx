@@ -1,6 +1,6 @@
 //@flow
 import {connect} from 'react-redux';
-import PropChangeHock from './PropChangeHock';
+import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
 
 /**
  * @module Misc
@@ -11,12 +11,12 @@ import PropChangeHock from './PropChangeHock';
  * @function
  * @memberof module:Misc
  */
-export default function connectWithQuery(connector: Function, query: Function, propChangeList: string[]): Function {
+export default function connectWithQuery(connector: Function, onPropChange: Function, paths: string[]): Function {
     return function hockedConnectWithQuery(ComposedComponent) {
-        const reduxConnect = connect(connector, null, null, {
+        const withState = connect(connector, null, null, {
             areStatesEqual: (prev, next) => prev.entity === next.entity
         });
-        const propChangeListener = PropChangeHock(propChangeList, query);
-        return reduxConnect(propChangeListener(ComposedComponent));
+        const withPropChange = PropChangeHock(() => ({paths, onPropChange}));
+        return withState(withPropChange(ComposedComponent));
     };
 }

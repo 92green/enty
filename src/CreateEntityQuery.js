@@ -27,7 +27,7 @@ import React from 'react';
  * @memberof module:Creators
  */
 export default function createEntityQuery(actionCreator: Function): Function {
-    return (queryCreator: Function, propUpdateKeys: string[], metaOverride: Object): Function => {
+    return (queryCreator: Function, propUpdatePaths: string[], metaOverride: Object): Function => {
 
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.map(() => data));
@@ -55,7 +55,7 @@ export default function createEntityQuery(actionCreator: Function): Function {
 
                     return props.dispatch(actionCreator(queryCreator(props), meta));
                 },
-                propUpdateKeys
+                propUpdatePaths
             );
 
             return withQuery(composedComponent);
