@@ -39,6 +39,15 @@ export {
 } from './ReceiveEntityAction';
 
 
+import {
+    ArraySchema,
+    EntitySchema
+} from './schema/Schema';
+
+export const schema = {
+    Array: ArraySchema,
+    Entity: EntitySchema
+};
 
 
 //

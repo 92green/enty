@@ -1,5 +1,6 @@
 //@flow
-import {denormalize} from 'normalizr';
+// import {denormalize} from 'normalizr';
+import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
 
 /**
@@ -22,6 +23,7 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
     );
 
     if(data) {
+        console.log('DATA', data);
         return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
     }
 }
