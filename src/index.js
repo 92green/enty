@@ -41,11 +41,13 @@ export {
 
 import {
     ArraySchema,
-    EntitySchema
+    EntitySchema,
+    ObjectSchema
 } from './schema/Schema';
 
 export const schema = {
     Array: ArraySchema,
+    Object: ObjectSchema,
     Entity: EntitySchema
 };
 

@@ -8,15 +8,18 @@ const normalizeEntity = (data, schema, entities) => {
     const id = schema.options.idAttribute(data);
 
     const normalizedChildren = childKeys.map((key) => {
-        return normalize(data[key], schema.children[key], entities);
+        if(data[key]) {
+            return normalize(data[key], schema.children[key], entities);
+        }
     });
 
 
     const childData = childKeys.reduce((result, key, index) => {
-        result[key] = normalizedChildren[index].result;
+        if(normalizedChildren[index]) {
+            result[key] = normalizedChildren[index].result;
+        }
         return result;
     }, {});
-
 
     entities[schema.name][id] = Object.assign({}, data, childData);
 
@@ -26,9 +29,8 @@ const normalizeEntity = (data, schema, entities) => {
 };
 
 const normalizeObject = (data, schema, entities) => {
-    const {itemSchema, options} = schema;
+    const {itemSchema} = schema;
 
-    // console.log('normalizeObject', data, schema);
     const result = Object.keys(data)
         .reduce((result, key) => {
             if(itemSchema[key]) {
@@ -58,8 +60,6 @@ const normalizeArray = (data, schema, entities) => {
 
 
 export default function normalize(data, schema, entities = {}) {
-    // console.log('normalize', data, schema);
-
     switch(schema.type) {
         case 'entity':
             return normalizeEntity(data, schema, entities);

@@ -5,8 +5,12 @@ export class EntitySchema {
         this.children = children;
         this.options = {
             idAttribute: item => item.id,
+            denormalizeFilter: item => item.get('name'),
             ...options
         };
+    }
+    define(children) {
+        this.children = Object.assign({}, children);
     }
 }
 
@@ -28,6 +32,7 @@ export class ObjectSchema {
         this.itemSchema = schema;
         this.options = {
             idAttribute: item => item.id,
+            denormalizeFilter: () => true,
             ...options
         };
     }

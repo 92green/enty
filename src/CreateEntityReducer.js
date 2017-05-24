@@ -101,7 +101,6 @@ export function createEntityReducer(config) {
             if(schema && payload) {
                 // normalize using proved schema
                 const {result, entities} = fromJS(normalize(payload, schema)).toObject();
-                console.log('RESULT', entities, result);
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
