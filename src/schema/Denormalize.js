@@ -54,9 +54,14 @@ const denormalizeArray = (result, schema, entities, path) => {
 
 
 export default function denormalize(result, schema, entities, path = List()) {
+    const currentEntity = entities.getIn([schema.name, result]);
+
     switch(schema.type) {
         case 'entity':
-            if(!schema.options.denormalizeFilter(entities.getIn([schema.name, result]))) {
+            if(!result) {
+                return result;
+            }
+            if(!schema.options.denormalizeFilter(currentEntity)) {
                 return DELETED;
             }
             return denormalizeEntity(result, schema, entities, path);
