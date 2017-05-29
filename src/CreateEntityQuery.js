@@ -51,7 +51,7 @@ export default function createEntityQuery(actionCreator: Function): Function {
                         ? metaOverride.resultKey
                         : fromJS({hash: queryCreator(props)}).hashCode();
 
-                    const meta = Object.assign({}, {resultKey}, metaOverride);
+                    const meta = Object.assign({}, metaOverride, {resultKey});
 
                     return props.dispatch(actionCreator(queryCreator(props), meta));
                 },
