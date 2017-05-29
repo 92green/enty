@@ -4,7 +4,7 @@ export class EntitySchema {
         this.type = 'entity';
         this.children = children;
         this.options = {
-            idAttribute: item => item.id,
+            idAttribute: item => item && item.id,
             denormalizeFilter: item => item.get('name'),
             ...options
         };
@@ -20,7 +20,7 @@ export class ArraySchema {
         this.type = 'array';
         this.itemSchema = schema;
         this.options = {
-            idAttribute: item => item.id,
+            idAttribute: item => item && item.id,
             ...options
         };
     }
@@ -31,7 +31,7 @@ export class ObjectSchema {
         this.type = 'object';
         this.itemSchema = schema;
         this.options = {
-            idAttribute: item => item.id,
+            idAttribute: item => item && item.id,
             denormalizeFilter: () => true,
             ...options
         };

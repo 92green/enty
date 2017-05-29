@@ -33,8 +33,7 @@ const normalizeObject = (data, schema, entities) => {
 
     const result = Object.keys(data)
         .reduce((result, key) => {
-            if(itemSchema[key]) {
-                // console.log(`normalizeObject.${key}`, normalize(data[key], itemSchema[key], entities));
+            if(itemSchema[key] && data[key]) {
                 result[key] = normalize(data[key], itemSchema[key], entities).result;
             }
 

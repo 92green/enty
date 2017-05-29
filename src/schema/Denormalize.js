@@ -7,8 +7,9 @@ const denormalizeEntity = (result, schema, entities, path) => {
     const denormalizedEntity = entities.getIn([schema.name, result]);
     const childKeys = schema.children ? Object.keys(schema.children) : [];
     const childData = childKeys.reduce((childResult, childKey) => {
-        // check path for our current key to avoid infinite recursion.
-        if(path.contains(childKey)) {
+        // 1. check path for our current key to avoid infinite recursion.
+        // 2. dont denormalize null results
+        if(path.contains(childKey) || !denormalizedEntity.get(childKey)) {
             return childResult;
         }
         return childResult.set(childKey, denormalize(denormalizedEntity.get(childKey), schema.children[childKey], entities, path.concat(childKey)));
