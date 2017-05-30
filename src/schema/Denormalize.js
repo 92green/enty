@@ -57,7 +57,8 @@ const denormalizeArray = (result, schema, entities, path) => {
 export default function denormalize(result, schema, entities, path = List()) {
     const currentEntity = entities.getIn([schema.name, result]);
 
-    if(!result == null) {
+    // Dont try to denormalize null values
+    if(result == null) {
         return result;
     }
 
