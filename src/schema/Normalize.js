@@ -1,11 +1,12 @@
 import {ArraySchema, ObjectSchema} from './Schema';
 
 const normalizeEntity = (data, schema, entities) => {
-    // console.log('normalizeEntity', data, schema);
+    // console.log('normalizeEntity', data);
     entities[schema.name] = entities[schema.name] || {};
 
     const childKeys = schema.children ? Object.keys(schema.children) : [];
     const id = schema.options.idAttribute(data);
+
 
     const normalizedChildren = childKeys.map((key) => {
         if(data[key]) {
@@ -45,7 +46,7 @@ const normalizeObject = (data, schema, entities) => {
 
 
 const normalizeArray = (data, schema, entities) => {
-    // console.log('normalizeArray', data, schema);
+
     const {itemSchema, options} = schema;
     const idAttribute = options.idAttribute;
     const result = data.map(item => {
@@ -53,7 +54,6 @@ const normalizeArray = (data, schema, entities) => {
     });
 
     data.forEach(item => normalize(item, itemSchema, entities));
-
     return {entities, result};
 };
 
@@ -67,13 +67,14 @@ export default function normalize(data, schema, entities = {}) {
             return normalizeObject(data, schema, entities);
 
         case 'array':
+
             return normalizeArray(data, schema, entities);
 
         default:
             if(Array.isArray(schema)) {
-                return normalizeArray(data, new ArraySchema(schema[0]), entities);
+                return normalizeArray(data, new ArraySchema(schema[0], schema[0].options), entities);
             } else {
-                return normalizeObject(data, new ObjectSchema(schema), entities);
+                return normalizeObject(data, new ObjectSchema(schema, schema.options), entities);
             }
     }
 }

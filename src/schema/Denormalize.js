@@ -46,21 +46,21 @@ function denormalizeObject(result = Map(), schema, entities, path) {
 
 const denormalizeArray = (result, schema, entities, path) => {
     const {itemSchema} = schema;
-    // Map denormalize to our result List.
     // Filter out any deleted keys
+    if(result == null) {
+        return result;
+    }
+    // Map denormalize to our result List.
     return result
-        .map((item) => denormalize(item, itemSchema, entities, path))
+        .map((item) => {
+            return denormalize(item, itemSchema, entities, path);
+        })
         .filter(ii => ii !== DELETED);
 };
 
 
 export default function denormalize(result, schema, entities, path = List()) {
     const currentEntity = entities.getIn([schema.name, result]);
-
-    // Dont try to denormalize null values
-    if(result == null) {
-        return result;
-    }
 
     switch(schema.type) {
         case 'entity':
