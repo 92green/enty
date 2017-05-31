@@ -39,17 +39,9 @@ export {
 } from './ReceiveEntityAction';
 
 
-import {
-    ArraySchema,
-    EntitySchema,
-    ObjectSchema
-} from './schema/Schema';
-
-export const schema = {
-    Array: ArraySchema,
-    Object: ObjectSchema,
-    Entity: EntitySchema
-};
+export {default as EntitySchema} from './schema/EntitySchema';
+export {default as ArraySchema} from './schema/ArraySchema';
+export {default as ObjectSchema} from './schema/ObjectSchema';
 
 
 //
