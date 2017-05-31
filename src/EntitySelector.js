@@ -1,7 +1,8 @@
 //@flow
 // import {denormalize} from 'normalizr';
-import denormalize from './schema/Denormalize';
+// import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
+import ArraySchema from './schema/ArraySchema';
 
 /**
  * @module Selectors
@@ -16,9 +17,15 @@ import {Iterable, Map} from 'immutable';
  * @memberof module:Selectors
  */
 export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
-    var data = denormalize(
+    const schema = entity.getIn(['_schema', schemaKey]);
+
+    if(!schema) {
+        return;
+    }
+
+    var data = schema.denormalize(
         entity.getIn(['_result', resultKey]),
-        entity.getIn(['_schema', schemaKey]),
+        schema,
         entity
     );
 
@@ -39,13 +46,13 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
  * @memberof module:Selectors
  */
 export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
-    var data = denormalize(
-        entity.getIn([type, id]),
-        entity.getIn(['_schema', schemaKey])[type],
-        entity
-    );
+    const schema = entity.getIn(['_schema', schemaKey]).itemSchema[type];
 
-    return data;
+    if(!schema) {
+        return;
+    }
+
+    return schema.denormalize(id, schema, entity);
 }
 
 /**
@@ -57,12 +64,18 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
  * @memberof module:Selectors
  */
 export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE') {
-    const data = denormalize(
+    const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).itemSchema[type]);
+
+    if(!schema) {
+        return;
+    }
+
+    const data = schema.denormalize(
         entity
             .get(type, Map())
             .keySeq()
             .toList(),
-        [entity.getIn(['_schema', schemaKey])[type]],
+        schema,
         entity,
     );
 

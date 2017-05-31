@@ -38,16 +38,15 @@ The first step in implementing Enty is to define your [normalizr] schema. This d
 ```js
 import {schema} from 'normalizr';
 
-var user = new schema.Entity('user', {
-    friendList: [user]
+var user = EntitySchema('user', {
+    friendList: ArraySchema(user)
 });
 
-const EntitySchema = {
+export default ObjectSchema({
    user,
-   userList: [user]
-};
+   userList: ArraySchema(user)
+});
 
-export default EntitySchema;
 ```
 
 ## API

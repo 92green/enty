@@ -1,6 +1,5 @@
 import {fromJS, Map} from 'immutable';
-// import {normalize} from 'normalizr';
-import normalize from './schema/Normalize';
+
 import {
     RequestFetching,
     RequestError,

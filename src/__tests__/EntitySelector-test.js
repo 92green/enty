@@ -1,35 +1,38 @@
 import test from 'ava';
-import {schema} from 'normalizr';
+import EntitySchema from '../schema/EntitySchema';
+import ObjectSchema from '../schema/ObjectSchema';
+import ArraySchema from '../schema/ArraySchema';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
     selectEntityById,
     selectEntityByType
 } from '../EntitySelector';
-import {normalize} from 'normalizr';
 
 function constructState() {
-    var FooSchema = new schema.Entity('foo');
-    var entitySchema = {
-        fooList: [FooSchema],
-        foo: FooSchema
-    };
-    var normalized = normalize(
+    var foo = EntitySchema('foo');
+    var fooList = ArraySchema(foo);
+    var schema = ObjectSchema({
+        fooList: ArraySchema(foo),
+        foo,
+        single: ObjectSchema({foo})
+    });
+    var normalized = schema.normalize(
         {
             single: {foo: {id: 'qux'}},
             fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux'}]
         },
-        entitySchema
+        schema
     );
 
+    // console.log(JSON.stringify(normalized, null ,4));
     return {
         entity: fromJS({
             ...normalized.entities,
             _result: normalized.result,
             _schema: Map({
-                ENTITY_RECEIVE: entitySchema,
-                otherSchema: entitySchema,
-                fooList: entitySchema.fooList
+                ENTITY_RECEIVE: schema,
+                fooList
             })
         })
     };
@@ -56,7 +59,7 @@ test('selectEntityByResult() should return nothing if the denormalize fails', tt
 // selectEntityById()
 
 test('selectEntityById() should return an item from entity state by path', tt => {
-    tt.is(selectEntityById(constructState(), 'foo', 'bar', 'otherSchema').get('id'), 'bar');
+    tt.is(selectEntityById(constructState(), 'foo', 'bar').get('id'), 'bar');
 });
 
 

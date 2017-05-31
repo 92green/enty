@@ -1,19 +1,19 @@
 import test from 'ava';
 import {createEntityReducer} from '../CreateEntityReducer';
-import {schema} from '../index.js';
+import {EntitySchema, ArraySchema, ObjectSchema} from '../index.js';
 import {is, fromJS, Map} from 'immutable';
 
 //
 // Schemas
 //
 
-var AuthorSchema = new schema.Entity(
+var AuthorSchema = EntitySchema(
     'author',
     {},
     {idAttribute: item => item.fullnameId}
 );
 
-var TopListingSchema = new schema.Entity(
+var TopListingSchema = EntitySchema(
     'topListings',
     {
         author: AuthorSchema
@@ -21,21 +21,21 @@ var TopListingSchema = new schema.Entity(
     {idAttribute: item => item.fullnameId}
 );
 
-var subreddit = new schema.Entity(
+var subreddit = EntitySchema(
     'subreddit',
     {
-        topListings: [TopListingSchema]
+        topListings: ArraySchema(TopListingSchema)
     },
     {idAttribute: item => item.fullnameId}
 );
 
-const EntitySchema = {
+const schema = ObjectSchema({
     subreddit
-};
+});
 
 const schemaMap = {
-    ENTITY_RECEIVE: EntitySchema,
-    TEST_RECEIVE: EntitySchema
+    ENTITY_RECEIVE: schema,
+    TEST_RECEIVE: schema
 };
 
 const EntityReducer = createEntityReducer({

@@ -1,4 +1,5 @@
 // @flow
+import {Map} from 'immutable';
 
 export class EntitySchema {
     constructor(name, children, options = {}) {
@@ -44,6 +45,7 @@ export class EntitySchema {
         return {entities, result};
     }
     denormalize(result, schema, entities, path = []) {
+        // console.log('EntitySchema.denormalize', schema.name, result);
         const denormalizedEntity = entities.getIn([schema.name, result]);
         const childKeys = schema.children ? Object.keys(schema.children) : [];
         const childData = childKeys.reduce((childResult, childKey) => {
@@ -55,6 +57,8 @@ export class EntitySchema {
             }
             return childResult.set(childKey, itemSchema.denormalize(denormalizedEntity.get(childKey), itemSchema, entities, path.concat(childKey)));
         }, Map());
+
+        // console.log(denormalizedEntity, childData);
 
         return denormalizedEntity.merge(childData);
     }
