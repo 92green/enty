@@ -1,6 +1,6 @@
 import test from 'ava';
 import {createEntityReducer} from '../CreateEntityReducer';
-import {schema} from 'normalizr';
+import {schema} from '../index.js';
 import {is, fromJS, Map} from 'immutable';
 
 //
@@ -10,7 +10,7 @@ import {is, fromJS, Map} from 'immutable';
 var AuthorSchema = new schema.Entity(
     'author',
     {},
-    {idAttribute: 'fullnameId'}
+    {idAttribute: item => item.fullnameId}
 );
 
 var TopListingSchema = new schema.Entity(
@@ -18,7 +18,7 @@ var TopListingSchema = new schema.Entity(
     {
         author: AuthorSchema
     },
-    {idAttribute: 'fullnameId'}
+    {idAttribute: item => item.fullnameId}
 );
 
 var subreddit = new schema.Entity(
@@ -26,7 +26,7 @@ var subreddit = new schema.Entity(
     {
         topListings: [TopListingSchema]
     },
-    {idAttribute: 'fullnameId'}
+    {idAttribute: item => item.fullnameId}
 );
 
 const EntitySchema = {

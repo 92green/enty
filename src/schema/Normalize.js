@@ -39,18 +39,19 @@ const normalizeObject = (data, schema, entities) => {
             }
 
             return result;
-        }, data);
+        }, Object.assign({}, data));
 
     return {entities, result};
 };
 
 
 const normalizeArray = (data, schema, entities) => {
-
     const {itemSchema, options} = schema;
     const idAttribute = options.idAttribute;
     const result = data.map(item => {
-        return (itemSchema.type === 'entity') ? idAttribute(item) : item;
+        return (itemSchema.type === 'entity')
+            ? idAttribute(item)
+            : normalize(item, itemSchema, entities).result;
     });
 
     data.forEach(item => normalize(item, itemSchema, entities));
