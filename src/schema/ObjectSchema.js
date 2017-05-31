@@ -1,5 +1,5 @@
 // @flow
-
+import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
 export class ObjectSchema {
@@ -7,7 +7,6 @@ export class ObjectSchema {
         this.type = 'object';
         this.itemSchema = schema;
         this.options = {
-            idAttribute: item => item && item.id,
             denormalizeFilter: () => true,
             ...options
         };
@@ -29,6 +28,10 @@ export class ObjectSchema {
     denormalize(result, schema, entities, path = []) {
         const {itemSchema, options} = schema;
         let deletedKeys = [];
+
+        if(result == null) {
+            return result;
+        }
 
         // Map denormalize to the values of result, but only
         // if they have a corresponding schema. Otherwise return the plain value.

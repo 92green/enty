@@ -7,13 +7,12 @@ export class ArraySchema {
         this.type = 'array';
         this.itemSchema = schema;
         this.options = {
-            idAttribute: item => item && item.id,
             ...options
         };
     }
     normalize(data, schema, entities = {}) {
-        const {itemSchema, options} = schema;
-        const idAttribute = options.idAttribute;
+        const {itemSchema} = schema;
+        const idAttribute = itemSchema.options.idAttribute;
         const result = data.map(item => {
             return (itemSchema.type === 'entity')
                 ? idAttribute(item)

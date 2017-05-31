@@ -1,13 +1,8 @@
 import test from 'ava';
 import {EntitySchema, ArraySchema, ObjectSchema} from '../../index';
-import {DELETED_ENTITY} from '../SchemaConstant';
-
 import {fromJS} from 'immutable';
 
 const foo = EntitySchema('foo');
-
-//
-// Arrays
 
 test('ArraySchema can normalize arrays', tt => {
     const schema = ArraySchema(foo);
