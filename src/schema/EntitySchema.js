@@ -1,5 +1,6 @@
 // @flow
 import {Map} from 'immutable';
+import {DELETED_ENTITY} from './SchemaConstant';
 
 export class EntitySchema {
     constructor(name, children, options = {}) {
@@ -45,22 +46,25 @@ export class EntitySchema {
         return {entities, result};
     }
     denormalize(result, schema, entities, path = []) {
-        // console.log('EntitySchema.denormalize', schema.name, result);
-        const denormalizedEntity = entities.getIn([schema.name, result]);
+        const entity = entities.getIn([schema.name, result]);
+        if(!schema.options.denormalizeFilter(entity)) {
+            return DELETED_ENTITY;
+        }
+
         const childKeys = schema.children ? Object.keys(schema.children) : [];
         const childData = childKeys.reduce((childResult, childKey) => {
             const itemSchema = schema.children[childKey];
             // 1. check path for our current key to avoid infinite recursion.
             // 2. dont denormalize null results
-            if(path.indexOf(childKey) !== -1 || !denormalizedEntity.get(childKey)) {
+            if(path.indexOf(childKey) !== -1 || !entity.get(childKey)) {
                 return childResult;
             }
-            return childResult.set(childKey, itemSchema.denormalize(denormalizedEntity.get(childKey), itemSchema, entities, path.concat(childKey)));
+            return childResult.set(childKey, itemSchema.denormalize(entity.get(childKey), itemSchema, entities, path.concat(childKey)));
         }, Map());
 
-        // console.log(denormalizedEntity, childData);
+        // console.log(entity, childData);
 
-        return denormalizedEntity.merge(childData);
+        return entity.merge(childData);
     }
 }
 
