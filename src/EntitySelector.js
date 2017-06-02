@@ -4,6 +4,11 @@
 import {Iterable, Map} from 'immutable';
 import ArraySchema from './schema/ArraySchema';
 
+const defaultOptions = {
+    schemaKey: 'ENTITY_RECEIVE',
+    stateKey: 'entity'
+};
+
 /**
  * @module Selectors
  */
@@ -16,7 +21,9 @@ import ArraySchema from './schema/ArraySchema';
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
+export function selectEntityByResult(state, resultKey, options = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
     const schema = entity.getIn(['_schema', schemaKey]);
 
     if(!schema) {
@@ -45,7 +52,9 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
+export function selectEntityById(state, type, id, options = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
     const schema = entity.getIn(['_schema', schemaKey]).itemSchema[type];
 
     if(!schema) {
@@ -63,7 +72,9 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
  * @return {Immutable.List} entity list
  * @memberof module:Selectors
  */
-export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE') {
+export function selectEntityByType(state, type, options = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
     const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).itemSchema[type]);
 
     if(!schema) {

@@ -108,7 +108,6 @@ test('ObjectSchema.merge() will perform a shallow merge of options and itemSchem
     const bar = EntitySchema('bar');
     const aa = ObjectSchema({foo});
     const bb = ObjectSchema({bar}, {denormalizeFilter});
-
     const merged = aa.merge(bb);
 
 

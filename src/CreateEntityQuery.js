@@ -26,7 +26,7 @@ import React from 'react';
  * @returns {EntityQueryHockFactory}
  * @memberof module:Creators
  */
-export default function createEntityQuery(actionCreator: Function): Function {
+export default function createEntityQuery(actionCreator: Function, selectOptions: Object): Function {
     return (queryCreator: Function, propUpdatePaths: string[], metaOverride: Object): Function => {
 
         // distinct memo must be unique to each useage of EntityQuery
@@ -39,11 +39,11 @@ export default function createEntityQuery(actionCreator: Function): Function {
                         ? metaOverride.resultKey
                         : fromJS({hash: queryCreator(props)}).hashCode();
 
-                    const data = selectEntityByResult(state, resultKey);
+                    const data = selectEntityByResult(state, resultKey, selectOptions);
 
                     return {
                         ...data,
-                        requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey), data)
+                        requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
                     };
                 },
                 function query(props: Object) {

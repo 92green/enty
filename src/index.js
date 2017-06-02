@@ -42,6 +42,7 @@ export {
 export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ArraySchema} from './schema/ArraySchema';
 export {default as ObjectSchema} from './schema/ObjectSchema';
+export {default as OrphanSchema} from './schema/OrphanSchema';
 
 
 //

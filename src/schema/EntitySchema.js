@@ -46,7 +46,7 @@ export class EntitySchema {
         return {entities, result};
     }
     denormalize(result, schema, entities, path = []) {
-        const entity = entities.getIn([schema.name, result]);
+        const entity = entities.getIn([schema.name, '' + result]);
         if(!schema.options.denormalizeFilter(entity)) {
             return DELETED_ENTITY;
         }
