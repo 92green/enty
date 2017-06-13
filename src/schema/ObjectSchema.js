@@ -5,19 +5,19 @@ import {DELETED_ENTITY} from './SchemaConstant';
 export class ObjectSchema {
     constructor(schema, options = {}) {
         this.type = 'object';
-        this.itemSchema = schema;
+        this.childSchema = schema;
         this.options = {
             denormalizeFilter: () => true,
             ...options
         };
     }
     normalize(data, entities = {}) {
-        const {itemSchema} = this;
+        const {childSchema} = this;
 
         const result = Object.keys(data)
             .reduce((result, key) => {
-                if(itemSchema[key] && data[key]) {
-                    result[key] = itemSchema[key].normalize(data[key], entities).result;
+                if(childSchema[key] && data[key]) {
+                    result[key] = childSchema[key].normalize(data[key], entities).result;
                 }
 
                 return result;
@@ -26,7 +26,7 @@ export class ObjectSchema {
         return {entities, result};
     }
     denormalize(result, entities, path = []) {
-        const {itemSchema, options} = this;
+        const {childSchema, options} = this;
         let deletedKeys = [];
 
         if(result == null) {
@@ -44,8 +44,8 @@ export class ObjectSchema {
                     return item;
                 }
 
-                if(itemSchema[key]) {
-                    return itemSchema[key].denormalize(item, entities, path.concat(key));
+                if(childSchema[key]) {
+                    return childSchema[key].denormalize(item, entities, path.concat(key));
                 }
 
                 return item;
@@ -61,7 +61,7 @@ export class ObjectSchema {
     }
     merge(objectSchema: Object) {
         return new ObjectSchema(
-            Object.assign({}, this.itemSchema, objectSchema.itemSchema),
+            Object.assign({}, this.childSchema, objectSchema.childSchema),
             Object.assign({}, this.options, objectSchema.options)
         );
     }

@@ -51,7 +51,7 @@ export function selectEntityByResult(state, resultKey, options = {}) {
 export function selectEntityById(state, type, id, options = {}) {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entity = state[stateKey];
-    const schema = entity.getIn(['_schema', schemaKey]).itemSchema[type];
+    const schema = entity.getIn(['_schema', schemaKey]).childSchema[type];
 
     if(!schema) {
         return;
@@ -71,7 +71,7 @@ export function selectEntityById(state, type, id, options = {}) {
 export function selectEntityByType(state, type, options = {}) {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entity = state[stateKey];
-    const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).itemSchema[type]);
+    const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).childSchema[type]);
 
     if(!schema) {
         return;

@@ -102,7 +102,7 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
 });
 
 
-test('ObjectSchema.merge() will perform a shallow merge of options and itemSchema', tt => {
+test('ObjectSchema.merge() will perform a shallow merge of options and childSchema', tt => {
     const denormalizeFilter = () => true;
     const foo = EntitySchema('foo');
     const bar = EntitySchema('bar');
@@ -111,8 +111,8 @@ test('ObjectSchema.merge() will perform a shallow merge of options and itemSchem
     const merged = aa.merge(bb);
 
 
-    tt.is(merged.itemSchema.foo.name, 'foo');
-    tt.is(merged.itemSchema.bar.name, 'bar');
+    tt.is(merged.childSchema.foo.name, 'foo');
+    tt.is(merged.childSchema.bar.name, 'bar');
     tt.is(merged.options.denormalizeFilter, denormalizeFilter);
 });
 
