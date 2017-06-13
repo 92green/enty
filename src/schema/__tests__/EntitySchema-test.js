@@ -1,14 +1,14 @@
 import test from 'ava';
-import {EntitySchema} from '../../index';
+import {EntitySchema, ObjectSchema} from '../../index';
 import {DELETED_ENTITY} from '../SchemaConstant';
 import {fromJS} from 'immutable';
 
 var foo = EntitySchema('foo');
 
-test('EntitySchema can defineChildren through the `define` method', tt => {
+test('EntitySchema can define childSchema through the `define` method', tt => {
     var schema = EntitySchema('foo');
-    schema.define({bar: 1});
-    tt.is(schema.children.bar, 1);
+    schema.define(ObjectSchema({bar: 1}));
+    tt.is(schema.options.childSchema.type, 'object');
 });
 
 
@@ -20,31 +20,6 @@ test('EntitySchema can normalize entities', tt => {
                 foo: {
                     "1": {id: 1}
                 }
-            },
-            result: 1
-        }
-    );
-});
-
-test('EntitySchema can normalize entities children', tt => {
-    const schema = EntitySchema('bar', {foo});
-    tt.deepEqual(
-        schema.normalize({id: 1, foo: {id: 1}}, schema),
-        {
-            entities: {
-                bar: {"1": {id: 1, foo: 1}},
-                foo: {"1": {id: 1}}
-            },
-            result: 1
-        }
-    );
-
-    // null values are ignored
-    tt.deepEqual(
-        schema.normalize({id: 1, foo: null}, schema),
-        {
-            entities: {
-                bar: {"1": {id: 1, foo: null}}
             },
             result: 1
         }
@@ -64,23 +39,12 @@ test('EntitySchema can denormalize entities', tt => {
     );
 });
 
-
-test('EntitySchema can denormalize entities children', tt => {
-    const schema = EntitySchema('bar', {foo});
-    const entities = fromJS({
-        bar: {"1": {id: "1", foo: "1"}},
-        foo: {"1": {id: "1"}}
-    });
-
-    tt.deepEqual(
-        schema.denormalize("1", schema, entities).toJS(),
-        {id: "1", foo: {id: "1"}}
-    );
-});
-
 test('EntitySchema will not cause an infinite recursion', tt => {
-    const bar = EntitySchema('bar', {foo});
-    foo.define({bar});
+    const bar = EntitySchema('bar', {
+        childSchema: ObjectSchema({foo})
+    });
+    // bar.define(ObjectSchema({foo}));
+    foo.define(ObjectSchema({bar}));
 
     const entities = fromJS({
         bar: {"1": {id: "1", foo: "1"}},
@@ -89,20 +53,29 @@ test('EntitySchema will not cause an infinite recursion', tt => {
 
     tt.deepEqual(
         bar.denormalize("1", bar, entities).toJS(),
-        {id: "1", foo: {id: "1", bar: {id: "1", foo: "1"}}}
+        {
+            id: "1",
+            foo: {
+                id: "1",
+                bar: {
+                    id: "1",
+                    foo: "1"
+                }
+            }
+        }
     );
 });
 
-test('EntitySchema will not denormalize null children', tt => {
-    const schema = EntitySchema('bar', {foo});
+test('EntitySchema will not denormalize null entities', tt => {
+    const schema = EntitySchema('bar');
 
     const entities = fromJS({
         bar: {"1": {id: "1", foo: null}}
     });
 
     tt.deepEqual(
-        schema.denormalize("1", schema, entities).toJS(),
-        {id: "1", foo: null}
+        schema.denormalize("2", schema, entities),
+        undefined
     );
 });
 

@@ -39,6 +39,11 @@ export class ObjectSchema {
         // Then Pump the filtered object through `denormalizeFilter`
         return result
             .map((item, key) => {
+
+                if(path.indexOf(key) !== -1) {
+                    return item;
+                }
+
                 if(itemSchema[key]) {
                     return itemSchema[key].denormalize(item, itemSchema[key], entities, path.concat(key));
                 }

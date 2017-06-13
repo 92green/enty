@@ -7,27 +7,17 @@ import {is, fromJS, Map} from 'immutable';
 // Schemas
 //
 
-var AuthorSchema = EntitySchema(
-    'author',
-    {},
-    {idAttribute: item => item.fullnameId}
-);
+var author = EntitySchema('author', {idAttribute: item => item.fullnameId});
 
-var TopListingSchema = EntitySchema(
-    'topListings',
-    {
-        author: AuthorSchema
-    },
-    {idAttribute: item => item.fullnameId}
-);
+var topListings = EntitySchema('topListings', {
+    idAttribute: item => item.fullnameId,
+    childSchema: ObjectSchema({author})
+});
 
-var subreddit = EntitySchema(
-    'subreddit',
-    {
-        topListings: ArraySchema(TopListingSchema)
-    },
-    {idAttribute: item => item.fullnameId}
-);
+var subreddit = EntitySchema('subreddit', {
+    idAttribute: item => item.fullnameId,
+    childSchema: ObjectSchema({topListings: ArraySchema(topListings)})
+});
 
 const schema = ObjectSchema({
     subreddit

@@ -1,73 +1,53 @@
 // @flow
-import {Map} from 'immutable';
+// import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
+import ObjectSchema from './ObjectSchema';
 
 export class EntitySchema {
-    constructor(name, children, options = {}) {
+    name: string;
+    type: string;
+    options: Object;
+    constructor(name: string, options: Object = {}) {
         this.name = name;
         this.type = 'entity';
-        this.children = children;
         this.options = {
             idAttribute: item => item && item.id,
             denormalizeFilter: item => !item.get('deleted'),
+            childSchema: ObjectSchema({}),
             ...options
         };
     }
-    define(children) {
-        this.children = Object.assign({}, children);
+    define(childSchema: any) {
+        this.options.childSchema = childSchema;
+        return this;
     }
-    normalize(data, schema, entities = {}) {
-        // console.log('normalizeEntity', data);
-        entities[schema.name] = entities[schema.name] || {};
+    normalize(data: Object, schema: Object, entities: Object = {}) {
+        const {options, name} = schema;
+        const {idAttribute, childSchema} = options;
+        const id = idAttribute(data);
 
-        const childKeys = schema.children ? Object.keys(schema.children) : [];
-        const id = schema.options.idAttribute(data);
-
-
-        const normalizedChildren = childKeys.map((key) => {
-            const itemSchema = schema.children[key];
-            if(data[key]) {
-                return itemSchema.normalize(data[key], itemSchema, entities);
-            }
-        });
-
-
-        const childData = childKeys.reduce((result, key, index) => {
-            if(normalizedChildren[index]) {
-                result[key] = normalizedChildren[index].result;
-            }
-            return result;
-        }, {});
-
-        entities[schema.name][id] = Object.assign({}, data, childData);
-
+        entities[name] = entities[name] || {};
+        entities[name][id] = childSchema.normalize(data, childSchema, entities).result;
         const result = id;
-
         return {entities, result};
     }
-    denormalize(result, schema, entities, path = []) {
-        const entity = entities.getIn([schema.name, '' + result]);
-        if(!schema.options.denormalizeFilter(entity)) {
+    denormalize(result: Object, schema: Object, entities: Object, path: string[] = []) {
+        const {name, options} = schema;
+        const {childSchema, denormalizeFilter} = options;
+        const entity = entities.getIn([name, result]);
+
+        if(entity == null) {
+            return entity;
+        }
+
+        if(!denormalizeFilter(entity)) {
             return DELETED_ENTITY;
         }
 
-        const childKeys = schema.children ? Object.keys(schema.children) : [];
-        const childData = childKeys.reduce((childResult, childKey) => {
-            const itemSchema = schema.children[childKey];
-            // 1. check path for our current key to avoid infinite recursion.
-            // 2. dont denormalize null results
-            if(path.indexOf(childKey) !== -1 || !entity.get(childKey)) {
-                return childResult;
-            }
-            return childResult.set(childKey, itemSchema.denormalize(entity.get(childKey), itemSchema, entities, path.concat(childKey)));
-        }, Map());
-
-        // console.log(entity, childData);
-
-        return entity.merge(childData);
+        return childSchema.denormalize(entity, childSchema, entities, path);
     }
 }
 
-export default function EntitySchemaFactory(...args): EntitySchema {
+export default function EntitySchemaFactory(...args: Array<any>): EntitySchema {
     return new EntitySchema(...args);
 }
