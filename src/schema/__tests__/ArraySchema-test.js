@@ -7,7 +7,7 @@ const foo = EntitySchema('foo');
 test('ArraySchema can normalize arrays', tt => {
     const schema = ArraySchema(foo);
     tt.deepEqual(
-        schema.normalize([{id: 1}, {id: 2}], schema),
+        schema.normalize([{id: 1}, {id: 2}]),
         {
             entities: {
                 foo: {
@@ -24,7 +24,7 @@ test('ArraySchema can normalize arrays', tt => {
 test('ArraySchema can normalize nested things in arrays', tt => {
     const schema = ArraySchema(ObjectSchema({foo}));
     tt.deepEqual(
-        schema.normalize([{foo: {id: 1}}], schema),
+        schema.normalize([{foo: {id: 1}}]),
         {
             entities: {
                 foo: {
@@ -46,11 +46,11 @@ test('ArraySchema can denormalize arrays', tt => {
         }
     });
     tt.deepEqual(
-        schema.denormalize(["1", "2"], schema, entities).map(ii => ii.toJS()),
+        schema.denormalize(["1", "2"], entities).map(ii => ii.toJS()),
         [{id: 1}, {id: 2}]
     );
 
-    tt.deepEqual(schema.denormalize(null, schema, entities), null);
+    tt.deepEqual(schema.denormalize(null, entities), null);
 });
 
 
@@ -64,17 +64,17 @@ test('ArraySchema will not return deleted entities', tt => {
         }
     });
     tt.deepEqual(
-        schema.denormalize(["1", "2", "3"], schema, entities).map(ii => ii.toJS()),
+        schema.denormalize(["1", "2", "3"], entities).map(ii => ii.toJS()),
         [{id: 1}, {id: 2}]
     );
 
-    tt.deepEqual(schema.denormalize(null, schema, entities), null);
+    tt.deepEqual(schema.denormalize(null, entities), null);
 });
 
 
 test('ArraySchema will not try to denormalize null values', tt => {
     const schema = ArraySchema(foo);
-    tt.deepEqual(schema.denormalize(null, schema, {}), null);
+    tt.deepEqual(schema.denormalize(null, {}), null);
 });
 
 
@@ -83,7 +83,7 @@ test('ArraySchema will not mutate input objects', tt => {
     const schema = ArraySchema(foo);
     const arrayTest = [{id: 1}];
 
-    schema.normalize(arrayTest, schema);
+    schema.normalize(arrayTest);
     tt.deepEqual(arrayTest, [{id: 1}]);
 });
 

@@ -11,13 +11,13 @@ export class ObjectSchema {
             ...options
         };
     }
-    normalize(data, schema, entities = {}) {
-        const {itemSchema} = schema;
+    normalize(data, entities = {}) {
+        const {itemSchema} = this;
 
         const result = Object.keys(data)
             .reduce((result, key) => {
                 if(itemSchema[key] && data[key]) {
-                    result[key] = itemSchema[key].normalize(data[key], itemSchema[key], entities).result;
+                    result[key] = itemSchema[key].normalize(data[key], entities).result;
                 }
 
                 return result;
@@ -25,8 +25,8 @@ export class ObjectSchema {
 
         return {entities, result};
     }
-    denormalize(result, schema, entities, path = []) {
-        const {itemSchema, options} = schema;
+    denormalize(result, entities, path = []) {
+        const {itemSchema, options} = this;
         let deletedKeys = [];
 
         if(result == null) {
@@ -45,7 +45,7 @@ export class ObjectSchema {
                 }
 
                 if(itemSchema[key]) {
-                    return itemSchema[key].denormalize(item, itemSchema[key], entities, path.concat(key));
+                    return itemSchema[key].denormalize(item, entities, path.concat(key));
                 }
 
                 return item;
@@ -59,7 +59,7 @@ export class ObjectSchema {
             })
             .update(ii => options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY);
     }
-    merge(objectSchema) {
+    merge(objectSchema: Object) {
         return new ObjectSchema(
             Object.assign({}, this.itemSchema, objectSchema.itemSchema),
             Object.assign({}, this.options, objectSchema.options)

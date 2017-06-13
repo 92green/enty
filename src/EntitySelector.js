@@ -30,11 +30,7 @@ export function selectEntityByResult(state, resultKey, options = {}) {
         return;
     }
 
-    var data = schema.denormalize(
-        entity.getIn(['_result', resultKey]),
-        schema,
-        entity
-    );
+    var data = schema.denormalize(entity.getIn(['_result', resultKey]), entity);
 
     if(data) {
         return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
@@ -61,7 +57,7 @@ export function selectEntityById(state, type, id, options = {}) {
         return;
     }
 
-    return schema.denormalize(id, schema, entity);
+    return schema.denormalize(id, entity);
 }
 
 /**
@@ -86,8 +82,7 @@ export function selectEntityByType(state, type, options = {}) {
             .get(type, Map())
             .keySeq()
             .toList(),
-        schema,
-        entity,
+        entity
     );
 
     return data;

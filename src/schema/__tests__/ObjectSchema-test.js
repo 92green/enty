@@ -7,7 +7,7 @@ var foo = EntitySchema('foo');
 test('ObjectSchema can normalize objects', tt => {
     const schema = ObjectSchema({foo});
     tt.deepEqual(
-        schema.normalize({foo: {id: 1}}, schema),
+        schema.normalize({foo: {id: 1}}),
         {
             entities: {
                 foo: {
@@ -19,7 +19,7 @@ test('ObjectSchema can normalize objects', tt => {
     );
 
     tt.deepEqual(
-        schema.normalize({bar: {}}, schema),
+        schema.normalize({bar: {}}),
         {
             entities: {},
             result: {bar: {}}
@@ -37,7 +37,7 @@ test('ObjectSchema can denormalize objects', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1"}), schema, entities).toJS(),
+        schema.denormalize(Map({foo: "1"}), entities).toJS(),
         {foo: {id: "1"}}
     );
 });
@@ -52,7 +52,7 @@ test('ObjectSchema will not denormalize null values', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(null, schema, entities),
+        schema.denormalize(null, entities),
         null
     );
 });
@@ -67,7 +67,7 @@ test('ObjectSchema will not denormalize unknown keys', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1", bar: "2"}), schema, entities).toJS(),
+        schema.denormalize(Map({foo: "1", bar: "2"}), entities).toJS(),
         {foo: {id: "1"}, bar: "2"}
     );
 });
@@ -82,7 +82,7 @@ test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1"}), schema, entities).toJS(),
+        schema.denormalize(Map({foo: "1"}), entities).toJS(),
         {}
     );
 });
@@ -98,7 +98,7 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
         }
     });
 
-    schema.denormalize(Map({foo: "1"}), schema, entities);
+    schema.denormalize(Map({foo: "1"}), entities);
 });
 
 

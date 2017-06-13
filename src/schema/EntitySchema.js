@@ -21,18 +21,18 @@ export class EntitySchema {
         this.options.childSchema = childSchema;
         return this;
     }
-    normalize(data: Object, schema: Object, entities: Object = {}) {
-        const {options, name} = schema;
+    normalize(data: Object, entities: Object = {}) {
+        const {options, name} = this;
         const {idAttribute, childSchema} = options;
         const id = idAttribute(data);
 
         entities[name] = entities[name] || {};
-        entities[name][id] = childSchema.normalize(data, childSchema, entities).result;
+        entities[name][id] = childSchema.normalize(data, entities).result;
         const result = id;
         return {entities, result};
     }
-    denormalize(result: Object, schema: Object, entities: Object, path: string[] = []) {
-        const {name, options} = schema;
+    denormalize(result: Object, entities: Object, path: string[] = []) {
+        const {name, options} = this;
         const {childSchema, denormalizeFilter} = options;
         const entity = entities.getIn([name, result]);
 
@@ -44,7 +44,7 @@ export class EntitySchema {
             return DELETED_ENTITY;
         }
 
-        return childSchema.denormalize(entity, childSchema, entities, path);
+        return childSchema.denormalize(entity, entities, path);
     }
 }
 

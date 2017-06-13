@@ -14,7 +14,7 @@ test('EntitySchema can define childSchema through the `define` method', tt => {
 
 test('EntitySchema can normalize entities', tt => {
     tt.deepEqual(
-        foo.normalize({id: 1}, foo),
+        foo.normalize({id: 1}),
         {
             entities: {
                 foo: {
@@ -34,7 +34,7 @@ test('EntitySchema can denormalize entities', tt => {
     });
 
     tt.deepEqual(
-        foo.denormalize("1", foo, entities).toJS(),
+        foo.denormalize("1", entities).toJS(),
         {id: 1}
     );
 });
@@ -52,7 +52,7 @@ test('EntitySchema will not cause an infinite recursion', tt => {
     });
 
     tt.deepEqual(
-        bar.denormalize("1", bar, entities).toJS(),
+        bar.denormalize("1", entities).toJS(),
         {
             id: "1",
             foo: {
@@ -74,7 +74,7 @@ test('EntitySchema will not denormalize null entities', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize("2", schema, entities),
+        schema.denormalize("2", entities),
         undefined
     );
 });
@@ -88,7 +88,7 @@ test('EntitySchema will return DELETED_ENTITY placeholder if denormalizeFilter f
     });
 
     tt.deepEqual(
-        foo.denormalize("1", foo, entities),
+        foo.denormalize("1", entities),
         DELETED_ENTITY
     );
 });

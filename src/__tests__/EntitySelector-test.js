@@ -21,8 +21,7 @@ function constructState() {
         {
             single: {foo: {id: 'qux'}},
             fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux'}]
-        },
-        schema
+        }
     );
 
     // console.log(JSON.stringify(normalized, null ,4));

@@ -22,7 +22,7 @@
     "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
     "prepublish": "yarn run build",
     "ava": "NODE_ENV=test ava",
-    "check-coverage": "NODE_ENV=test nyc check-coverage --branches 75.0  --functions 75.0 --lines 75.0",
+    "check-coverage": "NODE_ENV=test nyc check-coverage --branches 83.0  --functions 83.0 --lines 83.0",
     "docs": "jsdoc -c jsdoc.json",
     "flow": "flow check",
     "lint": "eslint src --ext js,jsx",
