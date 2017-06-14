@@ -3,14 +3,17 @@
 import {DELETED_ENTITY} from './SchemaConstant';
 
 export class ArraySchema {
-    constructor(schema, options = {}) {
+    type: string;
+    childSchema: Object;
+    options: Object;
+    constructor(schema: Object, options: Object = {}) {
         this.type = 'array';
         this.childSchema = schema;
         this.options = {
             ...options
         };
     }
-    normalize(data, entities = {}) {
+    normalize(data: Object, entities: Object = {}) {
         const {childSchema} = this;
         const idAttribute = childSchema.options.idAttribute;
         const result = data.map(item => {
@@ -22,7 +25,7 @@ export class ArraySchema {
         data.forEach(item => childSchema.normalize(item, entities));
         return {entities, result};
     }
-    denormalize(result, entities, path = []) {
+    denormalize(result: Object, entities: Object, path: string[] = []) {
         const {childSchema} = this;
         // Filter out any deleted keys
         if(result == null) {
@@ -37,6 +40,6 @@ export class ArraySchema {
     }
 }
 
-export default function ArraySchemaFactory(...args): ArraySchema {
+export default function ArraySchemaFactory(...args: any[]): ArraySchema {
     return new ArraySchema(...args);
 }

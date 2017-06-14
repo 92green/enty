@@ -48,6 +48,6 @@ export class EntitySchema {
     }
 }
 
-export default function EntitySchemaFactory(...args: Array<any>): EntitySchema {
+export default function EntitySchemaFactory(...args: any[]): EntitySchema {
     return new EntitySchema(...args);
 }

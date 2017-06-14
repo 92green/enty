@@ -1,9 +1,11 @@
 // @flow
-import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
 export class ObjectSchema {
-    constructor(schema, options = {}) {
+    type: string;
+    childSchema: Object;
+    options: Object;
+    constructor(schema: Object, options: Object = {}) {
         this.type = 'object';
         this.childSchema = schema;
         this.options = {
@@ -11,7 +13,7 @@ export class ObjectSchema {
             ...options
         };
     }
-    normalize(data, entities = {}) {
+    normalize(data: Object, entities: Object = {}) {
         const {childSchema} = this;
 
         const result = Object.keys(data)
@@ -25,7 +27,7 @@ export class ObjectSchema {
 
         return {entities, result};
     }
-    denormalize(result, entities, path = []) {
+    denormalize(result: Object, entities: Object, path: string[] = []) {
         const {childSchema, options} = this;
         let deletedKeys = [];
 
@@ -59,7 +61,7 @@ export class ObjectSchema {
             })
             .update(ii => options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY);
     }
-    merge(objectSchema: Object) {
+    merge(objectSchema: Object): ObjectSchema {
         return new ObjectSchema(
             Object.assign({}, this.childSchema, objectSchema.childSchema),
             Object.assign({}, this.options, objectSchema.options)
@@ -67,6 +69,6 @@ export class ObjectSchema {
     }
 }
 
-export default function ObjectSchemaFactory(...args): ObjectSchema {
+export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
     return new ObjectSchema(...args);
 }
