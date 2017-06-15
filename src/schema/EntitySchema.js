@@ -12,7 +12,7 @@ export class EntitySchema {
         this.type = 'entity';
         this.options = {
             idAttribute: item => item && item.id,
-            denormalizeFilter: item => !item.get('deleted'),
+            denormalizeFilter: item => item && !item.get('deleted'),
             childSchema: ObjectSchema({}),
             ...options
         };

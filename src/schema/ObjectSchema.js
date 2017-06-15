@@ -5,9 +5,9 @@ export class ObjectSchema {
     type: string;
     childSchema: Object;
     options: Object;
-    constructor(schema: Object, options: Object = {}) {
+    constructor(childSchema: Object, options: Object = {}) {
         this.type = 'object';
-        this.childSchema = schema;
+        this.childSchema = childSchema;
         this.options = {
             denormalizeFilter: () => true,
             ...options
@@ -39,27 +39,38 @@ export class ObjectSchema {
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
+        //
+        // Lots of `item.keySeq().reduce(() => {}, item) because Immutable can't map records without
+        // mutating them...
         return result
-            .map((item, key) => {
+            .update((item) => {
+                return item.keySeq()
+                    .reduce((newItem, key) => {
+                        var value = newItem.get(key);
+                        var newValue;
 
-                if(path.indexOf(key) !== -1) {
-                    return item;
-                }
+                        if(path.indexOf(key) !== -1) {
+                            newValue = value;
+                        } else if(childSchema[key]) {
+                            newValue = childSchema[key].denormalize(value, entities, path.concat(key));
+                        } else {
+                            newValue = value;
+                        }
 
-                if(childSchema[key]) {
-                    return childSchema[key].denormalize(item, entities, path.concat(key));
-                }
-
-                return item;
+                        return newItem.set(key, newValue);
+                    }, item);
             })
-            .filter((ii, key) => {
-                if (ii === DELETED_ENTITY) {
-                    deletedKeys.push(key);
-                    return false;
-                }
-                return true;
+            .update((item) => {
+                return item.keySeq()
+                    .filter(key => item.get(key) === DELETED_ENTITY)
+                    .reduce((newItem, deleteKey) => {
+                        deletedKeys.push(deleteKey);
+                        return newItem.delete(deleteKey);
+                    }, item);
             })
-            .update(ii => options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY);
+            .update(ii => {
+                return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
+            });
     }
     merge(objectSchema: Object): ObjectSchema {
         return new ObjectSchema(

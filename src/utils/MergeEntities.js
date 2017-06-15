@@ -56,6 +56,7 @@ export default function MergeEntities(entities, afterNormalize) {
         // mergedEntityTypes entities do exist. We therefore have to
         // take the previous state and the next state and merge them together.
         // As they already exist we dont need to perform after normalize
+
         const mergedEntityTypes = entityKeysToMerge
             .reduce((newState, entityKeyPath) => {
                 const existingEntity = state.getIn(entityKeyPath);
@@ -67,15 +68,14 @@ export default function MergeEntities(entities, afterNormalize) {
                     if(existingEntity.equals(merged)) {
                         Logger.silly(`    Merged entity is identical to existing entity`);
                     } else {
-                        Logger.silly(`    Existing entity entity`, existingEntity);
-                        Logger.silly(`    New entity entity`, newEntity);
+                        Logger.silly(`    Existing entity`, existingEntity);
+                        Logger.silly(`    New entity`, newEntity);
                         Logger.silly(`    Merged entity`, merged);
                     }
                 }
 
                 return newState.setIn(entityKeyPath, merged);
             }, Map());
-
 
         // Deep merge is okay here as the data is normalized so there cant
         // be any of the same id
