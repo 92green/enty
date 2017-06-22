@@ -152,27 +152,28 @@ test('CreateEntityReducer', tt => {
         'state._result is unchanged when not receiving data'
     );
 
-    tt.true(
-        is(
-            EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
-            exampleStateWithResults.get('_result').delete('TEST_FETCH')
-        ),
-        'state._result.TYPE is deleted when TYPE is fetched'
-    );
-
     const exampleActionNoResultReset = {
         type: 'TEST_FETCH',
         meta: {
-            resultResetOnFetch: false
+            resultResetOnFetch: true
         }
     };
 
     tt.true(
         is(
             EntityReducer(exampleStateWithResults, exampleActionNoResultReset).get('_result'),
+            exampleStateWithResults.get('_result').delete('TEST_FETCH')
+        ),
+        'state._result.TYPE is deleted when TYPE is fetched and resultResetOnFetch is true'
+    );
+
+
+    tt.true(
+        is(
+            EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
             exampleStateWithResults.get('_result')
         ),
-        'state._result.TYPE is unchanged when a type is fetched AND meta.resultResetOnFetch is true'
+        'state._result.TYPE is unchanged when a type is fetched AND meta.resultResetOnFetch is false'
     );
 
     const examplePayload = {
