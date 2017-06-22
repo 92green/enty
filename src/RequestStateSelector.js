@@ -1,6 +1,4 @@
-import {RequestEmpty} from 'fronads';
-
-const EMPTY_REQUESTSTATE = RequestEmpty();
+import {EmptyState} from './RequestState';
 
 const defaultOptions = {
     stateKey: 'entity'
@@ -20,5 +18,5 @@ const defaultOptions = {
 export default function selectRequestState(state, requestStateKey, options) {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     return state[stateKey]
-        .getIn(['_requestState', requestStateKey], EMPTY_REQUESTSTATE);
+        .getIn(['_requestState', requestStateKey], EmptyState());
 }

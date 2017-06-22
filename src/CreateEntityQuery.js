@@ -30,7 +30,7 @@ export default function createEntityQuery(actionCreator: Function, selectOptions
     return (queryCreator: Function, propUpdatePaths: string[], metaOverride: Object): Function => {
 
         // distinct memo must be unique to each useage of EntityQuery
-        const distinctSuccessMap = new DistinctMemo((value, data) => value.map(() => data));
+        const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
         return (composedComponent: React.Element<any>) => {
             const withQuery = connectWithQuery(

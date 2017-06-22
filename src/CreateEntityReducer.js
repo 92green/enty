@@ -1,10 +1,11 @@
 import {fromJS, Map} from 'immutable';
 
 import {
-    RequestFetching,
-    RequestError,
-    RequestSuccess
-} from 'fronads';
+    FetchingState,
+    RefetchingState,
+    ErrorState,
+    SuccessState
+} from './RequestState';
 import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
 
@@ -52,7 +53,7 @@ export function createEntityReducer(config) {
     });
 
     const defaultMeta = {
-        resultResetOnFetch: true
+        resultResetOnFetch: false
     };
 
     // Return our constructed reducer
@@ -76,9 +77,13 @@ export function createEntityReducer(config) {
         //
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
-            state = state.setIn(requestStatePath, RequestFetching());
+            if(state.getIn(requestStatePath)) {
+                state = state.setIn(requestStatePath, RefetchingState());
+            } else {
+                state = state.setIn(requestStatePath, FetchingState());
+            }
         } else if(/_ERROR$/g.test(type)) {
-            state = state.setIn(requestStatePath, RequestError(payload));
+            state = state.setIn(requestStatePath, ErrorState(payload));
         }
 
         Logger.info(`Setting _requestState for "${resultKey}"`);
@@ -95,7 +100,7 @@ export function createEntityReducer(config) {
 
             // set success action before payload tests
             // to make sure the request state is still updated even if there is no payload
-            state = state.setIn(requestStatePath, RequestSuccess());
+            state = state.setIn(requestStatePath, SuccessState());
 
             if(schema && payload) {
                 // normalize using proved schema
