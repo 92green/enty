@@ -73,25 +73,25 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
 export default function EntityApi(actionMap, selectOptions) {
     return reduceActionMap(fromJS(actionMap))
         .reduce((state, sideEffect, action) => {
+
             const FETCH = `${action}_FETCH`;
             const RECEIVE = `${action}_RECEIVE`;
             const ERROR = `${action}_ERROR`;
 
             const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
             const requestActionPath = action.split('_').map(ii => ii.toLowerCase());
-            const actionPath = requestActionPath.concat('actionTypes');
             const requestActionName = action
                 .split('_')
                 .map(ss => ss.toLowerCase().replace(/^./, mm => mm.toUpperCase()))
                 .join('');
 
             return state
-                .setIn(requestActionPath.concat(['request']), requestAction)
-                .setIn(actionPath.concat(FETCH), FETCH)
-                .setIn(actionPath.concat(RECEIVE), RECEIVE)
-                .setIn(actionPath.concat(ERROR), ERROR)
-                .set(`${requestActionName}EntityQueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
-                .set(`${requestActionName}EntityMutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
+                .setIn(requestActionPath, requestAction)
+                .setIn(['actionTypes', FETCH], FETCH)
+                .setIn(['actionTypes', RECEIVE], RECEIVE)
+                .setIn(['actionTypes', ERROR], ERROR)
+                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
+                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
             ;
 
         }, Map())
