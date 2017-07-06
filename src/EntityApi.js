@@ -10,7 +10,7 @@ import {fromJS, Map} from 'immutable';
 //
 // Turns a nested object into a flat
 // UPPER_SNAKE case represention
-export function reduceActionMap(branch, parentKey = '') {
+function reduceActionMap(branch, parentKey = '') {
     return branch.reduce((rr, ii, key) => {
         var prefix = `${parentKey}${key.toUpperCase()}`;
         if(Map.isMap(ii)) {
@@ -21,45 +21,7 @@ export function reduceActionMap(branch, parentKey = '') {
     }, Map());
 }
 
-/**
- * returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
- * dispatch `fetchAction`
- * call `sideEffect`
- * then dispatch `recieveAction`
- * catch dispatch `errorAction`
- *
- * @param  {object} actionMap deep object representation of api functions
- * @return {array}            list of action creators and action types
- * @memberof module:Creators
- */
-export function createRequestActionSet(actionMap, selectOptions) {
-    return reduceActionMap(fromJS(actionMap))
-        .map((sideEffect, action) => {
-            const FETCH = `${action}_FETCH`;
-            const RECEIVE = `${action}_RECEIVE`;
-            const ERROR = `${action}_ERROR`;
-
-            const requestActionName = action
-                .split('_')
-                .map(ss => ss.toLowerCase().replace(/^./, mm => mm.toUpperCase()))
-                .join('');
-
-            const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
-
-            return Map()
-                .set(`request${requestActionName}`, requestAction)
-                .set(`${requestActionName}EntityQueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
-                .set(`${requestActionName}EntityMutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
-                .set(FETCH, FETCH)
-                .set(RECEIVE, RECEIVE)
-                .set(ERROR, ERROR);
-
-        })
-        .flatten(1)
-        .toJS();
-}
-
-/**
+/*
  *
  * @param {string} fetchAction     action name for fetching action
  * @param {string} recieveAction   action name for receiving action
@@ -68,7 +30,7 @@ export function createRequestActionSet(actionMap, selectOptions) {
  * @return {array}            list of action creators and action types
  * @memberof module:Creators
  */
-export function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
+function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
     }
@@ -95,3 +57,45 @@ export function createRequestAction(fetchAction, recieveAction, errorAction, sid
         );
     };
 }
+
+
+/**
+ * returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
+ * dispatch `fetchAction`
+ * call `sideEffect`
+ * then dispatch `recieveAction`
+ * catch dispatch `errorAction`
+ *
+ * @param  {object} actionMap deep object representation of api functions
+ * @return {array}            list of action creators and action types
+ * @memberof module:Creators
+ */
+export default function EntityApi(actionMap, selectOptions) {
+    return reduceActionMap(fromJS(actionMap))
+        .reduce((state, sideEffect, action) => {
+            const FETCH = `${action}_FETCH`;
+            const RECEIVE = `${action}_RECEIVE`;
+            const ERROR = `${action}_ERROR`;
+
+            const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
+            const requestActionPath = action.split('_').map(ii => ii.toLowerCase());
+            const actionPath = requestActionPath.concat('actionTypes');
+            const requestActionName = action
+                .split('_')
+                .map(ss => ss.toLowerCase().replace(/^./, mm => mm.toUpperCase()))
+                .join('');
+
+            return state
+                .setIn(requestActionPath.concat(['request']), requestAction)
+                .setIn(actionPath.concat(FETCH), FETCH)
+                .setIn(actionPath.concat(RECEIVE), RECEIVE)
+                .setIn(actionPath.concat(ERROR), ERROR)
+                .set(`${requestActionName}EntityQueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
+                .set(`${requestActionName}EntityMutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
+            ;
+
+        }, Map())
+        .toJS();
+}
+
+

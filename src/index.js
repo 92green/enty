@@ -1,30 +1,17 @@
 
 //
-// Creators
+// New API
 
-export {
-    createRequestAction,
-    createRequestActionSet
-} from './CreateRequestActions';
+// Api
+export {default as EntityApi} from './EntityApi';
 
-export {
-    createEntityReducer
-} from './CreateEntityReducer';
-
+// Schemas
+export {default as EntitySchema} from './schema/EntitySchema';
+export {default as ArraySchema} from './schema/ArraySchema';
+export {default as ObjectSchema} from './schema/ObjectSchema';
 
 
-export {
-    default as EntityQueryHockFactory
-} from './EntityQueryHockFactory';
-
-export {
-    default as EntityMutationHockFactory
-} from './EntityMutationHockFactory';
-
-
-/**
- * @module Selectors
- */
+// Selectors
 export {
     selectEntityByResult,
     selectEntityById,
@@ -35,23 +22,9 @@ export {
     default as selectRequestState
 } from './RequestStateSelector';
 
-
-/**
- * @module Actions
- */
-
-export {
-    receiveEntity
-} from './ReceiveEntityAction';
-
-
-export {default as EntitySchema} from './schema/EntitySchema';
-export {default as ArraySchema} from './schema/ArraySchema';
-export {default as ObjectSchema} from './schema/ObjectSchema';
-
-
-//
 // Misc
+export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
+export {default as EntityMutationHockFactory} from './EntityMutationHockFactory';
 
 export {
     FetchingState,
@@ -60,11 +33,25 @@ export {
     SuccessState
 } from './RequestState';
 
+
+
+
+//
+// Old API (Bad Terminology)
+
+export {
+    createEntityReducer
+} from './CreateEntityReducer';
+
+
+
+// Deprecated
+
 export {
     default as LocalStateHock
 } from './LocalStateHock';
 
 export {
-    default as logRequestActionNames
-} from './utils/logRequestActionNames';
+    receiveEntity
+} from './ReceiveEntityAction';
 
