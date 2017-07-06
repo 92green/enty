@@ -11,9 +11,15 @@ export {
     createEntityReducer
 } from './CreateEntityReducer';
 
+
+
 export {
-    default as createEntityQuery
-} from './CreateEntityQuery';
+    default as EntityQueryHockFactory
+} from './EntityQueryHockFactory';
+
+export {
+    default as EntityMutationHockFactory
+} from './EntityMutationHockFactory';
 
 
 /**
@@ -48,12 +54,15 @@ export {default as ObjectSchema} from './schema/ObjectSchema';
 // Misc
 
 export {
-    default as LocalStateHock
-} from './LocalStateHock';
+    FetchingState,
+    RefetchingState,
+    ErrorState,
+    SuccessState
+} from './RequestState';
 
 export {
-    default as connectWithQuery
-} from './connectWithQuery';
+    default as LocalStateHock
+} from './LocalStateHock';
 
 export {
     default as logRequestActionNames

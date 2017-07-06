@@ -1,4 +1,6 @@
 import {createAction} from 'redux-actions';
+import EntityQueryHockFactory from './EntityQueryHockFactory';
+import EntityMutationHockFactory from './EntityMutationHockFactory';
 import {fromJS, Map} from 'immutable';
 
 /**
@@ -30,7 +32,7 @@ export function reduceActionMap(branch, parentKey = '') {
  * @return {array}            list of action creators and action types
  * @memberof module:Creators
  */
-export function createRequestActionSet(actionMap) {
+export function createRequestActionSet(actionMap, selectOptions) {
     return reduceActionMap(fromJS(actionMap))
         .map((sideEffect, action) => {
             const FETCH = `${action}_FETCH`;
@@ -42,8 +44,12 @@ export function createRequestActionSet(actionMap) {
                 .map(ss => ss.toLowerCase().replace(/^./, mm => mm.toUpperCase()))
                 .join('');
 
+            const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
+
             return Map()
-                .set(`request${requestActionName}`, createRequestAction(FETCH, RECEIVE, ERROR, sideEffect))
+                .set(`request${requestActionName}`, requestAction)
+                .set(`${requestActionName}EntityQueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
+                .set(`${requestActionName}EntityMutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
                 .set(FETCH, FETCH)
                 .set(RECEIVE, RECEIVE)
                 .set(ERROR, ERROR);

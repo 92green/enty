@@ -2025,6 +2025,10 @@ flow-bin@^0.47.0:
   version "0.47.0"
   resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.47.0.tgz#a2a08ab3e0d1f1cb57d17e27b30b118b62fda367"
 
+flow-bin@^0.48.0:
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.48.0.tgz#72d075143524358db8901525e3c784dc13a7c7ee"
+
 fn-name@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/fn-name/-/fn-name-2.0.1.tgz#5214d7537a4d06a4a301c0cc262feb84188002e7"
@@ -2068,9 +2072,11 @@ formatio@1.1.1:
   dependencies:
     samsam "~1.1"
 
-fronads@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.5.0.tgz#c9658d884bf0ab62499004cb1a07f5c0178036d8"
+fronads@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.6.4.tgz#e9b024377ffe4f28e9bcaf6648d7316dc4f2b48e"
+  dependencies:
+    flow-bin "^0.48.0"
 
 fs-readdir-recursive@^1.0.0:
   version "1.0.0"

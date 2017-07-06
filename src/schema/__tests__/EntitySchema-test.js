@@ -7,35 +7,35 @@ var foo = EntitySchema('foo');
 
 test('EntitySchema can define childSchema through the `define` method', tt => {
     var schema = EntitySchema('foo');
-    schema.define(ObjectSchema({bar: 1}));
+    schema.define(ObjectSchema({bar: "1"}));
     tt.is(schema.options.childSchema.type, 'object');
 });
 
 
 test('EntitySchema can normalize entities', tt => {
     tt.deepEqual(
-        foo.normalize({id: 1}),
         {
             entities: {
                 foo: {
-                    "1": {id: 1}
+                    "1": {id: "1"}
                 }
             },
-            result: 1
-        }
+            result: "1"
+        },
+        foo.normalize({id: "1"})
     );
 });
 
 test('EntitySchema can denormalize entities', tt => {
     const entities = fromJS({
         foo: {
-            "1": {id: 1}
+            "1": {id: "1"}
         }
     });
 
     tt.deepEqual(
         foo.denormalize("1", entities).toJS(),
-        {id: 1}
+        {id: "1"}
     );
 });
 
@@ -83,7 +83,7 @@ test('EntitySchema will not denormalize null entities', tt => {
 test('EntitySchema will return DELETED_ENTITY placeholder if denormalizeFilter fails', tt => {
     const entities = fromJS({
         foo: {
-            "1": {id: 1, deleted: true}
+            "1": {id: "1", deleted: true}
         }
     });
 
@@ -95,9 +95,9 @@ test('EntitySchema will return DELETED_ENTITY placeholder if denormalizeFilter f
 
 
 test('EntitySchema will not mutate input objects', tt => {
-    const entityTest = {id: 1};
+    const entityTest = {id: "1"};
     foo.normalize(entityTest, foo);
-    tt.deepEqual(entityTest, {id: 1});
+    tt.deepEqual(entityTest, {id: "1"});
 });
 
 

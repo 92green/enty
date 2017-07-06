@@ -1,7 +1,9 @@
-import connectWithQuery from './connectWithQuery';
+import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
+import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
 import React from 'react';
 
@@ -26,27 +28,30 @@ import React from 'react';
  * @returns {EntityQueryHockFactory}
  * @memberof module:Creators
  */
-export default function createEntityQuery(actionCreator: Function, selectOptions: Object): Function {
+export default function EntityQueryHockFactory(actionCreator: Function, selectOptions: Object): Function {
     return (queryCreator: Function, propUpdatePaths: string[], metaOverride: Object): Function => {
 
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
         return (composedComponent: React.Element<any>) => {
-            const withQuery = connectWithQuery(
-                function connector(state: Object, props: Object): Object {
-                    const resultKey = metaOverride && metaOverride.resultKey
-                        ? metaOverride.resultKey
-                        : fromJS({hash: queryCreator(props)}).hashCode();
 
-                    const data = selectEntityByResult(state, resultKey, selectOptions);
+            const withState = Connect((state: Object, props: Object): Object => {
+                const resultKey = metaOverride && metaOverride.resultKey
+                    ? metaOverride.resultKey
+                    : fromJS({hash: queryCreator(props)}).hashCode();
 
-                    return {
-                        ...data,
-                        requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
-                    };
-                },
-                function query(props: Object) {
+                const data = selectEntityByResult(state, resultKey, selectOptions);
+
+                return {
+                    ...data,
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
+                };
+            }, selectOptions);
+
+            const withPropChange = PropChangeHock(() => ({
+                paths: propUpdatePaths,
+                onPropChange: (props: Object) => {
                     const resultKey = metaOverride && metaOverride.resultKey
                         ? metaOverride.resultKey
                         : fromJS({hash: queryCreator(props)}).hashCode();
@@ -54,11 +59,11 @@ export default function createEntityQuery(actionCreator: Function, selectOptions
                     const meta = Object.assign({}, metaOverride, {resultKey});
 
                     return props.dispatch(actionCreator(queryCreator(props), meta));
-                },
-                propUpdatePaths
-            );
+                }
+            }));
 
-            return withQuery(composedComponent);
+
+            return withState(withPropChange(composedComponent));
         };
 
     };

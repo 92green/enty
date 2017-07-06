@@ -24,7 +24,7 @@ export class EntitySchema {
     normalize(data: Object, entities: Object = {}) {
         const {options, name} = this;
         const {idAttribute, childSchema} = options;
-        const id = idAttribute(data);
+        const id = idAttribute(data).toString();
 
         entities[name] = entities[name] || {};
         entities[name][id] = childSchema.normalize(data, entities).result;

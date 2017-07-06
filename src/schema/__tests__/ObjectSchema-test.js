@@ -7,14 +7,14 @@ var foo = EntitySchema('foo');
 test('ObjectSchema can normalize objects', tt => {
     const schema = ObjectSchema({foo});
     tt.deepEqual(
-        schema.normalize({foo: {id: 1}}),
+        schema.normalize({foo: {id: "1"}}),
         {
             entities: {
                 foo: {
-                    "1": {id: 1}
+                    "1": {id: "1"}
                 }
             },
-            result: {foo: 1}
+            result: {foo: "1"}
         }
     );
 
@@ -120,12 +120,12 @@ test('ObjectSchema.merge() will perform a shallow merge of options and childSche
 test('ObjectSchema will not mutate input objects', tt => {
     const foo = EntitySchema('foo');
     const schema = ObjectSchema({foo});
-    const objectTest = {foo: {id: 1}};
+    const objectTest = {foo: {id: "1"}};
 
     // release the mutations!
     schema.normalize(objectTest, schema);
 
-    tt.deepEqual(objectTest, {foo: {id: 1}});
+    tt.deepEqual(objectTest, {foo: {id: "1"}});
 });
 
 

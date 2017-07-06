@@ -18,7 +18,7 @@ export class ArraySchema {
         const idAttribute = childSchema.options.idAttribute;
         const result = data.map(item => {
             return (childSchema.type === 'entity')
-                ? idAttribute(item)
+                ? idAttribute(item).toString()
                 : childSchema.normalize(item, entities).result;
         });
 
