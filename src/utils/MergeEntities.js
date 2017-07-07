@@ -64,6 +64,7 @@ export default function MergeEntities(entities, afterNormalize) {
                 const merged = existingEntity.merge(newEntity);
 
                 Logger.verbose(`  Merging entity ${entityKeyPath}`);
+                /* istanbul ignore if */
                 if(Logger.willLog('silly')) {
                     if(existingEntity.equals(merged)) {
                         Logger.silly(`    Merged entity is identical to existing entity`);
