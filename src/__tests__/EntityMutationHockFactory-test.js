@@ -65,6 +65,7 @@ test("EntityMutationHockFactory will update the onMutate with new props", tt => 
     wrapper.render();
     tt.is(spy1.callCount, 0);
 
+    // double dive through the hocks to make sure the MutationHock's componentWillReceiveProps fires
     wrapper.dive().dive().setProps({spy: spy1});
     tt.is(spy1.callCount, 1);
 });
