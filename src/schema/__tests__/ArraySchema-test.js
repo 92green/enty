@@ -1,39 +1,25 @@
 import test from 'ava';
 import {EntitySchema, ArraySchema, ObjectSchema} from '../../index';
-import {fromJS} from 'immutable';
+import {fromJS, List} from 'immutable';
 
 const foo = EntitySchema('foo');
 
 test('ArraySchema can normalize arrays', tt => {
     const schema = ArraySchema(foo);
-    tt.deepEqual(
-        schema.normalize([{id: "1"}, {id: "2"}]),
-        {
-            entities: {
-                foo: {
-                    "1": {id: "1"},
-                    "2": {id: "2"}
-                }
-            },
-            result: ["1", "2"]
-        }
-    );
+    const {entities, result} = schema.normalize([{id: "1"}, {id: "2"}]);
+
+    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
+    tt.deepEqual(entities.foo["2"].toJS(), {id: "2"});
+    tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
 
 test('ArraySchema can normalize nested things in arrays', tt => {
     const schema = ArraySchema(ObjectSchema({foo}));
-    tt.deepEqual(
-        schema.normalize([{foo: {id: "1"}}]),
-        {
-            entities: {
-                foo: {
-                    "1": {id: "1"}
-                }
-            },
-            result: [{foo: "1"}]
-        }
-    );
+    const {entities, result} = schema.normalize([{foo: {id: "1"}}]);
+
+    tt.deepEqual(result.toJS(), [{foo: "1"}]);
+    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
 

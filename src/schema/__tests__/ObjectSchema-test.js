@@ -6,25 +6,18 @@ var foo = EntitySchema('foo');
 
 test('ObjectSchema can normalize objects', tt => {
     const schema = ObjectSchema({foo});
-    tt.deepEqual(
-        schema.normalize({foo: {id: "1"}}),
-        {
-            entities: {
-                foo: {
-                    "1": {id: "1"}
-                }
-            },
-            result: {foo: "1"}
-        }
-    );
+    let {entities, result} = schema.normalize({foo: {id: "1"}});
 
-    tt.deepEqual(
-        schema.normalize({bar: {}}),
-        {
-            entities: {},
-            result: {bar: {}}
-        }
-    );
+    tt.deepEqual(result.toJS(), {foo: "1"});
+    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
+});
+
+test('ObjectSchema can normalize empty objects', tt => {
+    const schema = ObjectSchema({foo});
+    let {entities, result} = schema.normalize({bar: {}});
+
+    tt.deepEqual(entities, {});
+    tt.deepEqual(result.toJS(), {bar: {}});
 });
 
 test('ObjectSchema can denormalize objects', tt => {
