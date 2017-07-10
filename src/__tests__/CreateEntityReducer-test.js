@@ -284,11 +284,9 @@ test('CreateEntityReducer', tt => {
         'Receiving updated values on the top level of an entity item will replace existing values'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
-            fromJS(mergeExamplePayloadTwo.subreddit.tags)
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
+        mergeExamplePayloadTwo.subreddit.tags,
         'Receiving updated non-entity values on the second level of an entity are not merged, they are replaced'
     );
 
@@ -298,27 +296,21 @@ test('CreateEntityReducer', tt => {
         'Existing top level keys and values on an entity item will remain when subsequent received data does not contain those top level keys'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'NT']),
-            fromJS(mergeExamplePayloadTwo.subreddit.topListings[0])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'NT']).toJS(),
+        mergeExamplePayloadTwo.subreddit.topListings[0],
         'Receiving updated info for an entity will replace nested entities'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'CT']),
-            fromJS(mergeExamplePayloadOne.subreddit.topListings[0])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'CT']).toJS(),
+        mergeExamplePayloadOne.subreddit.topListings[0],
         'Once an entity is received, its entity data is retained even if subsequent received entities dont contain it'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'GL']),
-            fromJS(mergeExamplePayloadTwo.subreddit.topListings[1])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'GL']).toJS(),
+        mergeExamplePayloadTwo.subreddit.topListings[1],
         'Newly received nested entites are merged into their entity container'
     );
 

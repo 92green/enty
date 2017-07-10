@@ -1,5 +1,5 @@
 // @flow
-// import {Map} from 'immutable';
+import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 import ObjectSchema from './ObjectSchema';
 
@@ -13,6 +13,8 @@ export class EntitySchema {
         this.options = {
             idAttribute: item => item && item.id,
             denormalizeFilter: item => item && !item.get('deleted'),
+            constructor: item => Map(item),
+            merge: (aa, bb) => aa.merge(bb),
             childSchema: ObjectSchema({}),
             ...options
         };
@@ -23,13 +25,23 @@ export class EntitySchema {
     }
     normalize(data: Object, entities: Object = {}) {
         const {options, name} = this;
-        const {idAttribute, childSchema} = options;
+        const {idAttribute, childSchema, constructor, merge} = options;
         const id = idAttribute(data).toString();
 
         entities[name] = entities[name] || {};
-        entities[name][id] = childSchema.normalize(data, entities).result;
-        const result = id;
-        return {entities, result};
+
+        const previousEntity = entities[name][id];
+        let value = childSchema.normalize(data, entities).result;
+
+        if(previousEntity) {
+            value = merge(previousEntity, value);
+        }
+
+        entities[name][id] = constructor(value);
+
+        return {
+            entities, result: id
+        };
     }
     denormalize(result: Object, entities: Object, path: string[] = []) {
         const {name, options} = this;

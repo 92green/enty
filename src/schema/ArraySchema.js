@@ -1,5 +1,5 @@
 // @flow
-
+import {List} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
 export class ArraySchema {
@@ -16,11 +16,12 @@ export class ArraySchema {
     normalize(data: Object, entities: Object = {}) {
         const {childSchema} = this;
         const idAttribute = childSchema.options.idAttribute;
-        const result = data.map(item => {
-            return (childSchema.type === 'entity')
-                ? idAttribute(item).toString()
-                : childSchema.normalize(item, entities).result;
-        });
+        const result = List(data)
+            .map(item => {
+                return (childSchema.type === 'entity')
+                    ? idAttribute(item).toString()
+                    : childSchema.normalize(item, entities).result;
+            });
 
         data.forEach(item => childSchema.normalize(item, entities));
         return {entities, result};

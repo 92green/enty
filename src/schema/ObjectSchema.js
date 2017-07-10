@@ -1,4 +1,5 @@
 // @flow
+import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
 export class ObjectSchema {
@@ -17,13 +18,13 @@ export class ObjectSchema {
         const {childSchema} = this;
 
         const result = Object.keys(data)
-            .reduce((result, key) => {
+            .reduce((result: Object, key: string) => {
                 if(childSchema[key] && data[key]) {
-                    result[key] = childSchema[key].normalize(data[key], entities).result;
+                    return result.set(key, childSchema[key].normalize(data[key], entities).result);
                 }
 
                 return result;
-            }, Object.assign({}, data));
+            }, Map(data));
 
         return {entities, result};
     }
