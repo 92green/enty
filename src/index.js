@@ -51,7 +51,3 @@ export {
     default as LocalStateHock
 } from './LocalStateHock';
 
-export {
-    receiveEntity
-} from './ReceiveEntityAction';
-

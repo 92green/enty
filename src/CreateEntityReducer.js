@@ -1,4 +1,4 @@
-import {fromJS, Map} from 'immutable';
+import {Map} from 'immutable';
 
 import {
     FetchingState,
@@ -6,12 +6,9 @@ import {
     ErrorState,
     SuccessState
 } from './RequestState';
-import MergeEntities from './utils/MergeEntities';
 import Logger from './Logger';
 
-function defaultConstructor(value) {
-    return value;
-}
+
 /**
  * @module Creators
  */
@@ -42,8 +39,7 @@ function defaultConstructor(value) {
  */
 export function createEntityReducer(config) {
     const {
-        schemaMap,
-        afterNormalize = defaultConstructor
+        schemaMap
     } = config;
 
     const initialState = Map({
@@ -103,8 +99,14 @@ export function createEntityReducer(config) {
             state = state.setIn(requestStatePath, SuccessState());
 
             if(schema && payload) {
-                // normalize using proved schema
-                const {result, entities} = fromJS(schema.normalize(payload)).toObject();
+                let previousEntities = state
+                    .map(ii => ii.toObject())
+                    .delete('_schema')
+                    .delete('_result')
+                    .delete('_requestState')
+                    .toObject();
+
+                const {result, entities} = schema.normalize(payload, previousEntities);
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
@@ -112,7 +114,7 @@ export function createEntityReducer(config) {
                 return state
                     // set results
                     .setIn(['_result', resultKey], result)
-                    .update(MergeEntities(entities, afterNormalize));
+                    .update(state => state.merge(Map(entities).map(ii => Map(ii))));
             }
 
 

@@ -13,17 +13,9 @@ test('EntitySchema can define childSchema through the `define` method', tt => {
 
 
 test('EntitySchema can normalize entities', tt => {
-    tt.deepEqual(
-        {
-            entities: {
-                foo: {
-                    "1": {id: "1"}
-                }
-            },
-            result: "1"
-        },
-        foo.normalize({id: "1"})
-    );
+    const {entities, result} = foo.normalize({id: "1"});
+    tt.is(result, "1");
+    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
 test('EntitySchema can denormalize entities', tt => {
@@ -99,5 +91,13 @@ test('EntitySchema will not mutate input objects', tt => {
     foo.normalize(entityTest, foo);
     tt.deepEqual(entityTest, {id: "1"});
 });
+
+
+test('EntitySchema can construct objects', tt => {
+    const entityTest = {id: "1"};
+    foo.normalize(entityTest, foo);
+    tt.deepEqual(entityTest, {id: "1"});
+});
+
 
 
