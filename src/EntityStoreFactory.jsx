@@ -13,4 +13,4 @@ export default function EntityStoreFactory(reducer) {
         compose;
 
     return createStore(combineReducers({entity: reducer}), {}, composeEnhancers(middleware));
-};
+}

@@ -6,7 +6,7 @@ import EntityApi from '../EntityApi';
 const RESOLVE = () => Promise.resolve();
 const REJECT = () => Promise.reject();
 
-var actions = EntityApi({
+var actions = EntityApi({}, {
     resolve: RESOLVE,
     reject: REJECT,
     foo: {
@@ -21,17 +21,6 @@ test('createRequestActionSet', tt => {
     tt.is(actions.actionTypes.FOO_BAR_RECEIVE, 'FOO_BAR_RECEIVE', 'should have RECIEVE action type');
     tt.is(actions.actionTypes.FOO_BAR_ERROR, 'FOO_BAR_ERROR', 'should have ERROR action type');
 });
-
-// test('reduceActionMap', tt => {
-//     var actions = fromJS({
-//         foo: {
-//             bar: 'baz'
-//         }
-//     });
-
-//     tt.is(reduceActionMap(actions).get('FOO_BAR'), 'baz');
-// });
-
 
 
 //

@@ -1,5 +1,5 @@
 import test from 'ava';
-import {createEntityReducer} from '../CreateEntityReducer';
+import EntityReducerFactory from '../EntityReducerFactory';
 import {EntitySchema, ArraySchema, ObjectSchema} from '../index.js';
 import {is, fromJS, Map} from 'immutable';
 
@@ -28,7 +28,7 @@ const schemaMap = {
     TEST_RECEIVE: schema
 };
 
-const EntityReducer = createEntityReducer({
+const EntityReducer = EntityReducerFactory({
     schemaMap,
     afterNormalize: value => value
 });
@@ -42,7 +42,7 @@ const INITIAL_STATE = fromJS({
     }
 });
 
-test('CreateEntityReducer normalizes a reuslt', tt => {
+test('EntityReducerFactory normalizes a reuslt', tt => {
     const examplePayload = {
         subreddit: {
             name: "MechanicalKeyboards",
@@ -70,13 +70,13 @@ test('CreateEntityReducer normalizes a reuslt', tt => {
     );
 });
 
-test('CreateEntityReducer _requestState.isFetching is true when action type ends with _FETCH', tt => {
+test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', tt => {
     tt.is(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching, true);
 });
 
 
 
-test('CreateEntityReducer', tt => {
+test('EntityReducerFactory', tt => {
 
 
     const exampleAction = {
