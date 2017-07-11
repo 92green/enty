@@ -1,6 +1,8 @@
 import {createAction} from 'redux-actions';
 import EntityQueryHockFactory from './EntityQueryHockFactory';
 import EntityMutationHockFactory from './EntityMutationHockFactory';
+import EntityReducerFactory from './EntityReducerFactory';
+import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
 /**
@@ -60,17 +62,15 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
 
 
 /**
- * returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.
- * dispatch `fetchAction`
- * call `sideEffect`
- * then dispatch `recieveAction`
- * catch dispatch `errorAction`
+ * Constructs the Entity Api for use around the site
  *
- * @param  {object} actionMap deep object representation of api functions
- * @return {array}            list of action creators and action types
+ * @param  {object} schema          deep object representation of api functions
+ * @param  {object} actionMap       deep object representation of api functions
+ * @param  {object} selectOptions   deep object representation of api functions
+ * @return {object}                 An Entity Api
  * @memberof module:Creators
  */
-export default function EntityApi(actionMap, selectOptions) {
+export default function EntityApi(schema, actionMap, selectOptions = {}) {
     return reduceActionMap(fromJS(actionMap))
         .reduce((state, sideEffect, action) => {
 
@@ -86,7 +86,10 @@ export default function EntityApi(actionMap, selectOptions) {
                 .join('');
 
             return state
+                // nested action creators
                 .setIn(requestActionPath, requestAction)
+
+                // root api
                 .setIn(['actionTypes', FETCH], FETCH)
                 .setIn(['actionTypes', RECEIVE], RECEIVE)
                 .setIn(['actionTypes', ERROR], ERROR)
@@ -95,6 +98,27 @@ export default function EntityApi(actionMap, selectOptions) {
             ;
 
         }, Map())
+        .update((api) => {
+            // convert recieve actions to a standard that EntityReducerFactory can understand
+            // {
+            //     ACTION_RECIEVE: schema
+            //     ...
+            // }
+            const actionMap = api
+                .get('actionTypes')
+                .filter((action, key) => /_RECEIVE$/g.test(key))
+                .reduce((actionMap, key) => actionMap.set(key, schema), Map())
+                .set(selectOptions.schemaKey || 'ENTITY_RECEIVE', schema)
+                .toObject()
+            ;
+
+            const reducer = EntityReducerFactory({schemaMap: actionMap});
+
+            return api
+                .set('EntityReducer', reducer)
+                .set('EntityStore', EntityStoreFactory(reducer));
+        })
+        .update(ii => console.log(ii) || ii)
         .toJS();
 }
 

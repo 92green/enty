@@ -40,8 +40,8 @@ export {
 // Old API (Bad Terminology)
 
 export {
-    createEntityReducer
-} from './CreateEntityReducer';
+    default as EntityReducerFactory
+} from './EntityReducerFactory';
 
 
 

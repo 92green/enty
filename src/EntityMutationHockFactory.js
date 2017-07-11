@@ -1,4 +1,5 @@
 import RequestStateSelector from './RequestStateSelector';
+import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
 import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
@@ -18,9 +19,11 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const withState = Connect((state, props) => {
             const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
+            const data = selectEntityByResult(state, resultKey, selectOptions);
 
             return {
-                requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), state)
+                ...data,
+                requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
             };
         }, selectOptions);
 
