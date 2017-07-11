@@ -118,7 +118,7 @@ export default function EntityApi(schema, actionMap, selectOptions = {}) {
                 .set('EntityReducer', reducer)
                 .set('EntityStore', EntityStoreFactory(reducer));
         })
-        .update(ii => console.log(ii) || ii)
+        // .update(ii => console.log(ii) || ii)
         .toJS();
 }
 
