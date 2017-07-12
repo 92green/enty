@@ -7,7 +7,7 @@ import React from 'react';
 
 
 export default function EntityMutationHockFactory(actionCreator: Function, selectOptions: Object): Function {
-    return function EntityMutationHock(queryCreator: Function, optionsOverride: Object): Function {
+    return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: Object): Function {
 
         const options = {
             onMutateProp: 'onMutate',
@@ -16,21 +16,21 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-
-        const withState = Connect((state, props) => {
-            const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
-            const data = selectEntityByResult(state, resultKey, selectOptions);
-
-            return {
-                ...data,
-                requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
-            };
-        }, selectOptions);
-
         return function EntityMutationHockApplier(Component: React.Element<any>): React.Element<any> {
+
+            const blankConnect = Connect();
+            const ComponentWithState = Connect((state, props) => {
+                const data = selectEntityByResult(state, props.resultKey, selectOptions);
+                return {
+                    ...data,
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
+                };
+            }, selectOptions)(Component);
+
             class MutationHock extends React.Component {
                 constructor(props) {
                     super(props);
+                    this.state = {};
                     this.updateMutation = this.updateMutation.bind(this);
                     this.updateMutation(props);
                 }
@@ -40,21 +40,32 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                 }
 
                 updateMutation(props) {
-                    this.mutation = (payload) => props.dispatch(actionCreator(queryCreator(payload), options));
+                    this.mutation = (data) => {
+                        const payload = payloadCreator(data);
+                        const resultKey = options.resultKey || fromJS({hash: payload}).hashCode();
+
+                        this.setState({resultKey});
+
+                        props.dispatch(actionCreator(payload, {
+                            ...options,
+                            resultKey
+                        }));
+                    };
                 }
 
                 render() {
                     const props = {
                         ...this.props,
+                        resultKey: this.state.resultKey,
                         [options.onMutateProp]: this.mutation
                     };
-                    return <Component {...props} />;
+                    return <ComponentWithState {...props} />;
                 }
             }
 
             MutationHock.displayName = `MutationHock(${options.resultKey || ''})`;
 
-            return withState(MutationHock);
+            return blankConnect(MutationHock);
         };
 
     };

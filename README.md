@@ -1,6 +1,9 @@
 # Enty 
 
 
+
+
+
 # Introduction
 Enty is a framework for managing data requested from back-ends and APIs.  Instead of you manually storing requested data, Enty uses schemas to describe relationships and stores the data as normalized entities.
 
