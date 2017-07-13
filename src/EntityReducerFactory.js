@@ -1,16 +1,14 @@
-import {fromJS, Map} from 'immutable';
-import {normalize} from 'normalizr';
+import {Map} from 'immutable';
+
 import {
-    RequestFetching,
-    RequestError,
-    RequestSuccess
-} from 'fronads';
-import MergeEntities from './utils/MergeEntities';
+    FetchingState,
+    RefetchingState,
+    ErrorState,
+    SuccessState
+} from './RequestState';
 import Logger from './Logger';
 
-function defaultConstructor(value) {
-    return value;
-}
+
 /**
  * @module Creators
  */
@@ -39,10 +37,9 @@ function defaultConstructor(value) {
  * @memberof module:Creators
  *
  */
-export function createEntityReducer(config) {
+export default function CreateEntityReducer(config) {
     const {
-        schemaMap,
-        afterNormalize = defaultConstructor
+        schemaMap
     } = config;
 
     const initialState = Map({
@@ -52,7 +49,7 @@ export function createEntityReducer(config) {
     });
 
     const defaultMeta = {
-        resultResetOnFetch: true
+        resultResetOnFetch: false
     };
 
     // Return our constructed reducer
@@ -76,9 +73,13 @@ export function createEntityReducer(config) {
         //
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
-            state = state.setIn(requestStatePath, RequestFetching());
+            if(state.getIn(requestStatePath)) {
+                state = state.setIn(requestStatePath, RefetchingState());
+            } else {
+                state = state.setIn(requestStatePath, FetchingState());
+            }
         } else if(/_ERROR$/g.test(type)) {
-            state = state.setIn(requestStatePath, RequestError(payload));
+            state = state.setIn(requestStatePath, ErrorState(payload));
         }
 
         Logger.info(`Setting _requestState for "${resultKey}"`);
@@ -95,11 +96,17 @@ export function createEntityReducer(config) {
 
             // set success action before payload tests
             // to make sure the request state is still updated even if there is no payload
-            state = state.setIn(requestStatePath, RequestSuccess());
+            state = state.setIn(requestStatePath, SuccessState());
 
             if(schema && payload) {
-                // normalize using proved schema
-                const {result, entities} = fromJS(normalize(payload, schema)).toObject();
+                let previousEntities = state
+                    .map(ii => ii.toObject())
+                    .delete('_schema')
+                    .delete('_result')
+                    .delete('_requestState')
+                    .toObject();
+
+                const {result, entities} = schema.normalize(payload, previousEntities);
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
@@ -107,7 +114,7 @@ export function createEntityReducer(config) {
                 return state
                     // set results
                     .setIn(['_result', resultKey], result)
-                    .update(MergeEntities(entities, afterNormalize));
+                    .update(state => state.merge(Map(entities).map(ii => Map(ii))));
             }
 
 

@@ -1,15 +1,24 @@
 [options]
+module.file_ext=.js
+module.file_ext=.jsx
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=..
 module.system.node.resolve_dirname=src
+esproposal.class_static_fields=ignore
+suppress_comment= \\(.\\|\n\\)*\\$FlowBug
+
 
 [ignore]
-<PROJECT_ROOT>/src/enty/client.js
-<PROJECT_ROOT>/src/enty/tracking.js
+<PROJECT_ROOT>/src/enty/index.js
 <PROJECT_ROOT>/coverage/.*
 <PROJECT_ROOT>/.nyc_output/.*
 <PROJECT_ROOT>/scripts/.*
 <PROJECT_ROOT>/dist/.*
+.*/example/.*
+.*/node_modules/fbjs/.*
+.*/node_modules/react-side-effect/.*
+
 
 [libs]
 ./decls/
+node_modules/immutable/dist/immutable.js.flow

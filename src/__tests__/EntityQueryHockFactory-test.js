@@ -2,8 +2,8 @@ import test from 'ava';
 import React from 'react';
 import {shallow} from 'enzyme';
 import {fromJS} from 'immutable';
-import CreateEntityQuery from '../CreateEntityQuery';
-import {RequestFetching, RequestState} from 'fronads';
+import EntityQueryHockFactory from '../EntityQueryHockFactory';
+import {FetchingState} from '../RequestState';
 
 var NOOP = () => {};
 var STORE = {
@@ -12,25 +12,25 @@ var STORE = {
     getState: () => ({
         entity: fromJS({
             _requestState: {
-                foo: RequestFetching()
+                foo: FetchingState()
             }
         })
     })
 };
 
 var QUERY_CREATOR = () => `query`;
-var entityQuery = CreateEntityQuery(NOOP);
+var entityQuery = EntityQueryHockFactory(NOOP);
 var hockedComponent = entityQuery(QUERY_CREATOR, ['keys']);
 
-test('CreateEntityQuery should return a function', tt => {
+test('EntityQueryHockFactory should return a function', tt => {
     tt.is(typeof entityQuery, 'function');
 });
 
-test('CreateEntityQuerys hockedComponent should be a function', tt => {
+test('EntityQueryHockFactorys hockedComponent should be a function', tt => {
     tt.is(typeof hockedComponent, 'function');
 });
 
-test('CreateEntityQuerys hockedComponent should be an auto request', tt => {
+test('EntityQueryHockFactorys hockedComponent should be an auto request', tt => {
     var RunTheHock = hockedComponent();
     tt.is(RunTheHock.displayName, 'Connect(PropChangeHock)');
 });
@@ -45,8 +45,8 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
         tt.is(bb.resultKey, 469309513);
     };
 
-    var ComponentA = CreateEntityQuery(sideEffectA)(NOOP, ['keys'], {resultKey: 'foo'})(NOOP);
-    var ComponentB = CreateEntityQuery(sideEffectB)(NOOP, ['keys'])(NOOP);
+    var ComponentA = EntityQueryHockFactory(sideEffectA)(NOOP, ['keys'], {resultKey: 'foo'})(NOOP);
+    var ComponentB = EntityQueryHockFactory(sideEffectB)(NOOP, ['keys'])(NOOP);
 
     shallow(<ComponentA store={STORE}/>).dive();
     shallow(<ComponentB store={STORE}/>).dive();
@@ -55,12 +55,12 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
 
 test('requestState will return an empty RequestState for unknown resultKey', tt => {
     const Child = (props) => {
-        tt.truthy(props.requestState instanceof RequestState().constructor);
+        tt.truthy(props.requestState instanceof FetchingState().constructor);
         tt.is(props.requestState.value('foo'), 'foo');
         return <div></div>;
     };
 
-    var Component = CreateEntityQuery(NOOP)(NOOP, [], {resultKey: 'blah'})(Child);
+    var Component = EntityQueryHockFactory(NOOP)(NOOP, [], {resultKey: 'blah'})(Child);
 
     shallow(<Component store={STORE}/>).dive().dive();
 });

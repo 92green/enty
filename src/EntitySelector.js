@@ -1,6 +1,18 @@
 //@flow
-import {denormalize} from 'normalizr';
+// import {denormalize} from 'normalizr';
+// import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
+import ArraySchema from './schema/ArraySchema';
+
+type SelectOptions = {
+    schemaKey?: string,
+    stateKey?: string
+};
+
+const defaultOptions = {
+    schemaKey: 'ENTITY_RECEIVE',
+    stateKey: 'entity'
+};
 
 /**
  * @module Selectors
@@ -14,12 +26,16 @@ import {Iterable, Map} from 'immutable';
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RECEIVE') {
-    var data = denormalize(
-        entity.getIn(['_result', resultKey]),
-        entity.getIn(['_schema', schemaKey]),
-        entity
-    );
+export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
+    const schema = entity.getIn(['_schema', schemaKey]);
+
+    if(!schema) {
+        return;
+    }
+
+    var data = schema.denormalize(entity.getIn(['_result', resultKey]), entity);
 
     if(data) {
         return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
@@ -37,14 +53,16 @@ export function selectEntityByResult({entity}, resultKey, schemaKey = 'ENTITY_RE
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE') {
-    var data = denormalize(
-        entity.getIn([type, id]),
-        entity.getIn(['_schema', schemaKey])[type],
-        entity
-    );
+export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
+    const schema = entity.getIn(['_schema', schemaKey]).childSchema[type];
 
-    return data;
+    if(!schema) {
+        return;
+    }
+
+    return schema.denormalize(id, entity);
 }
 
 /**
@@ -55,14 +73,21 @@ export function selectEntityById({entity}, type, id, schemaKey = 'ENTITY_RECEIVE
  * @return {Immutable.List} entity list
  * @memberof module:Selectors
  */
-export function selectEntityByType({entity}, type, schemaKey = 'ENTITY_RECEIVE') {
-    const data = denormalize(
+export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}) {
+    const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
+    const entity = state[stateKey];
+    const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).childSchema[type]);
+
+    if(!schema) {
+        return;
+    }
+
+    const data = schema.denormalize(
         entity
             .get(type, Map())
             .keySeq()
             .toList(),
-        [entity.getIn(['_schema', schemaKey])[type]],
-        entity,
+        entity
     );
 
     return data;

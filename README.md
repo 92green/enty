@@ -30,87 +30,94 @@ Enty lets you describe the relationships of your entities through schemas. It is
 
 
 
-# getting started
+# Getting Started
 
-## schema
-The first step in implementing Enty is to define your [normalizr] schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
+Enty has two parts: A Schema and an EntityApi.
+
+## Schema
+The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
 
 ```js
-import {schema} from 'normalizr';
+import {
+    ObjectSchema,
+    ListSchema,
+    EntitySchema,
+} from 'enty';
 
-var user = new schema.Entity('user', {
-    friendList: [user]
+var user = EntitySchema('user');
+var userList = ArraySchema(user);
+
+user.define(ObjectSchema({
+    friendList: userList
+}))
+
+export default ObjectSchema({
+   user,
+   userList
 });
 
-const EntitySchema = {
-   user,
-   userList: [user]
-};
-
-export default EntitySchema;
 ```
 
 ## API
-A large part of connecting redux to a back end is the creation of request actions. Entities need to be requested and actions need to be triggered for request, receive and error states. Enty provides a function to abstract the creation of these actions allowing you to just declare where each entity is located.
+The second thing we need to do is to create our EntityApi from our schema;
 
-```
-CreateRequestActionSet({
-    user: {
-        list: () => request.get(`/api/user/`),
-        get: id => request.get(`/api/user/${id}`)
-    }
+```js
+import {EntityApi} from 'enty';
+import ApplicationSchema from './entity/ApplicationSchema';
+
+const Api = EntityApi(ApplicationSchema, {
+    core: payload => request('/graphql', payload)
 });
-```
 
-This will create an object with
-
-requestUserList()
-requestUserGet()
-USER_LIST_FETCH
-USER_LIST_RECEIVE
-USER_LIST_ERROR
-USER_GET_FETCH
-USER_GET_RECEIVE
-USER_GET_ERROR
-
-
-## reducer
-
-The next thing we need to do is to create our entity reducer. This will store all our entity state and is where we define which actions will be normalized.
-
+export const {
+    store,
+    CoreEntityQuery,
+    CoreMutationQuery,
+} = Api;
 
 ```
-import EntitySchema from './EntitySchema';
 
-CombineReducers({
-    entity: createEntityReducer({
-        schemaMap: {
-            ENTITY_RECEIVE: EntitySchema
+## Connect to react
+
+```jsx
+import {React} from 'react';
+import {Provider} from 'react-redux';
+import ReactDOM from 'react-dom';
+import {store} from './entity/EntityApi';
+
+
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('app'),
+);
+
+```
+
+## Make a Query
+
+```jsx
+import {React} from 'react';
+import {CoreQueryHock} from './entity/EntityApi';
+
+function User(props) {
+    const {user} = props;
+    return <img src={user.get('avatar')} />;
+}
+
+const withData = CoreQueryHock(props => {
+    return {
+        query: UserDataQuery,
+        variables: {
+            id: props.id
         }
-    })
-})
-```
+    };
+}, ['id']);
 
-We've just created out reducer in redux and said that results returned from the action type `ENTITY_RECEIVE` should be normalized using the root schema.
-
-We can add other action types and schemas if other relationships are required. Say we had a restful endpoint that returned a list of users. we could create a schema as follows to normalize the list that returns.
+export default withData(User);
 
 ```
-import EntitySchema from './EntitySchema';
-
-combineReducers({
-    entity: createEntityReducer({
-        ENTITY_RECEIVE: EntitySchema,
-        USER_LIST_RECEIVE: EntitySchema.userList
-    })
-})
-```
-
-
-## requests
-
-
-## constructing entities.
 
 
 [normalizr]: https://github.com/paularmstrong/normalizr

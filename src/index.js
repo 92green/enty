@@ -1,24 +1,19 @@
 
 //
-// Creators
+// New API
 
-export {
-    createRequestAction,
-    createRequestActionSet
-} from './CreateRequestActions';
-
-export {
-    createEntityReducer
-} from './CreateEntityReducer';
-
-export {
-    default as createEntityQuery
-} from './CreateEntityQuery';
+// Api
+export {default as EntityApi} from './EntityApi';
 
 
-/**
- * @module Selectors
- */
+
+// Schemas
+export {default as EntitySchema} from './schema/EntitySchema';
+export {default as ArraySchema} from './schema/ArraySchema';
+export {default as ObjectSchema} from './schema/ObjectSchema';
+
+
+// Selectors
 export {
     selectEntityByResult,
     selectEntityById,
@@ -30,29 +25,15 @@ export {
 } from './RequestStateSelector';
 
 
-/**
- * @module Actions
- */
-
-export {
-    receiveEntity
-} from './ReceiveEntityAction';
-
-
-
-
-//
 // Misc
+export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
+export {default as EntityMutationHockFactory} from './EntityMutationHockFactory';
+export {default as EntityReducerFactory} from './EntityReducerFactory';
 
 export {
-    default as LocalStateHock
-} from './LocalStateHock';
-
-export {
-    default as connectWithQuery
-} from './connectWithQuery';
-
-export {
-    default as logRequestActionNames
-} from './utils/logRequestActionNames';
+    FetchingState,
+    RefetchingState,
+    ErrorState,
+    SuccessState
+} from './RequestState';
 

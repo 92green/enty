@@ -1,44 +1,34 @@
 import test from 'ava';
-import {createEntityReducer} from '../CreateEntityReducer';
-import {schema} from 'normalizr';
+import EntityReducerFactory from '../EntityReducerFactory';
+import {EntitySchema, ArraySchema, ObjectSchema} from '../index.js';
 import {is, fromJS, Map} from 'immutable';
 
 //
 // Schemas
 //
 
-var AuthorSchema = new schema.Entity(
-    'author',
-    {},
-    {idAttribute: 'fullnameId'}
-);
+var author = EntitySchema('author', {idAttribute: item => item.fullnameId});
 
-var TopListingSchema = new schema.Entity(
-    'topListings',
-    {
-        author: AuthorSchema
-    },
-    {idAttribute: 'fullnameId'}
-);
+var topListings = EntitySchema('topListings', {
+    idAttribute: item => item.fullnameId,
+    childSchema: ObjectSchema({author})
+});
 
-var subreddit = new schema.Entity(
-    'subreddit',
-    {
-        topListings: [TopListingSchema]
-    },
-    {idAttribute: 'fullnameId'}
-);
+var subreddit = EntitySchema('subreddit', {
+    idAttribute: item => item.fullnameId,
+    childSchema: ObjectSchema({topListings: ArraySchema(topListings)})
+});
 
-const EntitySchema = {
+const schema = ObjectSchema({
     subreddit
-};
+});
 
 const schemaMap = {
-    ENTITY_RECEIVE: EntitySchema,
-    TEST_RECEIVE: EntitySchema
+    ENTITY_RECEIVE: schema,
+    TEST_RECEIVE: schema
 };
 
-const EntityReducer = createEntityReducer({
+const EntityReducer = EntityReducerFactory({
     schemaMap,
     afterNormalize: value => value
 });
@@ -52,7 +42,7 @@ const INITIAL_STATE = fromJS({
     }
 });
 
-test('CreateEntityReducer normalizes a reuslt', tt => {
+test('EntityReducerFactory normalizes a reuslt', tt => {
     const examplePayload = {
         subreddit: {
             name: "MechanicalKeyboards",
@@ -80,13 +70,13 @@ test('CreateEntityReducer normalizes a reuslt', tt => {
     );
 });
 
-test('CreateEntityReducer _requestState.isFetching is true when action type ends with _FETCH', tt => {
+test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', tt => {
     tt.is(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching, true);
 });
 
 
 
-test('CreateEntityReducer', tt => {
+test('EntityReducerFactory', tt => {
 
 
     const exampleAction = {
@@ -162,27 +152,28 @@ test('CreateEntityReducer', tt => {
         'state._result is unchanged when not receiving data'
     );
 
-    tt.true(
-        is(
-            EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
-            exampleStateWithResults.get('_result').delete('TEST_FETCH')
-        ),
-        'state._result.TYPE is deleted when TYPE is fetched'
-    );
-
     const exampleActionNoResultReset = {
         type: 'TEST_FETCH',
         meta: {
-            resultResetOnFetch: false
+            resultResetOnFetch: true
         }
     };
 
     tt.true(
         is(
             EntityReducer(exampleStateWithResults, exampleActionNoResultReset).get('_result'),
+            exampleStateWithResults.get('_result').delete('TEST_FETCH')
+        ),
+        'state._result.TYPE is deleted when TYPE is fetched and resultResetOnFetch is true'
+    );
+
+
+    tt.true(
+        is(
+            EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
             exampleStateWithResults.get('_result')
         ),
-        'state._result.TYPE is unchanged when a type is fetched AND meta.resultResetOnFetch is true'
+        'state._result.TYPE is unchanged when a type is fetched AND meta.resultResetOnFetch is false'
     );
 
     const examplePayload = {
@@ -293,11 +284,9 @@ test('CreateEntityReducer', tt => {
         'Receiving updated values on the top level of an entity item will replace existing values'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
-            fromJS(mergeExamplePayloadTwo.subreddit.tags)
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
+        mergeExamplePayloadTwo.subreddit.tags,
         'Receiving updated non-entity values on the second level of an entity are not merged, they are replaced'
     );
 
@@ -307,27 +296,21 @@ test('CreateEntityReducer', tt => {
         'Existing top level keys and values on an entity item will remain when subsequent received data does not contain those top level keys'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'NT']),
-            fromJS(mergeExamplePayloadTwo.subreddit.topListings[0])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'NT']).toJS(),
+        mergeExamplePayloadTwo.subreddit.topListings[0],
         'Receiving updated info for an entity will replace nested entities'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'CT']),
-            fromJS(mergeExamplePayloadOne.subreddit.topListings[0])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'CT']).toJS(),
+        mergeExamplePayloadOne.subreddit.topListings[0],
         'Once an entity is received, its entity data is retained even if subsequent received entities dont contain it'
     );
 
-    tt.true(
-        is(
-            mergeStateTwo.getIn(['topListings', 'GL']),
-            fromJS(mergeExamplePayloadTwo.subreddit.topListings[1])
-        ),
+    tt.deepEqual(
+        mergeStateTwo.getIn(['topListings', 'GL']).toJS(),
+        mergeExamplePayloadTwo.subreddit.topListings[1],
         'Newly received nested entites are merged into their entity container'
     );
 
