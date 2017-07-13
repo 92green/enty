@@ -11,6 +11,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const options = {
             onMutateProp: 'onMutate',
+            requestStateProp: 'requestState',
             ...optionsOverride
         };
 
@@ -23,7 +24,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                 const data = selectEntityByResult(state, props.resultKey, selectOptions);
                 return {
                     ...data,
-                    requestState: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
+                    [options.requestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
                 };
             }, selectOptions)(Component);
 

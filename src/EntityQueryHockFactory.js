@@ -29,41 +29,39 @@ import React from 'react';
  * @memberof module:Creators
  */
 export default function EntityQueryHockFactory(actionCreator: Function, selectOptions: Object): Function {
-    return (queryCreator: Function, propUpdatePaths: string[], metaOverride: Object): Function => {
+    return function EntityQueryHock(queryCreator: Function, paths: string[], optionsOverride: Object): Function {
+
+        const options = {
+            requestStateProp: 'requestState',
+            ...optionsOverride
+        };
 
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return (composedComponent: React.Element<any>) => {
+        return function EntityQueryHockApplier(Component: React.Element<any>) {
 
             const withState = Connect((state: Object, props: Object): Object => {
-                const resultKey = metaOverride && metaOverride.resultKey
-                    ? metaOverride.resultKey
-                    : fromJS({hash: queryCreator(props)}).hashCode();
-
+                const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
                 const data = selectEntityByResult(state, resultKey, selectOptions);
 
                 return {
                     ...data,
-                    requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
+                    [options.requestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
                 };
             }, selectOptions);
 
             const withPropChange = PropChangeHock(() => ({
-                paths: propUpdatePaths,
+                paths,
                 onPropChange: (props: Object) => {
-                    const resultKey = metaOverride && metaOverride.resultKey
-                        ? metaOverride.resultKey
-                        : fromJS({hash: queryCreator(props)}).hashCode();
-
-                    const meta = Object.assign({}, metaOverride, {resultKey});
+                    const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
+                    const meta = Object.assign({}, options, {resultKey});
 
                     return props.dispatch(actionCreator(queryCreator(props), meta));
                 }
             }));
 
-
-            return withState(withPropChange(composedComponent));
+            return withState(withPropChange(Component));
         };
 
     };

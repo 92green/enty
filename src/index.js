@@ -5,6 +5,8 @@
 // Api
 export {default as EntityApi} from './EntityApi';
 
+
+
 // Schemas
 export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ArraySchema} from './schema/ArraySchema';
@@ -22,9 +24,11 @@ export {
     default as selectRequestState
 } from './RequestStateSelector';
 
+
 // Misc
 export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
 export {default as EntityMutationHockFactory} from './EntityMutationHockFactory';
+export {default as EntityReducerFactory} from './EntityReducerFactory';
 
 export {
     FetchingState,
@@ -32,22 +36,4 @@ export {
     ErrorState,
     SuccessState
 } from './RequestState';
-
-
-
-
-//
-// Old API (Bad Terminology)
-
-export {
-    default as EntityReducerFactory
-} from './EntityReducerFactory';
-
-
-
-// Deprecated
-
-export {
-    default as LocalStateHock
-} from './LocalStateHock';
 
