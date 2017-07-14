@@ -54,7 +54,7 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
                 return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
             },
             (error) => {
-                return dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
+                return dispatch(action(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
             }
         );
     };

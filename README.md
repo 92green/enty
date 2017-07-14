@@ -10,7 +10,6 @@ Enty is a framework for managing data requested from back-ends and APIs.  Instea
 * Bad relationships in data become clear.
 * pairs wonderfully with graphql
 
-Enty is built on [redux] and [normalizr].
 
 # Purpose
 
@@ -119,5 +118,3 @@ export default withData(User);
 
 ```
 
-
-[normalizr]: https://github.com/paularmstrong/normalizr
