@@ -51,10 +51,10 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
         dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || fetchAction}));
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data) => {
-                return Promise.resolve(dispatch(action(recieveAction)(data, actionMeta(recieveAction))));
+                return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
             },
             (error) => {
-                return Promise.reject(dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction})));
+                return dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
             }
         );
     };
