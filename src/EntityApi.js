@@ -51,7 +51,7 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
         dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || fetchAction}));
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data) => {
-                return dispatch(action(recieveAction)(data, actionMeta(recieveAction))));
+                return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
             },
             (error) => {
                 return dispatch(createAction(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
