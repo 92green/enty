@@ -31,6 +31,7 @@ export {default as EntityMutationHockFactory} from './EntityMutationHockFactory'
 export {default as EntityReducerFactory} from './EntityReducerFactory';
 
 export {
+    EmptyState,
     FetchingState,
     RefetchingState,
     ErrorState,
