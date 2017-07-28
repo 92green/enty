@@ -28,14 +28,14 @@ const defaultOptions = {
  */
 export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}) {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
-    const entity = state[stateKey];
-    const schema = entity.getIn(['_schema', schemaKey]);
+    const entities = state[stateKey];
+    const schema = entities.getIn(['_schema', schemaKey]);
 
     if(!schema) {
         return;
     }
 
-    var data = schema.denormalize(entity.getIn(['_result', resultKey]), entity);
+    var data = schema.denormalize({result: entities.getIn(['_result', resultKey]), entities});
 
     if(data) {
         return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
@@ -55,14 +55,14 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
  */
 export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}) {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
-    const entity = state[stateKey];
-    const schema = entity.getIn(['_schema', schemaKey]).childSchema[type];
+    const entities = state[stateKey];
+    const schema = entities.getIn(['_schema', schemaKey]).childSchema[type];
 
     if(!schema) {
         return;
     }
 
-    return schema.denormalize(id, entity);
+    return schema.denormalize({result: id, entities});
 }
 
 /**
@@ -75,20 +75,20 @@ export function selectEntityById(state: Object, type: string, id: string, option
  */
 export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}) {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
-    const entity = state[stateKey];
-    const schema = ArraySchema(entity.getIn(['_schema', schemaKey]).childSchema[type]);
+    const entities = state[stateKey];
+    const schema = ArraySchema(entities.getIn(['_schema', schemaKey]).childSchema[type]);
 
     if(!schema) {
         return;
     }
 
-    const data = schema.denormalize(
-        entity
+    const data = schema.denormalize({
+        result: entities
             .get(type, Map())
             .keySeq()
             .toList(),
-        entity
-    );
+        entities
+    });
 
     return data;
 }

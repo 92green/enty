@@ -20,5 +20,5 @@ suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 
 
 [libs]
-./decls/
+src/decls/FlowTypes.js
 node_modules/immutable/dist/immutable.js.flow

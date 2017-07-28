@@ -12,6 +12,22 @@ test('ObjectSchema can normalize objects', tt => {
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
+test('ObjectSchema can normalize maps', tt => {
+    const schema = ObjectSchema({foo});
+    let {entities, result} = schema.normalize(Map({foo: {id: "1"}}));
+
+    tt.deepEqual(result.toJS(), {foo: "1"});
+    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
+});
+
+test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
+    const schema = ObjectSchema({foo});
+    const data = Map({foo: Map({id: "1"})});
+    const output = schema.denormalize(schema.normalize(data));
+    tt.true(data.equals(output));
+});
+
+
 test('ObjectSchema can normalize empty objects', tt => {
     const schema = ObjectSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
@@ -30,10 +46,11 @@ test('ObjectSchema can denormalize objects', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1"}), entities).toJS(),
+        schema.denormalize({result: Map({foo: "1"}), entities}).toJS(),
         {foo: {id: "1"}}
     );
 });
+
 
 test('ObjectSchema will not denormalize null values', tt => {
     const schema = ObjectSchema({foo});
@@ -45,7 +62,7 @@ test('ObjectSchema will not denormalize null values', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(null, entities),
+        schema.denormalize({result: null, entities}),
         null
     );
 });
@@ -60,7 +77,7 @@ test('ObjectSchema will not denormalize unknown keys', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1", bar: "2"}), entities).toJS(),
+        schema.denormalize({result: Map({foo: "1", bar: "2"}), entities}).toJS(),
         {foo: {id: "1"}, bar: "2"}
     );
 });
@@ -75,7 +92,7 @@ test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize(Map({foo: "1"}), entities).toJS(),
+        schema.denormalize({result: Map({foo: "1"}), entities}).toJS(),
         {}
     );
 });
@@ -91,7 +108,7 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
         }
     });
 
-    schema.denormalize(Map({foo: "1"}), entities);
+    schema.denormalize({result: Map({foo: "1"}), entities});
 });
 
 

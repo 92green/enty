@@ -26,7 +26,7 @@ test('EntitySchema can denormalize entities', tt => {
     });
 
     tt.deepEqual(
-        foo.denormalize("1", entities).toJS(),
+        foo.denormalize({result: "1", entities}).toJS(),
         {id: "1"}
     );
 });
@@ -44,7 +44,7 @@ test('EntitySchema will not cause an infinite recursion', tt => {
     });
 
     tt.deepEqual(
-        bar.denormalize("1", entities).toJS(),
+        bar.denormalize({result: "1", entities}).toJS(),
         {
             id: "1",
             foo: {
@@ -66,7 +66,7 @@ test('EntitySchema will not denormalize null entities', tt => {
     });
 
     tt.deepEqual(
-        schema.denormalize("2", entities),
+        schema.denormalize({result: "2", entities}),
         undefined
     );
 });
@@ -80,7 +80,7 @@ test('EntitySchema will return DELETED_ENTITY placeholder if denormalizeFilter f
     });
 
     tt.deepEqual(
-        foo.denormalize("1", entities),
+        foo.denormalize({result: "1", entities}),
         DELETED_ENTITY
     );
 });

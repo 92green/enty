@@ -16,19 +16,22 @@ export class ObjectSchema {
     }
     normalize(data: Object, entities: Object = {}) {
         const {childSchema} = this;
+        const dataMap = Map(data);
 
-        const result = Object.keys(data)
+        const result = dataMap
+            .keySeq()
             .reduce((result: Object, key: string) => {
-                if(childSchema[key] && data[key]) {
-                    return result.set(key, childSchema[key].normalize(data[key], entities).result);
+                if(childSchema[key] && dataMap.get(key)) {
+                    return result.set(key, childSchema[key].normalize(dataMap.get(key), entities).result);
                 }
 
                 return result;
-            }, Map(data));
+            }, dataMap);
 
         return {entities, result};
     }
-    denormalize(result: Object, entities: Object, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+        const {result, entities} = normalizeState;
         const {childSchema, options} = this;
         let deletedKeys = [];
 
@@ -53,7 +56,7 @@ export class ObjectSchema {
                         if(path.indexOf(key) !== -1) {
                             newValue = value;
                         } else if(childSchema[key]) {
-                            newValue = childSchema[key].denormalize(value, entities, path.concat(key));
+                            newValue = childSchema[key].denormalize({result: value, entities}, path.concat(key));
                         } else {
                             newValue = value;
                         }

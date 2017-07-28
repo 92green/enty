@@ -13,7 +13,7 @@ export class ArraySchema {
             ...options
         };
     }
-    normalize(data: Object, entities: Object = {}) {
+    normalize(data: Object, entities: Object = {}): NormalizeState {
         const {childSchema} = this;
         const idAttribute = childSchema.options.idAttribute;
         const result = List(data)
@@ -26,7 +26,8 @@ export class ArraySchema {
         data.forEach(item => childSchema.normalize(item, entities));
         return {entities, result};
     }
-    denormalize(result: Object, entities: Object, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+        const {result, entities} = normalizeState;
         const {childSchema} = this;
         // Filter out any deleted keys
         if(result == null) {
@@ -35,7 +36,7 @@ export class ArraySchema {
         // Map denormalize to our result List.
         return result
             .map((item) => {
-                return childSchema.denormalize(item, entities, path);
+                return childSchema.denormalize({result: item, entities}, path);
             })
             .filter(ii => ii !== DELETED_ENTITY);
     }

@@ -2,6 +2,7 @@
 import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 import ObjectSchema from './ObjectSchema';
+import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 
 export class EntitySchema {
     name: string;
@@ -11,7 +12,7 @@ export class EntitySchema {
         this.name = name;
         this.type = 'entity';
         this.options = {
-            idAttribute: item => item && item.id,
+            idAttribute: item => item && get(item, 'id'),
             denormalizeFilter: item => item && !item.get('deleted'),
             constructor: item => Map(item),
             merge: (aa, bb) => aa.merge(bb),
@@ -43,10 +44,11 @@ export class EntitySchema {
             entities, result: id
         };
     }
-    denormalize(result: Object, entities: Object, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+        const {result, entities} = normalizeState;
         const {name, options} = this;
         const {childSchema, denormalizeFilter} = options;
-        const entity = entities.getIn([name, result]);
+        const entity = getIn(entities, [name, result]);
 
         if(entity == null) {
             return entity;
@@ -56,7 +58,7 @@ export class EntitySchema {
             return DELETED_ENTITY;
         }
 
-        return childSchema.denormalize(entity, entities, path);
+        return childSchema.denormalize({result: entity, entities}, path);
     }
 }
 
