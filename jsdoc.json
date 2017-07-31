@@ -1,6 +1,6 @@
 {
   "source": {
-    "include": [ "README.md", "src", "decls" ],
+    "include": [ "README.md", "src" ],
     "includePattern": ".+jsx?"
   },
   "opts": {

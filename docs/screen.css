@@ -4,8 +4,9 @@ body {
     line-height: 1.6;
     padding: 0 1rem;
     color: #383838;
-    width: 54rem;
+    width: 60rem;
     margin: auto;
+    height: 100%;
 }
 
 a {
@@ -62,9 +63,11 @@ pre {
 
 pre.prettyprint code {
     background: none;
+    padding: 0;
 }
 
 section {
+    margin-top: 8rem;
     margin-bottom: 8rem;
 }
 
@@ -86,7 +89,7 @@ ul.List li {
 }
 
 .Wrapper {
-    margin-left: 14rem;
+    margin-left: 15rem;
 }
 
 .Text-mute {
@@ -117,6 +120,8 @@ ul.List li {
     padding: 0;
     position: fixed;
     width: 14rem;
+    height: 90%;
+    overflow: auto;
 }
 
 .Navigation_section {
@@ -128,10 +133,38 @@ ul.List li {
     margin: 0;
 }
 
+.Navigation_subitem {
+    margin: 0;
+    margin-left: .75rem;
+}
+
 .FunctionDetail {
     background-color: #f1f1f1;
     padding: .5rem;
 }
+
+
+/* Typography */
+
+.Typography ul {
+    padding-left: 1rem;
+}
+
+.Typography li {
+    list-style-type: square;
+}
+
+.Typography blockquote {
+    padding: 1px 1rem;
+    margin: 0;
+    font-style: italic;
+    margin-bottom: 2rem;
+    border-left: 4px solid #e4e4e4;
+    color: gray;
+}
+
+
+
 /*
 Code Highlighting
 

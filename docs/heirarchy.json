@@ -3,23 +3,152 @@
         "heading": "Modules",
         "doclets": [
             {
-                "comment": "/**\n * @module Creators\n */",
+                "comment": "/**\n * @module Api\n */",
                 "meta": {
                     "range": [
-                        639,
-                        666
+                        992,
+                        1014
                     ],
-                    "filename": "CreateRequestActions.js",
-                    "lineno": 25,
+                    "filename": "EntityApi.js",
+                    "lineno": 35,
                     "path": "/Users/allanhortle/localhost/code/enty/src",
                     "code": {}
                 },
                 "kind": "module",
-                "name": "Creators",
-                "longname": "module:Creators",
-                "___id": "T000002R000076",
+                "name": "Api",
+                "longname": "module:Api",
+                "___id": "T000002R000018",
                 "___s": true,
                 "doclets": [
+                    {
+                        "returns": [
+                            {
+                                "type": {
+                                    "names": [
+                                        "object"
+                                    ]
+                                },
+                                "description": "<p>An Entity Api</p>"
+                            }
+                        ],
+                        "meta": {
+                            "range": [
+                                3190,
+                                4975
+                            ],
+                            "filename": "EntityApi.js",
+                            "lineno": 95,
+                            "path": "/Users/allanhortle/localhost/code/enty/src",
+                            "code": {
+                                "id": "astnode100000301",
+                                "name": "EntityApi",
+                                "type": "FunctionDeclaration",
+                                "paramnames": [
+                                    "schema",
+                                    "actionMap",
+                                    "selectOptions"
+                                ]
+                            },
+                            "vars": {
+                                "": null
+                            }
+                        },
+                        "params": [
+                            {
+                                "type": {
+                                    "names": [
+                                        "object"
+                                    ]
+                                },
+                                "description": "<p>deep object representation of api functions</p>",
+                                "name": "schema"
+                            },
+                            {
+                                "type": {
+                                    "names": [
+                                        "object"
+                                    ]
+                                },
+                                "description": "<p>deep object representation of api functions</p>",
+                                "name": "actionMap"
+                            },
+                            {
+                                "type": {
+                                    "names": [
+                                        "object"
+                                    ]
+                                },
+                                "description": "<p>deep object representation of api functions</p>",
+                                "name": "selectOptions"
+                            }
+                        ],
+                        "longname": "module:Api.EntityApi",
+                        "name": "EntityApi",
+                        "doclets": [],
+                        "memberof": "module:Api",
+                        "scope": "static",
+                        "kind": "function",
+                        "___s": true,
+                        "___id": "T000002R000030",
+                        "description": "<p>Constructs the Entity Api for use around the site</p>",
+                        "parentKind": "module",
+                        "comment": "/**\n * Constructs the Entity Api for use around the site\n *\n * @param  {object} schema          deep object representation of api functions\n * @param  {object} actionMap       deep object representation of api functions\n * @param  {object} selectOptions   deep object representation of api functions\n * @return {object}                 An Entity Api\n * @memberof module:Api\n */"
+                    }
+                ]
+            },
+            {
+                "comment": "/**\n * @module Misc\n */",
+                "meta": {
+                    "range": [
+                        506,
+                        529
+                    ],
+                    "filename": "EntityReducerFactory.js",
+                    "lineno": 23,
+                    "path": "/Users/allanhortle/localhost/code/enty/src",
+                    "code": {}
+                },
+                "kind": "module",
+                "name": "Misc",
+                "longname": "module:Misc",
+                "___id": "T000002R000120",
+                "___s": true,
+                "doclets": [
+                    {
+                        "meta": {
+                            "range": [
+                                1012,
+                                3516
+                            ],
+                            "filename": "EntityMutationHockFactory.js",
+                            "lineno": 46,
+                            "path": "/Users/allanhortle/localhost/code/enty/src",
+                            "code": {
+                                "id": "astnode100000663",
+                                "name": "EntityMutationHockFactory",
+                                "type": "FunctionDeclaration",
+                                "paramnames": [
+                                    "actionCreator",
+                                    "selectOptions"
+                                ]
+                            },
+                            "vars": {
+                                "": null
+                            }
+                        },
+                        "params": [],
+                        "longname": "module:Misc.EntityMutationHockFactory",
+                        "name": "EntityMutationHockFactory",
+                        "doclets": [],
+                        "memberof": "module:Misc",
+                        "scope": "static",
+                        "kind": "function",
+                        "___s": true,
+                        "___id": "T000002R000057",
+                        "description": "<p>Entitiy Mutation Hock</p>\n<p>param {function} sideEffect\nreturns {EntityQueryHockFactory}</p>",
+                        "parentKind": "module",
+                        "comment": "/**\n * Entitiy Mutation Hock\n *\n * param {function} sideEffect\n * returns {EntityQueryHockFactory}\n * @memberof module:Misc\n */"
+                    },
                     {
                         "returns": [
                             {
@@ -34,8 +163,98 @@
                                                     "type": {
                                                         "names": [
                                                             "EntityQueryHockApplier"
-                                                        ]
-                                                    }
+                                                        ],
+                                                        "typedefs": {
+                                                            "EntityQueryHockApplier": {
+                                                                "returns": [
+                                                                    {
+                                                                        "type": {
+                                                                            "names": [
+                                                                                "Component"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "meta": {
+                                                                    "range": [
+                                                                        234,
+                                                                        343
+                                                                    ],
+                                                                    "filename": "JsdocTypes.js",
+                                                                    "lineno": 15,
+                                                                    "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                    "code": {}
+                                                                },
+                                                                "params": [
+                                                                    {
+                                                                        "type": {
+                                                                            "names": [
+                                                                                "Component"
+                                                                            ]
+                                                                        },
+                                                                        "name": "componentToDecorate"
+                                                                    }
+                                                                ],
+                                                                "longname": "EntityQueryHockApplier",
+                                                                "name": "EntityQueryHockApplier",
+                                                                "scope": "global",
+                                                                "kind": "typedef",
+                                                                "___s": true,
+                                                                "___id": "T000002R000542",
+                                                                "type": {
+                                                                    "names": [
+                                                                        "function"
+                                                                    ]
+                                                                },
+                                                                "comment": "/**\n* @callback EntityQueryHockApplier\n*\n* @param {Component} componentToDecorate\n*\n* @returns {Component}\n*/"
+                                                            }
+                                                        }
+                                                    },
+                                                    "typedefOptions": [
+                                                        {
+                                                            "returns": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Component"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            ],
+                                                            "meta": {
+                                                                "range": [
+                                                                    234,
+                                                                    343
+                                                                ],
+                                                                "filename": "JsdocTypes.js",
+                                                                "lineno": 15,
+                                                                "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                "code": {}
+                                                            },
+                                                            "params": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Component"
+                                                                        ]
+                                                                    },
+                                                                    "name": "componentToDecorate"
+                                                                }
+                                                            ],
+                                                            "longname": "EntityQueryHockApplier",
+                                                            "name": "EntityQueryHockApplier",
+                                                            "scope": "global",
+                                                            "kind": "typedef",
+                                                            "___s": true,
+                                                            "___id": "T000002R000542",
+                                                            "type": {
+                                                                "names": [
+                                                                    "function"
+                                                                ]
+                                                            },
+                                                            "comment": "/**\n* @callback EntityQueryHockApplier\n*\n* @param {Component} componentToDecorate\n*\n* @returns {Component}\n*/"
+                                                        }
+                                                    ]
                                                 }
                                             ],
                                             "meta": {
@@ -53,9 +272,107 @@
                                                     "type": {
                                                         "names": [
                                                             "QueryCreator"
-                                                        ]
+                                                        ],
+                                                        "typedefs": {
+                                                            "QueryCreator": {
+                                                                "meta": {
+                                                                    "range": [
+                                                                        345,
+                                                                        502
+                                                                    ],
+                                                                    "filename": "JsdocTypes.js",
+                                                                    "lineno": 23,
+                                                                    "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                    "code": {}
+                                                                },
+                                                                "params": [
+                                                                    {
+                                                                        "type": {
+                                                                            "names": [
+                                                                                "Object"
+                                                                            ]
+                                                                        },
+                                                                        "optional": true,
+                                                                        "description": "<p>Description</p>",
+                                                                        "name": "props"
+                                                                    },
+                                                                    {
+                                                                        "type": {
+                                                                            "names": [
+                                                                                "Object"
+                                                                            ]
+                                                                        },
+                                                                        "optional": true,
+                                                                        "description": "<p>Description</p>",
+                                                                        "name": "state"
+                                                                    }
+                                                                ],
+                                                                "longname": "QueryCreator",
+                                                                "name": "QueryCreator",
+                                                                "scope": "global",
+                                                                "kind": "typedef",
+                                                                "___s": true,
+                                                                "___id": "T000002R000543",
+                                                                "type": {
+                                                                    "names": [
+                                                                        "function"
+                                                                    ]
+                                                                },
+                                                                "description": "<p>QueryCreator Description</p>",
+                                                                "comment": "/**\n * QueryCreator Description\n *\n * @callback QueryCreator\n *\n * @param {Object} [props]\n * Description\n *\n * @param {Object} [state]\n * Description\n *\n */"
+                                                            }
+                                                        }
                                                     },
-                                                    "name": "queryCreator"
+                                                    "name": "queryCreator",
+                                                    "typedefOptions": [
+                                                        {
+                                                            "meta": {
+                                                                "range": [
+                                                                    345,
+                                                                    502
+                                                                ],
+                                                                "filename": "JsdocTypes.js",
+                                                                "lineno": 23,
+                                                                "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                "code": {}
+                                                            },
+                                                            "params": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Object"
+                                                                        ]
+                                                                    },
+                                                                    "optional": true,
+                                                                    "description": "<p>Description</p>",
+                                                                    "name": "props"
+                                                                },
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Object"
+                                                                        ]
+                                                                    },
+                                                                    "optional": true,
+                                                                    "description": "<p>Description</p>",
+                                                                    "name": "state"
+                                                                }
+                                                            ],
+                                                            "longname": "QueryCreator",
+                                                            "name": "QueryCreator",
+                                                            "scope": "global",
+                                                            "kind": "typedef",
+                                                            "___s": true,
+                                                            "___id": "T000002R000543",
+                                                            "type": {
+                                                                "names": [
+                                                                    "function"
+                                                                ]
+                                                            },
+                                                            "description": "<p>QueryCreator Description</p>",
+                                                            "comment": "/**\n * QueryCreator Description\n *\n * @callback QueryCreator\n *\n * @param {Object} [props]\n * Description\n *\n * @param {Object} [state]\n * Description\n *\n */"
+                                                        }
+                                                    ]
                                                 },
                                                 {
                                                     "type": {
@@ -83,7 +400,7 @@
                                             "scope": "global",
                                             "kind": "typedef",
                                             "___s": true,
-                                            "___id": "T000002R000428",
+                                            "___id": "T000002R000541",
                                             "type": {
                                                 "names": [
                                                     "function"
@@ -100,8 +417,98 @@
                                                 "type": {
                                                     "names": [
                                                         "EntityQueryHockApplier"
-                                                    ]
-                                                }
+                                                    ],
+                                                    "typedefs": {
+                                                        "EntityQueryHockApplier": {
+                                                            "returns": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Component"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            ],
+                                                            "meta": {
+                                                                "range": [
+                                                                    234,
+                                                                    343
+                                                                ],
+                                                                "filename": "JsdocTypes.js",
+                                                                "lineno": 15,
+                                                                "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                "code": {}
+                                                            },
+                                                            "params": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Component"
+                                                                        ]
+                                                                    },
+                                                                    "name": "componentToDecorate"
+                                                                }
+                                                            ],
+                                                            "longname": "EntityQueryHockApplier",
+                                                            "name": "EntityQueryHockApplier",
+                                                            "scope": "global",
+                                                            "kind": "typedef",
+                                                            "___s": true,
+                                                            "___id": "T000002R000542",
+                                                            "type": {
+                                                                "names": [
+                                                                    "function"
+                                                                ]
+                                                            },
+                                                            "comment": "/**\n* @callback EntityQueryHockApplier\n*\n* @param {Component} componentToDecorate\n*\n* @returns {Component}\n*/"
+                                                        }
+                                                    }
+                                                },
+                                                "typedefOptions": [
+                                                    {
+                                                        "returns": [
+                                                            {
+                                                                "type": {
+                                                                    "names": [
+                                                                        "Component"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        ],
+                                                        "meta": {
+                                                            "range": [
+                                                                234,
+                                                                343
+                                                            ],
+                                                            "filename": "JsdocTypes.js",
+                                                            "lineno": 15,
+                                                            "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                            "code": {}
+                                                        },
+                                                        "params": [
+                                                            {
+                                                                "type": {
+                                                                    "names": [
+                                                                        "Component"
+                                                                    ]
+                                                                },
+                                                                "name": "componentToDecorate"
+                                                            }
+                                                        ],
+                                                        "longname": "EntityQueryHockApplier",
+                                                        "name": "EntityQueryHockApplier",
+                                                        "scope": "global",
+                                                        "kind": "typedef",
+                                                        "___s": true,
+                                                        "___id": "T000002R000542",
+                                                        "type": {
+                                                            "names": [
+                                                                "function"
+                                                            ]
+                                                        },
+                                                        "comment": "/**\n* @callback EntityQueryHockApplier\n*\n* @param {Component} componentToDecorate\n*\n* @returns {Component}\n*/"
+                                                    }
+                                                ]
                                             }
                                         ],
                                         "meta": {
@@ -119,9 +526,107 @@
                                                 "type": {
                                                     "names": [
                                                         "QueryCreator"
-                                                    ]
+                                                    ],
+                                                    "typedefs": {
+                                                        "QueryCreator": {
+                                                            "meta": {
+                                                                "range": [
+                                                                    345,
+                                                                    502
+                                                                ],
+                                                                "filename": "JsdocTypes.js",
+                                                                "lineno": 23,
+                                                                "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                                "code": {}
+                                                            },
+                                                            "params": [
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Object"
+                                                                        ]
+                                                                    },
+                                                                    "optional": true,
+                                                                    "description": "<p>Description</p>",
+                                                                    "name": "props"
+                                                                },
+                                                                {
+                                                                    "type": {
+                                                                        "names": [
+                                                                            "Object"
+                                                                        ]
+                                                                    },
+                                                                    "optional": true,
+                                                                    "description": "<p>Description</p>",
+                                                                    "name": "state"
+                                                                }
+                                                            ],
+                                                            "longname": "QueryCreator",
+                                                            "name": "QueryCreator",
+                                                            "scope": "global",
+                                                            "kind": "typedef",
+                                                            "___s": true,
+                                                            "___id": "T000002R000543",
+                                                            "type": {
+                                                                "names": [
+                                                                    "function"
+                                                                ]
+                                                            },
+                                                            "description": "<p>QueryCreator Description</p>",
+                                                            "comment": "/**\n * QueryCreator Description\n *\n * @callback QueryCreator\n *\n * @param {Object} [props]\n * Description\n *\n * @param {Object} [state]\n * Description\n *\n */"
+                                                        }
+                                                    }
                                                 },
-                                                "name": "queryCreator"
+                                                "name": "queryCreator",
+                                                "typedefOptions": [
+                                                    {
+                                                        "meta": {
+                                                            "range": [
+                                                                345,
+                                                                502
+                                                            ],
+                                                            "filename": "JsdocTypes.js",
+                                                            "lineno": 23,
+                                                            "path": "/Users/allanhortle/localhost/code/enty/src/decls",
+                                                            "code": {}
+                                                        },
+                                                        "params": [
+                                                            {
+                                                                "type": {
+                                                                    "names": [
+                                                                        "Object"
+                                                                    ]
+                                                                },
+                                                                "optional": true,
+                                                                "description": "<p>Description</p>",
+                                                                "name": "props"
+                                                            },
+                                                            {
+                                                                "type": {
+                                                                    "names": [
+                                                                        "Object"
+                                                                    ]
+                                                                },
+                                                                "optional": true,
+                                                                "description": "<p>Description</p>",
+                                                                "name": "state"
+                                                            }
+                                                        ],
+                                                        "longname": "QueryCreator",
+                                                        "name": "QueryCreator",
+                                                        "scope": "global",
+                                                        "kind": "typedef",
+                                                        "___s": true,
+                                                        "___id": "T000002R000543",
+                                                        "type": {
+                                                            "names": [
+                                                                "function"
+                                                            ]
+                                                        },
+                                                        "description": "<p>QueryCreator Description</p>",
+                                                        "comment": "/**\n * QueryCreator Description\n *\n * @callback QueryCreator\n *\n * @param {Object} [props]\n * Description\n *\n * @param {Object} [state]\n * Description\n *\n */"
+                                                    }
+                                                ]
                                             },
                                             {
                                                 "type": {
@@ -149,7 +654,7 @@
                                         "scope": "global",
                                         "kind": "typedef",
                                         "___s": true,
-                                        "___id": "T000002R000428",
+                                        "___id": "T000002R000541",
                                         "type": {
                                             "names": [
                                                 "function"
@@ -162,18 +667,19 @@
                         ],
                         "meta": {
                             "range": [
-                                1834,
-                                3113
+                                2146,
+                                3757
                             ],
-                            "filename": "CreateEntityQuery.js",
-                            "lineno": 54,
+                            "filename": "EntityQueryHockFactory.js",
+                            "lineno": 64,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100000100",
-                                "name": "createEntityQuery",
+                                "id": "astnode100001081",
+                                "name": "EntityQueryHockFactory",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
-                                    "actionCreator"
+                                    "actionCreator",
+                                    "selectOptions"
                                 ]
                             },
                             "vars": {
@@ -190,16 +696,17 @@
                                 "name": "sideEffect"
                             }
                         ],
-                        "longname": "module:Creators.createEntityQuery",
-                        "name": "createEntityQuery",
+                        "longname": "module:Misc.EntityQueryHockFactory",
+                        "name": "EntityQueryHockFactory",
                         "doclets": [],
-                        "memberof": "module:Creators",
+                        "memberof": "module:Misc",
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000018",
+                        "___id": "T000002R000104",
                         "description": "<p>EntityQueries are the main way to request and receive entity state. For most components you will\nhave a query that should be fired on componentWillMount (also if certain props change) and you\nwould like the result of that query to be given to the component once it resolves.\n<code>createEntityQuery</code> wraps all this together in a factory that returns an\nEntityQueryHock. This lets you create different EntityQueryHocks for different side effects.\n<em>Note: A graphql based application often only needs one.</em></p>\n<p>Each EntityQueryHock will listen for a change in props and trigger the <code>queryCreator</code>\nfunction with the current props. The result of this will be given to the side effect.\nThe resulting data will be normalized and a reference will be stored under a auto-generated resultKey.\nThis result of this is selected along with it's <code>RequestState</code> and given to the decorated component as props.</p>",
-                        "comment": "/**\n * EntityQueries are the main way to request and receive entity state. For most components you will\n * have a query that should be fired on componentWillMount (also if certain props change) and you\n * would like the result of that query to be given to the component once it resolves.\n * `createEntityQuery` wraps all this together in a factory that returns an\n * EntityQueryHock. This lets you create different EntityQueryHocks for different side effects.\n * _Note: A graphql based application often only needs one._\n *\n * Each EntityQueryHock will listen for a change in props and trigger the `queryCreator`\n * function with the current props. The result of this will be given to the side effect.\n * The resulting data will be normalized and a reference will be stored under a auto-generated resultKey.\n * This result of this is selected along with it's `RequestState` and given to the decorated component as props.\n *\n * @param {function} sideEffect\n * @returns {EntityQueryHockFactory}\n * @memberof module:Creators\n */"
+                        "parentKind": "module",
+                        "comment": "/**\n * EntityQueries are the main way to request and receive entity state. For most components you will\n * have a query that should be fired on componentWillMount (also if certain props change) and you\n * would like the result of that query to be given to the component once it resolves.\n * `createEntityQuery` wraps all this together in a factory that returns an\n * EntityQueryHock. This lets you create different EntityQueryHocks for different side effects.\n * _Note: A graphql based application often only needs one._\n *\n * Each EntityQueryHock will listen for a change in props and trigger the `queryCreator`\n * function with the current props. The result of this will be given to the side effect.\n * The resulting data will be normalized and a reference will be stored under a auto-generated resultKey.\n * This result of this is selected along with it's `RequestState` and given to the decorated component as props.\n *\n * @param {function} sideEffect\n * @returns {EntityQueryHockFactory}\n * @memberof module:Misc\n */"
                     },
                     {
                         "returns": [
@@ -213,15 +720,15 @@
                         ],
                         "meta": {
                             "range": [
-                                1768,
-                                5032
+                                1581,
+                                4943
                             ],
-                            "filename": "CreateEntityReducer.js",
-                            "lineno": 58,
+                            "filename": "EntityReducerFactory.js",
+                            "lineno": 51,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100000349",
-                                "name": "createEntityReducer",
+                                "id": "astnode100001338",
+                                "name": "EntityReducerFactory",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
                                     "config"
@@ -229,8 +736,8 @@
                             },
                             "vars": {
                                 "undefined": null,
-                                "initialState": "module:Creators.createEntityReducer~initialState",
-                                "defaultMeta": "module:Creators.createEntityReducer~defaultMeta",
+                                "initialState": "module:Misc.EntityReducerFactory~initialState",
+                                "defaultMeta": "module:Misc.EntityReducerFactory~defaultMeta",
                                 "": null
                             }
                         },
@@ -254,256 +761,20 @@
                                 "name": "config.afterNormalize"
                             }
                         ],
-                        "longname": "module:Creators.createEntityReducer",
+                        "longname": "module:Misc.EntityReducerFactory",
                         "examples": [
                             "import {createEntityReducer} from 'enty';\nimport EntitySchema from 'myapp/EntitySchema';\n\nexport default combineReducers({\n    entity: createEntityReducer({\n         schemaMap: {\n             GRAPHQL_RECEIVE: EntitySchema,\n             MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema\n         },\n         afterNormalize: (value, key) => value,\n    })\n});"
                         ],
-                        "name": "createEntityReducer",
+                        "name": "EntityReducerFactory",
                         "doclets": [],
-                        "memberof": "module:Creators",
+                        "memberof": "module:Misc",
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000042",
+                        "___id": "T000002R000131",
                         "description": "<p>Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in <code>schemaMap</code> the payload is normalized based off the given schema.\nTakes a map of schemas where each key is an action name and value is a schema. must have at least one key called <code>mainSchema</code> returns a reducer that holds the main entity state.</p>",
-                        "comment": "/**\n * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.\n * Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called `mainSchema` returns a reducer that holds the main entity state.\n *\n * @example\n * import {createEntityReducer} from 'enty';\n * import EntitySchema from 'myapp/EntitySchema';\n *\n * export default combineReducers({\n *     entity: createEntityReducer({\n *          schemaMap: {\n *              GRAPHQL_RECEIVE: EntitySchema,\n *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema\n *          },\n *          afterNormalize: (value, key) => value,\n *     })\n * });\n *\n * @param {object} schemaMap - Map of schema action names.\n * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.\n * @return {function}\n * @memberof module:Creators\n *\n */"
-                    },
-                    {
-                        "returns": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "array"
-                                    ]
-                                },
-                                "description": "<p>list of action creators and action types</p>"
-                            }
-                        ],
-                        "meta": {
-                            "range": [
-                                1502,
-                                2110
-                            ],
-                            "filename": "CreateRequestActions.js",
-                            "lineno": 54,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100000862",
-                                "name": "createRequestActionSet",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "actionMap"
-                                ]
-                            },
-                            "vars": {
-                                "": null
-                            }
-                        },
-                        "params": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "object"
-                                    ]
-                                },
-                                "description": "<p>deep object representation of api functions</p>",
-                                "name": "actionMap"
-                            }
-                        ],
-                        "longname": "module:Creators.createRequestActionSet",
-                        "name": "createRequestActionSet",
-                        "doclets": [],
-                        "memberof": "module:Creators",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000079",
-                        "description": "<p>returns a <a href=\"thunk\">redux-thunk</a> action creator that will dispatch the three states of our request action.\ndispatch <code>fetchAction</code>\ncall <code>sideEffect</code>\nthen dispatch <code>recieveAction</code>\ncatch dispatch <code>errorAction</code></p>",
-                        "comment": "/**\n * returns a [redux-thunk](thunk) action creator that will dispatch the three states of our request action.\n * dispatch `fetchAction`\n * call `sideEffect`\n * then dispatch `recieveAction`\n * catch dispatch `errorAction`\n *\n * @param  {object} actionMap deep object representation of api functions\n * @return {array}            list of action creators and action types\n * @memberof module:Creators\n */"
-                    },
-                    {
-                        "returns": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "array"
-                                    ]
-                                },
-                                "description": "<p>list of action creators and action types</p>"
-                            }
-                        ],
-                        "meta": {
-                            "range": [
-                                2515,
-                                3525
-                            ],
-                            "filename": "CreateRequestActions.js",
-                            "lineno": 75,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100000977",
-                                "name": "createRequestAction",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "fetchAction",
-                                    "recieveAction",
-                                    "errorAction",
-                                    "sideEffect"
-                                ]
-                            },
-                            "vars": {
-                                "action": "module:Creators.createRequestAction~action",
-                                "": null
-                            }
-                        },
-                        "params": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "string"
-                                    ]
-                                },
-                                "description": "<p>action name for fetching action</p>",
-                                "name": "fetchAction"
-                            },
-                            {
-                                "type": {
-                                    "names": [
-                                        "string"
-                                    ]
-                                },
-                                "description": "<p>action name for receiving action</p>",
-                                "name": "recieveAction"
-                            },
-                            {
-                                "type": {
-                                    "names": [
-                                        "string"
-                                    ]
-                                },
-                                "description": "<p>action name for error action</p>",
-                                "name": "errorAction"
-                            },
-                            {
-                                "type": {
-                                    "names": [
-                                        "function"
-                                    ]
-                                },
-                                "description": "<p>Promise returning side effect to call after fetch action.</p>",
-                                "name": "sideEffect"
-                            }
-                        ],
-                        "longname": "module:Creators.createRequestAction",
-                        "name": "createRequestAction",
-                        "doclets": [],
-                        "memberof": "module:Creators",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000084",
-                        "comment": "/**\n *\n * @param {string} fetchAction     action name for fetching action\n * @param {string} recieveAction   action name for receiving action\n * @param {string} errorAction     action name for error action\n * @param {function} sideEffect    Promise returning side effect to call after fetch action.\n * @return {array}            list of action creators and action types\n * @memberof module:Creators\n */"
-                    }
-                ]
-            },
-            {
-                "comment": "/**\n * @module Actions\n */",
-                "meta": {
-                    "range": [
-                        163,
-                        189
-                    ],
-                    "filename": "ReceiveEntityAction.js",
-                    "lineno": 10,
-                    "path": "/Users/allanhortle/localhost/code/enty/src",
-                    "code": {}
-                },
-                "kind": "module",
-                "name": "Actions",
-                "longname": "module:Actions",
-                "___id": "T000002R000197",
-                "___s": true,
-                "doclets": [
-                    {
-                        "meta": {
-                            "range": [
-                                407,
-                                538
-                            ],
-                            "filename": "DeleteEntityAction.js",
-                            "lineno": 20,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100001194",
-                                "name": "deleteEntity",
-                                "type": "AssignmentExpression",
-                                "value": "exports.deleteEntity"
-                            }
-                        },
-                        "longname": "module:Actions.deleteEntity",
-                        "name": "deleteEntity",
-                        "doclets": [],
-                        "memberof": "module:Actions",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000104",
-                        "description": "<p>Returns an action creator that takes an entity key path as its payload\nThe entity reducer will then mark that entity as deleted.</p>",
-                        "comment": "/**\n * Returns an action creator that takes an entity key path as its payload\n * The entity reducer will then mark that entity as deleted.\n * @function\n * @memberof module:Actions\n */"
-                    },
-                    {
-                        "meta": {
-                            "range": [
-                                738,
-                                882
-                            ],
-                            "filename": "DeleteEntityAction.js",
-                            "lineno": 29,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100001215",
-                                "name": "undoDeleteEntity",
-                                "type": "AssignmentExpression",
-                                "value": "exports.undoDeleteEntity"
-                            }
-                        },
-                        "longname": "module:Actions.undoDeleteEntity",
-                        "name": "undoDeleteEntity",
-                        "doclets": [],
-                        "memberof": "module:Actions",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000106",
-                        "description": "<p>Returns an action creator that takes an entity key path as its payload\nThe entity reducer will then mark that entity as NOT deleted.</p>",
-                        "comment": "/**\n * Returns an action creator that takes an entity key path as its payload\n * The entity reducer will then mark that entity as NOT deleted.\n *\n * @function\n * @memberof module:Actions\n */"
-                    },
-                    {
-                        "meta": {
-                            "range": [
-                                311,
-                                445
-                            ],
-                            "filename": "ReceiveEntityAction.js",
-                            "lineno": 19,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100002143",
-                                "name": "receiveEntity",
-                                "type": "AssignmentExpression",
-                                "value": "exports.receiveEntity"
-                            }
-                        },
-                        "longname": "module:Actions.receiveEntity",
-                        "name": "receiveEntity",
-                        "doclets": [],
-                        "memberof": "module:Actions",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000201",
-                        "description": "<p>Returns an action creator that will trigger an entity receive</p>",
-                        "comment": "/**\n * Returns an action creator that will trigger an entity receive\n * @function\n * @memberof module:Actions\n */"
+                        "parentKind": "module",
+                        "comment": "/**\n * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.\n * Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called `mainSchema` returns a reducer that holds the main entity state.\n *\n * @example\n * import {createEntityReducer} from 'enty';\n * import EntitySchema from 'myapp/EntitySchema';\n *\n * export default combineReducers({\n *     entity: createEntityReducer({\n *          schemaMap: {\n *              GRAPHQL_RECEIVE: EntitySchema,\n *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema\n *          },\n *          afterNormalize: (value, key) => value,\n *     })\n * });\n *\n * @param {object} schemaMap - Map of schema action names.\n * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.\n * @return {function}\n * @memberof module:Misc\n *\n */"
                     }
                 ]
             },
@@ -511,18 +782,18 @@
                 "comment": "/**\n * @module Selectors\n */",
                 "meta": {
                     "range": [
-                        159,
-                        187
+                        427,
+                        455
                     ],
                     "filename": "RequestStateSelector.js",
-                    "lineno": 10,
+                    "lineno": 21,
                     "path": "/Users/allanhortle/localhost/code/enty/src",
                     "code": {}
                 },
                 "kind": "module",
                 "name": "Selectors",
                 "longname": "module:Selectors",
-                "___id": "T000002R000203",
+                "___id": "T000002R000235",
                 "___s": true,
                 "doclets": [
                     {
@@ -538,25 +809,27 @@
                         ],
                         "meta": {
                             "range": [
-                                905,
-                                1323
+                                1085,
+                                1585
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 34,
+                            "lineno": 42,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001311",
+                                "id": "astnode100001822",
                                 "name": "selectEntityByResult",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
-                                    "",
+                                    "state",
                                     "resultKey",
-                                    "schemaKey"
+                                    "options"
                                 ]
                             },
                             "vars": {
-                                "data": "module:Selectors.selectEntityByResult~data",
-                                "newData": "module:Selectors.selectEntityByResult~newData"
+                                "undefined": null,
+                                "entities": "module:Selectors.selectEntityByResult~entities",
+                                "schema": "module:Selectors.selectEntityByResult~schema",
+                                "data": "module:Selectors.selectEntityByResult~data"
                             }
                         },
                         "params": [
@@ -594,8 +867,9 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000120",
+                        "___id": "T000002R000168",
                         "description": "<p>The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.</p>",
+                        "parentKind": "module",
                         "comment": "/**\n * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.\n * @param  {object} state\n * @param  {string} resultKey\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {object} entity map\n * @memberof module:Selectors\n */"
                     },
                     {
@@ -611,25 +885,27 @@
                         ],
                         "meta": {
                             "range": [
-                                1741,
-                                2071
+                                2003,
+                                2366
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 54,
+                            "lineno": 69,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001379",
+                                "id": "astnode100001905",
                                 "name": "selectEntityById",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
-                                    "",
+                                    "state",
                                     "type",
                                     "id",
-                                    "schemaKey"
+                                    "options"
                                 ]
                             },
                             "vars": {
-                                "data": "module:Selectors.selectEntityById~data"
+                                "undefined": null,
+                                "entities": "module:Selectors.selectEntityById~entities",
+                                "schema": "module:Selectors.selectEntityById~schema"
                             }
                         },
                         "params": [
@@ -675,8 +951,9 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000124",
+                        "___id": "T000002R000176",
                         "description": "<p>Given a type and id of and entity in state it will return the denormalized state.\nThis function is only used when you are certain you need the exact id in entity state.\nMost often the request key is more appropriate.</p>",
+                        "parentKind": "module",
                         "comment": "/**\n * Given a type and id of and entity in state it will return the denormalized state.\n * This function is only used when you are certain you need the exact id in entity state.\n * Most often the request key is more appropriate.\n * @param  {object} state\n * @param  {string} type\n * @param  {string} id\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {object} entity map\n * @memberof module:Selectors\n */"
                     },
                     {
@@ -692,23 +969,26 @@
                         ],
                         "meta": {
                             "range": [
-                                2289,
-                                2651
+                                2584,
+                                3074
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 70,
+                            "lineno": 89,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001438",
+                                "id": "astnode100001965",
                                 "name": "selectEntityByType",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
-                                    "",
+                                    "state",
                                     "type",
-                                    "schemaKey"
+                                    "options"
                                 ]
                             },
                             "vars": {
+                                "undefined": null,
+                                "entities": "module:Selectors.selectEntityByType~entities",
+                                "schema": "module:Selectors.selectEntityByType~schema",
                                 "data": "module:Selectors.selectEntityByType~data"
                             }
                         },
@@ -747,8 +1027,9 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000127",
+                        "___id": "T000002R000183",
                         "description": "<p>Access a whole entity type as a list</p>",
+                        "parentKind": "module",
                         "comment": "/**\n * Access a whole entity type as a list\n * @param  {object} state\n * @param  {string} type\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {Immutable.List} entity list\n * @memberof module:Selectors\n */"
                     },
                     {
@@ -764,20 +1045,24 @@
                         ],
                         "meta": {
                             "range": [
-                                506,
-                                656
+                                774,
+                                1014
                             ],
                             "filename": "RequestStateSelector.js",
-                            "lineno": 21,
+                            "lineno": 32,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100002188",
+                                "id": "astnode100002466",
                                 "name": "selectRequestState",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
                                     "state",
-                                    "requestStateKey"
+                                    "requestStateKey",
+                                    "options"
                                 ]
+                            },
+                            "vars": {
+                                "undefined": null
                             }
                         },
                         "params": [
@@ -807,219 +1092,10 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000207",
+                        "___id": "T000002R000245",
                         "description": "<p>Returns the state of a current request. Either fetching, error or not yet requested.</p>",
+                        "parentKind": "module",
                         "comment": "/**\n * Returns the state of a current request. Either fetching, error or not yet requested.\n * @param  {object} state            the current state\n * @param  {string} requestStateKey  either result key or action prefix\n * @return {object}                  the curerent request state\n * @memberof module:Selectors\n */"
-                    }
-                ]
-            },
-            {
-                "comment": "/**\n * @module Misc\n */",
-                "meta": {
-                    "range": [
-                        389,
-                        412
-                    ],
-                    "filename": "logRequestActionNames.js",
-                    "lineno": 17,
-                    "path": "/Users/allanhortle/localhost/code/enty/src/utils",
-                    "code": {}
-                },
-                "kind": "module",
-                "name": "Misc",
-                "longname": "module:Misc",
-                "___id": "T000002R000548",
-                "___s": true,
-                "doclets": [
-                    {
-                        "returns": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "function"
-                                    ]
-                                },
-                                "description": "<p>componentCreator    function to pass react component</p>"
-                            }
-                        ],
-                        "meta": {
-                            "range": [
-                                1000,
-                                1652
-                            ],
-                            "filename": "LocalStateHock.jsx",
-                            "lineno": 27,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100001563",
-                                "name": "LocalStateHock",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "reducer"
-                                ]
-                            },
-                            "vars": {
-                                "": null
-                            }
-                        },
-                        "params": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "function"
-                                    ]
-                                },
-                                "description": "<p>a function that acts as a local reducer</p>",
-                                "name": "reducer"
-                            }
-                        ],
-                        "longname": "module:Misc.LocalStateHock",
-                        "name": "LocalStateHock",
-                        "doclets": [],
-                        "memberof": "module:Misc",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000138",
-                        "description": "<p><code>LocalStateHock(reducer: function(state, action)) =&gt; function(component: Component)</code>\nWraps a component with a tiny implementation of the redux concept. Takes a reducer and returns a function ready to call with a component. The hock gives the component <code>props.localDispatch</code>which triggers the reducer. the return state of the reducer is then destructured on to the components as props.</p>",
-                        "comment": "/**\n * `LocalStateHock(reducer: function(state, action)) => function(component: Component)`\nWraps a component with a tiny implementation of the redux concept. Takes a reducer and returns a function ready to call with a component. The hock gives the component `props.localDispatch`which triggers the reducer. the return state of the reducer is then destructured on to the components as props.\n * @param  {function}   reducer             a function that acts as a local reducer\n * @return {function}   componentCreator    function to pass react component\n * @function\n * @memberof module:Misc\n */"
-                    },
-                    {
-                        "returns": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "function"
-                                    ]
-                                },
-                                "description": "<p>componentCreator    function to pass react component</p>"
-                            }
-                        ],
-                        "meta": {
-                            "range": [
-                                1065,
-                                2557
-                            ],
-                            "filename": "PropChangeHock.jsx",
-                            "lineno": 36,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100001945",
-                                "name": "PropChangeHock",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "propKeys",
-                                    "outputFunction"
-                                ]
-                            },
-                            "vars": {
-                                "": null
-                            }
-                        },
-                        "params": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "Array"
-                                    ]
-                                },
-                                "description": "<p>list of strings of prop keys</p>",
-                                "name": "propKeys"
-                            },
-                            {
-                                "type": {
-                                    "names": [
-                                        "function"
-                                    ]
-                                },
-                                "name": "outputFunction"
-                            }
-                        ],
-                        "longname": "module:Misc.PropChangeHock",
-                        "name": "PropChangeHock",
-                        "doclets": [],
-                        "memberof": "module:Misc",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000185",
-                        "description": "<pre class=\"prettyprint source lang-js\"><code>PropChangeHock(propKeys: [String], sideEffect: function) => (component: Component) => Component</code></pre><p>The prop change hock takes a side effect and an array of prop keys paths.\nThe component then listens for component mount and receive props.\nIf any of the provided props change the side effect is triggered.</p>",
-                        "comment": "/**\n * ```js\n * PropChangeHock(propKeys: [String], sideEffect: function) => (component: Component) => Component\n * ```\n * The prop change hock takes a side effect and an array of prop keys paths.\n * The component then listens for component mount and receive props.\n * If any of the provided props change the side effect is triggered.\n * @param  {Array}      propKeys            list of strings of prop keys\n * @param  {function}   outputFunction\n * @return {function}   componentCreator    function to pass react component\n * @function\n * @memberof module:Misc\n */"
-                    },
-                    {
-                        "meta": {
-                            "range": [
-                                474,
-                                815
-                            ],
-                            "filename": "connectWithQuery.jsx",
-                            "lineno": 25,
-                            "path": "/Users/allanhortle/localhost/code/enty/src",
-                            "code": {
-                                "id": "astnode100005703",
-                                "name": "connectWithQuery",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "connector",
-                                    "query",
-                                    "propChangeList"
-                                ]
-                            },
-                            "vars": {
-                                "": null
-                            }
-                        },
-                        "params": [],
-                        "longname": "module:Misc.connectWithQuery",
-                        "name": "connectWithQuery",
-                        "doclets": [],
-                        "memberof": "module:Misc",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000425",
-                        "description": "<p>connectWithQuery</p>",
-                        "comment": "/**\n * connectWithQuery\n * @function\n * @memberof module:Misc\n */"
-                    },
-                    {
-                        "meta": {
-                            "range": [
-                                608,
-                                762
-                            ],
-                            "filename": "logRequestActionNames.js",
-                            "lineno": 27,
-                            "path": "/Users/allanhortle/localhost/code/enty/src/utils",
-                            "code": {
-                                "id": "astnode100006905",
-                                "name": "logRequestActionNames",
-                                "type": "FunctionDeclaration",
-                                "paramnames": [
-                                    "actionMap"
-                                ]
-                            }
-                        },
-                        "params": [
-                            {
-                                "type": {
-                                    "names": [
-                                        "Object"
-                                    ]
-                                },
-                                "description": "<p>map of actions</p>",
-                                "name": "actionMap"
-                            }
-                        ],
-                        "longname": "module:Misc.logRequestActionNames",
-                        "name": "logRequestActionNames",
-                        "doclets": [],
-                        "memberof": "module:Misc",
-                        "scope": "static",
-                        "kind": "function",
-                        "___s": true,
-                        "___id": "T000002R000556",
-                        "description": "<p>Given the return value of creatRequestActionSet it will log the names of the created action types and creators</p>",
-                        "comment": "/**\n * Given the return value of creatRequestActionSet it will log the names of the created action types and creators\n * @param {Object} actionMap map of actions\n *\n * @memberof module:Misc\n */"
                     }
                 ]
             }

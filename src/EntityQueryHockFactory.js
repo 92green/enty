@@ -8,7 +8,7 @@ import {fromJS} from 'immutable';
 import React from 'react';
 
 /**
- * @module Creators
+ * @module Misc
  */
 
 /**
@@ -26,7 +26,7 @@ import React from 'react';
  *
  * @param {function} sideEffect
  * @returns {EntityQueryHockFactory}
- * @memberof module:Creators
+ * @memberof module:Misc
  */
 export default function EntityQueryHockFactory(actionCreator: Function, selectOptions: Object): Function {
     return function EntityQueryHock(queryCreator: Function, paths: string[], optionsOverride: Object): Function {

@@ -6,13 +6,13 @@ import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
 /**
- * @module Creators
+ * @module Api
  */
 
 //
 // Turns a nested object into a flat
 // UPPER_SNAKE case represention
-function reduceActionMap(branch, parentKey = '') {
+function reduceActionMap(branch, parentKey = '') {EntityReducerFactory
     return branch.reduce((rr, ii, key) => {
         var prefix = `${parentKey}${key.toUpperCase()}`;
         if(Map.isMap(ii)) {
@@ -30,7 +30,7 @@ function reduceActionMap(branch, parentKey = '') {
  * @param {string} errorAction     action name for error action
  * @param {function} sideEffect    Promise returning side effect to call after fetch action.
  * @return {array}            list of action creators and action types
- * @memberof module:Creators
+ * @memberof module:Api
  */
 function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
     function action(aa) {
@@ -68,7 +68,7 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
  * @param  {object} actionMap       deep object representation of api functions
  * @param  {object} selectOptions   deep object representation of api functions
  * @return {object}                 An Entity Api
- * @memberof module:Creators
+ * @memberof module:Api
  */
 export default function EntityApi(schema, actionMap, selectOptions = {}) {
     return reduceActionMap(fromJS(actionMap))

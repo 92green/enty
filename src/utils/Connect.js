@@ -1,20 +1,15 @@
 //@flow
 import {connect} from 'react-redux';
 
-/**
- * @module Misc
- */
-
-/**
- * Connect
- * @function
- * @memberof module:Misc
- */
 
 const defaultOptions = {
     stateKey: 'entity'
 };
 
+/*
+ * Connect
+ * @function
+ */
 export default function Connect(connector: Function, options: Object = {}): Function {
     const {stateKey} = Object.assign({}, defaultOptions, options);
 
