@@ -18,12 +18,12 @@ export class ArraySchema {
         const idAttribute = childSchema.options.idAttribute;
         const result = List(data)
             .map(item => {
+                const {result} = childSchema.normalize(item, entities);
                 return (childSchema.type === 'entity')
                     ? idAttribute(item).toString()
-                    : childSchema.normalize(item, entities).result;
+                    : result;
             });
 
-        data.forEach(item => childSchema.normalize(item, entities));
         return {entities, result};
     }
     denormalize(normalizeState: NormalizeState, path: string[] = []) {

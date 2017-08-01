@@ -27,6 +27,18 @@ export class EntitySchema {
     normalize(data: Object, entities: Object = {}) {
         const {options, name} = this;
         const {idAttribute, childSchema, constructor, merge} = options;
+
+        // It is important to check that our data is not already in a normalized state
+        // It is reasonable to assume that a number or string represents an id not an entity.
+        // If the data is sometimes saying an entity is an object and sometimes a primitive
+        // there are bigger problems with the data structure.
+        if(typeof data === 'string' || typeof data === 'number') {
+            return {
+                entities,
+                result: data.toString()
+            };
+        }
+
         const id = idAttribute(data).toString();
 
         entities[name] = entities[name] || {};
