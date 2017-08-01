@@ -1,3 +1,4 @@
+//@flow
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
@@ -30,7 +31,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
         return function EntityMutationHockApplier(Component: React.Element<any>): React.Element<any> {
 
             const blankConnect = Connect();
-            const ComponentWithState = Connect((state, props) => {
+            const ComponentWithState = Connect((state: Object, props: Object): Object => {
                 const data = selectEntityByResult(state, props.resultKey, selectOptions);
                 return {
                     ...data,
@@ -39,19 +40,22 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
             }, selectOptions)(Component);
 
             class MutationHock extends React.Component {
-                constructor(props) {
+                updateMutation: Function;
+                mutation: Function;
+                state: Object;
+                constructor(props: Object) {
                     super(props);
                     this.state = {};
                     this.updateMutation = this.updateMutation.bind(this);
                     this.updateMutation(props);
                 }
 
-                componentWillReceiveProps(nextProps) {
+                componentWillReceiveProps(nextProps: Object) {
                     this.updateMutation(nextProps);
                 }
 
-                updateMutation(props) {
-                    this.mutation = (data) => {
+                updateMutation(props: Object) {
+                    this.mutation = (data: Object) => {
                         const payload = payloadCreator(data);
                         const resultKey = options.resultKey || fromJS({hash: payload}).hashCode();
 
@@ -64,7 +68,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                     };
                 }
 
-                render() {
+                render(): React.Element<any> {
                     const props = {
                         ...this.props,
                         resultKey: this.state.resultKey,

@@ -20,11 +20,11 @@ export class EntitySchema {
             ...options
         };
     }
-    define(childSchema: any) {
+    define(childSchema: any): EntitySchema {
         this.options.childSchema = childSchema;
         return this;
     }
-    normalize(data: Object, entities: Object = {}) {
+    normalize(data: Object, entities: Object = {}): NormalizeState {
         const {options, name} = this;
         const {idAttribute, childSchema, constructor, merge} = options;
 
@@ -56,7 +56,7 @@ export class EntitySchema {
             entities, result: id
         };
     }
-    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
         const {name, options} = this;
         const {childSchema, denormalizeFilter} = options;

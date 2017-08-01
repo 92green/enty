@@ -10,7 +10,7 @@ const defaultOptions = {
  * Connect
  * @function
  */
-export default function Connect(connector: Function, options: Object = {}): Function {
+export default function Connect(connector?: Function, options: Object = {}): Function {
     const {stateKey} = Object.assign({}, defaultOptions, options);
 
     return connect(connector, null, null, {

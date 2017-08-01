@@ -1,3 +1,4 @@
+//@flow
 import {createAction} from 'redux-actions';
 import EntityQueryHockFactory from './EntityQueryHockFactory';
 import EntityMutationHockFactory from './EntityMutationHockFactory';
@@ -12,8 +13,8 @@ import {fromJS, Map} from 'immutable';
 //
 // Turns a nested object into a flat
 // UPPER_SNAKE case represention
-function reduceActionMap(branch, parentKey = '') {EntityReducerFactory
-    return branch.reduce((rr, ii, key) => {
+function reduceActionMap(branch: Map, parentKey: string = ''): Map {
+    return branch.reduce((rr: Map, ii: any, key: string): Map => {
         var prefix = `${parentKey}${key.toUpperCase()}`;
         if(Map.isMap(ii)) {
             return rr.merge(reduceActionMap(ii, `${prefix}_`));
@@ -32,11 +33,11 @@ function reduceActionMap(branch, parentKey = '') {EntityReducerFactory
  * @return {array}            list of action creators and action types
  * @memberof module:Api
  */
-function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect) {
-    function action(aa) {
+function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Function): Function {
+    function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
     }
-    return (requestPayload, meta = {}) => (dispatch, getState) => {
+    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*> => {
         var sideEffectMeta = {
             ...meta,
             dispatch,
@@ -50,10 +51,10 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
 
         dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || fetchAction}));
         return sideEffect(requestPayload, sideEffectMeta).then(
-            (data) => {
+            (data: any): Promise<any> => {
                 return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
             },
-            (error) => {
+            (error: any): Promise<any> => {
                 return dispatch(action(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
             }
         );
@@ -70,9 +71,9 @@ function createRequestAction(fetchAction, recieveAction, errorAction, sideEffect
  * @return {object}                 An Entity Api
  * @memberof module:Api
  */
-export default function EntityApi(schema, actionMap, selectOptions = {}) {
+export default function EntityApi(schema: Object, actionMap: Object, selectOptions: Object = {}): Object {
     return reduceActionMap(fromJS(actionMap))
-        .reduce((state, sideEffect, action) => {
+        .reduce((state: Map, sideEffect: Function, action: string): Map => {
 
             const FETCH = `${action}_FETCH`;
             const RECEIVE = `${action}_RECEIVE`;
@@ -98,7 +99,7 @@ export default function EntityApi(schema, actionMap, selectOptions = {}) {
             ;
 
         }, Map())
-        .update((api) => {
+        .update((api: Map): Map => {
             // convert recieve actions to a standard that EntityReducerFactory can understand
             // {
             //     ACTION_RECIEVE: schema

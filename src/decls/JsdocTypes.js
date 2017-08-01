@@ -1,3 +1,6 @@
+/* @flow */
+/* eslint-disable no-unused-vars */
+
 /**
  * @callback EntityQueryHockFactory
  *

@@ -1,3 +1,4 @@
+//@flow
 import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
 
 import RequestStateSelector from './RequestStateSelector';
@@ -39,7 +40,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return function EntityQueryHockApplier(Component: React.Element<any>) {
+        return function EntityQueryHockApplier(Component: React.Element<any>): any {
 
             const withState = Connect((state: Object, props: Object): Object => {
                 const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
@@ -53,7 +54,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
 
             const withPropChange = PropChangeHock(() => ({
                 paths,
-                onPropChange: (props: Object) => {
+                onPropChange: (props: Object): any => {
                     const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
                     const meta = Object.assign({}, options, {resultKey});
 

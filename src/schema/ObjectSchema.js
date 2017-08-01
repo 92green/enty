@@ -14,13 +14,13 @@ export class ObjectSchema {
             ...options
         };
     }
-    normalize(data: Object, entities: Object = {}) {
+    normalize(data: Object, entities: Object = {}): NormalizeState {
         const {childSchema} = this;
         const dataMap = Map(data);
 
         const result = dataMap
             .keySeq()
-            .reduce((result: Object, key: string) => {
+            .reduce((result: Object, key: string): any => {
                 if(childSchema[key] && dataMap.get(key)) {
                     return result.set(key, childSchema[key].normalize(dataMap.get(key), entities).result);
                 }
@@ -30,7 +30,7 @@ export class ObjectSchema {
 
         return {entities, result};
     }
-    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
         const {childSchema, options} = this;
         let deletedKeys = [];
@@ -47,9 +47,9 @@ export class ObjectSchema {
         // Lots of `item.keySeq().reduce(() => {}, item) because Immutable can't map records without
         // mutating them...
         return result
-            .update((item) => {
+            .update((item: Map): Map => {
                 return item.keySeq()
-                    .reduce((newItem, key) => {
+                    .reduce((newItem: any, key: string): Map => {
                         var value = newItem.get(key);
                         var newValue;
 
@@ -64,15 +64,15 @@ export class ObjectSchema {
                         return newItem.set(key, newValue);
                     }, item);
             })
-            .update((item) => {
+            .update((item: any): any => {
                 return item.keySeq()
                     .filter(key => item.get(key) === DELETED_ENTITY)
-                    .reduce((newItem, deleteKey) => {
+                    .reduce((newItem: Map, deleteKey: string): Map => {
                         deletedKeys.push(deleteKey);
                         return newItem.delete(deleteKey);
                     }, item);
             })
-            .update(ii => {
+            .update((ii: Map): Map => {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
             });
     }

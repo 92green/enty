@@ -1,3 +1,4 @@
+//@flow
 import {Map} from 'immutable';
 
 import {
@@ -37,7 +38,7 @@ import Logger from './Logger';
  * @memberof module:Misc
  *
  */
-export default function EntityReducerFactory(config) {
+export default function EntityReducerFactory(config: Object): Function {
     const {
         schemaMap
     } = config;
@@ -53,7 +54,7 @@ export default function EntityReducerFactory(config) {
     };
 
     // Return our constructed reducer
-    return function EntityReducer(state = initialState, {type, payload, meta}) {
+    return function EntityReducer(state: Map = initialState, {type, payload, meta}: Object): Map {
         Logger.info(`\n\nEntity reducer:`);
 
         const {

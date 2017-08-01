@@ -1,3 +1,4 @@
+// @flow
 import {EmptyState} from './RequestState';
 
 const defaultOptions = {
@@ -15,7 +16,7 @@ const defaultOptions = {
  * @return {object}                  the curerent request state
  * @memberof module:Selectors
  */
-export default function selectRequestState(state, requestStateKey, options) {
+export default function selectRequestState(state: Object, requestStateKey: string, options: Object): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     return state[stateKey]
         .getIn(['_requestState', requestStateKey], EmptyState());

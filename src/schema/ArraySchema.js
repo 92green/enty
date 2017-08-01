@@ -17,7 +17,7 @@ export class ArraySchema {
         const {childSchema} = this;
         const idAttribute = childSchema.options.idAttribute;
         const result = List(data)
-            .map(item => {
+            .map((item: any): any => {
                 const {result} = childSchema.normalize(item, entities);
                 return (childSchema.type === 'entity')
                     ? idAttribute(item).toString()
@@ -26,7 +26,7 @@ export class ArraySchema {
 
         return {entities, result};
     }
-    denormalize(normalizeState: NormalizeState, path: string[] = []) {
+    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
         const {childSchema} = this;
         // Filter out any deleted keys
@@ -35,7 +35,7 @@ export class ArraySchema {
         }
         // Map denormalize to our result List.
         return result
-            .map((item) => {
+            .map((item: any): any => {
                 return childSchema.denormalize({result: item, entities}, path);
             })
             .filter(ii => ii !== DELETED_ENTITY);

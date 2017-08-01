@@ -1,13 +1,14 @@
+//@flow
 
 export default class DistinctMemo {
     cachedValue: null;
     memoValue: null;
-    update: null;
+    update: Function;
 
     constructor(update: Function) {
         this.update = update;
     }
-    value(value: any, ...rest): any {
+    value(value: any, ...rest: Array<*>): any {
         if(value === this.memoValue) {
             return this.cachedValue;
         }

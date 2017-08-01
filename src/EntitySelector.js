@@ -26,7 +26,7 @@ const defaultOptions = {
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}) {
+export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = entities.getIn(['_schema', schemaKey]);
@@ -53,7 +53,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}) {
+export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = entities.getIn(['_schema', schemaKey]).childSchema[type];
@@ -73,7 +73,7 @@ export function selectEntityById(state: Object, type: string, id: string, option
  * @return {Immutable.List} entity list
  * @memberof module:Selectors
  */
-export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}) {
+export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = ArraySchema(entities.getIn(['_schema', schemaKey]).childSchema[type]);

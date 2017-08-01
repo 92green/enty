@@ -1,8 +1,9 @@
+//@flow
 import thunk from 'redux-thunk';
 import {combineReducers, compose, createStore, applyMiddleware} from 'redux';
 
 // create and export the store
-export default function EntityStoreFactory(reducer) {
+export default function EntityStoreFactory(reducer: any): any {
     // create middleware
     var middleware = applyMiddleware(thunk);
 

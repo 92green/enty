@@ -1,4 +1,11 @@
+// @flow
 import {List} from 'immutable';
+
+type Logger = {
+    logLevel: number,
+    _console: Object,
+    [key: string]: Function
+};
 
 const logLevels = List([
     {
@@ -23,16 +30,16 @@ const logLevels = List([
     }
 ]);
 
-var Logger = {
+var logger: Logger = {
 
     logLevel: 0,
     _console: console,
 
-    setLogLevel: function(level) {
+    setLogLevel: function(level: number) {
         this.logLevel = this.getLevelIndex(level);
 
         // create methods on Logger for each logLevel
-        logLevels.forEach(({name, consoleMethod}, key) => {
+        logLevels.forEach(({name, consoleMethod}: Object, key: string) => {
 
             // by default logging should be noops
             var method = () => {};
@@ -50,17 +57,17 @@ var Logger = {
         });
     },
 
-    setConsole(newConsole) {
+    setConsole: function(newConsole: Object) {
         this._console = newConsole;
         // rebuild logging functions
         this.setLogLevel(this.logLevel);
     },
 
-    willLog: function(level) {
+    willLog: function(level: number|string): boolean {
         return this.getLevelIndex(level) <= this.logLevel;
     },
 
-    getLevelIndex: function(level) {
+    getLevelIndex: function(level: number|string): number {
         // level can be a log level string like "error" or "silly", or a number corresponding to a log level
         return typeof level == "string"
             ? logLevels.findIndex(ii => ii.name == level)
@@ -69,5 +76,5 @@ var Logger = {
 };
 
 // set initial log level, creating the log methods
-Logger.setLogLevel(process.env.NODE_ENV === 'development' ? 1 : 0);
-export default Logger;
+logger.setLogLevel(process.env.NODE_ENV === 'development' ? 1 : 0);
+export default logger;
