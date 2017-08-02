@@ -7,3 +7,9 @@ type NormalizeState = {
     entities: Object|Map,
     result: Object|Map
 };
+
+
+type SelectOptions = {
+    schemaKey?: string,
+    stateKey?: string
+};

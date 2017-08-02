@@ -97,7 +97,7 @@ ul.List li {
 }
 
 .Doclet {
-    margin-top: 4rem;
+    padding-top: 4rem;
 }
 
 .Param-indent {
@@ -161,6 +161,11 @@ ul.List li {
     margin-bottom: 2rem;
     border-left: 4px solid #e4e4e4;
     color: gray;
+}
+
+.Link-title {
+    text-decoration: none;
+    color: inherit;
 }
 
 

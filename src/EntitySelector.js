@@ -4,11 +4,6 @@
 import {Iterable, Map} from 'immutable';
 import ArraySchema from './schema/ArraySchema';
 
-type SelectOptions = {
-    schemaKey?: string,
-    stateKey?: string
-};
-
 const defaultOptions = {
     schemaKey: 'ENTITY_RECEIVE',
     stateKey: 'entity'

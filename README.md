@@ -70,9 +70,9 @@ const Api = EntityApi(ApplicationSchema, {
 });
 
 export const {
-    store,
-    CoreEntityQuery,
-    CoreMutationQuery,
+    EntityStore,
+    CoreQueryHock,
+    CoreMutationHock,
 } = Api;
 
 ```
@@ -83,11 +83,11 @@ export const {
 import {React} from 'react';
 import {Provider} from 'react-redux';
 import ReactDOM from 'react-dom';
-import {store} from './entity/EntityApi';
+import {EntityStore} from './entity/EntityApi';
 
 
 ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={EntityStore}>
         <App />
     </Provider>,
     document.getElementById('app'),

@@ -6,18 +6,22 @@ import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
 import React from 'react';
 
+
+
+
 /**
- * @module Misc
+ * @module Factories
  */
 
 /**
- * Entitiy Mutation Hock
+ * Entity Mutation Hock
  *
- * param {function} sideEffect
- * returns {EntityQueryHockFactory}
- * @memberof module:Misc
+ * @param {function} sideEffect
+ * @returns {EntityQueryHockFactory}
+ * @memberof module:Factories
  */
-export default function EntityMutationHockFactory(actionCreator: Function, selectOptions: Object): Function {
+
+export default function EntityMutationHockFactory(actionCreator: Function, selectOptions: SelectOptions): Function {
     return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: Object): Function {
 
         const options = {

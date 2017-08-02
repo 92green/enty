@@ -7,12 +7,19 @@ import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
 /**
+ * The Entity Api is the main access point for your data. It allows you to define the link between your views
+ * and the services that they fetch their data from.
+ * Its main purpose it to:
+ *
+ * 1. Construct a redux store from your schema.
+ * 2. Create higher order components that connect data to your views.
+ *
  * @module Api
  */
 
-//
+
 // Turns a nested object into a flat
-// UPPER_SNAKE case represention
+// UPPER_SNAKE case representation
 function reduceActionMap(branch: Map, parentKey: string = ''): Map {
     return branch.reduce((rr: Map, ii: any, key: string): Map => {
         var prefix = `${parentKey}${key.toUpperCase()}`;
@@ -24,15 +31,12 @@ function reduceActionMap(branch: Map, parentKey: string = ''): Map {
     }, Map());
 }
 
-/*
- *
- * @param {string} fetchAction     action name for fetching action
- * @param {string} recieveAction   action name for receiving action
- * @param {string} errorAction     action name for error action
- * @param {function} sideEffect    Promise returning side effect to call after fetch action.
- * @return {array}            list of action creators and action types
- * @memberof module:Api
- */
+// @param {string} fetchAction     action name for fetching action
+// @param {string} recieveAction   action name for receiving action
+// @param {string} errorAction     action name for error action
+// @param {function} sideEffect    Promise returning side effect to call after fetch action.
+// @return {array}            list of action creators and action types
+// @memberof module:Api
 function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Function): Function {
     function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
@@ -63,15 +67,45 @@ function createRequestAction(fetchAction: string, recieveAction: string, errorAc
 
 
 /**
- * Constructs the Entity Api for use around the site
+ * Constructs an Entity Api based off a schema and an object of promise returning functions.
  *
- * @param  {object} schema          deep object representation of api functions
+ * EntityApi will construct QueryHocks and MutationHocks for each promise returning function,
+ * and a Redux store and reducer for your entity state.
+ *
+ *
+ * @example
+ * import {EntityApi} from 'enty';
+ * import ApplicationSchema from './entity/ApplicationSchema';
+ *
+ * const Api = EntityApi(ApplicationSchema, {
+ *     core: payload => post('/graphql', payload),
+ *     user: payload => post('/user', payload),
+ *     article: {
+ *         create: payload => post('/article', payload),
+ *         list: payload => get('/article', payload)
+ *     }
+ * });
+ *
+ * export const {
+ *     EntityStore,
+ *
+ *     CoreQueryHock,
+ *     CoreMutationHock,
+ *     UserQueryHock,
+ *     UserMutationHock,
+ *     ArticleCreateQueryHock,
+ *     ArticleCreateMutationHock,
+ *     ArticleListQueryHock,
+ *     ArticleListMutationHock
+ * } = Api;
+ *
+ * @param  {Schema} schema          A schema describing the relationships between your data
  * @param  {object} actionMap       deep object representation of api functions
- * @param  {object} selectOptions   deep object representation of api functions
- * @return {object}                 An Entity Api
+ * @param  {SelectOptions} [selectOptions]
+ * @return {EntityApi}
  * @memberof module:Api
  */
-export default function EntityApi(schema: Object, actionMap: Object, selectOptions: Object = {}): Object {
+export default function EntityApi(schema: Object, actionMap: Object, selectOptions: SelectOptions = {}): Object {
     return reduceActionMap(fromJS(actionMap))
         .reduce((state: Map, sideEffect: Function, action: string): Map => {
 
@@ -100,7 +134,7 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
 
         }, Map())
         .update((api: Map): Map => {
-            // convert recieve actions to a standard that EntityReducerFactory can understand
+            // convert receive actions to a standard that EntityReducerFactory can understand
             // {
             //     ACTION_RECIEVE: schema
             //     ...
@@ -119,7 +153,6 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
                 .set('EntityReducer', reducer)
                 .set('EntityStore', EntityStoreFactory(reducer));
         })
-        // .update(ii => console.log(ii) || ii)
         .toJS();
 }
 

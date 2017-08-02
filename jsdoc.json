@@ -8,18 +8,28 @@
      "recurse": true,
      "template": "node_modules/jsdonk",
      "jsdonk": {
-        "title": "Enty API Docs",
-        "sections": {
-          "module": {
-            "typedef": false
-          },
-          "typedef": false
-        },
-        "output": {
-          "taffyjson": true,
-          "heirarchyjson": true
-        },
-        "debug": true
+       "title": "Fronads",
+       "repo": {
+         "github": "https://github.com/blueflag/fronads"
+       },
+       "sections": {
+         "module": {
+           "typedef": false
+         },
+         "typedef": false
+       },
+       "output": {
+         "taffyjson": true,
+         "heirarchyjson": true
+       },
+       "functions": {
+         "multiline": false
+       },
+       "doclet": {
+         "params": true,
+         "returns": true
+       },
+       "debug": false
      }
   },
   "plugins": [

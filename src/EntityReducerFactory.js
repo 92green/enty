@@ -11,31 +11,27 @@ import Logger from './Logger';
 
 
 /**
- * @module Misc
+ * @module Factories
  */
 
 /**
- * Returns a reducer that normalizes data based on the [normalizr] schemas provided. When an action is fired, if the type matches one provied in `schemaMap` the payload is normalized based off the given schema.
- * Takes a map of schemas where each key is an action name and value is a schema. must have at least one key called `mainSchema` returns a reducer that holds the main entity state.
  *
  * @example
  * import {createEntityReducer} from 'enty';
  * import EntitySchema from 'myapp/EntitySchema';
  *
  * export default combineReducers({
- *     entity: createEntityReducer({
+ *     entity: EntityReducerFactory({
  *          schemaMap: {
  *              GRAPHQL_RECEIVE: EntitySchema,
  *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema
- *          },
- *          afterNormalize: (value, key) => value,
+ *          }
  *     })
  * });
  *
- * @param {object} schemaMap - Map of schema action names.
- * @param {function} config.afterNormalize - config.afterNormalize function to edit payload data after it is normalized.
+ * @param {object} config.schemaMap - Map of schema action names.
  * @return {function}
- * @memberof module:Misc
+ * @memberof module:Factories
  *
  */
 export default function EntityReducerFactory(config: Object): Function {

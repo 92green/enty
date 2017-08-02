@@ -9,7 +9,7 @@
  * @param {string[]} [propUpdateKeys]
  * Description
  *
- * @param {Object} [metaOverride]
+ * @param {object} [metaOverride]
  * Description
  *
  * @returns {EntityQueryHockApplier}
@@ -29,13 +29,36 @@
  *
  * @callback QueryCreator
  *
- * @param {Object} [props]
+ * @param {object} [props]
  * Description
  *
- * @param {Object} [state]
+ * @param {object} [state]
  * Description
  *
  */
+
+/**
+ * Configuration options passed to selectors for accessing state. (Basic uses cases wont need this)
+ *
+ * @typedef {object} SelectOptions
+ * @property {string} [schemaKey=ENTITY_RECEIVE]
+ * @property {string} [stateKey=entity] - redux key to store entity state at.
+ */
+
+/**
+ * Entity Api object shape
+ *
+ * @typedef {object} EntityApi
+ * @property {ReduxStore} EntityStore
+ * @property {ReduxReducer} EntityReducer
+ * @property {QueryHock} <Key>QueryHock
+ * @property {MutationHock} <Key>MutationHock
+ * @property {function} <key> Action Creator
+ * @property {string} <key>.actionTypes.<KEY>_FETCH
+ * @property {string} <key>.actionTypes.<KEY>_RECEIVE
+ * @property {string} <key>.actionTypes.<KEY>_ERROR
+ */
+
 
 
 // externals

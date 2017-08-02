@@ -8,7 +8,6 @@
 export {default as EntityApi} from './EntityApi';
 
 
-
 // Schemas
 export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ArraySchema} from './schema/ArraySchema';
