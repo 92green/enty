@@ -11,12 +11,12 @@ var author = EntitySchema('author', {idAttribute: item => item.fullnameId});
 
 var topListings = EntitySchema('topListings', {
     idAttribute: item => item.fullnameId,
-    childSchema: ObjectSchema({author})
+    definition: ObjectSchema({author})
 });
 
 var subreddit = EntitySchema('subreddit', {
     idAttribute: item => item.fullnameId,
-    childSchema: ObjectSchema({topListings: ArraySchema(topListings)})
+    definition: ObjectSchema({topListings: ArraySchema(topListings)})
 });
 
 const schema = ObjectSchema({

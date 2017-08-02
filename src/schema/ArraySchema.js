@@ -13,15 +13,15 @@ import {DELETED_ENTITY} from './SchemaConstant';
  */
 export class ArraySchema {
     type: string;
-    childSchema: Object;
+    definition: Object;
     options: Object;
 
     /**
-     * @param {Schema} childSchema
+     * @param {Schema} definition
      */
-    constructor(childSchema: Object, options: Object = {}) {
+    constructor(definition: Object, options: Object = {}) {
         this.type = 'array';
-        this.childSchema = childSchema;
+        this.definition = definition;
         this.options = {
             ...options
         };
@@ -31,12 +31,12 @@ export class ArraySchema {
      * ArraySchema.normalize
      */
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
-        const {childSchema} = this;
-        const idAttribute = childSchema.options.idAttribute;
+        const {definition} = this;
+        const idAttribute = definition.options.idAttribute;
         const result = List(data)
             .map((item: any): any => {
-                const {result} = childSchema.normalize(item, entities);
-                return (childSchema.type === 'entity')
+                const {result} = definition.normalize(item, entities);
+                return (definition.type === 'entity')
                     ? idAttribute(item).toString()
                     : result;
             });
@@ -49,7 +49,7 @@ export class ArraySchema {
      */
     denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
-        const {childSchema} = this;
+        const {definition} = this;
         // Filter out any deleted keys
         if(result == null) {
             return result;
@@ -57,7 +57,7 @@ export class ArraySchema {
         // Map denormalize to our result List.
         return result
             .map((item: any): any => {
-                return childSchema.denormalize({result: item, entities}, path);
+                return definition.denormalize({result: item, entities}, path);
             })
             .filter(ii => ii !== DELETED_ENTITY);
     }

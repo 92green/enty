@@ -5,10 +5,10 @@ import {fromJS} from 'immutable';
 
 var foo = EntitySchema('foo');
 
-test('EntitySchema can define childSchema through the `define` method', tt => {
+test('EntitySchema can define definition through the `define` method', tt => {
     var schema = EntitySchema('foo');
     schema.define(ObjectSchema({bar: "1"}));
-    tt.is(schema.options.childSchema.type, 'object');
+    tt.is(schema.options.definition.type, 'object');
 });
 
 
@@ -32,11 +32,11 @@ test('EntitySchema can denormalize entities', tt => {
 });
 
 test('EntitySchema will not cause an infinite recursion', tt => {
-    const bar = EntitySchema('bar', {
-        childSchema: ObjectSchema({foo})
-    });
-    // bar.define(ObjectSchema({foo}));
+    const foo = EntitySchema('foo');
+    const bar = EntitySchema('bar');
+
     foo.define(ObjectSchema({bar}));
+    bar.define(ObjectSchema({foo}));
 
     const entities = fromJS({
         bar: {"1": {id: "1", foo: "1"}},

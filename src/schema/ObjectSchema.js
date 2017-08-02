@@ -61,7 +61,7 @@ export class ObjectSchema {
     /**
      * ObjectSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
+    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
         const {result, entities} = normalizeState;
         const {definition, options} = this;
         let deletedKeys = [];
@@ -84,11 +84,10 @@ export class ObjectSchema {
                         var value = newItem.get(key);
                         var newValue;
 
-                        if(path.indexOf(key) !== -1 && entities[key]) {
-                            // console.log('recursion', path, key);
+                        if(path.indexOf(this) !== -1) {
                             newValue = value;
                         } else if(definition[key]) {
-                            newValue = definition[key].denormalize({result: value, entities}, path.concat(key));
+                            newValue = definition[key].denormalize({result: value, entities}, path.concat(this));
                         } else {
                             newValue = value;
                         }

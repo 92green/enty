@@ -4,6 +4,16 @@ import {DELETED_ENTITY} from './SchemaConstant';
 import ObjectSchema from './ObjectSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 
+
+/**
+ * @module Schema
+ */
+
+/**
+ * EntitySchema
+ *
+ * @memberof module:Schema
+ */
 export class EntitySchema {
     name: string;
     type: string;
@@ -16,22 +26,31 @@ export class EntitySchema {
             denormalizeFilter: item => item && !item.get('deleted'),
             constructor: item => Map(item),
             merge: (aa, bb) => aa.merge(bb),
-            childSchema: ObjectSchema({}),
+            definition: ObjectSchema({}),
             ...options
         };
     }
-    define(childSchema: any): EntitySchema {
-        this.options.childSchema = childSchema;
+
+    /**
+     * EntitySchema.define
+     */
+    define(definition: any): EntitySchema {
+        this.options.definition = definition;
         return this;
     }
+
+    /**
+     * EntitySchema.normalize
+     */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {options, name} = this;
-        const {idAttribute, childSchema, constructor, merge} = options;
+        const {idAttribute, definition, constructor, merge} = options;
 
         // It is important to check that our data is not already in a normalized state
         // It is reasonable to assume that a number or string represents an id not an entity.
         // If the data is sometimes saying an entity is an object and sometimes a primitive
         // there are bigger problems with the data structure.
+
         if(typeof data === 'string' || typeof data === 'number') {
             return {
                 entities,
@@ -39,12 +58,16 @@ export class EntitySchema {
             };
         }
 
+        // if(!idAttribute(data)) {
+        //     console.error('Could Not find id in ', name, data);
+        // }
+
         const id = idAttribute(data).toString();
 
         entities[name] = entities[name] || {};
 
         const previousEntity = entities[name][id];
-        let value = childSchema.normalize(data, entities).result;
+        let value = definition.normalize(data, entities).result;
 
         if(previousEntity) {
             value = merge(previousEntity, value);
@@ -56,10 +79,14 @@ export class EntitySchema {
             entities, result: id
         };
     }
+
+    /**
+     * EntitySchema.denormalize
+     */
     denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
         const {name, options} = this;
-        const {childSchema, denormalizeFilter} = options;
+        const {definition, denormalizeFilter} = options;
         const entity = getIn(entities, [name, result]);
 
         if(entity == null) {
@@ -70,7 +97,7 @@ export class EntitySchema {
             return DELETED_ENTITY;
         }
 
-        return childSchema.denormalize({result: entity, entities}, path);
+        return definition.denormalize({result: entity, entities}, path);
     }
 }
 

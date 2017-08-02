@@ -27,7 +27,6 @@ test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => 
     tt.true(data.equals(output));
 });
 
-
 test('ObjectSchema can normalize empty objects', tt => {
     const schema = ObjectSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
@@ -112,7 +111,7 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
 });
 
 
-test('ObjectSchema.merge() will perform a shallow merge of options and childSchema', tt => {
+test('ObjectSchema.merge() will perform a shallow merge of options and definition', tt => {
     const denormalizeFilter = () => true;
     const foo = EntitySchema('foo');
     const bar = EntitySchema('bar');
@@ -121,8 +120,8 @@ test('ObjectSchema.merge() will perform a shallow merge of options and childSche
     const merged = aa.merge(bb);
 
 
-    tt.is(merged.childSchema.foo.name, 'foo');
-    tt.is(merged.childSchema.bar.name, 'bar');
+    tt.is(merged.definition.foo.name, 'foo');
+    tt.is(merged.definition.bar.name, 'bar');
     tt.is(merged.options.denormalizeFilter, denormalizeFilter);
 });
 
