@@ -2,27 +2,54 @@
 import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
+/**
+ * @module Schema
+ */
+
+/**
+ * ObjectSchema
+ *
+ * @memberof module:Schema
+ */
 export class ObjectSchema {
     type: string;
-    childSchema: Object;
+    definition: Object;
     options: Object;
-    constructor(childSchema: Object, options: Object = {}) {
+
+    /**
+     * The ObjectSchema is a structural schema used to define relationships in objects.
+     *
+     * @example
+     * const user = entity('user');
+     * user.define(ObjectSchema({
+     *     friends: ArraySchema(user)
+     * }))
+     *
+     * @param {Object} definition - an object describing any entity relationships that should be traversed.
+     * @param {Object} options
+     *
+     */
+    constructor(definition: Object, options: Object = {}) {
         this.type = 'object';
-        this.childSchema = childSchema;
+        this.definition = definition;
         this.options = {
             denormalizeFilter: () => true,
             ...options
         };
     }
+
+    /**
+     * ObjectSchema.normalize
+     */
     normalize(data: Object, entities: Object = {}): NormalizeState {
-        const {childSchema} = this;
+        const {definition} = this;
         const dataMap = Map(data);
 
         const result = dataMap
             .keySeq()
             .reduce((result: Object, key: string): any => {
-                if(childSchema[key] && dataMap.get(key)) {
-                    return result.set(key, childSchema[key].normalize(dataMap.get(key), entities).result);
+                if(definition[key] && dataMap.get(key)) {
+                    return result.set(key, definition[key].normalize(dataMap.get(key), entities).result);
                 }
 
                 return result;
@@ -30,9 +57,13 @@ export class ObjectSchema {
 
         return {entities, result};
     }
+
+    /**
+     * ObjectSchema.denormalize
+     */
     denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
-        const {childSchema, options} = this;
+        const {definition, options} = this;
         let deletedKeys = [];
 
         if(result == null) {
@@ -53,10 +84,11 @@ export class ObjectSchema {
                         var value = newItem.get(key);
                         var newValue;
 
-                        if(path.indexOf(key) !== -1) {
+                        if(path.indexOf(key) !== -1 && entities[key]) {
+                            // console.log('recursion', path, key);
                             newValue = value;
-                        } else if(childSchema[key]) {
-                            newValue = childSchema[key].denormalize({result: value, entities}, path.concat(key));
+                        } else if(definition[key]) {
+                            newValue = definition[key].denormalize({result: value, entities}, path.concat(key));
                         } else {
                             newValue = value;
                         }
@@ -78,7 +110,7 @@ export class ObjectSchema {
     }
     merge(objectSchema: Object): ObjectSchema {
         return new ObjectSchema(
-            Object.assign({}, this.childSchema, objectSchema.childSchema),
+            Object.assign({}, this.definition, objectSchema.definition),
             Object.assign({}, this.options, objectSchema.options)
         );
     }

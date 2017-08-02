@@ -2,18 +2,35 @@
 import {List} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 
+/**
+ * @module Schema
+ */
+
+/**
+ * ArraySchema
+ *
+ * @memberof module:Schema
+ */
 export class ArraySchema {
     type: string;
     childSchema: Object;
     options: Object;
-    constructor(schema: Object, options: Object = {}) {
+
+    /**
+     * @param {Schema} childSchema
+     */
+    constructor(childSchema: Object, options: Object = {}) {
         this.type = 'array';
-        this.childSchema = schema;
+        this.childSchema = childSchema;
         this.options = {
             ...options
         };
     }
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+
+    /**
+     * ArraySchema.normalize
+     */
+    normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {childSchema} = this;
         const idAttribute = childSchema.options.idAttribute;
         const result = List(data)
@@ -26,6 +43,10 @@ export class ArraySchema {
 
         return {entities, result};
     }
+
+    /**
+     * ArraySchema.denormalize
+     */
     denormalize(normalizeState: NormalizeState, path: string[] = []): any {
         const {result, entities} = normalizeState;
         const {childSchema} = this;
