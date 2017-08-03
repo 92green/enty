@@ -9,6 +9,7 @@ import {fromJS} from 'immutable';
 import React from 'react';
 
 
+
 /**
  *
  * @param {function} sideEffect

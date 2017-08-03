@@ -150,6 +150,10 @@ ul.List li {
     padding-left: 1rem;
 }
 
+.Typography ol > li {
+    list-style-type: decimal;
+}
+
 .Typography li {
     list-style-type: square;
 }

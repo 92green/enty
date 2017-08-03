@@ -10,9 +10,7 @@ import {
 import Logger from './Logger';
 
 
-/**
- * @module Factories
- */
+
 
 /**
  *

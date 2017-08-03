@@ -2,7 +2,7 @@
 [![enty npm](https://img.shields.io/npm/v/enty.svg?style=flat-square)](https://www.npmjs.com/package/enty)
 [![enty circle](https://img.shields.io/circleci/project/github/blueflag/enty.svg?style=flat-square)](https://circleci.com/gh/blueflag/enty)
 
-# Introduction
+## Introduction
 Enty is a framework for managing data requested from back-ends and APIs.  Instead of you manually storing requested data, Enty uses schemas to describe relationships and stores the data as normalized entities.
 
 * Views can declare what data they need.
@@ -12,7 +12,7 @@ Enty is a framework for managing data requested from back-ends and APIs.  Instea
 * pairs wonderfully with graphql
 
 
-# Purpose
+## Purpose
 
 <!-- ## models -->
 Any webapp that involves  both a back and a front end will create entities. Unique pieces of data that are known by an id.  The back end might call them models, the front end might call them application state, let's call them entities.
@@ -30,11 +30,11 @@ Enty lets you describe the relationships of your entities through schemas. It is
 
 
 
-# Getting Started
+## Getting Started
 
 Enty has two parts: A Schema and an EntityApi.
 
-## Schema
+### 1. Schema
 The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
 
 ```js
@@ -58,7 +58,7 @@ export default ObjectSchema({
 
 ```
 
-## API
+### 2. API
 The second thing we need to do is to create our EntityApi from our schema;
 
 ```js
@@ -77,7 +77,7 @@ export const {
 
 ```
 
-## Connect to react
+### 3. Connect to react
 
 ```jsx
 import {React} from 'react';
@@ -95,7 +95,7 @@ ReactDOM.render(
 
 ```
 
-## Make a Query
+### 4. Make a Query
 
 ```jsx
 import {React} from 'react';
@@ -118,4 +118,24 @@ const withData = CoreQueryHock(props => {
 export default withData(User);
 
 ```
+
+
+## Entity Flow
+
+1. **Props Change / OnMutate Triggered**  
+The Enty data flow begins when either a QueryHocked components props change or a MutationHocked component fires its onMutate callback. When this happens the corresponding promise creator in the API is fired. 
+
+2. **Data Request / Recieve**  
+The data request actions is triggered and the corresponding requestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
+If the promise resolves the receive action is triggered, the requestState becomes a SuccessState. 
+
+3. **Normalize**    
+The payload is passed into schema.normalize, which will in turn call schema.normalize recursively on its children as defined. Entities are stored under their schema type key and the result of their id attribute. Each entity is also passed through their constructor function which is given the current entity and the previous version if it exists. 
+
+4. **Results & Entities Stored**  
+The normalised entities are shallow merged with the previous state. The normalised result object is stored under its resultKey.
+
+5. **Views Updated**  
+The update in state triggers a rerender. All hocked views select their data based on their result key. 
+Schema.denormalize is given the new entity state and the normalised result object that matches their result key. As the result object is traversed denormalizeFilter is called on each entity. Any that fail the test will not be returned. 
 
