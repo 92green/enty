@@ -18,6 +18,8 @@ import React from 'react';
  */
 export default function EntityQueryHockFactory(actionCreator: Function, selectOptions: SelectOptions): Function {
     /**
+     * Hocks are the primary means of connecting data to your views.
+     *
      * @module Hocks
      */
 

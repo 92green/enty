@@ -83,7 +83,7 @@ export class EntitySchema {
     /**
      * EntitySchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
+    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
         const {result, entities} = normalizeState;
         const {name, options} = this;
         const {definition, denormalizeFilter} = options;

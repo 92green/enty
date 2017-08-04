@@ -47,7 +47,7 @@ export class ArraySchema {
     /**
      * ArraySchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: string[] = []): any {
+    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
         const {result, entities} = normalizeState;
         const {definition} = this;
         // Filter out any deleted keys

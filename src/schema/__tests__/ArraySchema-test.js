@@ -22,14 +22,14 @@ test('ArraySchema can normalize Lists', tt => {
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
-test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
-    const schema = ArraySchema(foo);
-    const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
+// test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
+//     const schema = ArraySchema(foo);
+//     const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
 
-    tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
-    tt.deepEqual(entities.foo["2"].toJS(), {id: "2"});
-    tt.deepEqual(result.toJS(), ["1", "2"]);
-});
+//     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
+//     tt.deepEqual(entities.foo["2"].toJS(), {id: "2"});
+//     tt.deepEqual(result.toJS(), ["1", "2"]);
+// });
 
 
 test('ArraySchema can normalize nested things in arrays', tt => {
