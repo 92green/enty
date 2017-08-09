@@ -7,15 +7,15 @@ import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
 /**
- * The Entity Api is the main access point for your data. It allows you to define the link between your views
- * and the services that they fetch their data from.
- * Its main purpose it to:
- *
- * 1. Construct a redux store from your schema.
- * 2. Create higher order components that connect data to your views.
- *
- * @module Api
- */
+The Entity Api is the main access point for your data. It allows you to define the link between your views
+and the services that they fetch their data from.
+Its main purpose it to:
+
+1. Construct a redux store from your schema.
+2. Create higher order components that connect data to your views.
+
+@module Api
+*/
 
 
 // Turns a nested object into a flat

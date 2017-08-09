@@ -1,10 +1,10 @@
 [
     {
-        "comment": "/**\n * The Entity Api is the main access point for your data. It allows you to define the link between your views\n * and the services that they fetch their data from.\n * Its main purpose it to:\n *\n * 1. Construct a redux store from your schema.\n * 2. Create higher order components that connect data to your views.\n *\n * @module Api\n */",
+        "comment": "/**\nThe Entity Api is the main access point for your data. It allows you to define the link between your views\nand the services that they fetch their data from.\nIts main purpose it to:\n\n1. Construct a redux store from your schema.\n2. Create higher order components that connect data to your views.\n\n@module Api\n*/",
         "meta": {
             "range": [
                 992,
-                1328
+                1305
             ],
             "filename": "EntityApi.js",
             "lineno": 35,
@@ -30,8 +30,8 @@
         ],
         "meta": {
             "range": [
-                4281,
-                6017
+                4258,
+                5994
             ],
             "filename": "EntityApi.js",
             "lineno": 127,
@@ -237,7 +237,7 @@
         "meta": {
             "range": [
                 1202,
-                3808
+                3884
             ],
             "filename": "EntityQueryHockFactory.js",
             "lineno": 49,
@@ -275,17 +275,18 @@
         "comment": "/**\n *\n * @param {function} sideEffect\n * @returns {EntityQueryHock}\n * @memberof module:Factories\n */"
     },
     {
-        "comment": "/**\n     * @module Hocks\n     */",
+        "comment": "/**\n     * Hocks are the primary means of connecting data to your views.\n     *\n     * @module Hocks\n     */",
         "meta": {
             "range": [
                 1270,
-                1302
+                1378
             ],
             "filename": "EntityQueryHockFactory.js",
             "lineno": 50,
             "path": "/Users/allanhortle/localhost/code/enty/src",
             "code": {}
         },
+        "description": "<p>Hocks are the primary means of connecting data to your views.</p>",
         "kind": "module",
         "name": "Hocks",
         "longname": "module:Hocks",
@@ -304,11 +305,11 @@
         ],
         "meta": {
             "range": [
-                1308,
-                2260
+                1384,
+                2336
             ],
             "filename": "EntityQueryHockFactory.js",
-            "lineno": 54,
+            "lineno": 56,
             "path": "/Users/allanhortle/localhost/code/enty/src",
             "code": {}
         },
@@ -1379,7 +1380,7 @@
         "kind": "module",
         "name": "Schema",
         "longname": "module:Schema",
-        "___id": "T000002R000606",
+        "___id": "T000002R000609",
         "___s": true
     },
     {
@@ -1392,7 +1393,7 @@
             "lineno": 29,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007360",
+                "id": "astnode100007385",
                 "name": "ArraySchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1418,7 +1419,7 @@
         "scope": "static",
         "kind": "class",
         "___s": true,
-        "___id": "T000002R000616",
+        "___id": "T000002R000619",
         "comment": "/**\n * ArraySchema\n *\n * @memberof module:Schema\n */"
     },
     {
@@ -1431,7 +1432,7 @@
             "lineno": 43,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007396",
+                "id": "astnode100007421",
                 "name": "ArraySchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1450,7 +1451,7 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000621",
+        "___id": "T000002R000624",
         "description": "<p>ArraySchema.normalize</p>",
         "comment": "/**\n     * ArraySchema.normalize\n     */"
     },
@@ -1464,7 +1465,7 @@
             "lineno": 57,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007465",
+                "id": "astnode100007490",
                 "name": "ArraySchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1483,9 +1484,155 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000628",
+        "___id": "T000002R000631",
         "description": "<p>ArraySchema.denormalize</p>",
         "comment": "/**\n     * ArraySchema.denormalize\n     */"
+    },
+    {
+        "comment": "/**\n * @module Schema\n */",
+        "meta": {
+            "range": [
+                367,
+                392
+            ],
+            "filename": "DynamicSchema.js",
+            "lineno": 16,
+            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+            "code": {}
+        },
+        "kind": "module",
+        "name": "Schema",
+        "longname": "module:Schema",
+        "___id": "T000002R000639",
+        "___s": true
+    },
+    {
+        "meta": {
+            "range": [
+                449,
+                1439
+            ],
+            "filename": "DynamicSchema.js",
+            "lineno": 25,
+            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+            "code": {
+                "id": "astnode100007616",
+                "name": "DynamicSchema",
+                "type": "ClassDeclaration",
+                "paramnames": [
+                    "definition",
+                    "options"
+                ]
+            }
+        },
+        "params": [],
+        "longname": "module:Schema.DynamicSchema",
+        "classdesc": "<p>DynamicSchema</p>",
+        "name": "DynamicSchema",
+        "memberof": "module:Schema",
+        "scope": "static",
+        "kind": "class",
+        "___s": true,
+        "___id": "T000002R000647",
+        "comment": "/**\n * DynamicSchema\n *\n * @memberof module:Schema\n */"
+    },
+    {
+        "meta": {
+            "range": [
+                693,
+                786
+            ],
+            "filename": "DynamicSchema.js",
+            "lineno": 36,
+            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+            "code": {
+                "id": "astnode100007648",
+                "name": "DynamicSchema#define",
+                "type": "MethodDefinition",
+                "paramnames": [
+                    "definition"
+                ]
+            },
+            "vars": {
+                "": null
+            }
+        },
+        "params": [],
+        "longname": "module:Schema.DynamicSchema#define",
+        "name": "define",
+        "memberof": "module:Schema.DynamicSchema",
+        "scope": "instance",
+        "kind": "function",
+        "___s": true,
+        "___id": "T000002R000652",
+        "description": "<p>DynamicSchema.define</p>",
+        "comment": "/**\n     * DynamicSchema.define\n     */"
+    },
+    {
+        "meta": {
+            "range": [
+                839,
+                1189
+            ],
+            "filename": "DynamicSchema.js",
+            "lineno": 44,
+            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+            "code": {
+                "id": "astnode100007663",
+                "name": "DynamicSchema#normalize",
+                "type": "MethodDefinition",
+                "paramnames": [
+                    "data",
+                    "entities"
+                ]
+            },
+            "vars": {
+                "": null
+            }
+        },
+        "params": [],
+        "longname": "module:Schema.DynamicSchema#normalize",
+        "name": "normalize",
+        "memberof": "module:Schema.DynamicSchema",
+        "scope": "instance",
+        "kind": "function",
+        "___s": true,
+        "___id": "T000002R000654",
+        "description": "<p>DynamicSchema.normalize</p>",
+        "comment": "/**\n     * DynamicSchema.normalize\n     */"
+    },
+    {
+        "meta": {
+            "range": [
+                1244,
+                1437
+            ],
+            "filename": "DynamicSchema.js",
+            "lineno": 59,
+            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+            "code": {
+                "id": "astnode100007698",
+                "name": "DynamicSchema#denormalize",
+                "type": "MethodDefinition",
+                "paramnames": [
+                    "normalizeState",
+                    "path"
+                ]
+            },
+            "vars": {
+                "": null
+            }
+        },
+        "params": [],
+        "longname": "module:Schema.DynamicSchema#denormalize",
+        "name": "denormalize",
+        "memberof": "module:Schema.DynamicSchema",
+        "scope": "instance",
+        "kind": "function",
+        "___s": true,
+        "___id": "T000002R000661",
+        "description": "<p>DynamicSchema.denormalize</p>",
+        "comment": "/**\n     * DynamicSchema.denormalize\n     */"
     },
     {
         "comment": "/**\n * @module Schema\n */",
@@ -1502,20 +1649,20 @@
         "kind": "module",
         "name": "Schema",
         "longname": "module:Schema",
-        "___id": "T000002R000636",
+        "___id": "T000002R000666",
         "___s": true
     },
     {
         "meta": {
             "range": [
-                715,
-                3191
+                708,
+                3184
             ],
             "filename": "EntitySchema.js",
-            "lineno": 35,
+            "lineno": 37,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007621",
+                "id": "astnode100007821",
                 "name": "EntitySchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1532,20 +1679,20 @@
         "scope": "static",
         "kind": "class",
         "___s": true,
-        "___id": "T000002R000649",
-        "comment": "/**\n * EntitySchema\n *\n * @memberof module:Schema\n */"
+        "___id": "T000002R000679",
+        "comment": "/**\n\nEntitySchema\n\n@memberof module:Schema\n\n*/"
     },
     {
         "meta": {
             "range": [
-                1263,
-                1356
+                1256,
+                1349
             ],
             "filename": "EntitySchema.js",
-            "lineno": 51,
+            "lineno": 53,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007708",
+                "id": "astnode100007908",
                 "name": "EntitySchema#define",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1563,21 +1710,21 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000659",
+        "___id": "T000002R000689",
         "description": "<p>EntitySchema.define</p>",
         "comment": "/**\n     * EntitySchema.define\n     */"
     },
     {
         "meta": {
             "range": [
-                1408,
-                2611
+                1401,
+                2604
             ],
             "filename": "EntitySchema.js",
-            "lineno": 59,
+            "lineno": 61,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007723",
+                "id": "astnode100007923",
                 "name": "EntitySchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1596,21 +1743,21 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000661",
+        "___id": "T000002R000691",
         "description": "<p>EntitySchema.normalize</p>",
         "comment": "/**\n     * EntitySchema.normalize\n     */"
     },
     {
         "meta": {
             "range": [
-                2665,
-                3189
+                2658,
+                3182
             ],
             "filename": "EntitySchema.js",
-            "lineno": 100,
+            "lineno": 102,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007835",
+                "id": "astnode100008035",
                 "name": "EntitySchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1629,7 +1776,7 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000678",
+        "___id": "T000002R000708",
         "description": "<p>EntitySchema.denormalize</p>",
         "comment": "/**\n     * EntitySchema.denormalize\n     */"
     },
@@ -1648,7 +1795,7 @@
         "kind": "module",
         "name": "Schema",
         "longname": "module:Schema",
-        "___id": "T000002R000690",
+        "___id": "T000002R000720",
         "___s": true
     },
     {
@@ -1661,7 +1808,7 @@
             "lineno": 33,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008000",
+                "id": "astnode100008200",
                 "name": "ObjectSchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1696,7 +1843,7 @@
         "scope": "static",
         "kind": "class",
         "___s": true,
-        "___id": "T000002R000702",
+        "___id": "T000002R000732",
         "description": "<p>The ObjectSchema is a structural schema used to define relationships in objects.</p>",
         "comment": "/**\n * ObjectSchema\n *\n * @memberof module:Schema\n */"
     },
@@ -1710,7 +1857,7 @@
             "lineno": 59,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008039",
+                "id": "astnode100008239",
                 "name": "ObjectSchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1729,7 +1876,7 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000708",
+        "___id": "T000002R000738",
         "description": "<p>ObjectSchema.normalize</p>",
         "comment": "/**\n     * ObjectSchema.normalize\n     */"
     },
@@ -1743,7 +1890,7 @@
             "lineno": 77,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008117",
+                "id": "astnode100008317",
                 "name": "ObjectSchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1762,7 +1909,7 @@
         "scope": "instance",
         "kind": "function",
         "___s": true,
-        "___id": "T000002R000714",
+        "___id": "T000002R000744",
         "description": "<p>ObjectSchema.denormalize</p>",
         "comment": "/**\n     * ObjectSchema.denormalize\n     */"
     },
@@ -1793,10 +1940,12 @@
             "/Users/allanhortle/localhost/code/enty/src/decls/JsdocTypes.js",
             "/Users/allanhortle/localhost/code/enty/src/index.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/ArraySchema.js",
+            "/Users/allanhortle/localhost/code/enty/src/schema/DynamicSchema.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/EntitySchema.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/ObjectSchema.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/SchemaConstant.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/__tests__/ArraySchema-test.js",
+            "/Users/allanhortle/localhost/code/enty/src/schema/__tests__/DynamicSchema-test.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/__tests__/EntitySchema-test.js",
             "/Users/allanhortle/localhost/code/enty/src/schema/__tests__/ObjectSchema-test.js",
             "/Users/allanhortle/localhost/code/enty/src/utils/Connect.js",
@@ -1804,7 +1953,7 @@
             "/Users/allanhortle/localhost/code/enty/src/utils/__tests__/Connect-test.js",
             "/Users/allanhortle/localhost/code/enty/src/utils/__tests__/DistinctMemo-test.js"
         ],
-        "___id": "T000002R001054",
+        "___id": "T000002R001122",
         "___s": true
     }
 ]

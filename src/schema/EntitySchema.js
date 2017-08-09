@@ -10,10 +10,12 @@ import {getIn, get} from 'stampy/lib/util/CollectionUtils';
  */
 
 /**
- * EntitySchema
- *
- * @memberof module:Schema
- */
+
+EntitySchema
+
+@memberof module:Schema
+
+*/
 export class EntitySchema {
     name: string;
     type: string;

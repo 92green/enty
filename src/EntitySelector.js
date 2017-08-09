@@ -3,6 +3,7 @@
 // import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
 import ArraySchema from './schema/ArraySchema';
+import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 
 const defaultOptions = {
     schemaKey: 'ENTITY_RECEIVE',
@@ -24,13 +25,13 @@ const defaultOptions = {
 export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
-    const schema = entities.getIn(['_schema', schemaKey]);
+    const schema = getIn(entities, ['_schema', schemaKey]);
 
     if(!schema) {
         return;
     }
 
-    var data = schema.denormalize({result: entities.getIn(['_result', resultKey]), entities});
+    var data = schema.denormalize({result: getIn(entities, ['_result', resultKey]), entities});
 
     if(data) {
         return Iterable.isIndexed(data) ? data.toArray() : data.toObject();
@@ -51,7 +52,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
 export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
-    const schema = entities.getIn(['_schema', schemaKey]).definition[type];
+    const schema = getIn(entities, ['_schema', schemaKey]).definition[type];
 
     if(!schema) {
         return;
@@ -71,15 +72,14 @@ export function selectEntityById(state: Object, type: string, id: string, option
 export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
-    const schema = ArraySchema(entities.getIn(['_schema', schemaKey]).definition[type]);
+    const schema = ArraySchema(getIn(entities, ['_schema', schemaKey]).definition[type]);
 
     if(!schema) {
         return;
     }
 
     const data = schema.denormalize({
-        result: entities
-            .get(type, Map())
+        result: get(entities, type, Map())
             .keySeq()
             .toList(),
         entities

@@ -56,6 +56,7 @@ export class ObjectSchema {
             }, dataMap);
 
         return {entities, result};
+
     }
 
     /**
