@@ -22,7 +22,7 @@ Its main purpose it to:
 // UPPER_SNAKE case representation
 function reduceActionMap(branch: Map, parentKey: string = ''): Map {
     return branch.reduce((rr: Map, ii: any, key: string): Map => {
-        var prefix = `${parentKey}${key.toUpperCase()}`;
+        var prefix = `${parentKey}${key}`;
         if(Map.isMap(ii)) {
             return rr.merge(reduceActionMap(ii, `${prefix}_`));
         } else {
@@ -109,15 +109,17 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
     return reduceActionMap(fromJS(actionMap))
         .reduce((state: Map, sideEffect: Function, action: string): Map => {
 
-            const FETCH = `${action}_FETCH`;
-            const RECEIVE = `${action}_RECEIVE`;
-            const ERROR = `${action}_ERROR`;
+            const snakeAction = action.toUpperCase();
+
+            const FETCH = `${snakeAction}_FETCH`;
+            const RECEIVE = `${snakeAction}_RECEIVE`;
+            const ERROR = `${snakeAction}_ERROR`;
 
             const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
-            const requestActionPath = action.split('_').map(ii => ii.toLowerCase());
+            const requestActionPath = action.split('_');
             const requestActionName = action
                 .split('_')
-                .map(ss => ss.toLowerCase().replace(/^./, mm => mm.toUpperCase()))
+                .map(ss => ss.replace(/^./, mm => mm.toUpperCase()))
                 .join('');
 
             return state
