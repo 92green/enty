@@ -107,7 +107,7 @@
                                             "scope": "global",
                                             "kind": "typedef",
                                             "___s": true,
-                                            "___id": "T000002R000553",
+                                            "___id": "T000002R000555",
                                             "type": {
                                                 "names": [
                                                     "object"
@@ -202,7 +202,7 @@
                                         "scope": "global",
                                         "kind": "typedef",
                                         "___s": true,
-                                        "___id": "T000002R000553",
+                                        "___id": "T000002R000555",
                                         "type": {
                                             "names": [
                                                 "object"
@@ -216,14 +216,14 @@
                         ],
                         "meta": {
                             "range": [
-                                4258,
-                                5994
+                                4244,
+                                6004
                             ],
                             "filename": "EntityApi.js",
                             "lineno": 127,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100000297",
+                                "id": "astnode100000294",
                                 "name": "EntityApi",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -300,7 +300,7 @@
                                             "scope": "global",
                                             "kind": "typedef",
                                             "___s": true,
-                                            "___id": "T000002R000552",
+                                            "___id": "T000002R000554",
                                             "type": {
                                                 "names": [
                                                     "object"
@@ -353,7 +353,7 @@
                                         "scope": "global",
                                         "kind": "typedef",
                                         "___s": true,
-                                        "___id": "T000002R000552",
+                                        "___id": "T000002R000554",
                                         "type": {
                                             "names": [
                                                 "object"
@@ -420,7 +420,7 @@
                             "lineno": 48,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100000659",
+                                "id": "astnode100000651",
                                 "name": "EntityMutationHockFactory",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -486,7 +486,7 @@
                                             "scope": "global",
                                             "kind": "typedef",
                                             "___s": true,
-                                            "___id": "T000002R000552",
+                                            "___id": "T000002R000554",
                                             "type": {
                                                 "names": [
                                                     "object"
@@ -538,7 +538,7 @@
                                         "scope": "global",
                                         "kind": "typedef",
                                         "___s": true,
-                                        "___id": "T000002R000552",
+                                        "___id": "T000002R000554",
                                         "type": {
                                             "names": [
                                                 "object"
@@ -557,7 +557,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000057",
+                        "___id": "T000002R000058",
                         "description": "<p>EntityMutationHockFactory</p>",
                         "parentKind": "module",
                         "comment": "/**\n * EntityMutationHockFactory\n *\n * @param {function} actionCreator\n * @param {SelectOptions} selectOptions\n * @returns {MutationHock}\n * @memberof module:Factories\n */"
@@ -581,7 +581,7 @@
                             "lineno": 49,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001077",
+                                "id": "astnode100001069",
                                 "name": "EntityQueryHockFactory",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -610,7 +610,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000105",
+                        "___id": "T000002R000106",
                         "parentKind": "module",
                         "comment": "/**\n *\n * @param {function} sideEffect\n * @returns {EntityQueryHock}\n * @memberof module:Factories\n */"
                     },
@@ -633,7 +633,7 @@
                             "lineno": 43,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001334",
+                                "id": "astnode100001326",
                                 "name": "EntityReducerFactory",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -668,14 +668,14 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000133",
+                        "___id": "T000002R000134",
                         "parentKind": "module",
                         "comment": "/**\n *\n * @example\n * import {createEntityReducer} from 'enty';\n * import EntitySchema from 'myapp/EntitySchema';\n *\n * export default combineReducers({\n *     entity: EntityReducerFactory({\n *          schemaMap: {\n *              GRAPHQL_RECEIVE: EntitySchema,\n *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema\n *          }\n *     })\n * });\n *\n * @param {object} config.schemaMap - Map of schema action names.\n * @return {function}\n * @memberof module:Factories\n *\n */"
                     }
                 ],
                 "kind": "module",
                 "___s": true,
-                "___id": "T000002R000040",
+                "___id": "T000002R000041",
                 "description": "<p>woot</p>",
                 "comment": "/**\n * woot\n * @module Factories\n */"
             },
@@ -744,7 +744,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000083",
+                        "___id": "T000002R000084",
                         "description": "<p>Mutation is used to request or change data in response to user interaction.\nWhen the <code>onMutate</code> functions is called the payload is passed through <code>payloadCreator</code> and\non to its corresponding promise in the EntityApi.\nThe result of this promise is sent to the entity reducer along with a hash of <code>payloadCreator</code> as a <code>resultKey</code>.\nThe data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]\nAn appropriate <code>RequestState</code> is given to the component. This means the component can be sure that the query is\nfetching/re-fetching, has thrown an error, or has arrived safely.</p>",
                         "parentKind": "module",
                         "comment": "/**\n     * Mutation is used to request or change data in response to user interaction.\n     * When the `onMutate` functions is called the payload is passed through `payloadCreator` and\n     * on to its corresponding promise in the EntityApi.\n     * The result of this promise is sent to the entity reducer along with a hash of `payloadCreator` as a `resultKey`.\n     * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]\n     * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is\n     * fetching/re-fetching, has thrown an error, or has arrived safely.\n     *\n     * @example\n     *\n     * // UserDataHocks.js\n     * import {UserMutationHock} from './EntityApi';\n     * import DeleteUserQuery from './DeleteUserQuery.graphql';\n     *\n     * export function DeleteUserMutationHock() {\n     *    return UserMutationHock(({id}) => {\n     *        return {\n     *            query: DeleteUserQuery,\n     *            variables: {\n     *                id\n     *            }\n     *        }\n     *    });\n     * }\n     *\n     * // User.jsx\n     * import React from 'react';\n     * import {DeleteUserMutationHock} from './UserDataHocks';\n     *\n     * function User(props) {\n     *     const {id, onMutate} = props;\n     *     return <Button onClick={() => onMutate(id)}>Delete User</Button>\n     * }\n     *\n     * const withMutation = DeleteUserMutationHock();\n     *\n     * export default withMutation(User);\n     *\n     * @name MutationHock\n     * @kind function\n     * @param {function} payloadCreator - turns\n     * @param {Object} [optionsOverride] - description\n     * @returns {function}\n     * @memberof module:Hocks\n     */"
@@ -806,7 +806,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000107",
+                        "___id": "T000002R000108",
                         "description": "<p>QueryHock is used to request data before a component renders.\nWhen one of the <code>updateKeys</code> on props changes the hock will pass the current props through\n<code>queryCreator</code> and on to its corresponding promise in EntityApi.\nThe result of this promise is sent to the entity reducer along with a hash of <code>queryCreator</code> as a <code>resultKey</code>.</p>\n<p>The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]\nAn appropriate <code>RequestState</code> is given to the component. This means the component can be sure that the query is\nfetching/re-fetching, has thrown an error, or has arrived safely.</p>",
                         "parentKind": "module",
                         "comment": "/**\n     * QueryHock is used to request data before a component renders.\n     * When one of the `updateKeys` on props changes the hock will pass the current props through\n     * `queryCreator` and on to its corresponding promise in EntityApi.\n     * The result of this promise is sent to the entity reducer along with a hash of `queryCreator` as a `resultKey`.\n     *\n     * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]\n     * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is\n     * fetching/re-fetching, has thrown an error, or has arrived safely.\n     *\n     *\n     * @name QueryHock\n     * @kind function\n     * @param {function} queryCreator - turns\n     * @param {string[]} updateKeys - description\n     * @param {Object} [optionsOverride] - description\n     * @returns {function}\n     * @memberof module:Hocks\n     */"
@@ -814,7 +814,7 @@
                 ],
                 "kind": "module",
                 "___s": true,
-                "___id": "T000002R000106",
+                "___id": "T000002R000107",
                 "description": "<p>Hocks are the primary means of connecting data to your views.</p>",
                 "comment": "/**\n     * Hocks are the primary means of connecting data to your views.\n     *\n     * @module Hocks\n     */"
             },
@@ -833,7 +833,7 @@
                 "kind": "module",
                 "name": "Selectors",
                 "longname": "module:Selectors",
-                "___id": "T000002R000243",
+                "___id": "T000002R000245",
                 "___s": true,
                 "doclets": [
                     {
@@ -849,14 +849,14 @@
                         ],
                         "meta": {
                             "range": [
-                                1085,
-                                1585
+                                1154,
+                                1700
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 42,
+                            "lineno": 45,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001818",
+                                "id": "astnode100001816",
                                 "name": "selectEntityByResult",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -907,7 +907,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000170",
+                        "___id": "T000002R000172",
                         "description": "<p>The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.</p>",
                         "parentKind": "module",
                         "comment": "/**\n * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.\n * @param  {object} state\n * @param  {string} resultKey\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {object} entity map\n * @memberof module:Selectors\n */"
@@ -925,14 +925,14 @@
                         ],
                         "meta": {
                             "range": [
-                                2003,
-                                2365
+                                2118,
+                                2503
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 69,
+                            "lineno": 72,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001901",
+                                "id": "astnode100001905",
                                 "name": "selectEntityById",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -991,7 +991,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000178",
+                        "___id": "T000002R000180",
                         "description": "<p>Given a type and id of and entity in state it will return the denormalized state.\nThis function is only used when you are certain you need the exact id in entity state.\nMost often the request key is more appropriate.</p>",
                         "parentKind": "module",
                         "comment": "/**\n * Given a type and id of and entity in state it will return the denormalized state.\n * This function is only used when you are certain you need the exact id in entity state.\n * Most often the request key is more appropriate.\n * @param  {object} state\n * @param  {string} type\n * @param  {string} id\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {object} entity map\n * @memberof module:Selectors\n */"
@@ -1009,14 +1009,14 @@
                         ],
                         "meta": {
                             "range": [
-                                2583,
-                                3072
+                                2721,
+                                3256
                             ],
                             "filename": "EntitySelector.js",
-                            "lineno": 89,
+                            "lineno": 92,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100001961",
+                                "id": "astnode100001968",
                                 "name": "selectEntityByType",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -1067,7 +1067,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000185",
+                        "___id": "T000002R000187",
                         "description": "<p>Access a whole entity type as a list</p>",
                         "parentKind": "module",
                         "comment": "/**\n * Access a whole entity type as a list\n * @param  {object} state\n * @param  {string} type\n * @param  {string} [schemaKey=ENTITY_RECEIVE]\n * @return {Immutable.List} entity list\n * @memberof module:Selectors\n */"
@@ -1092,7 +1092,7 @@
                             "lineno": 33,
                             "path": "/Users/allanhortle/localhost/code/enty/src",
                             "code": {
-                                "id": "astnode100002462",
+                                "id": "astnode100002475",
                                 "name": "selectRequestState",
                                 "type": "FunctionDeclaration",
                                 "paramnames": [
@@ -1132,7 +1132,7 @@
                         "scope": "static",
                         "kind": "function",
                         "___s": true,
-                        "___id": "T000002R000253",
+                        "___id": "T000002R000255",
                         "description": "<p>Returns the state of a current request. Either fetching, error or not yet requested.</p>",
                         "parentKind": "module",
                         "comment": "/**\n * Returns the state of a current request. Either fetching, error or not yet requested.\n * @param  {object} state            the current state\n * @param  {string} requestStateKey  either result key or action prefix\n * @return {object}                  the curerent request state\n * @memberof module:Selectors\n */"
@@ -1171,7 +1171,7 @@
                         "scope": "static",
                         "kind": "member",
                         "___s": true,
-                        "___id": "T000002R000236",
+                        "___id": "T000002R000238",
                         "description": "<p>EmptyState</p>",
                         "parentKind": "module",
                         "comment": "/**\n * EmptyState\n * @name EmptyState\n * @memberof module:RequestState\n */"
@@ -1194,7 +1194,7 @@
                         "scope": "static",
                         "kind": "member",
                         "___s": true,
-                        "___id": "T000002R000237",
+                        "___id": "T000002R000239",
                         "description": "<p>FetchingState</p>",
                         "parentKind": "module",
                         "comment": "/**\n * FetchingState\n * @name FetchingState\n * @memberof module:RequestState\n */"
@@ -1217,7 +1217,7 @@
                         "scope": "static",
                         "kind": "member",
                         "___s": true,
-                        "___id": "T000002R000238",
+                        "___id": "T000002R000240",
                         "description": "<p>RefetchingState</p>",
                         "parentKind": "module",
                         "comment": "/**\n * RefetchingState\n * @name RefetchingState\n * @memberof module:RequestState\n */"
@@ -1240,7 +1240,7 @@
                         "scope": "static",
                         "kind": "member",
                         "___s": true,
-                        "___id": "T000002R000239",
+                        "___id": "T000002R000241",
                         "description": "<p>ErrorState</p>",
                         "parentKind": "module",
                         "comment": "/**\n * ErrorState\n * @name ErrorState\n * @memberof module:RequestState\n */"
@@ -1263,7 +1263,7 @@
                         "scope": "static",
                         "kind": "member",
                         "___s": true,
-                        "___id": "T000002R000241",
+                        "___id": "T000002R000243",
                         "description": "<p>SuccessState</p>",
                         "parentKind": "module",
                         "comment": "/**\n * SuccessState\n * @name SuccessState\n * @memberof module:RequestState\n */"
@@ -1271,7 +1271,7 @@
                 ],
                 "kind": "module",
                 "___s": true,
-                "___id": "T000002R000235",
+                "___id": "T000002R000237",
                 "description": "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ratione earum molestias aliquam impedit, optio et aspernatur ipsum cum eveniet laboriosam eius sunt, vero culpa rem sequi pariatur quia corporis.</p>",
                 "comment": "/**\n * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ratione earum molestias aliquam impedit, optio et aspernatur ipsum cum eveniet laboriosam eius sunt, vero culpa rem sequi pariatur quia corporis.\n * @module RequestState\n */"
             },
@@ -1279,18 +1279,18 @@
                 "comment": "/**\n * @module Schema\n */",
                 "meta": {
                     "range": [
-                        569,
-                        594
+                        363,
+                        388
                     ],
-                    "filename": "ObjectSchema.js",
-                    "lineno": 24,
+                    "filename": "ValueSchema.js",
+                    "lineno": 16,
                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                     "code": {}
                 },
                 "kind": "module",
                 "name": "Schema",
                 "longname": "module:Schema",
-                "___id": "T000002R000720",
+                "___id": "T000002R000768",
                 "___s": true,
                 "doclets": [
                     {
@@ -1303,7 +1303,7 @@
                             "lineno": 29,
                             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                             "code": {
-                                "id": "astnode100007385",
+                                "id": "astnode100007423",
                                 "name": "ArraySchema",
                                 "type": "ClassDeclaration",
                                 "paramnames": [
@@ -1336,7 +1336,7 @@
                                     "lineno": 43,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007421",
+                                        "id": "astnode100007459",
                                         "name": "ArraySchema#normalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1356,7 +1356,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000624",
+                                "___id": "T000002R000629",
                                 "description": "<p>ArraySchema.normalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * ArraySchema.normalize\n     */"
@@ -1371,7 +1371,7 @@
                                     "lineno": 57,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007490",
+                                        "id": "astnode100007528",
                                         "name": "ArraySchema#denormalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1391,7 +1391,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000631",
+                                "___id": "T000002R000636",
                                 "description": "<p>ArraySchema.denormalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * ArraySchema.denormalize\n     */"
@@ -1401,7 +1401,7 @@
                         "scope": "static",
                         "kind": "class",
                         "___s": true,
-                        "___id": "T000002R000619",
+                        "___id": "T000002R000624",
                         "parentKind": "module",
                         "comment": "/**\n * ArraySchema\n *\n * @memberof module:Schema\n */"
                     },
@@ -1415,7 +1415,7 @@
                             "lineno": 25,
                             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                             "code": {
-                                "id": "astnode100007616",
+                                "id": "astnode100007654",
                                 "name": "DynamicSchema",
                                 "type": "ClassDeclaration",
                                 "paramnames": [
@@ -1439,7 +1439,7 @@
                                     "lineno": 36,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007648",
+                                        "id": "astnode100007686",
                                         "name": "DynamicSchema#define",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1458,7 +1458,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000652",
+                                "___id": "T000002R000657",
                                 "description": "<p>DynamicSchema.define</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * DynamicSchema.define\n     */"
@@ -1473,7 +1473,7 @@
                                     "lineno": 44,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007663",
+                                        "id": "astnode100007701",
                                         "name": "DynamicSchema#normalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1493,7 +1493,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000654",
+                                "___id": "T000002R000659",
                                 "description": "<p>DynamicSchema.normalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * DynamicSchema.normalize\n     */"
@@ -1508,7 +1508,7 @@
                                     "lineno": 59,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007698",
+                                        "id": "astnode100007736",
                                         "name": "DynamicSchema#denormalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1528,7 +1528,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000661",
+                                "___id": "T000002R000666",
                                 "description": "<p>DynamicSchema.denormalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * DynamicSchema.denormalize\n     */"
@@ -1538,7 +1538,7 @@
                         "scope": "static",
                         "kind": "class",
                         "___s": true,
-                        "___id": "T000002R000647",
+                        "___id": "T000002R000652",
                         "parentKind": "module",
                         "comment": "/**\n * DynamicSchema\n *\n * @memberof module:Schema\n */"
                     },
@@ -1552,7 +1552,7 @@
                             "lineno": 37,
                             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                             "code": {
-                                "id": "astnode100007821",
+                                "id": "astnode100007859",
                                 "name": "EntitySchema",
                                 "type": "ClassDeclaration",
                                 "paramnames": [
@@ -1576,7 +1576,7 @@
                                     "lineno": 53,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007908",
+                                        "id": "astnode100007946",
                                         "name": "EntitySchema#define",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1595,7 +1595,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000689",
+                                "___id": "T000002R000694",
                                 "description": "<p>EntitySchema.define</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * EntitySchema.define\n     */"
@@ -1610,7 +1610,7 @@
                                     "lineno": 61,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100007923",
+                                        "id": "astnode100007961",
                                         "name": "EntitySchema#normalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1630,7 +1630,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000691",
+                                "___id": "T000002R000696",
                                 "description": "<p>EntitySchema.normalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * EntitySchema.normalize\n     */"
@@ -1645,7 +1645,7 @@
                                     "lineno": 102,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100008035",
+                                        "id": "astnode100008073",
                                         "name": "EntitySchema#denormalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1665,7 +1665,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000708",
+                                "___id": "T000002R000713",
                                 "description": "<p>EntitySchema.denormalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * EntitySchema.denormalize\n     */"
@@ -1675,7 +1675,7 @@
                         "scope": "static",
                         "kind": "class",
                         "___s": true,
-                        "___id": "T000002R000679",
+                        "___id": "T000002R000684",
                         "parentKind": "module",
                         "comment": "/**\n\nEntitySchema\n\n@memberof module:Schema\n\n*/"
                     },
@@ -1689,7 +1689,7 @@
                             "lineno": 33,
                             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                             "code": {
-                                "id": "astnode100008200",
+                                "id": "astnode100008238",
                                 "name": "ObjectSchema",
                                 "type": "ClassDeclaration",
                                 "paramnames": [
@@ -1731,7 +1731,7 @@
                                     "lineno": 59,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100008239",
+                                        "id": "astnode100008277",
                                         "name": "ObjectSchema#normalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1751,7 +1751,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000738",
+                                "___id": "T000002R000743",
                                 "description": "<p>ObjectSchema.normalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * ObjectSchema.normalize\n     */"
@@ -1766,7 +1766,7 @@
                                     "lineno": 77,
                                     "path": "/Users/allanhortle/localhost/code/enty/src/schema",
                                     "code": {
-                                        "id": "astnode100008317",
+                                        "id": "astnode100008355",
                                         "name": "ObjectSchema#denormalize",
                                         "type": "MethodDefinition",
                                         "paramnames": [
@@ -1786,7 +1786,7 @@
                                 "scope": "instance",
                                 "kind": "function",
                                 "___s": true,
-                                "___id": "T000002R000744",
+                                "___id": "T000002R000749",
                                 "description": "<p>ObjectSchema.denormalize</p>",
                                 "parentKind": "module",
                                 "comment": "/**\n     * ObjectSchema.denormalize\n     */"
@@ -1796,10 +1796,147 @@
                         "scope": "static",
                         "kind": "class",
                         "___s": true,
-                        "___id": "T000002R000732",
+                        "___id": "T000002R000737",
                         "description": "<p>The ObjectSchema is a structural schema used to define relationships in objects.</p>",
                         "parentKind": "module",
                         "comment": "/**\n * ObjectSchema\n *\n * @memberof module:Schema\n */"
+                    },
+                    {
+                        "meta": {
+                            "range": [
+                                443,
+                                1295
+                            ],
+                            "filename": "ValueSchema.js",
+                            "lineno": 25,
+                            "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+                            "code": {
+                                "id": "astnode100008658",
+                                "name": "ValueSchema",
+                                "type": "ClassDeclaration",
+                                "paramnames": [
+                                    "definition",
+                                    "options"
+                                ]
+                            }
+                        },
+                        "params": [],
+                        "longname": "module:Schema.ValueSchema",
+                        "classdesc": "<p>ValueSchema</p>",
+                        "name": "ValueSchema",
+                        "doclets": [
+                            {
+                                "meta": {
+                                    "range": [
+                                        732,
+                                        825
+                                    ],
+                                    "filename": "ValueSchema.js",
+                                    "lineno": 37,
+                                    "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+                                    "code": {
+                                        "id": "astnode100008696",
+                                        "name": "ValueSchema#define",
+                                        "type": "MethodDefinition",
+                                        "paramnames": [
+                                            "definition"
+                                        ]
+                                    },
+                                    "vars": {
+                                        "": null
+                                    }
+                                },
+                                "params": [],
+                                "longname": "module:Schema.ValueSchema#define",
+                                "name": "define",
+                                "doclets": [],
+                                "memberof": "module:Schema.ValueSchema",
+                                "scope": "instance",
+                                "kind": "function",
+                                "___s": true,
+                                "___id": "T000002R000783",
+                                "description": "<p>ValueSchema.define</p>",
+                                "parentKind": "module",
+                                "comment": "/**\n     * ValueSchema.define\n     */"
+                            },
+                            {
+                                "meta": {
+                                    "range": [
+                                        876,
+                                        1120
+                                    ],
+                                    "filename": "ValueSchema.js",
+                                    "lineno": 45,
+                                    "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+                                    "code": {
+                                        "id": "astnode100008711",
+                                        "name": "ValueSchema#normalize",
+                                        "type": "MethodDefinition",
+                                        "paramnames": [
+                                            "data",
+                                            "entities"
+                                        ]
+                                    },
+                                    "vars": {
+                                        "": null
+                                    }
+                                },
+                                "params": [],
+                                "longname": "module:Schema.ValueSchema#normalize",
+                                "name": "normalize",
+                                "doclets": [],
+                                "memberof": "module:Schema.ValueSchema",
+                                "scope": "instance",
+                                "kind": "function",
+                                "___s": true,
+                                "___id": "T000002R000785",
+                                "description": "<p>ValueSchema.normalize</p>",
+                                "parentKind": "module",
+                                "comment": "/**\n     * ValueSchema.normalize\n     */"
+                            },
+                            {
+                                "meta": {
+                                    "range": [
+                                        1173,
+                                        1293
+                                    ],
+                                    "filename": "ValueSchema.js",
+                                    "lineno": 58,
+                                    "path": "/Users/allanhortle/localhost/code/enty/src/schema",
+                                    "code": {
+                                        "id": "astnode100008748",
+                                        "name": "ValueSchema#denormalize",
+                                        "type": "MethodDefinition",
+                                        "paramnames": [
+                                            "normalizeState",
+                                            "path"
+                                        ]
+                                    },
+                                    "vars": {
+                                        "": null
+                                    }
+                                },
+                                "params": [],
+                                "longname": "module:Schema.ValueSchema#denormalize",
+                                "name": "denormalize",
+                                "doclets": [],
+                                "memberof": "module:Schema.ValueSchema",
+                                "scope": "instance",
+                                "kind": "function",
+                                "___s": true,
+                                "___id": "T000002R000791",
+                                "description": "<p>ValueSchema.denormalize</p>",
+                                "parentKind": "module",
+                                "comment": "/**\n     * ValueSchema.denormalize\n     */"
+                            }
+                        ],
+                        "memberof": "module:Schema",
+                        "scope": "static",
+                        "kind": "class",
+                        "___s": true,
+                        "___id": "T000002R000776",
+                        "parentKind": "module",
+                        "comment": "/**\n * ValueSchema\n *\n * @memberof module:Schema\n */"
                     }
                 ]
             }

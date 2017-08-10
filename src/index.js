@@ -13,6 +13,7 @@ export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ArraySchema} from './schema/ArraySchema';
 export {default as ObjectSchema} from './schema/ObjectSchema';
 export {default as DynamicSchema} from './schema/DynamicSchema';
+export {default as ValueSchema} from './schema/ValueSchema';
 
 
 // Selectors
