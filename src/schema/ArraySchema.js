@@ -36,9 +36,12 @@ export class ArraySchema {
         const result = List(data)
             .map((item: any): any => {
                 const {result} = definition.normalize(item, entities);
-                return (definition.type === 'entity')
-                    ? idAttribute(item).toString()
-                    : result;
+
+                if(result === item || definition.type !== 'entity') {
+                    return result;
+                }
+
+                return idAttribute(item).toString();
             });
 
         return {entities, result};
