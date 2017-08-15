@@ -55,8 +55,8 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
 
 test('requestState will return an empty RequestState for unknown resultKey', tt => {
     const Child = (props) => {
-        tt.truthy(props.requestState instanceof FetchingState().constructor);
-        tt.is(props.requestState.value('foo'), 'foo');
+        tt.truthy(props.queryRequestState instanceof FetchingState().constructor);
+        tt.is(props.queryRequestState.value('foo'), 'foo');
         return <div></div>;
     };
 

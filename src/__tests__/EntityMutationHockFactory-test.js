@@ -12,7 +12,7 @@ var STORE = {
     dispatch: (aa) => aa,
     getState: () => ({
         entity: fromJS({
-            _requestState: {
+            _mutationRequestState: {
                 foo: FetchingState()
             }
         })
@@ -37,7 +37,7 @@ test("EntityMutationHockFactory's hockedComponent should be an auto request", tt
 
 test("EntityMutationHockFactory's hocked component will be given props.onMutate", tt => {
     const Child = (props) => {
-        // tt.truthy(props.requestState instanceof FetchingState().constructor);
+        // tt.truthy(props.mutationRequestState instanceof FetchingState().constructor);
         // tt.is(props.onMutate.value("foo"), "foo");
         return <div></div>;
     };
@@ -87,10 +87,10 @@ test("EntityMutationHockFactory will update the onMutate with new props", tt => 
 // });
 
 
-// test('requestState will return an empty RequestState for unknown resultKey', tt => {
+// test('mutationRequestState will return an empty RequestState for unknown resultKey', tt => {
 //     const Child = (props) => {
-//         tt.truthy(props.requestState instanceof FetchingState().constructor);
-//         tt.is(props.requestState.value('foo'), 'foo');
+//         tt.truthy(props.mutationRequestState instanceof FetchingState().constructor);
+//         tt.is(props.mutationRequestState.value('foo'), 'foo');
 //         return <div></div>;
 //     };
 
