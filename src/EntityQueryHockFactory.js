@@ -45,7 +45,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
     return function EntityQueryHock(queryCreator: Function, paths: string[], optionsOverride: Object): Function {
 
         const options = {
-            requestStateProp: 'requestState',
+            queryRequestStateProp: 'queryRequestState',
             ...optionsOverride
         };
 

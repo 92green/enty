@@ -74,7 +74,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const options = {
             onMutateProp: 'onMutate',
-            requestStateProp: 'requestState',
+            mutationRequestStateProp: 'mutationRequestState',
             ...optionsOverride
         };
 
