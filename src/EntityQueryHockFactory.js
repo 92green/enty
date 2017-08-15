@@ -60,7 +60,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
 
                 return {
                     ...data,
-                    [options.requestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
+                    [options.queryRequestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
                 };
             }, selectOptions);
 
