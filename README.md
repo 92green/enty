@@ -144,6 +144,8 @@ The update in state triggers a rerender. All hocked views select their data base
 Schema.denormalize is given the new entity state and the normalised result object that matches their result key. As the result object is traversed denormalizeFilter is called on each entity. Any that fail the test will not be returned. 
 
 
+## Entity Types
+
 
 ## FAQ
 
@@ -179,5 +181,7 @@ const Api = EntityApi(ApplicationSchema, {
     userList: payload => request('/user', payload).then(data => ({userList: data}))
 });
 ```
+
+### Do I have to export an ObjectSchema from my EntityApi?
 
 
