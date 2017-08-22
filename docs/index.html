@@ -19,9 +19,10 @@
 <p>Enty lets you describe the relationships of your entities through schemas. It is then able to store them in a normalized state. This means that they are not stored by request but by the unique id that they were given by the back-end.</p>
 <h2>Getting Started</h2><p>Enty has two parts: A Schema and an EntityApi.</p>
 <h3>1. Schema</h3><p>The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user</p>
-<pre class="prettyprint source lang-js"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>
+<pre class="prettyprint source lang-js"><code><span class="token comment" spellcheck="true">// entity/ApplicationSchema.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
     ObjectSchema<span class="token punctuation">,</span>
-    ListSchema<span class="token punctuation">,</span>
+    ArraySchema<span class="token punctuation">,</span>
     EntitySchema<span class="token punctuation">,</span>
 <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;enty&apos;</span><span class="token punctuation">;</span>
 
@@ -36,8 +37,9 @@ user<span class="token punctuation">.</span><span class="token function">define<
    user<span class="token punctuation">,</span>
    userList
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><h3>2. API</h3><p>The second thing we need to do is to create our EntityApi from our schema;</p>
-<pre class="prettyprint source lang-js"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>EntityApi<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;enty&apos;</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> ApplicationSchema <span class="token keyword">from</span> <span class="token string">&apos;./entity/ApplicationSchema&apos;</span><span class="token punctuation">;</span>
+<pre class="prettyprint source lang-js"><code><span class="token comment" spellcheck="true">// entity/EntityApi.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>EntityApi<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;enty&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> ApplicationSchema <span class="token keyword">from</span> <span class="token string">&apos;./ApplicationSchema&apos;</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> Api <span class="token operator">=</span> <span class="token function">EntityApi</span><span class="token punctuation">(</span>ApplicationSchema<span class="token punctuation">,</span> <span class="token punctuation">{</span>
     core<span class="token punctuation">:</span> payload <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">&apos;/graphql&apos;</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span>
@@ -47,7 +49,8 @@ user<span class="token punctuation">.</span><span class="token function">define<
     EntityStore<span class="token punctuation">,</span>
     CoreQueryHock<span class="token punctuation">,</span>
     CoreMutationHock<span class="token punctuation">,</span>
-<span class="token punctuation">}</span> <span class="token operator">=</span> Api<span class="token punctuation">;</span></code></pre><h3>3. Connect to react</h3><pre class="prettyprint source lang-jsx"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>React<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react&apos;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token operator">=</span> Api<span class="token punctuation">;</span></code></pre><h3>3. Connect to react</h3><pre class="prettyprint source lang-jsx"><code><span class="token comment" spellcheck="true">// client.jsx</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>React<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react&apos;</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token punctuation">{</span>Provider<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react-redux&apos;</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> ReactDOM <span class="token keyword">from</span> <span class="token string">&apos;react-dom&apos;</span><span class="token punctuation">;</span>
 <span class="token keyword">import</span> <span class="token punctuation">{</span>EntityStore<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;./entity/EntityApi&apos;</span><span class="token punctuation">;</span>
@@ -58,8 +61,9 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>App</span> <span class="token punctuation">/&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>Provider</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">,</span>
     document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">&apos;app&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><h3>4. Make a Query</h3><pre class="prettyprint source lang-jsx"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>React<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react&apos;</span><span class="token punctuation">;</span>
-<span class="token keyword">import</span> <span class="token punctuation">{</span>CoreQueryHock<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;./entity/EntityApi&apos;</span><span class="token punctuation">;</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><h3>4. Make a Query</h3><pre class="prettyprint source lang-jsx"><code><span class="token comment" spellcheck="true">// component/User.jsx</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>React<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;react&apos;</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>CoreQueryHock<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&apos;../entity/EntityApi&apos;</span><span class="token punctuation">;</span>
 
 <span class="token keyword">function</span> <span class="token function">User</span><span class="token punctuation">(</span>props<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">const</span> <span class="token punctuation">{</span>user<span class="token punctuation">}</span> <span class="token operator">=</span> props<span class="token punctuation">;</span>
@@ -78,7 +82,7 @@ ReactDOM<span class="token punctuation">.</span><span class="token function">ren
 <span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token function">withData</span><span class="token punctuation">(</span>User<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><h2>Entity Flow</h2><ol>
 <li><p><strong>Props Change / OnMutate Triggered</strong><br>The Enty data flow begins when either a QueryHocked components props change or a MutationHocked component fires its onMutate callback. When this happens the corresponding promise creator in the API is fired. </p>
 </li>
-<li><p><strong>Data Request / Recieve</strong><br>The data request actions is triggered and the corresponding requestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
+<li><p><strong>Data Request / Recieve</strong><br>The data request actions is triggered and the corresponding queryRequestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
 If the promise resolves the receive action is triggered, the requestState becomes a SuccessState. </p>
 </li>
 <li><p><strong>Normalize</strong><br>The payload is passed into schema.normalize, which will in turn call schema.normalize recursively on its children as defined. Entities are stored under their schema type key and the result of their id attribute. Each entity is also passed through their constructor function which is given the current entity and the previous version if it exists. </p>
@@ -88,7 +92,24 @@ If the promise resolves the receive action is triggered, the requestState become
 <li><p><strong>Views Updated</strong><br>The update in state triggers a rerender. All hocked views select their data based on their result key. 
 Schema.denormalize is given the new entity state and the normalised result object that matches their result key. As the result object is traversed denormalizeFilter is called on each entity. Any that fail the test will not be returned. </p>
 </li>
-</ol><div></div></div><section><h2>Modules</h2><div><div class="Doclet" id="module:Api"><div><h3>Api</h3><div class="Typography"><p>The Entity Api is the main access point for your data. It allows you to define the link between your views
+</ol>
+<h2>FAQ</h2><h3>What if I am using two Query/Mutation hocks</h3><p>Use the options override!</p>
+<pre class="prettyprint source lang-js"><code><span class="token keyword">const</span> withQuery <span class="token operator">=</span> <span class="token function">CoreQueryHock</span><span class="token punctuation">(</span>
+    props <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>
+        query<span class="token punctuation">:</span> UserQuery<span class="token punctuation">,</span> 
+        variables<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            id<span class="token punctuation">:</span> props<span class="token punctuation">.</span>id
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+        queryRequestStateProp<span class="token punctuation">:</span> <span class="token string">&apos;userRequestState&apos;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><h3>How do I load things?</h3><h3>Why is react-redux a peer dependency (it&apos;s not yet... but it should be)</h3><h3>How do I handle endpoints that return arrays?</h3><p>We have found the cleanest way is to add a new service to your api and modify the data before it is given to Enty</p>
+<pre class="prettyprint source lang-js"><code><span class="token comment" spellcheck="true">// EntityApi.js</span>
+<span class="token keyword">const</span> Api <span class="token operator">=</span> <span class="token function">EntityApi</span><span class="token punctuation">(</span>ApplicationSchema<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    core<span class="token punctuation">:</span> payload <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">&apos;/graphql&apos;</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    userList<span class="token punctuation">:</span> payload <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token string">&apos;/user&apos;</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>data <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">(</span><span class="token punctuation">{</span>userList<span class="token punctuation">:</span> data<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre><div></div></div><section><h2>Modules</h2><div><div class="Doclet" id="module:Api"><div><h3>Api</h3><div class="Typography"><p>The Entity Api is the main access point for your data. It allows you to define the link between your views
 and the services that they fetch their data from.
 Its main purpose it to:</p>
 <ol>

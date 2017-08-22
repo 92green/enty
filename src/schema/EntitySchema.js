@@ -48,8 +48,8 @@ export class EntitySchema {
         const {options, name} = this;
         const {idAttribute, definition, constructor, merge} = options;
 
-        // It is important to check that our data is not already in a normalized state
-        // It is reasonable to assume that a number or string represents an id not an entity.
+        // It is important to check that our data is not alre`ady in a normalized state
+                // It is reasonable to assume that a number or string` represents an id not an entity.
         // If the data is sometimes saying an entity is an object and sometimes a primitive
         // there are bigger problems with the data structure.
 

@@ -124,7 +124,7 @@
         "meta": {
             "range": [
                 1069,
-                5326
+                5350
             ],
             "filename": "EntityMutationHockFactory.js",
             "lineno": 48,
@@ -237,7 +237,7 @@
         "meta": {
             "range": [
                 1202,
-                3884
+                3899
             ],
             "filename": "EntityQueryHockFactory.js",
             "lineno": 49,
@@ -1387,7 +1387,7 @@
         "meta": {
             "range": [
                 535,
-                1761
+                1915
             ],
             "filename": "ArraySchema.js",
             "lineno": 29,
@@ -1426,7 +1426,7 @@
         "meta": {
             "range": [
                 833,
-                1240
+                1394
             ],
             "filename": "ArraySchema.js",
             "lineno": 43,
@@ -1458,14 +1458,14 @@
     {
         "meta": {
             "range": [
-                1293,
-                1759
+                1447,
+                1913
             ],
             "filename": "ArraySchema.js",
-            "lineno": 57,
+            "lineno": 63,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007528",
+                "id": "astnode100007534",
                 "name": "ArraySchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1516,7 +1516,7 @@
             "lineno": 25,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007654",
+                "id": "astnode100007660",
                 "name": "DynamicSchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1546,7 +1546,7 @@
             "lineno": 36,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007686",
+                "id": "astnode100007692",
                 "name": "DynamicSchema#define",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1578,7 +1578,7 @@
             "lineno": 44,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007701",
+                "id": "astnode100007707",
                 "name": "DynamicSchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1611,7 +1611,7 @@
             "lineno": 59,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007736",
+                "id": "astnode100007742",
                 "name": "DynamicSchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1656,13 +1656,13 @@
         "meta": {
             "range": [
                 708,
-                3184
+                3186
             ],
             "filename": "EntitySchema.js",
             "lineno": 37,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007859",
+                "id": "astnode100007865",
                 "name": "EntitySchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1692,7 +1692,7 @@
             "lineno": 53,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007946",
+                "id": "astnode100007952",
                 "name": "EntitySchema#define",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1718,13 +1718,13 @@
         "meta": {
             "range": [
                 1401,
-                2604
+                2606
             ],
             "filename": "EntitySchema.js",
             "lineno": 61,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100007961",
+                "id": "astnode100007967",
                 "name": "EntitySchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1750,14 +1750,14 @@
     {
         "meta": {
             "range": [
-                2658,
-                3182
+                2660,
+                3184
             ],
             "filename": "EntitySchema.js",
             "lineno": 102,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008073",
+                "id": "astnode100008079",
                 "name": "EntitySchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1808,7 +1808,7 @@
             "lineno": 33,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008238",
+                "id": "astnode100008244",
                 "name": "ObjectSchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1857,7 +1857,7 @@
             "lineno": 59,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008277",
+                "id": "astnode100008283",
                 "name": "ObjectSchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1890,7 +1890,7 @@
             "lineno": 77,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008355",
+                "id": "astnode100008361",
                 "name": "ObjectSchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -1941,7 +1941,7 @@
             "lineno": 25,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008658",
+                "id": "astnode100008664",
                 "name": "ValueSchema",
                 "type": "ClassDeclaration",
                 "paramnames": [
@@ -1971,7 +1971,7 @@
             "lineno": 37,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008696",
+                "id": "astnode100008702",
                 "name": "ValueSchema#define",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -2003,7 +2003,7 @@
             "lineno": 45,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008711",
+                "id": "astnode100008717",
                 "name": "ValueSchema#normalize",
                 "type": "MethodDefinition",
                 "paramnames": [
@@ -2036,7 +2036,7 @@
             "lineno": 58,
             "path": "/Users/allanhortle/localhost/code/enty/src/schema",
             "code": {
-                "id": "astnode100008748",
+                "id": "astnode100008754",
                 "name": "ValueSchema#denormalize",
                 "type": "MethodDefinition",
                 "paramnames": [

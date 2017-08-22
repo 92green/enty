@@ -37,6 +37,7 @@ export class ArraySchema {
             .map((item: any): any => {
                 const {result} = definition.normalize(item, entities);
 
+                // If our result is our item that means we have prenoramlized data.
                 if(result === item || definition.type !== 'entity') {
                     return result;
                 }

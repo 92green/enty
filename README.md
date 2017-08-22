@@ -38,9 +38,10 @@ Enty has two parts: A Schema and an EntityApi.
 The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
 
 ```js
+// entity/ApplicationSchema.js
 import {
     ObjectSchema,
-    ListSchema,
+    ArraySchema,
     EntitySchema,
 } from 'enty';
 
@@ -62,8 +63,9 @@ export default ObjectSchema({
 The second thing we need to do is to create our EntityApi from our schema;
 
 ```js
+// entity/EntityApi.js
 import {EntityApi} from 'enty';
-import ApplicationSchema from './entity/ApplicationSchema';
+import ApplicationSchema from './ApplicationSchema';
 
 const Api = EntityApi(ApplicationSchema, {
     core: payload => request('/graphql', payload)
@@ -80,6 +82,7 @@ export const {
 ### 3. Connect to react
 
 ```jsx
+// client.jsx
 import {React} from 'react';
 import {Provider} from 'react-redux';
 import ReactDOM from 'react-dom';
@@ -98,8 +101,9 @@ ReactDOM.render(
 ### 4. Make a Query
 
 ```jsx
+// component/User.jsx
 import {React} from 'react';
-import {CoreQueryHock} from './entity/EntityApi';
+import {CoreQueryHock} from '../entity/EntityApi';
 
 function User(props) {
     const {user} = props;
@@ -126,7 +130,7 @@ export default withData(User);
 The Enty data flow begins when either a QueryHocked components props change or a MutationHocked component fires its onMutate callback. When this happens the corresponding promise creator in the API is fired. 
 
 2. **Data Request / Recieve**  
-The data request actions is triggered and the corresponding requestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
+The data request actions is triggered and the corresponding queryRequestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
 If the promise resolves the receive action is triggered, the requestState becomes a SuccessState. 
 
 3. **Normalize**    
@@ -138,4 +142,42 @@ The normalised entities are shallow merged with the previous state. The normalis
 5. **Views Updated**  
 The update in state triggers a rerender. All hocked views select their data based on their result key. 
 Schema.denormalize is given the new entity state and the normalised result object that matches their result key. As the result object is traversed denormalizeFilter is called on each entity. Any that fail the test will not be returned. 
+
+
+
+## FAQ
+
+### What if I am using two Query/Mutation hocks
+Use the options override!
+
+```js
+const withQuery = CoreQueryHock(
+    props => ({
+        query: UserQuery, 
+        variables: {
+            id: props.id
+        }
+    }),
+    {
+        queryRequestStateProp: 'userRequestState'
+    }
+);
+```
+
+
+### How do I load things?
+
+### Why is react-redux a peer dependency (it's not yet... but it should be)
+
+### How do I handle endpoints that return arrays?
+We have found the cleanest way is to add a new service to your api and modify the data before it is given to Enty
+
+```js
+// EntityApi.js
+const Api = EntityApi(ApplicationSchema, {
+    core: payload => request('/graphql', payload),
+    userList: payload => request('/user', payload).then(data => ({userList: data}))
+});
+```
+
 
