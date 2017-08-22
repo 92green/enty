@@ -8,9 +8,9 @@
      "recurse": true,
      "template": "node_modules/jsdonk",
      "jsdonk": {
-       "title": "Fronads",
+       "title": "Enty",
        "repo": {
-         "github": "https://github.com/blueflag/fronads"
+         "github": "https://github.com/blueflag/enty"
        },
        "sections": {
          "module": {
