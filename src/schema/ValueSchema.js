@@ -35,10 +35,11 @@ export class ValueSchema {
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {definition, constructor} = this.options;
-        const {result} = definition.normalize(constructor(data), entities);
+        const {result, schemas} = definition.normalize(constructor(data), entities);
 
         return {
             result,
+            schemas,
             entities
         };
     }
@@ -46,8 +47,8 @@ export class ValueSchema {
     /**
      * ValueSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        return this.options.definition.denormalize(normalizeState, path);
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        return this.options.definition.denormalize(denormalizeState, path);
     }
 }
 

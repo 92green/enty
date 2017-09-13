@@ -45,26 +45,29 @@ export class ObjectSchema {
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const dataMap = Map(data);
+        let schemas = {};
 
         const result = dataMap
             .keySeq()
             .reduce((result: Object, key: string): any => {
                 if(definition[key] && dataMap.get(key)) {
-                    return result.set(key, definition[key].normalize(dataMap.get(key), entities).result);
+                    const {result: childResult, schemas: childSchemas} = definition[key].normalize(dataMap.get(key), entities);
+                    Object.assign(schemas, childSchemas);
+                    return result.set(key, childResult);
                 }
 
                 return result;
             }, dataMap);
 
-        return {entities, result};
+        return {entities, schemas, result};
 
     }
 
     /**
      * ObjectSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {result, entities} = normalizeState;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {result, entities} = denormalizeState;
         const {definition, options} = this;
         let deletedKeys = [];
 

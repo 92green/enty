@@ -34,9 +34,13 @@ export class ArraySchema {
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const idAttribute = definition.options.idAttribute;
+        let schemas = {};
         const result = List(data)
             .map((item: any): any => {
-                const {result} = definition.normalize(item, entities);
+                const {result, schemas: childSchemas} = definition.normalize(item, entities);
+
+                // preserve our shcemas map
+                Object.assign(schemas, childSchemas);
 
                 // If our result is our item that means we have prenoramlized data.
                 if(result === item || definition.type !== 'entity') {
@@ -46,14 +50,14 @@ export class ArraySchema {
                 return idAttribute(item).toString();
             });
 
-        return {entities, result};
+        return {entities, schemas, result};
     }
 
     /**
      * ArraySchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {result, entities} = normalizeState;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {result, entities} = denormalizeState;
         const {definition} = this;
         // Filter out any deleted keys
         if(result == null) {
