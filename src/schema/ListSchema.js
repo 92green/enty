@@ -8,11 +8,11 @@ import type {NormalizeState} from '../definitions';
  */
 
 /**
- * ArraySchema
+ * ListSchema
  *
  * @memberof module:Schema
  */
-export class ArraySchema {
+export class ListSchema {
     type: string;
     definition: Object;
     options: Object;
@@ -21,7 +21,7 @@ export class ArraySchema {
      * @param {Schema} definition
      */
     constructor(definition: Object, options: Object = {}) {
-        this.type = 'array';
+        this.type = 'list';
         this.definition = definition;
         this.options = {
             ...options
@@ -29,7 +29,7 @@ export class ArraySchema {
     }
 
     /**
-     * ArraySchema.normalize
+     * ListSchema.normalize
      */
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {definition} = this;
@@ -54,7 +54,7 @@ export class ArraySchema {
     }
 
     /**
-     * ArraySchema.denormalize
+     * ListSchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
@@ -72,6 +72,6 @@ export class ArraySchema {
     }
 }
 
-export default function ArraySchemaFactory(...args: any[]): ArraySchema {
-    return new ArraySchema(...args);
+export default function ListSchemaFactory(...args: any[]): ListSchema {
+    return new ListSchema(...args);
 }

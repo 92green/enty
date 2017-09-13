@@ -2,7 +2,7 @@
 // import {denormalize} from 'normalizr';
 // import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
-import ArraySchema from './schema/ArraySchema';
+import ListSchema from './schema/ListSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 import type {SelectOptions} from './definitions';
 
@@ -73,7 +73,7 @@ export function selectEntityById(state: Object, type: string, id: string, option
 export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
-    const schema = ArraySchema(getIn(entities, ['_schemas', type]));
+    const schema = ListSchema(getIn(entities, ['_schemas', type]));
 
     if(!schema) {
         return;

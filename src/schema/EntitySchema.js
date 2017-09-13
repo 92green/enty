@@ -1,7 +1,7 @@
 // @flow
 import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
-import ObjectSchema from './ObjectSchema';
+import MapSchema from './MapSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 import type {NormalizeState} from '../definitions';
 
@@ -28,7 +28,7 @@ export class EntitySchema {
             denormalizeFilter: item => item && !item.get('deleted'),
             constructor: item => Map(item),
             merge: (aa, bb) => aa.merge(bb),
-            definition: ObjectSchema({}),
+            definition: MapSchema({}),
             ...options
         };
     }

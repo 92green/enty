@@ -1,6 +1,6 @@
 //@flow
 import test from 'ava';
-import {EntitySchema, ObjectSchema} from '../../index';
+import {EntitySchema, MapSchema} from '../../index';
 import {DELETED_ENTITY} from '../SchemaConstant';
 import {fromJS} from 'immutable';
 
@@ -8,13 +8,13 @@ var foo = EntitySchema('foo');
 var bar = EntitySchema('bar');
 var baz = EntitySchema('baz');
 
-baz.define(ObjectSchema({bar}));
-bar.define(ObjectSchema({foo}));
+baz.define(MapSchema({bar}));
+bar.define(MapSchema({foo}));
 
 test('EntitySchema can define definition through the `define` method', (tt: Object) => {
     var schema = EntitySchema('foo');
-    schema.define(ObjectSchema({bar: "1"}));
-    tt.is(schema.options.definition.type, 'object');
+    schema.define(MapSchema({bar: "1"}));
+    tt.is(schema.options.definition.type, 'map');
 });
 
 
@@ -41,8 +41,8 @@ test('EntitySchema will not cause an infinite recursion', (tt: Object) => {
     const foo = EntitySchema('foo');
     const bar = EntitySchema('bar');
 
-    foo.define(ObjectSchema({bar}));
-    bar.define(ObjectSchema({foo}));
+    foo.define(MapSchema({bar}));
+    bar.define(MapSchema({foo}));
 
     const entities = fromJS({
         bar: {"1": {id: "1", foo: "1"}},

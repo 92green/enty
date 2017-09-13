@@ -40,19 +40,19 @@ The first step in implementing Enty is to define your schema. This defines what 
 ```js
 // entity/ApplicationSchema.js
 import {
-    ObjectSchema,
-    ArraySchema,
+    MapSchema,
+    ListSchema,
     EntitySchema,
 } from 'enty';
 
 var user = EntitySchema('user');
-var userList = ArraySchema(user);
+var userList = ListSchema(user);
 
-user.define(ObjectSchema({
+user.define(MapSchema({
     friendList: userList
 }))
 
-export default ObjectSchema({
+export default MapSchema({
    user,
    userList
 });
@@ -182,6 +182,6 @@ const Api = EntityApi(ApplicationSchema, {
 });
 ```
 
-### Do I have to export an ObjectSchema from my EntityApi?
+### Do I have to export an MapSchema from my EntityApi?
 
 

@@ -1,10 +1,10 @@
 import test from 'ava';
 import {Map} from 'immutable';
-import {EntitySchema, ObjectSchema, ValueSchema} from '../../index';
+import {EntitySchema, MapSchema, ValueSchema} from '../../index';
 
 const foo = EntitySchema('foo');
 
-const fooValues = ObjectSchema({
+const fooValues = MapSchema({
     foo: ValueSchema(foo)
 });
 

@@ -1,11 +1,11 @@
 import test from 'ava';
-import {EntitySchema, ArraySchema, ObjectSchema} from '../../index';
+import {EntitySchema, ListSchema, MapSchema} from '../../index';
 import {fromJS, List} from 'immutable';
 
 const foo = EntitySchema('foo');
 
-test('ArraySchema can normalize arrays', tt => {
-    const schema = ArraySchema(foo);
+test('ListSchema can normalize arrays', tt => {
+    const schema = ListSchema(foo);
     const {entities, result} = schema.normalize([{id: "1"}, {id: "2"}]);
 
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
@@ -13,8 +13,8 @@ test('ArraySchema can normalize arrays', tt => {
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
-test('ArraySchema can normalize Lists', tt => {
-    const schema = ArraySchema(foo);
+test('ListSchema can normalize Lists', tt => {
+    const schema = ListSchema(foo);
     const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
 
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
@@ -22,8 +22,8 @@ test('ArraySchema can normalize Lists', tt => {
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
-// test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
-//     const schema = ArraySchema(foo);
+// test('MapSchema.denormalize is the inverse of MapSchema.normalize', tt => {
+//     const schema = ListSchema(foo);
 //     const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
 
 //     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
@@ -32,8 +32,8 @@ test('ArraySchema can normalize Lists', tt => {
 // });
 
 
-test('ArraySchema can normalize nested things in arrays', tt => {
-    const schema = ArraySchema(ObjectSchema({foo}));
+test('ListSchema can normalize nested things in arrays', tt => {
+    const schema = ListSchema(MapSchema({foo}));
     const {entities, result} = schema.normalize([{foo: {id: "1"}}]);
 
     tt.deepEqual(result.toJS(), [{foo: "1"}]);
@@ -41,8 +41,8 @@ test('ArraySchema can normalize nested things in arrays', tt => {
 });
 
 
-test('ArraySchema can denormalize arrays', tt => {
-    const schema = ArraySchema(foo);
+test('ListSchema can denormalize arrays', tt => {
+    const schema = ListSchema(foo);
     const entities = fromJS({
         foo: {
             "1": {id: "1"},
@@ -58,8 +58,8 @@ test('ArraySchema can denormalize arrays', tt => {
 });
 
 
-test('ArraySchema will not return deleted entities', tt => {
-    const schema = ArraySchema(foo);
+test('ListSchema will not return deleted entities', tt => {
+    const schema = ListSchema(foo);
     const entities = fromJS({
         foo: {
             "1": {id: "1"},
@@ -76,15 +76,15 @@ test('ArraySchema will not return deleted entities', tt => {
 });
 
 
-test('ArraySchema will not try to denormalize null values', tt => {
-    const schema = ArraySchema(foo);
+test('ListSchema will not try to denormalize null values', tt => {
+    const schema = ListSchema(foo);
     tt.deepEqual(schema.denormalize({result: null, entities: {}}), null);
 });
 
 
-test('ArraySchema will not mutate input objects', tt => {
+test('ListSchema will not mutate input objects', tt => {
 
-    const schema = ArraySchema(foo);
+    const schema = ListSchema(foo);
     const arrayTest = [{id: "1"}];
 
     schema.normalize(arrayTest);

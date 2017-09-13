@@ -1,8 +1,8 @@
 //@flow
 import test from 'ava';
 import EntitySchema from '../schema/EntitySchema';
-import ObjectSchema from '../schema/ObjectSchema';
-import ArraySchema from '../schema/ArraySchema';
+import MapSchema from '../schema/MapSchema';
+import ListSchema from '../schema/ListSchema';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
@@ -12,11 +12,11 @@ import {
 
 function constructState(): Object {
     var foo = EntitySchema('foo');
-    var fooList = ArraySchema(foo);
-    var schema = ObjectSchema({
-        fooList: ArraySchema(foo),
+    var fooList = ListSchema(foo);
+    var schema = MapSchema({
+        fooList: ListSchema(foo),
         foo,
-        single: ObjectSchema({foo})
+        single: MapSchema({foo})
     });
     var normalized = schema.normalize(
         {

@@ -8,22 +8,22 @@ import type {NormalizeState} from '../definitions';
  */
 
 /**
- * ObjectSchema
+ * MapSchema
  *
  * @memberof module:Schema
  */
-export class ObjectSchema {
+export class MapSchema {
     type: string;
     definition: Object;
     options: Object;
 
     /**
-     * The ObjectSchema is a structural schema used to define relationships in objects.
+     * The MapSchema is a structural schema used to define relationships in objects.
      *
      * @example
      * const user = entity('user');
-     * user.define(ObjectSchema({
-     *     friends: ArraySchema(user)
+     * user.define(MapSchema({
+     *     friends: ListSchema(user)
      * }))
      *
      * @param {Object} definition - an object describing any entity relationships that should be traversed.
@@ -31,7 +31,7 @@ export class ObjectSchema {
      *
      */
     constructor(definition: Object, options: Object = {}) {
-        this.type = 'object';
+        this.type = 'map';
         this.definition = definition;
         this.options = {
             denormalizeFilter: () => true,
@@ -40,7 +40,7 @@ export class ObjectSchema {
     }
 
     /**
-     * ObjectSchema.normalize
+     * MapSchema.normalize
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {definition} = this;
@@ -64,7 +64,7 @@ export class ObjectSchema {
     }
 
     /**
-     * ObjectSchema.denormalize
+     * MapSchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
@@ -112,14 +112,14 @@ export class ObjectSchema {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
             });
     }
-    merge(objectSchema: Object): ObjectSchema {
-        return new ObjectSchema(
+    merge(objectSchema: Object): MapSchema {
+        return new MapSchema(
             Object.assign({}, this.definition, objectSchema.definition),
             Object.assign({}, this.options, objectSchema.options)
         );
     }
 }
 
-export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
-    return new ObjectSchema(...args);
+export default function MapSchemaFactory(...args: any[]): MapSchema {
+    return new MapSchema(...args);
 }

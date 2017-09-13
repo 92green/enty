@@ -6,13 +6,13 @@ you can create factory functions to compose schema types togther
 ```
 function entity(name, definition, options) {
     return EntitySchema(name, {
-        definition: ObjectSchema(definition),
+        definition: MapSchema(definition),
         ...options
     })
 }
 
 const user = entity('user', {
-    friendList: ArraySchema(friend)
+    friendList: ListSchema(friend)
 });
 ```
 
