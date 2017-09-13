@@ -5,6 +5,13 @@ import {Map} from 'immutable';
 
 type NormalizeState = {
     entities: Object|Map,
+    result: Object|Map,
+    schemas: Object
+};
+
+
+type DenormalizeState = {
+    entities: Object|Map,
     result: Object|Map
 };
 

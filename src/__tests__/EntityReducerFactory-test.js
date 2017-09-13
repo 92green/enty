@@ -85,10 +85,10 @@ test('EntityReducerFactory', tt => {
 
     tt.true(
         is(
-            EntityReducer(undefined, exampleAction).get('_schema'),
+            EntityReducer(undefined, exampleAction).get('_baseSchema'),
             Map(schemaMap)
         ),
-        'Immutable version of schema is returned under _schema when reducer is called with no existing state'
+        'Immutable version of schema is returned under _baseSchema when reducer is called with no existing state'
     );
 
     tt.true(
