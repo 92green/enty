@@ -39,7 +39,8 @@ export default function EntityReducerFactory(config: Object): Function {
     } = config;
 
     const initialState = Map({
-        _schema: Map(schemaMap),
+        _baseSchema: Map(schemaMap),
+        _schemas: Map(),
         _result: Map(),
         _requestState: Map()
     });
@@ -97,20 +98,21 @@ export default function EntityReducerFactory(config: Object): Function {
             if(schema && payload) {
                 let previousEntities = state
                     .map(ii => ii.toObject())
-                    .delete('_schema')
+                    .delete('_actionSchema')
                     .delete('_result')
                     .delete('_requestState')
                     .toObject();
 
-                const {result, entities} = schema.normalize(payload, previousEntities);
+                const {result, entities, schemas} = schema.normalize(payload, previousEntities);
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
 
                 return state
                     // set results
+                    .update(state => state.merge(Map(entities).map(ii => Map(ii))))
                     .setIn(['_result', resultKey], result)
-                    .update(state => state.merge(Map(entities).map(ii => Map(ii))));
+                    .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous));
             }
 
 

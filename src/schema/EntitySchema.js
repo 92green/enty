@@ -48,14 +48,15 @@ export class EntitySchema {
         const {options, name} = this;
         const {idAttribute, definition, constructor, merge} = options;
 
-        // It is important to check that our data is not alre`ady in a normalized state
-                // It is reasonable to assume that a number or string` represents an id not an entity.
+        // It is important to check that our data is not already in a normalized state
+        // It is reasonable to assume that a number or string represents an id not an entity.
         // If the data is sometimes saying an entity is an object and sometimes a primitive
         // there are bigger problems with the data structure.
 
         if(typeof data === 'string' || typeof data === 'number') {
             return {
                 entities,
+                schemas: {},
                 result: data.toString()
             };
         }
@@ -69,24 +70,31 @@ export class EntitySchema {
         entities[name] = entities[name] || {};
 
         const previousEntity = entities[name][id];
-        let value = definition.normalize(data, entities).result;
+
+        // recurse into the children
+        let {schemas = {}, result} = definition.normalize(data, entities);
+
+        // list this schema as one that has been used
+        schemas[name] = this;
 
         if(previousEntity) {
-            value = merge(previousEntity, value);
+            result = merge(previousEntity, result);
         }
 
-        entities[name][id] = constructor(value);
+        entities[name][id] = constructor(result);
 
         return {
-            entities, result: id
+            entities,
+            schemas,
+            result: id
         };
     }
 
     /**
      * EntitySchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {result, entities} = normalizeState;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {result, entities} = denormalizeState;
         const {name, options} = this;
         const {definition, denormalizeFilter} = options;
         const entity = getIn(entities, [name, result]);
