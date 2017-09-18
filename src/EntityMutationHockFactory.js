@@ -74,21 +74,28 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const options = {
             onMutateProp: 'onMutate',
-            mutationRequestStateProp: 'mutationRequestState',
+            group: null,
             ...optionsOverride
         };
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
         return function EntityMutationHockApplier(Component: React.Element<any>): React.Element<any> {
+            const {group} = options;
 
             const blankConnect = Connect();
             const ComponentWithState = Connect((state: Object, props: Object): Object => {
                 const data = selectEntityByResult(state, props.resultKey, selectOptions);
-                return {
+
+                const childProps = {
                     ...data,
-                    [options.mutationRequestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
                 };
+
+                return group
+                    ? {[group]: {...props[group], ...childProps}}
+                    : childProps;
+
             }, selectOptions)(Component);
 
             class MutationHock extends React.Component {
@@ -121,12 +128,16 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                 }
 
                 render(): React.Element<any> {
-                    const props = {
-                        ...this.props,
+                    const childProps = {
                         resultKey: this.state.resultKey,
                         [options.onMutateProp]: this.mutation
                     };
-                    return <ComponentWithState {...props} />;
+                    const props = group
+                        ? {[group]: childProps}
+                        : childProps
+                    ;
+
+                    return <ComponentWithState {...this.props} {...props} />;
                 }
             }
 

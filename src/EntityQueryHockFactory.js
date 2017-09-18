@@ -45,7 +45,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
     return function EntityQueryHock(queryCreator: Function, paths: string[], optionsOverride: Object): Function {
 
         const options = {
-            queryRequestStateProp: 'queryRequestState',
+            group: null,
             ...optionsOverride
         };
 
@@ -57,11 +57,15 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
             const withState = Connect((state: Object, props: Object): Object => {
                 const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
                 const data = selectEntityByResult(state, resultKey, selectOptions);
-
-                return {
+                const childProps = {
                     ...data,
-                    [options.queryRequestStateProp]: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
                 };
+
+                return options.group
+                    ? {[options.group]: childProps}
+                    : childProps;
+
             }, selectOptions);
 
             const withPropChange = PropChangeHock(() => ({
