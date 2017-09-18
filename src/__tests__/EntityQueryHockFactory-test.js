@@ -54,13 +54,29 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
 
 
 test('requestState will return an empty RequestState for unknown resultKey', tt => {
-    const Child = (props) => {
-        tt.truthy(props.queryRequestState instanceof FetchingState().constructor);
-        tt.is(props.queryRequestState.value('foo'), 'foo');
+    const Child = (props: Object): React.Element<any> => {
+        tt.truthy(props.requestState instanceof FetchingState().constructor);
+        tt.is(props.requestState.value('foo'), 'foo');
         return <div></div>;
     };
 
     var Component = EntityQueryHockFactory(NOOP)(NOOP, [], {resultKey: 'blah'})(Child);
 
-    shallow(<Component store={STORE}/>).dive().dive();
+    shallow(<Component store={STORE}/>)
+        .dive()
+        .dive();
+});
+
+test('EntityQueryHockFactory will group props if a `group` config is provided', tt => {
+    const Child = (props: Object): React.Element<any> => {
+        tt.is(props.fooGroup.requestState instanceof FetchingState().constructor, true);
+        tt.is(props.fooGroup.requestState.value('foo'), 'foo');
+        return <div></div>;
+    };
+
+    var Component = EntityQueryHockFactory(NOOP)(NOOP, [], {group: 'fooGroup'})(Child);
+
+    shallow(<Component store={STORE}/>)
+        .dive()
+        .dive();
 });
