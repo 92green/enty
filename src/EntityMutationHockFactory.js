@@ -80,7 +80,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return function EntityMutationHockApplier(Component: Element<any>): React.Element<any> {
+        return function EntityMutationHockApplier(Component: Element<any>): Element<any> {
             const {group} = options;
 
             const blankConnect = Connect();
