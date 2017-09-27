@@ -3,13 +3,12 @@
 
 import {Map} from 'immutable';
 
-type NormalizeState = {
+export type NormalizeState = {
     entities: Object|Map,
     result: Object|Map
 };
 
-
-type SelectOptions = {
+export type SelectOptions = {
     schemaKey?: string,
     stateKey?: string
 };

@@ -6,8 +6,8 @@ import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
 import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
-import React from 'react';
-
+import type {Element} from 'react';
+import type {SelectOptions} from './definitions';
 
 
 /**
@@ -52,7 +52,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return function EntityQueryHockApplier(Component: React.Element<any>): any {
+        return function EntityQueryHockApplier(Component: Element<any>): any {
 
             const withState = Connect((state: Object, props: Object): Object => {
                 const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
