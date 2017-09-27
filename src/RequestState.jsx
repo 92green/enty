@@ -1,6 +1,6 @@
 // @flow
 
-import {StateFunctor} from 'fronads';
+import {StateFunctorFactory} from 'fronads';
 /**
  * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo ratione earum molestias aliquam impedit, optio et aspernatur ipsum cum eveniet laboriosam eius sunt, vero culpa rem sequi pariatur quia corporis.
  * @module RequestState
@@ -36,4 +36,4 @@ import {StateFunctor} from 'fronads';
  * @memberof module:RequestState
  */
 
-module.exports = StateFunctor(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);
+module.exports = StateFunctorFactory(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);

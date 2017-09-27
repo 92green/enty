@@ -1,6 +1,7 @@
 // @flow
 import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
+import type {NormalizeState} from '../definitions';
 
 /**
  * @module Schema

@@ -4,8 +4,8 @@ import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './utils/DistinctMemo';
 import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
-import React from 'react';
-
+import React, {type Element} from 'react';
+import type {SelectOptions} from './definitions';
 
 
 /**
@@ -80,7 +80,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return function EntityMutationHockApplier(Component: React.Element<any>): React.Element<any> {
+        return function EntityMutationHockApplier(Component: Element<any>): Element<any> {
 
             const blankConnect = Connect();
             const ComponentWithState = Connect((state: Object, props: Object): Object => {
@@ -91,10 +91,9 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                 };
             }, selectOptions)(Component);
 
-            class MutationHock extends React.Component {
+            class MutationHock extends React.Component<Object, Object> {
                 updateMutation: Function;
                 mutation: Function;
-                state: Object;
                 constructor(props: Object) {
                     super(props);
                     this.state = {};
@@ -120,7 +119,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                     };
                 }
 
-                render(): React.Element<any> {
+                render(): Element<any> {
                     const props = {
                         ...this.props,
                         resultKey: this.state.resultKey,

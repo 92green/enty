@@ -6,6 +6,8 @@ import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
+import type {SelectOptions} from './definitions';
+
 /**
 The Entity Api is the main access point for your data. It allows you to define the link between your views
 and the services that they fetch their data from.

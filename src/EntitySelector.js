@@ -4,6 +4,7 @@
 import {Iterable, Map} from 'immutable';
 import ArraySchema from './schema/ArraySchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
+import type {SelectOptions} from './definitions';
 
 const defaultOptions = {
     schemaKey: 'ENTITY_RECEIVE',

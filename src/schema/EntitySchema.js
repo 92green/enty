@@ -3,7 +3,7 @@ import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 import ObjectSchema from './ObjectSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
-
+import type {NormalizeState} from '../definitions';
 
 /**
  * @module Schema
