@@ -1,6 +1,6 @@
 // @flow
 import {Map} from 'immutable';
-import {DELETED_ENTITY} from './SchemaConstant';
+import {DELETED_ENTITY, type DeletedEntity} from './SchemaConstant';
 import type {NormalizeState} from '../definitions';
 
 /**
@@ -80,9 +80,9 @@ export class ObjectSchema {
         // Lots of `item.keySeq().reduce(() => {}, item) because Immutable can't map records without
         // mutating them...
         return result
-            .update((item: Map): Map => {
+            .update((item: Map<any, any>): Map<any, any> => {
                 return item.keySeq()
-                    .reduce((newItem: any, key: string): Map => {
+                    .reduce((newItem: any, key: string): Map<any, any> => {
                         var value = newItem.get(key);
                         var newValue;
 
@@ -100,12 +100,12 @@ export class ObjectSchema {
             .update((item: any): any => {
                 return item.keySeq()
                     .filter(key => item.get(key) === DELETED_ENTITY)
-                    .reduce((newItem: Map, deleteKey: string): Map => {
+                    .reduce((newItem: Map<any, any>, deleteKey: string): Map<any, any> => {
                         deletedKeys.push(deleteKey);
                         return newItem.delete(deleteKey);
                     }, item);
             })
-            .update((ii: Map): Map => {
+            .update((ii: Map<any, any>): Map<any, any>|DeletedEntity => {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
             });
     }

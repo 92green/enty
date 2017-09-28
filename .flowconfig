@@ -2,7 +2,6 @@
 module.file_ext=.js
 module.file_ext=.jsx
 module.system.node.resolve_dirname=node_modules
-module.system.node.resolve_dirname=..
 module.system.node.resolve_dirname=src
 esproposal.class_static_fields=ignore
 suppress_comment= \\(.\\|\n\\)*\\$FlowBug
@@ -17,6 +16,3 @@ suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 .*/node_modules/fbjs/.*
 .*/node_modules/react-side-effect/.*
 
-
-[libs]
-node_modules/immutable/dist/immutable.js.flow

@@ -1,4 +1,3 @@
-
 //@flow
 import {Map} from 'immutable';
 
@@ -49,7 +48,7 @@ export default function EntityReducerFactory(config: Object): Function {
     };
 
     // Return our constructed reducer
-    return function EntityReducer(state: Map = initialState, {type, payload, meta}: Object): Map {
+    return function EntityReducer(state: Map<any, any> = initialState, {type, payload, meta}: Object): Map<any, any> {
         Logger.info(`\n\nEntity reducer:`);
 
         const {

@@ -4,8 +4,8 @@
 import {Map} from 'immutable';
 
 export type NormalizeState = {
-    entities: Object|Map,
-    result: Object|Map
+    entities: Object|Map<any,any>,
+    result: Object
 };
 
 export type SelectOptions = {

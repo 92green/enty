@@ -22,8 +22,8 @@ Its main purpose it to:
 
 // Turns a nested object into a flat
 // UPPER_SNAKE case representation
-function reduceActionMap(branch: Map, parentKey: string = ''): Map {
-    return branch.reduce((rr: Map, ii: any, key: string): Map => {
+function reduceActionMap(branch: Map<string, any>, parentKey: string = ''): Map<string, any> {
+    return branch.reduce((rr: Map<string, any>, ii: any, key: string): Map<string, any> => {
         var prefix = `${parentKey}${key}`;
         if(Map.isMap(ii)) {
             return rr.merge(reduceActionMap(ii, `${prefix}_`));
@@ -109,7 +109,7 @@ function createRequestAction(fetchAction: string, recieveAction: string, errorAc
  */
 export default function EntityApi(schema: Object, actionMap: Object, selectOptions: SelectOptions = {}): Object {
     return reduceActionMap(fromJS(actionMap))
-        .reduce((state: Map, sideEffect: Function, action: string): Map => {
+        .reduce((state: Map<string, any>, sideEffect: Function, action: string): Map<string, any> => {
 
             const snakeAction = action.toUpperCase();
 
@@ -137,7 +137,7 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
             ;
 
         }, Map())
-        .update((api: Map): Map => {
+        .update((api: Map<string, any>): Map<string, any> => {
             // convert receive actions to a standard that EntityReducerFactory can understand
             // {
             //     ACTION_RECIEVE: schema

@@ -39,7 +39,7 @@ var logger: Logger = {
         this.logLevel = this.getLevelIndex(level);
 
         // create methods on Logger for each logLevel
-        logLevels.forEach(({name, consoleMethod}: Object, key: string) => {
+        logLevels.forEach(({name, consoleMethod}: Object, key: number) => {
 
             // by default logging should be noops
             var method = () => {};
@@ -70,7 +70,7 @@ var logger: Logger = {
     getLevelIndex: function(level: number|string): number {
         // level can be a log level string like "error" or "silly", or a number corresponding to a log level
         return typeof level == "string"
-            ? logLevels.findIndex(ii => ii.name == level)
+            ? logLevels.findIndex(ii => ii.name == level.toString())
             : level;
     }
 };
