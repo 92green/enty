@@ -13,7 +13,7 @@ export type RequestState = {
     fetchingMap: (Function) => RequestState,
     fetchingUnit: (*) => RequestState,
     refetchingFlatMap: (Function) => RequestState,
-    refetchingMap: RequestState,
+    refetchingMap: (Function) => RequestState,
     refetchingUnit: (*) => RequestState,
     successFlatMap: (Function) => RequestState,
     successMap: (Function) => RequestState,
