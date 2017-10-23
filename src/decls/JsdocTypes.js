@@ -15,7 +15,7 @@
  * @returns {EntityQueryHockApplier}
  */
 
- /**
+/**
  * @callback EntityQueryHockApplier
  *
  * @param {Component} componentToDecorate

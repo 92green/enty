@@ -12,6 +12,11 @@
             "plugins": [
                 "istanbul"
             ]
+        },
+        "production": {
+            "plugins": [
+                ["proto-babel-plugin-extract-flow-types", {"outDir": "lib"}]
+            ]
         }
     }
 }
