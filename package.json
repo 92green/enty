@@ -34,8 +34,6 @@
     "redux": "^3.6.0"
   },
   "dependencies": {
-    "eslint-plugin-flowtype": "^2.39.1",
-    "eslint-plugin-react": "^7.4.0",
     "fronads": "^0.12.0",
     "immutable": "^3.8.1",
     "jsdoc-react-proptypes": "^1.0.1",
@@ -56,6 +54,8 @@
     "enzyme": "^2.6.0",
     "eslint": "^3.9.1",
     "eslint-config-blueflag": "0.7.0",
+    "eslint-plugin-flowtype": "^2.39.1",
+    "eslint-plugin-react": "^7.4.0",
     "flow-bin": "0.54",
     "gh-pages": "^0.11.0",
     "git-url-parse": "^6.0.1",
