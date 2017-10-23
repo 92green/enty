@@ -34,6 +34,7 @@
     "redux": "^3.6.0"
   },
   "dependencies": {
+    "eslint-plugin-flowtype": "^2.39.1",
     "fronads": "^0.12.0",
     "immutable": "^3.8.1",
     "jsdoc-react-proptypes": "^1.0.1",
