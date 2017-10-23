@@ -1,5 +1,6 @@
 // @flow
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema

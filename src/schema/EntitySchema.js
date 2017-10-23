@@ -4,6 +4,7 @@ import {DELETED_ENTITY} from './SchemaConstant';
 import MapSchema from './MapSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema

@@ -2,6 +2,7 @@
 import {Map} from 'immutable';
 import {DELETED_ENTITY, type DeletedEntity} from './SchemaConstant';
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema
