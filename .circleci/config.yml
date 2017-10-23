@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/enty
     docker:
-      - image: circleci/node:6.10.3
+      - image: blueflag/circle-node:0.0.3
 
     steps:
       - checkout

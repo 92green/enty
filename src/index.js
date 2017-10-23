@@ -15,7 +15,6 @@ export {default as ObjectSchema} from './schema/ObjectSchema';
 export {default as DynamicSchema} from './schema/DynamicSchema';
 export {default as ValueSchema} from './schema/ValueSchema';
 
-
 // Selectors
 export {
     selectEntityByResult,
@@ -26,10 +25,6 @@ export {
 export {
     default as selectRequestState
 } from './RequestStateSelector';
-
-
-
-
 
 // Misc
 export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
@@ -44,3 +39,4 @@ export {
     SuccessState
 } from './RequestState';
 
+export type {RequestState} from './RequestState';
