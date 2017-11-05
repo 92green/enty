@@ -2,28 +2,29 @@
 import {Map} from 'immutable';
 import {DELETED_ENTITY, type DeletedEntity} from './SchemaConstant';
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema
  */
 
 /**
- * ObjectSchema
+ * MapSchema
  *
  * @memberof module:Schema
  */
-export class ObjectSchema {
+export class MapSchema {
     type: string;
     definition: Object;
     options: Object;
 
     /**
-     * The ObjectSchema is a structural schema used to define relationships in objects.
+     * The MapSchema is a structural schema used to define relationships in objects.
      *
      * @example
      * const user = entity('user');
-     * user.define(ObjectSchema({
-     *     friends: ArraySchema(user)
+     * user.define(MapSchema({
+     *     friends: ListSchema(user)
      * }))
      *
      * @param {Object} definition - an object describing any entity relationships that should be traversed.
@@ -31,7 +32,7 @@ export class ObjectSchema {
      *
      */
     constructor(definition: Object, options: Object = {}) {
-        this.type = 'object';
+        this.type = 'map';
         this.definition = definition;
         this.options = {
             denormalizeFilter: () => true,
@@ -40,31 +41,34 @@ export class ObjectSchema {
     }
 
     /**
-     * ObjectSchema.normalize
+     * MapSchema.normalize
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const dataMap = Map(data);
+        let schemas = {};
 
         const result = dataMap
             .keySeq()
             .reduce((result: Object, key: string): any => {
                 if(definition[key] && dataMap.get(key)) {
-                    return result.set(key, definition[key].normalize(dataMap.get(key), entities).result);
+                    const {result: childResult, schemas: childSchemas} = definition[key].normalize(dataMap.get(key), entities);
+                    Object.assign(schemas, childSchemas);
+                    return result.set(key, childResult);
                 }
 
                 return result;
             }, dataMap);
 
-        return {entities, result};
+        return {entities, schemas, result};
 
     }
 
     /**
-     * ObjectSchema.denormalize
+     * MapSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {result, entities} = normalizeState;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {result, entities} = denormalizeState;
         const {definition, options} = this;
         let deletedKeys = [];
 
@@ -109,14 +113,14 @@ export class ObjectSchema {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
             });
     }
-    merge(objectSchema: Object): ObjectSchema {
-        return new ObjectSchema(
+    merge(objectSchema: Object): MapSchema {
+        return new MapSchema(
             Object.assign({}, this.definition, objectSchema.definition),
             Object.assign({}, this.options, objectSchema.options)
         );
     }
 }
 
-export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
-    return new ObjectSchema(...args);
+export default function MapSchemaFactory(...args: any[]): MapSchema {
+    return new MapSchema(...args);
 }

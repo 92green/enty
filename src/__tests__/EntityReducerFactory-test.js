@@ -1,6 +1,6 @@
 import test from 'ava';
 import EntityReducerFactory from '../EntityReducerFactory';
-import {EntitySchema, ArraySchema, ObjectSchema} from '../index.js';
+import {EntitySchema, ListSchema, MapSchema} from '../index.js';
 import {is, fromJS, Map} from 'immutable';
 
 //
@@ -11,15 +11,15 @@ var author = EntitySchema('author', {idAttribute: item => item.fullnameId});
 
 var topListings = EntitySchema('topListings', {
     idAttribute: item => item.fullnameId,
-    definition: ObjectSchema({author})
+    definition: MapSchema({author})
 });
 
 var subreddit = EntitySchema('subreddit', {
     idAttribute: item => item.fullnameId,
-    definition: ObjectSchema({topListings: ArraySchema(topListings)})
+    definition: MapSchema({topListings: ListSchema(topListings)})
 });
 
-const schema = ObjectSchema({
+const schema = MapSchema({
     subreddit
 });
 
@@ -85,10 +85,10 @@ test('EntityReducerFactory', tt => {
 
     tt.true(
         is(
-            EntityReducer(undefined, exampleAction).get('_schema'),
+            EntityReducer(undefined, exampleAction).get('_baseSchema'),
             Map(schemaMap)
         ),
-        'Immutable version of schema is returned under _schema when reducer is called with no existing state'
+        'Immutable version of schema is returned under _baseSchema when reducer is called with no existing state'
     );
 
     tt.true(

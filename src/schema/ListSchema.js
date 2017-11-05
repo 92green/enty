@@ -2,17 +2,18 @@
 import {List} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema
  */
 
 /**
- * ArraySchema
+ * ListSchema
  *
  * @memberof module:Schema
  */
-export class ArraySchema {
+export class ListSchema {
     type: string;
     definition: Object;
     options: Object;
@@ -21,7 +22,7 @@ export class ArraySchema {
      * @param {Schema} definition
      */
     constructor(definition: Object, options: Object = {}) {
-        this.type = 'array';
+        this.type = 'list';
         this.definition = definition;
         this.options = {
             ...options
@@ -29,14 +30,18 @@ export class ArraySchema {
     }
 
     /**
-     * ArraySchema.normalize
+     * ListSchema.normalize
      */
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const idAttribute = definition.options.idAttribute;
+        let schemas = {};
         const result = List(data)
             .map((item: any): any => {
-                const {result} = definition.normalize(item, entities);
+                const {result, schemas: childSchemas} = definition.normalize(item, entities);
+
+                // preserve our shcemas map
+                Object.assign(schemas, childSchemas);
 
                 // If our result is our item that means we have prenoramlized data.
                 if(result === item || definition.type !== 'entity') {
@@ -46,14 +51,14 @@ export class ArraySchema {
                 return idAttribute(item).toString();
             });
 
-        return {entities, result};
+        return {entities, schemas, result};
     }
 
     /**
-     * ArraySchema.denormalize
+     * ListSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {result, entities} = normalizeState;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {result, entities} = denormalizeState;
         const {definition} = this;
         // Filter out any deleted keys
         if(result == null) {
@@ -68,6 +73,6 @@ export class ArraySchema {
     }
 }
 
-export default function ArraySchemaFactory(...args: any[]): ArraySchema {
-    return new ArraySchema(...args);
+export default function ListSchemaFactory(...args: any[]): ListSchema {
+    return new ListSchema(...args);
 }

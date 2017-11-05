@@ -6,13 +6,14 @@ import {fromJS} from 'immutable';
 import EntityMutationHockFactory from '../EntityMutationHockFactory';
 import {FetchingState} from '../RequestState';
 
+var NOOP = () => {};
 var PASS = (aa) => aa;
 var STORE = {
     subscribe: () => {},
     dispatch: (aa) => aa,
     getState: () => ({
         entity: fromJS({
-            _mutationRequestState: {
+            _requestState: {
                 foo: FetchingState()
             }
         })
@@ -37,8 +38,6 @@ test("EntityMutationHockFactory's hockedComponent should be an auto request", tt
 
 test("EntityMutationHockFactory's hocked component will be given props.onMutate", tt => {
     const Child = (props) => {
-        // tt.truthy(props.mutationRequestState instanceof FetchingState().constructor);
-        // tt.is(props.onMutate.value("foo"), "foo");
         return <div></div>;
     };
 
@@ -64,37 +63,24 @@ test("EntityMutationHockFactory will update the onMutate with new props", tt => 
     wrapper.render();
     tt.is(spy1.callCount, 0);
 
-    wrapper.dive().dive().prop('onMutate')({spy: spy1})
+    wrapper.dive().dive().prop('onMutate')({spy: spy1});
     tt.is(spy1.callCount, 1);
 });
 
+test('EntityMutationHockFactory will group props if a `group` config is provided', tt => {
+    const Child = (props: Object): React.Element<any> => {
+        return <div></div>;
+    };
 
+    var Component = EntityMutationHockFactory(NOOP)(NOOP, {group: 'fooGroup', resultKey: 'foo'})(Child);
 
-// test('resultKey is derived either from the metaOverride or a hash of the queryCreator', tt => {
-//     const sideEffectA = (aa,bb) => {
-//         tt.is(bb.resultKey, 'foo');
-//     };
+    function getProp(key: string) {
+        return shallow(<Component store={STORE}/>)
+            .dive()
+            .dive()
+            .prop(key);
+    }
 
-//     const sideEffectB = (aa,bb) => {
-//         tt.is(bb.resultKey, 469309513);
-//     };
-
-//     var ComponentA = EntityMutationHockFactory(sideEffectA)(PASS, ['keys'], {resultKey: 'foo'})(PASS);
-//     var ComponentB = EntityMutationHockFactory(sideEffectB)(PASS, ['keys'])(PASS);
-
-//     shallow(<ComponentA store={STORE}/>).dive();
-//     shallow(<ComponentB store={STORE}/>).dive();
-// });
-
-
-// test('mutationRequestState will return an empty RequestState for unknown resultKey', tt => {
-//     const Child = (props) => {
-//         tt.truthy(props.mutationRequestState instanceof FetchingState().constructor);
-//         tt.is(props.mutationRequestState.value('foo'), 'foo');
-//         return <div></div>;
-//     };
-
-//     var Component = EntityMutationHockFactory(PASS)(PASS, [], {resultKey: 'blah'})(Child);
-
-//     shallow(<Component store={STORE}/>).dive().dive();
-// });
+    tt.is(typeof getProp('fooGroup'), 'object');
+    tt.is(typeof getProp('fooGroup').onMutate, 'function');
+});

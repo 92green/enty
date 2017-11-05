@@ -1,42 +1,42 @@
 import test from 'ava';
-import {EntitySchema, ObjectSchema} from '../../index';
+import {EntitySchema, MapSchema} from '../../index';
 import {fromJS, Map} from 'immutable';
 
 var foo = EntitySchema('foo');
 
-test('ObjectSchema can normalize objects', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema can normalize objects', tt => {
+    const schema = MapSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: "1"}});
 
     tt.deepEqual(result.toJS(), {foo: "1"});
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
-test('ObjectSchema can normalize maps', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema can normalize maps', tt => {
+    const schema = MapSchema({foo});
     let {entities, result} = schema.normalize(Map({foo: {id: "1"}}));
 
     tt.deepEqual(result.toJS(), {foo: "1"});
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
-test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema.denormalize is the inverse of MapSchema.normalize', tt => {
+    const schema = MapSchema({foo});
     const data = Map({foo: Map({id: "1"})});
     const output = schema.denormalize(schema.normalize(data));
     tt.true(data.equals(output));
 });
 
-test('ObjectSchema can normalize empty objects', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema can normalize empty objects', tt => {
+    const schema = MapSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
 
     tt.deepEqual(entities, {});
     tt.deepEqual(result.toJS(), {bar: {}});
 });
 
-test('ObjectSchema can denormalize objects', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema can denormalize objects', tt => {
+    const schema = MapSchema({foo});
 
     const entities = fromJS({
         foo: {
@@ -51,8 +51,8 @@ test('ObjectSchema can denormalize objects', tt => {
 });
 
 
-test('ObjectSchema will not denormalize null values', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema will not denormalize null values', tt => {
+    const schema = MapSchema({foo});
 
     const entities = fromJS({
         foo: {
@@ -66,8 +66,8 @@ test('ObjectSchema will not denormalize null values', tt => {
     );
 });
 
-test('ObjectSchema will not denormalize unknown keys', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema will not denormalize unknown keys', tt => {
+    const schema = MapSchema({foo});
 
     const entities = fromJS({
         foo: {
@@ -81,8 +81,8 @@ test('ObjectSchema will not denormalize unknown keys', tt => {
     );
 });
 
-test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
-    const schema = ObjectSchema({foo});
+test('MapSchema will filter out DELETED_ENTITY keys', tt => {
+    const schema = MapSchema({foo});
 
     const entities = fromJS({
         foo: {
@@ -96,8 +96,8 @@ test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
     );
 });
 
-test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt => {
-    const schema = ObjectSchema({foo}, {
+test('MapSchema will pass any deleted keys to options.denormalizeFilter', tt => {
+    const schema = MapSchema({foo}, {
         denormalizeFilter: (item, deletedKeys) => tt.deepEqual(deletedKeys, ['foo'])
     });
 
@@ -111,12 +111,12 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
 });
 
 
-test('ObjectSchema.merge() will perform a shallow merge of options and definition', tt => {
+test('MapSchema.merge() will perform a shallow merge of options and definition', tt => {
     const denormalizeFilter = () => true;
     const foo = EntitySchema('foo');
     const bar = EntitySchema('bar');
-    const aa = ObjectSchema({foo});
-    const bb = ObjectSchema({bar}, {denormalizeFilter});
+    const aa = MapSchema({foo});
+    const bb = MapSchema({bar}, {denormalizeFilter});
     const merged = aa.merge(bb);
 
 
@@ -126,9 +126,9 @@ test('ObjectSchema.merge() will perform a shallow merge of options and definitio
 });
 
 
-test('ObjectSchema will not mutate input objects', tt => {
+test('MapSchema will not mutate input objects', tt => {
     const foo = EntitySchema('foo');
-    const schema = ObjectSchema({foo});
+    const schema = MapSchema({foo});
     const objectTest = {foo: {id: "1"}};
 
     // release the mutations!

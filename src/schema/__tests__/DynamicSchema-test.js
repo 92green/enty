@@ -1,6 +1,6 @@
 import test from 'ava';
 import {fromJS} from 'immutable';
-import {EntitySchema, ArraySchema, DynamicSchema} from '../../index';
+import {EntitySchema, ListSchema, DynamicSchema} from '../../index';
 
 const foo = EntitySchema('foo');
 const bar = EntitySchema('bar');
@@ -19,7 +19,7 @@ const fooBarBaz = DynamicSchema(data => {
 
 
 test('DynamicSchema can choose an appropriate schema to normalize', tt => {
-    const unknownArray = ArraySchema(fooBarBaz);
+    const unknownArray = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
         {type: 'bar', id: '1'},
@@ -35,7 +35,7 @@ test('DynamicSchema can choose an appropriate schema to normalize', tt => {
 
 
 test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', tt => {
-    const schema = ArraySchema(fooBarBaz);
+    const schema = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
         {type: 'bar', id: '1'},
@@ -56,7 +56,7 @@ test('DynamicSchema.normalize', tt => {
 
 
 test('DynamicSchema.normalize on to existing data', tt => {
-    const schema = ArraySchema(fooBarBaz);
+    const schema = ListSchema(fooBarBaz);
 
     const first = [
         {type: 'foo', id: '0'}

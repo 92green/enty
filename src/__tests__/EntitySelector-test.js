@@ -1,7 +1,8 @@
+//@flow
 import test from 'ava';
 import EntitySchema from '../schema/EntitySchema';
-import ObjectSchema from '../schema/ObjectSchema';
-import ArraySchema from '../schema/ArraySchema';
+import MapSchema from '../schema/MapSchema';
+import ListSchema from '../schema/ListSchema';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
@@ -9,13 +10,13 @@ import {
     selectEntityByType
 } from '../EntitySelector';
 
-function constructState() {
+function constructState(): Object {
     var foo = EntitySchema('foo');
-    var fooList = ArraySchema(foo);
-    var schema = ObjectSchema({
-        fooList: ArraySchema(foo),
+    var fooList = ListSchema(foo);
+    var schema = MapSchema({
+        fooList: ListSchema(foo),
         foo,
-        single: ObjectSchema({foo})
+        single: MapSchema({foo})
     });
     var normalized = schema.normalize(
         {
@@ -29,7 +30,8 @@ function constructState() {
         entity: fromJS({
             ...normalized.entities,
             _result: normalized.result,
-            _schema: Map({
+            _schemas: normalized.schemas,
+            _baseSchema: Map({
                 ENTITY_RECEIVE: schema,
                 fooList
             })
@@ -41,23 +43,23 @@ function constructState() {
 //
 // selectEntityByResult()
 
-test('selectEntityByResult() should return a map for single items', tt => {
+test('selectEntityByResult() should return a map for single items', (tt: Object) => {
     tt.truthy(selectEntityByResult(constructState(), 'single').foo);
 });
 
-test('selectEntityByResult() should return an array for indexed items', tt => {
-    tt.is(selectEntityByResult(constructState(), 'fooList', 'fooList').length, 3);
+test('selectEntityByResult() should return an array for indexed items', (tt: Object) => {
+    tt.is(selectEntityByResult(constructState(), 'fooList').length, 3);
 });
 
-test('selectEntityByResult() should return nothing if the denormalize fails', tt => {
-    tt.is(selectEntityByResult({entity: fromJS({})}), undefined);
+test('selectEntityByResult() should return nothing if the denormalize fails', (tt: Object) => {
+    tt.is(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE'), undefined);
 });
 
 
 //
 // selectEntityById()
 
-test('selectEntityById() should return an item from entity state by path', tt => {
+test('selectEntityById() should return an item from entity state by path', (tt: Object) => {
     tt.is(selectEntityById(constructState(), 'foo', 'bar').get('id'), 'bar');
 });
 
@@ -65,7 +67,7 @@ test('selectEntityById() should return an item from entity state by path', tt =>
 //
 // selectEntityByType()
 
-test('selectEntityByType() should return an list of entities', tt => {
+test('selectEntityByType() should return an list of entities', (tt: Object) => {
     tt.true(List.isList(selectEntityByType(constructState(), 'foo')));
 });
 

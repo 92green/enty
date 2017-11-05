@@ -1,5 +1,6 @@
 // @flow
 import type {NormalizeState} from '../definitions';
+import type {DenormalizeState} from '../definitions';
 
 /**
  * @module Schema
@@ -34,11 +35,14 @@ export class DynamicSchema {
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const definitionSchema = this.options.definition(data);
+        const definitionResult = definitionSchema.normalize(data, entities);
+
         return {
             entities,
+            schemas: definitionResult.schemas,
             result: {
                 resultType: 'dynamicSchemaResult',
-                definitionResult: definitionSchema.normalize(data, entities),
+                definitionResult,
                 definitionSchema
             }
         };
@@ -47,8 +51,8 @@ export class DynamicSchema {
     /**
      * DynamicSchema.denormalize
      */
-    denormalize(normalizeState: NormalizeState, path: Array<*> = []): any {
-        const {definitionResult, definitionSchema} = normalizeState.result;
+    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+        const {definitionResult, definitionSchema} = denormalizeState.result;
         return definitionSchema.denormalize(definitionResult, path);
     }
 }
