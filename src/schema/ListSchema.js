@@ -25,6 +25,8 @@ export class ListSchema {
         this.type = 'list';
         this.definition = definition;
         this.options = {
+            constructor: item => List(item),
+            merge: (previous, next) => previous.merge(next),
             ...options
         };
     }

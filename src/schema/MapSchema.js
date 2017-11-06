@@ -31,11 +31,13 @@ export class MapSchema {
      * @param {Object} options
      *
      */
-    constructor(definition: Object, options: Object = {}) {
+    constructor(definition: Object = {}, options: Object = {}) {
         this.type = 'map';
         this.definition = definition;
         this.options = {
             denormalizeFilter: () => true,
+            constructor: item => Map(item),
+            merge: (previous, next) => previous.merge(next),
             ...options
         };
     }
