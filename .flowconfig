@@ -3,7 +3,6 @@ module.file_ext=.js
 module.file_ext=.jsx
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
-esproposal.class_static_fields=ignore
 suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 
 
@@ -11,8 +10,6 @@ suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 <PROJECT_ROOT>/coverage/.*
 <PROJECT_ROOT>/.nyc_output/.*
 <PROJECT_ROOT>/scripts/.*
-<PROJECT_ROOT>/dist/.*
-.*/example/.*
-.*/node_modules/fbjs/.*
-.*/node_modules/react-side-effect/.*
+<PROJECT_ROOT>/lib/.*
+<PROJECT_ROOT>/example/.*
 

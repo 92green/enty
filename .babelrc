@@ -4,15 +4,9 @@
     ],
     "ignore": [
         "./lib",
-        "./example",
-        "**/*-test.js"
+        "./example"
     ],
     "env": {
-        "test": {
-            "plugins": [
-                "istanbul"
-            ]
-        },
         "production": {
             "plugins": [
                 ["proto-babel-plugin-extract-flow-types", {"outDir": "lib"}]
