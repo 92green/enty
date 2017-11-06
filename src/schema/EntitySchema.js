@@ -2,7 +2,6 @@
 import {DELETED_ENTITY} from './SchemaConstant';
 import {NoDefinitionError} from '../utils/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
-import
 import type {NormalizeState} from '../definitions';
 import type {DenormalizeState} from '../definitions';
 

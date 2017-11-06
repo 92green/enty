@@ -2,7 +2,7 @@ import test from 'ava';
 import {EntitySchema, ListSchema, MapSchema} from '../../index';
 import {fromJS, List} from 'immutable';
 
-const foo = EntitySchema('foo');
+const foo = EntitySchema('foo').define(MapSchema());
 
 test('ListSchema can normalize arrays', tt => {
     const schema = ListSchema(foo);

@@ -2,7 +2,9 @@ import test from 'ava';
 import {Map} from 'immutable';
 import {EntitySchema, MapSchema, ValueSchema} from '../../index';
 
-const foo = EntitySchema('foo');
+const foo = EntitySchema('foo', {
+    definition: MapSchema({})
+});
 
 const fooValues = MapSchema({
     foo: ValueSchema(foo)
@@ -12,7 +14,6 @@ const fooValues = MapSchema({
 
 test('ValueSchema.denormalize is almost the inverse of ValueSchema.normalize', tt => {
     const data = {foo: '1'};
-
     tt.deepEqual(data.foo, fooValues.denormalize(fooValues.normalize(data)).toJS().foo.id);
 });
 
@@ -41,8 +42,8 @@ test('ValueSchema.denormalize', tt => {
 
 test('ValueSchema can set definition through the `define` method', tt => {
     const schema = ValueSchema();
-    schema.define(() => {});
+    schema.define(foo);
 
-    tt.is(typeof schema.options.definition, 'function');
+    tt.is(schema.options.definition.name, 'foo');
 });
 

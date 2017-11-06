@@ -1,10 +1,10 @@
+//@flow
 import test from 'ava';
-import {fromJS} from 'immutable';
-import {EntitySchema, ListSchema, DynamicSchema} from '../../index';
+import {EntitySchema, ListSchema, DynamicSchema, MapSchema} from '../../index';
 
-const foo = EntitySchema('foo');
-const bar = EntitySchema('bar');
-const baz = EntitySchema('baz');
+const foo = EntitySchema('foo').define(MapSchema());
+const bar = EntitySchema('bar').define(MapSchema());
+const baz = EntitySchema('baz').define(MapSchema());
 
 const fooBarBaz = DynamicSchema(data => {
     switch(data.type || data.get('type')) {

@@ -2,7 +2,8 @@ import test from 'ava';
 import {EntitySchema, MapSchema} from '../../index';
 import {fromJS, Map} from 'immutable';
 
-var foo = EntitySchema('foo');
+var foo = EntitySchema('foo').define(MapSchema());
+var bar = EntitySchema('bar').define(MapSchema());
 
 test('MapSchema can normalize objects', tt => {
     const schema = MapSchema({foo});
@@ -113,8 +114,6 @@ test('MapSchema will pass any deleted keys to options.denormalizeFilter', tt => 
 
 test('MapSchema.merge() will perform a shallow merge of options and definition', tt => {
     const denormalizeFilter = () => true;
-    const foo = EntitySchema('foo');
-    const bar = EntitySchema('bar');
     const aa = MapSchema({foo});
     const bb = MapSchema({bar}, {denormalizeFilter});
     const merged = aa.merge(bb);
@@ -127,7 +126,6 @@ test('MapSchema.merge() will perform a shallow merge of options and definition',
 
 
 test('MapSchema will not mutate input objects', tt => {
-    const foo = EntitySchema('foo');
     const schema = MapSchema({foo});
     const objectTest = {foo: {id: "1"}};
 
