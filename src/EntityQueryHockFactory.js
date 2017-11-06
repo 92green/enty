@@ -16,7 +16,7 @@ import type {SelectOptions} from './definitions';
  * @returns {EntityQueryHock}
  * @memberof module:Factories
  */
-export default function EntityQueryHockFactory(actionCreator: Function, selectOptions: SelectOptions): Function {
+export default function EntityQueryHockFactory(actionCreator: Function, selectOptions?: SelectOptions): Function {
     /**
      * Hocks are the primary means of connecting data to your views.
      *

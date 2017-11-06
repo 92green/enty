@@ -21,14 +21,12 @@
     "build-examples": "cd example && yarn install && yarn run build && cd -",
     "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
     "prepublish": "yarn run build",
-    "ava": "NODE_ENV=test ava",
-    "check-coverage": "NODE_ENV=test nyc check-coverage --branches 83.0  --functions 83.0 --lines 83.0",
     "docs": "jsdoc -c jsdoc.json --readme README.md",
-    "flow": "flow check",
-    "lint": "eslint src --ext js,jsx",
-    "lint-fix": "eslint src --ext js,jsx --fix",
-    "test": "NODE_ENV=test nyc --report-dir=./coverage ava && yarn run check-coverage",
-    "test-all": "NODE_ENV=test yarn lint && yarn flow && yarn test"
+    "flow": "blueflag-test flow",
+    "lint": "blueflag-test lint",
+    "test": "blueflag-test test",
+    "coverage": "blueflag-test coverage",
+    "test-all": "yarn lint && yarn flow && yarn coverage"
   },
   "peerDependencies": {
     "redux": "^3.6.0"
@@ -64,52 +62,12 @@
     "jsdonk": "^0.7.0",
     "nyc": "^10.3.2",
     "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
+    "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.7.0",
     "proxyquire": "^1.7.10",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
     "redux": "^3.6.0",
     "require.async": "^0.1.1",
     "sinon": "^1.17.6"
-  },
-  "ava": {
-    "require": [
-      "./pretest",
-      "babel-register"
-    ],
-    "babel": {
-      "presets": [
-        "blueflag"
-      ],
-      "plugins": [
-        "istanbul"
-      ],
-      "sourceMaps": "inline"
-    },
-    "files": [
-      "src/**/*-test.js"
-    ]
-  },
-  "nyc": {
-    "all": true,
-    "sourceMap": false,
-    "instrument": false,
-    "include": [
-      "src/**"
-    ],
-    "exclude": [
-      "src/**/*-test.js",
-      "example"
-    ],
-    "reporter": [
-      "lcov",
-      "text"
-    ],
-    "extension": [
-      ".js",
-      ".jsx"
-    ],
-    "require": [
-      "babel-register"
-    ]
   }
 }

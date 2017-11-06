@@ -8,6 +8,7 @@ var foo = EntitySchema('foo');
 var bar = EntitySchema('bar');
 var baz = EntitySchema('baz');
 
+foo.define(MapSchema({}));
 baz.define(MapSchema({bar}));
 bar.define(MapSchema({foo}));
 
@@ -65,14 +66,12 @@ test('EntitySchema will not cause an infinite recursion', (tt: Object) => {
 });
 
 test('EntitySchema will not denormalize null entities', (tt: Object) => {
-    const schema = EntitySchema('bar');
-
     const entities = fromJS({
         bar: {"1": {id: "1", foo: null}}
     });
 
     tt.deepEqual(
-        schema.denormalize({result: "2", entities}),
+        bar.denormalize({result: "2", entities}),
         undefined
     );
 });

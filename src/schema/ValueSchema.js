@@ -15,7 +15,7 @@ export class ValueSchema {
     type: string;
     options: Object;
     constructor(definition: Function, options: Object = {}) {
-        this.type = 'dynamic';
+        this.type = 'value';
         this.options = {
             definition,
             constructor: item => ({id: item}),

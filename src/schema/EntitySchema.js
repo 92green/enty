@@ -1,7 +1,6 @@
 // @flow
-import {Map} from 'immutable';
 import {DELETED_ENTITY} from './SchemaConstant';
-import MapSchema from './MapSchema';
+import {NoDefinitionError} from '../utils/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 import type {NormalizeState} from '../definitions';
 import type {DenormalizeState} from '../definitions';
@@ -27,9 +26,7 @@ export class EntitySchema {
         this.options = {
             idAttribute: item => item && get(item, 'id'),
             denormalizeFilter: item => item && !item.get('deleted'),
-            constructor: item => Map(item),
-            merge: (aa, bb) => aa.merge(bb),
-            definition: MapSchema({}),
+            definition: null,
             ...options
         };
     }
@@ -47,13 +44,16 @@ export class EntitySchema {
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {options, name} = this;
-        const {idAttribute, definition, constructor, merge} = options;
+        const {idAttribute, definition} = options;
+
+        if(definition == null) {
+            throw NoDefinitionError(name);
+        }
 
         // It is important to check that our data is not already in a normalized state
         // It is reasonable to assume that a number or string represents an id not an entity.
         // If the data is sometimes saying an entity is an object and sometimes a primitive
         // there are bigger problems with the data structure.
-
         if(typeof data === 'string' || typeof data === 'number') {
             return {
                 entities,
@@ -61,10 +61,6 @@ export class EntitySchema {
                 result: data.toString()
             };
         }
-
-        // if(!idAttribute(data)) {
-        //     console.error('Could Not find id in ', name, data);
-        // }
 
         const id = idAttribute(data).toString();
 
@@ -79,10 +75,10 @@ export class EntitySchema {
         schemas[name] = this;
 
         if(previousEntity) {
-            result = merge(previousEntity, result);
+            result = definition.options.merge(previousEntity, result);
         }
 
-        entities[name][id] = constructor(result);
+        entities[name][id] = definition.options.constructor(result);
 
         return {
             entities,
