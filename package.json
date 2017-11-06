@@ -62,7 +62,7 @@
     "jsdonk": "^0.7.0",
     "nyc": "^10.3.2",
     "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
-    "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.6.1",
+    "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.7.0",
     "proxyquire": "^1.7.10",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",

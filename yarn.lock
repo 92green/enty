@@ -4858,9 +4858,9 @@ prop-types@^15.5.8:
   dependencies:
     fs-extra "^4.0.1"
 
-"proto-blueflag-test@git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.6.1":
-  version "0.6.1"
-  resolved "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#cfe3f8fd563b6c9678cf956437c27cae333b53ae"
+"proto-blueflag-test@git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.7.0":
+  version "0.7.0"
+  resolved "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#db108f5549694580517889ca377430e63b35c3fd"
   dependencies:
     app-module-path "^2.2.0"
     ava "^0.22.0"
