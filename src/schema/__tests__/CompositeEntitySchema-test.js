@@ -95,7 +95,7 @@ test('CompositeEntitySchemas can hold CompositeEntitySchemas', (t: Object) => {
     t.is(result, 'lassie-123-spk456');
 });
 
-test('CompositeEntitySchemas can deffer their definition', (t: Object) => {
+test('CompositeEntitySchemas can defer their definition', (t: Object) => {
     var lateCourseParticipant = CompositeEntitySchema('courseParticipant', {
         compositeKeys: {
             course
@@ -107,4 +107,32 @@ test('CompositeEntitySchemas can deffer their definition', (t: Object) => {
     t.notThrows(() => lateCourseParticipant.normalize(derek));
 });
 
+
+test('CompositeEntitySchema compositeKeys will override defintion keys ', (t: Object) => {
+    const cat = EntitySchema('cat', {
+        definition: MapSchema({
+            friend: dog
+        })
+    });
+
+    const owl = EntitySchema('owl').define(MapSchema());
+
+    var catOwl = CompositeEntitySchema('catOwl', {
+        definition: cat,
+        compositeKeys: {
+            friend: owl
+        }
+    });
+
+    const {entities} = catOwl.normalize({
+        id: 'sparky',
+        friend: {
+            id: 'hedwig'
+        }
+    });
+
+
+    t.truthy(entities.catOwl['sparky-hedwig']);
+    t.falsy(entities.dog);
+});
 
