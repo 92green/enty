@@ -5,7 +5,7 @@ import {Map} from 'immutable';
 
 export type NormalizeState = {
     entities: Object,
-    result: Object,
+    result: any,
     schemas: Object
 };
 

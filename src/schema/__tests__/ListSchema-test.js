@@ -1,6 +1,6 @@
 import test from 'ava';
 import {EntitySchema, ListSchema, MapSchema} from '../../index';
-import {fromJS, List} from 'immutable';
+import {fromJS} from 'immutable';
 
 const foo = EntitySchema('foo').define(MapSchema());
 
@@ -21,16 +21,6 @@ test('ListSchema can normalize Lists', tt => {
     tt.deepEqual(entities.foo["2"].toJS(), {id: "2"});
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
-
-// test('MapSchema.denormalize is the inverse of MapSchema.normalize', tt => {
-//     const schema = ListSchema(foo);
-//     const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
-
-//     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
-//     tt.deepEqual(entities.foo["2"].toJS(), {id: "2"});
-//     tt.deepEqual(result.toJS(), ["1", "2"]);
-// });
-
 
 test('ListSchema can normalize nested things in arrays', tt => {
     const schema = ListSchema(MapSchema({foo}));
