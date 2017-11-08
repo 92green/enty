@@ -10,6 +10,7 @@ export {default as EntityApi} from './EntityApi';
 
 // Schemas
 export {default as ArraySchema} from './schema/ListSchema';
+export {default as CompositeEntitySchema} from './schema/CompositeEntitySchema';
 export {default as DynamicSchema} from './schema/DynamicSchema';
 export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ListSchema} from './schema/ListSchema';

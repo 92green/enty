@@ -36,21 +36,16 @@ export class ListSchema {
      */
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {definition} = this;
-        const idAttribute = definition.options.idAttribute;
+        // const idAttribute = definition.options.idAttribute;
         let schemas = {};
         const result = List(data)
             .map((item: any): any => {
                 const {result, schemas: childSchemas} = definition.normalize(item, entities);
 
-                // preserve our shcemas map
+                // add child schemas to the schema collection
                 Object.assign(schemas, childSchemas);
 
-                // If our result is our item that means we have prenoramlized data.
-                if(result === item || definition.type !== 'entity') {
-                    return result;
-                }
-
-                return idAttribute(item).toString();
+                return result;
             });
 
         return {entities, schemas, result};
@@ -62,6 +57,7 @@ export class ListSchema {
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
         const {definition} = this;
+
         // Filter out any deleted keys
         if(result == null) {
             return result;
