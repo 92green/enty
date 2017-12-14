@@ -2,6 +2,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import EntityApi from '../EntityApi';
+import {createAllRequestAction} from '../EntityApi';
 
 const RESOLVE = (aa) => Promise.resolve(aa);
 const REJECT = (aa) => Promise.reject(aa);
@@ -53,4 +54,29 @@ test('ERROR action resultKey defaults to ERROR action name', (t: Object): Promis
         .then(() => {
             t.is('REJECT_ERROR', dispatch.secondCall.args[0].type);
         });
+});
+
+
+
+// Create Multi ActionCreator
+
+test('createAllRequestAction will call all sideffects', (t: Object): Promise<any> => {
+    var aa = sinon.spy();
+    var bb = sinon.spy();
+
+    return createAllRequestAction('a', 'a', 'a', [aa,bb])()(sinon.spy())
+        .then(() => {
+            t.is(aa.callCount, 1);
+            t.is(bb.callCount, 1);
+        })
+});
+
+test('createAllRequestAction will merge resulting objects', (t: Object): Promise<any> => {
+    var aa = async () => ({aa: 'aa'});
+    var bb = async () => ({bb: 'bb'});
+
+    return createAllRequestAction('a', 'a', 'a', [aa,bb])()(dd => dd)
+        .then((data) => {
+            t.deepEqual(data.payload, {aa: 'aa', bb: 'bb'});
+        })
 });

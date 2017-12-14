@@ -30,9 +30,11 @@ export {
 } from './RequestStateSelector';
 
 // Misc
-export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
 export {default as EntityMutationHockFactory} from './EntityMutationHockFactory';
+export {default as EntityQueryHockFactory} from './EntityQueryHockFactory';
 export {default as EntityReducerFactory} from './EntityReducerFactory';
+export {default as MultiMutationHockFactory} from './MultiMutationHockFactory';
+export {default as MultiQueryHockFactory} from './MultiQueryHockFactory';
 
 export {
     EmptyState,
