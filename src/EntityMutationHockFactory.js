@@ -22,7 +22,7 @@ import type {SelectOptions} from './definitions';
  * @returns {MutationHock}
  * @memberof module:Factories
  */
-export default function EntityMutationHockFactory(actionCreator: Function, selectOptions: SelectOptions): Function {
+export default function EntityMutationHockFactory(actionCreator: Function, selectOptions?: SelectOptions): Function {
 
     /**
      * Mutation is used to request or change data in response to user interaction.

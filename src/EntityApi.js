@@ -7,6 +7,7 @@ import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
 import type {SelectOptions} from './definitions';
+import type {SideEffect} from './definitions';
 
 /**
 The Entity Api is the main access point for your data. It allows you to define the link between your views
@@ -39,7 +40,7 @@ function reduceActionMap(branch: Map<string, any>, parentKey: string = ''): Map<
 // @param {function} sideEffect    Promise returning side effect to call after fetch action.
 // @return {array}            list of action creators and action types
 // @memberof module:Api
-function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: Function): Function {
+export function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: SideEffect): Function {
     function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
     }
@@ -65,6 +66,18 @@ function createRequestAction(fetchAction: string, recieveAction: string, errorAc
             }
         );
     };
+}
+
+export function createAllRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
+    function sideEffect(requestPayload: *, meta: Object): Promise<*> {
+        return Promise
+            // call all sideeffects
+            .all(sideEffectList.map(effect => effect(requestPayload, meta)))
+            // merge them back to one object
+            .then(payloads => payloads.reduce((out, payload) => Object.assign(out, payload), {}))
+        ;
+    }
+    return createRequestAction(fetchAction, recieveAction, errorAction, sideEffect);
 }
 
 
@@ -109,7 +122,7 @@ function createRequestAction(fetchAction: string, recieveAction: string, errorAc
  */
 export default function EntityApi(schema: Object, actionMap: Object, selectOptions: SelectOptions = {}): Object {
     return reduceActionMap(fromJS(actionMap))
-        .reduce((state: Map<string, any>, sideEffect: Function, action: string): Map<string, any> => {
+        .reduce((state: Map<string, any>, sideEffect: SideEffect, action: string): Map<string, any> => {
 
             const snakeAction = action.toUpperCase();
 
@@ -143,18 +156,19 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
             //     ACTION_RECIEVE: schema
             //     ...
             // }
-            const actionMap = api
+            const schemaMap = api
                 .get('actionTypes')
                 .filter((action, key) => /_RECEIVE$/g.test(key))
-                .reduce((actionMap, key) => actionMap.set(key, schema), Map())
+                .reduce((schemaMap, key) => schemaMap.set(key, schema), Map())
                 .set(selectOptions.schemaKey || 'ENTITY_RECEIVE', schema)
                 .toObject()
             ;
 
-            const reducer = EntityReducerFactory({schemaMap: actionMap});
+            const reducer = EntityReducerFactory({schemaMap});
 
             return api
                 .set('EntityReducer', reducer)
+                .set('sideEffects', actionMap)
                 .set('EntityStore', EntityStoreFactory(reducer));
         })
         .toJS();

@@ -19,3 +19,5 @@ export type SelectOptions = {
     schemaKey?: string,
     stateKey?: string
 };
+
+export type SideEffect = (*, Object) => Promise<*>;
