@@ -6,7 +6,7 @@ import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
-import type {SelectOptions} from './definitions';
+import type {HockOptionsInput} from './definitions';
 import type {SideEffect} from './definitions';
 
 /**
@@ -116,11 +116,12 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  *
  * @param  {Schema} schema          A schema describing the relationships between your data
  * @param  {object} actionMap       deep object representation of api functions
- * @param  {SelectOptions} [selectOptions]
+ * @param  {HockOptionsInput} [hockOptions]
  * @return {EntityApi}
  * @memberof module:Api
  */
-export default function EntityApi(schema: Object, actionMap: Object, selectOptions: SelectOptions = {}): Object {
+export default function EntityApi(schema: Object, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
+
     return reduceActionMap(fromJS(actionMap))
         .reduce((state: Map<string, any>, sideEffect: SideEffect, action: string): Map<string, any> => {
 
@@ -137,6 +138,9 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
                 .map(ss => ss.replace(/^./, mm => mm.toUpperCase()))
                 .join('');
 
+
+            hockOptions.requestActionName = requestActionName;
+
             return state
                 // nested action creators
                 .setIn(requestActionPath, requestAction)
@@ -145,8 +149,8 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
                 .setIn(['actionTypes', FETCH], FETCH)
                 .setIn(['actionTypes', RECEIVE], RECEIVE)
                 .setIn(['actionTypes', ERROR], ERROR)
-                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, selectOptions))
-                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, selectOptions))
+                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, hockOptions))
+                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, hockOptions))
             ;
 
         }, Map())
@@ -160,7 +164,7 @@ export default function EntityApi(schema: Object, actionMap: Object, selectOptio
                 .get('actionTypes')
                 .filter((action, key) => /_RECEIVE$/g.test(key))
                 .reduce((schemaMap, key) => schemaMap.set(key, schema), Map())
-                .set(selectOptions.schemaKey || 'ENTITY_RECEIVE', schema)
+                .set(hockOptions.schemaKey || 'ENTITY_RECEIVE', schema)
                 .toObject()
             ;
 

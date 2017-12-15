@@ -1,5 +1,6 @@
 // @flow
 import {EmptyState} from './RequestState';
+import Logger from './Logger';
 
 const defaultOptions = {
     stateKey: 'entity'
@@ -18,6 +19,7 @@ const defaultOptions = {
  */
 export default function selectRequestState(state: Object, requestStateKey: string, options?: ?Object): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
+    Logger.silly('Selecting RequestState:', `${stateKey}._requestState.${requestStateKey}`, state);
     return state[stateKey]
         .getIn(['_requestState', requestStateKey], EmptyState());
 }

@@ -4,7 +4,6 @@
 import {Iterable, Map} from 'immutable';
 import ListSchema from './schema/ListSchema';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
-import type {SelectOptions} from './definitions';
 
 const defaultOptions = {
     schemaKey: 'ENTITY_RECEIVE',
@@ -23,7 +22,7 @@ const defaultOptions = {
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityByResult(state: Object, resultKey: string, options: SelectOptions = {}): any {
+export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = getIn(entities, ['_baseSchema', schemaKey]);
@@ -50,7 +49,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
  * @return {object} entity map
  * @memberof module:Selectors
  */
-export function selectEntityById(state: Object, type: string, id: string, options: SelectOptions = {}): any {
+export function selectEntityById(state: Object, type: string, id: string, options: Object = {}): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = getIn(entities, ['_schemas', type]);
@@ -70,7 +69,7 @@ export function selectEntityById(state: Object, type: string, id: string, option
  * @return {Immutable.List} entity list
  * @memberof module:Selectors
  */
-export function selectEntityByType(state: Object, type: string, options: SelectOptions = {}): any {
+export function selectEntityByType(state: Object, type: string, options: Object = {}): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = ListSchema(getIn(entities, ['_schemas', type]));

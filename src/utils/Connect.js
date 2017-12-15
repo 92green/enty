@@ -1,5 +1,6 @@
 //@flow
 import {connect} from 'react-redux';
+import type {HockOptions} from '../definitions';
 
 
 const defaultOptions = {
@@ -10,7 +11,7 @@ const defaultOptions = {
  * Connect
  * @function
  */
-export default function Connect(connector?: Function, options: Object = {}): Function {
+export default function Connect(connector?: Function, options?: HockOptions): Function {
     const {stateKey} = Object.assign({}, defaultOptions, options);
 
     return connect(

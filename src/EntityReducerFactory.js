@@ -50,7 +50,10 @@ export default function EntityReducerFactory(config: Object): Function {
 
     // Return our constructed reducer
     return function EntityReducer(state: Map<any, any> = initialState, {type, payload, meta}: Object): Map<any, any> {
+        // debugger;
+
         Logger.info(`\n\nEntity reducer:`);
+
 
         const {
             schema = schemaMap[type],
@@ -70,15 +73,18 @@ export default function EntityReducerFactory(config: Object): Function {
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
             if(state.getIn(requestStatePath)) {
+                Logger.info(`Setting RefetchingState for "${requestStatePath.join('.')}"`);
                 state = state.setIn(requestStatePath, RefetchingState());
             } else {
                 state = state.setIn(requestStatePath, FetchingState());
+                Logger.info(`Setting FetchingState for "${requestStatePath.join('.')}"`, state);
             }
         } else if(/_ERROR$/g.test(type)) {
+            Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
             state = state.setIn(requestStatePath, ErrorState(payload));
         }
 
-        Logger.info(`Setting _requestState for "${resultKey}"`);
+
 
         // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
         if(resultResetOnFetch && /_FETCH$/g.test(type)) {
@@ -111,15 +117,20 @@ export default function EntityReducerFactory(config: Object): Function {
                     // set results
                     .update(state => state.merge(Map(entities).map(ii => Map(ii))))
                     .setIn(['_result', resultKey], result)
-                    .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous));
+                    .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous))
+                    .update((state: *): * => {
+                        Logger.silly('state', state);
+                        return state;
+                    })
+                ;
             }
 
 
-            Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`);
-            Logger.infoIf(!payload, `Payload is not defined, no entity data has been changed`);
+            Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`, state);
+            Logger.infoIf(!payload, `Payload is not defined, no entity data has been changed`, state);
         }
 
-        Logger.info(`Type is not *_RECEIVE, no entity data has been changed`);
+        Logger.info(`Type is not *_RECEIVE, no entity data has been changed`, state);
         return state;
     };
 }

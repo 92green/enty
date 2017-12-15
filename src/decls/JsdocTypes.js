@@ -40,7 +40,7 @@
 /**
  * Configuration options passed to selectors for accessing state. (Basic uses cases wont need this)
  *
- * @typedef {object} SelectOptions
+ * @typedef {object} HockOptions
  * @property {string} [schemaKey=ENTITY_RECEIVE]
  * @property {string} [stateKey=entity] - redux key to store entity state at.
  */

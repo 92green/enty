@@ -5,7 +5,8 @@ import DistinctMemo from './utils/DistinctMemo';
 import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
 import React, {type Element} from 'react';
-import type {SelectOptions} from './definitions';
+import type {HockOptions} from './definitions';
+import type {HockOptionsInput} from './definitions';
 
 
 /**
@@ -18,11 +19,11 @@ import type {SelectOptions} from './definitions';
  * EntityMutationHockFactory
  *
  * @param {function} actionCreator
- * @param {SelectOptions} selectOptions
+ * @param {HockOptions} hockOptions
  * @returns {MutationHock}
  * @memberof module:Factories
  */
-export default function EntityMutationHockFactory(actionCreator: Function, selectOptions?: SelectOptions): Function {
+export default function EntityMutationHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Function {
 
     /**
      * Mutation is used to request or change data in response to user interaction.
@@ -70,11 +71,14 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
      * @returns {function}
      * @memberof module:Hocks
      */
-    return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: Object): Function {
+    return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
 
-        const options = {
+        const options: HockOptions = {
+            ...hockOptions,
             onMutateProp: 'onMutate',
             group: null,
+            propUpdate: aa => aa,
+            propChangeKeys: [],
             ...optionsOverride
         };
 
@@ -85,18 +89,18 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
             const blankConnect = Connect();
             const ComponentWithState = Connect((state: Object, props: Object): Object => {
-                const data = selectEntityByResult(state, props.resultKey, selectOptions);
+                const data = selectEntityByResult(state, props.resultKey, options);
 
-                const childProps = {
+                const childProps = options.propUpdate({
                     ...data,
-                    requestState: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, selectOptions), data)
-                };
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, props.resultKey, options), data)
+                });
 
                 return group
                     ? {[group]: {...props[group], ...childProps}}
                     : childProps;
 
-            }, selectOptions)(Component);
+            }, options)(Component);
 
             class MutationHock extends React.Component<Object, Object> {
                 updateMutation: Function;
@@ -115,21 +119,16 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
                 updateMutation(props: Object) {
                     this.mutation = (data: Object) => {
                         const payload = payloadCreator(data);
-                        const resultKey = options.resultKey || fromJS({hash: payload}).hashCode();
-
+                        const resultKey = options.resultKey || fromJS({hash: payload}).hashCode() + options.requestActionName;
                         this.setState({resultKey});
-
-                        props.dispatch(actionCreator(payload, {
-                            ...options,
-                            resultKey
-                        }));
+                        props.dispatch(actionCreator(payload, {...options, resultKey}));
                     };
                 }
 
                 render(): Element<any> {
                     const childProps = {
                         resultKey: this.state.resultKey,
-                        [options.onMutateProp]: this.mutation
+                        [String(options.onMutateProp)]: this.mutation
                     };
                     const props = group
                         ? {[group]: childProps}
@@ -147,3 +146,4 @@ export default function EntityMutationHockFactory(actionCreator: Function, selec
 
     };
 }
+
