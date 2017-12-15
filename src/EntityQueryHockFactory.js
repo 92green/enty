@@ -7,7 +7,8 @@ import DistinctMemo from './utils/DistinctMemo';
 import Connect from './utils/Connect';
 import {fromJS} from 'immutable';
 import type {Element} from 'react';
-import type {SelectOptions} from './definitions';
+import type {HockOptions} from './definitions';
+import type {HockOptionsInput} from './definitions';
 
 
 /**
@@ -16,7 +17,7 @@ import type {SelectOptions} from './definitions';
  * @returns {EntityQueryHock}
  * @memberof module:Factories
  */
-export default function EntityQueryHockFactory(actionCreator: Function, selectOptions?: SelectOptions): Function {
+export default function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Function {
     /**
      * Hocks are the primary means of connecting data to your views.
      *
@@ -42,39 +43,51 @@ export default function EntityQueryHockFactory(actionCreator: Function, selectOp
      * @returns {function}
      * @memberof module:Hocks
      */
-    return function EntityQueryHock(queryCreator: Function, paths: string[], optionsOverride: Object): Function {
+    return function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): Function {
 
-        const options = {
+        function parseOptions(options: HockOptionsInput|Array<string>): Object {
+            if(Array.isArray(options)) {
+                return {propChangeKeys: optionsOverride};
+            }
+            return options;
+        }
+
+        const options: HockOptions = {
+            ...hockOptions,
             group: null,
-            ...optionsOverride
+            propUpdate: aa => aa,
+            propChangeKeys: [],
+            ...parseOptions(optionsOverride)
         };
 
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
+        function getHash(props: Object, options: HockOptions): string {
+            return (options.resultKey || fromJS({hash: queryCreator(props), requestActionName: options.requestActionName}).hashCode()) + '';
+        }
+
         return function EntityQueryHockApplier(Component: Element<any>): any {
 
             const withState = Connect((state: Object, props: Object): Object => {
-                const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
-                const data = selectEntityByResult(state, resultKey, selectOptions);
-                const childProps = {
+                const resultKey = getHash(props, options);
+                const data = selectEntityByResult(state, resultKey, options);
+                const childProps = options.propUpdate({
                     ...data,
-                    requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, selectOptions), data)
-                };
+                    requestState: distinctSuccessMap.value(RequestStateSelector(state, resultKey, options), data)
+                });
 
                 return options.group
                     ? {[options.group]: childProps}
                     : childProps;
 
-            }, selectOptions);
+            }, options);
 
             const withPropChange = PropChangeHock(() => ({
-                paths,
+                paths: options.propChangeKeys,
                 onPropChange: (props: Object): any => {
-                    const resultKey = options.resultKey || fromJS({hash: queryCreator(props)}).hashCode();
-                    const meta = Object.assign({}, options, {resultKey});
-
-                    return props.dispatch(actionCreator(queryCreator(props), meta));
+                    options.resultKey = getHash(props, options);
+                    return props.dispatch(actionCreator(queryCreator(props), options));
                 }
             }));
 

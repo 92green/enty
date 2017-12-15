@@ -45,12 +45,12 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
     };
 
     const sideEffectB = (aa: any, bb: any) => {
-        tt.is(bb.resultKey, 469309513);
+        tt.is(bb.resultKey, '431296113');
     };
 
 
-    var ComponentA = EntityQueryHockFactory(sideEffectA)(NOOP, ['keys'], {resultKey: 'foo'})(NOOP_COMPONENT);
-    var ComponentB = EntityQueryHockFactory(sideEffectB)(NOOP, ['keys'])(NOOP_COMPONENT);
+    var ComponentA = EntityQueryHockFactory(sideEffectA)(NOOP, {resultKey: 'foo'})(NOOP_COMPONENT);
+    var ComponentB = EntityQueryHockFactory(sideEffectB)(NOOP)(NOOP_COMPONENT);
 
     shallow(<ComponentA store={STORE}/>)
         .dive()
@@ -73,7 +73,7 @@ test('requestState will return an empty RequestState for unknown resultKey', (tt
         return <div></div>;
     };
 
-    var Component = EntityQueryHockFactory(NOOP)(NOOP, [], {resultKey: 'blah'})(Child);
+    var Component = EntityQueryHockFactory(NOOP)(NOOP, {resultKey: 'blah'})(Child);
 
     shallow(<Component store={STORE}/>)
         .dive()
@@ -87,7 +87,7 @@ test('EntityQueryHockFactory will group props if a `group` config is provided', 
         return <div></div>;
     };
 
-    var Component = EntityQueryHockFactory(NOOP)(NOOP, [], {group: 'fooGroup'})(Child);
+    var Component = EntityQueryHockFactory(NOOP)(NOOP, {group: 'fooGroup'})(Child);
 
     shallow(<Component store={STORE}/>)
         .dive()
