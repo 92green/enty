@@ -1,6 +1,8 @@
 // @flow
+import {PerhapsEither} from 'fronads/lib/Either';
 import {DELETED_ENTITY} from './SchemaConstant';
 import {NoDefinitionError} from '../utils/Error';
+import {UndefinedIdError} from '../utils/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
 import type {NormalizeState} from '../definitions';
 import type {DenormalizeState} from '../definitions';
@@ -62,7 +64,12 @@ export class EntitySchema {
             };
         }
 
-        const id = idAttribute(data).toString();
+        const id = PerhapsEither(idAttribute(data))
+            .map(id => id.toString())
+            .leftMap((value: *) => {
+                throw UndefinedIdError(name, value);
+            })
+            .value();
 
         entities[name] = entities[name] || {};
 

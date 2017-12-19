@@ -32,7 +32,7 @@
     "redux": "^3.6.0"
   },
   "dependencies": {
-    "fronads": "^0.12.0",
+    "fronads": "^0.17.0",
     "immutable": "^3.8.1",
     "jsdoc-react-proptypes": "^1.0.1",
     "react-redux": "^5.0.3",
