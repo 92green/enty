@@ -44,7 +44,7 @@
     "app-module-path": "^2.2.0",
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
-    "babel-preset-blueflag": "^0.3.0",
+    "babel-preset-blueflag": "^0.6.0",
     "babel-register": "^6.23.0",
     "dotenv": "^4.0.0",
     "enzyme": "^2.6.0",

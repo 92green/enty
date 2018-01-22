@@ -1,8 +1,6 @@
 // @flow
 import {List} from 'immutable';
-import {DELETED_ENTITY} from './SchemaConstant';
-import type {NormalizeState} from '../definitions';
-import type {DenormalizeState} from '../definitions';
+import {ArraySchema} from './ArraySchema';
 
 /**
  * @module Schema
@@ -13,61 +11,21 @@ import type {DenormalizeState} from '../definitions';
  *
  * @memberof module:Schema
  */
-export class ListSchema {
-    type: string;
-    definition: Object;
-    options: Object;
+export class ListSchema extends ArraySchema {
 
     /**
      * @param {Schema} definition
      */
     constructor(definition: Object, options: Object = {}) {
+        super(definition, options);
         this.type = 'list';
-        this.definition = definition;
+
         this.options = {
+            ...this.options,
             constructor: item => List(item),
             merge: (previous, next) => previous.merge(next),
             ...options
         };
-    }
-
-    /**
-     * ListSchema.normalize
-     */
-    normalize(data: Array<any>, entities: Object = {}): NormalizeState {
-        const {definition} = this;
-        // const idAttribute = definition.options.idAttribute;
-        let schemas = {};
-        const result = List(data)
-            .map((item: any): any => {
-                const {result, schemas: childSchemas} = definition.normalize(item, entities);
-
-                // add child schemas to the schema collection
-                Object.assign(schemas, childSchemas);
-
-                return result;
-            });
-
-        return {entities, schemas, result};
-    }
-
-    /**
-     * ListSchema.denormalize
-     */
-    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        const {result, entities} = denormalizeState;
-        const {definition} = this;
-
-        // Filter out any deleted keys
-        if(result == null) {
-            return result;
-        }
-        // Map denormalize to our result List.
-        return result
-            .map((item: any): any => {
-                return definition.denormalize({result: item, entities}, path);
-            })
-            .filter(ii => ii !== DELETED_ENTITY);
     }
 }
 

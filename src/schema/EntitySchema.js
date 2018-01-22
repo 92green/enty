@@ -1,6 +1,5 @@
 // @flow
 import {PerhapsEither} from 'fronads/lib/Either';
-import {DELETED_ENTITY} from './SchemaConstant';
 import {NoDefinitionError} from '../utils/Error';
 import {UndefinedIdError} from '../utils/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
@@ -27,7 +26,6 @@ export class EntitySchema {
         this.type = 'entity';
         this.options = {
             idAttribute: item => item && get(item, 'id'),
-            denormalizeFilter: item => item && !item.get('deleted'),
             definition: null,
             ...options
         };
@@ -100,15 +98,11 @@ export class EntitySchema {
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
         const {name, options} = this;
-        const {definition, denormalizeFilter} = options;
+        const {definition} = options;
         const entity = getIn(entities, [name, result]);
 
         if(entity == null) {
             return entity;
-        }
-
-        if(!denormalizeFilter(entity)) {
-            return DELETED_ENTITY;
         }
 
         return definition.denormalize({result: entity, entities}, path);
