@@ -1,5 +1,5 @@
 // @flow
-import {Map} from 'immutable';
+import {IdentityFactory as Identity} from 'fronads/lib/Identity';
 import {DELETED_ENTITY, type DeletedEntity} from './SchemaConstant';
 import type {NormalizeState} from '../definitions';
 import type {DenormalizeState} from '../definitions';
@@ -9,21 +9,21 @@ import type {DenormalizeState} from '../definitions';
  */
 
 /**
- * MapSchema
+ * ObjectSchema
  *
  * @memberof module:Schema
  */
-export class MapSchema {
+export class ObjectSchema {
     type: string;
     definition: Object;
     options: Object;
 
     /**
-     * The MapSchema is a structural schema used to define relationships in objects.
+     * The ObjectSchema is a structural schema used to define relationships in objects.
      *
      * @example
      * const user = entity('user');
-     * user.define(MapSchema({
+     * user.define(ObjectSchema({
      *     friends: ListSchema(user)
      * }))
      *
@@ -32,32 +32,30 @@ export class MapSchema {
      *
      */
     constructor(definition: Object = {}, options: Object = {}) {
-        this.type = 'map';
+        this.type = 'object';
         this.definition = definition;
         this.options = {
-            ...this.options,
-            constructor: item => Map(item),
-            denormalizeFilter: item => item && !item.get('deleted'),
-            merge: (previous, next) => previous.merge(next),
+            constructor: item => ({...item}),
+            denormalizeFilter: item => item && !item.deleted,
+            merge: (previous, next) => ({...previous, ...next}),
             ...options
         };
     }
 
     /**
-     * MapSchema.normalize
+     * ObjectSchema.normalize
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const dataMap = this.options.constructor(data);
         let schemas = {};
 
-        const result = dataMap
-            .keySeq()
-            .reduce((result: Object, key: string): any => {
-                if(definition[key] && dataMap.get(key)) {
-                    const {result: childResult, schemas: childSchemas} = definition[key].normalize(dataMap.get(key), entities);
+        const result = Object.entries(dataMap)
+            .reduce((result: Object, [key]: *): any => {
+                if(definition[key] && dataMap[key]) {
+                    const {result: childResult, schemas: childSchemas} = definition[key].normalize(dataMap[key], entities);
                     Object.assign(schemas, childSchemas);
-                    return result.set(key, childResult);
+                    result[key] = childResult;
                 }
 
                 return result;
@@ -68,7 +66,7 @@ export class MapSchema {
     }
 
     /**
-     * MapSchema.denormalize
+     * ObjectSchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
@@ -83,14 +81,11 @@ export class MapSchema {
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
-        //
-        // Lots of `item.keySeq().reduce(() => {}, item) because Immutable can't map records without
-        // mutating them...
-        return result
-            .update((item: Map<any, any>): Map<any, any> => {
-                return item.keySeq()
-                    .reduce((newItem: any, key: string): Map<any, any> => {
-                        var value = newItem.get(key);
+        return Identity(result)
+            .map((item: Object): Object => {
+                return Object.entries(item)
+                    .reduce((newItem: Object, [key]: *): Object => {
+                        var value = newItem[key];
                         var newValue;
 
                         if(path.indexOf(this) !== -1) {
@@ -101,29 +96,32 @@ export class MapSchema {
                             newValue = value;
                         }
 
-                        return newItem.set(key, newValue);
+                        newItem[key] = newValue;
+                        return newItem;
                     }, item);
             })
-            .update((item: any): any => {
-                return item.keySeq()
-                    .filter(key => item.get(key) === DELETED_ENTITY)
-                    .reduce((newItem: Map<any, any>, deleteKey: string): Map<any, any> => {
+            .map((item: any): any => {
+                return Object.entries(item)
+                    .filter(([key]) => item[key] === DELETED_ENTITY)
+                    .reduce((newItem: Object, [deleteKey]: *): Object => {
                         deletedKeys.push(deleteKey);
-                        return newItem.delete(deleteKey);
+                        delete newItem[deleteKey];
+                        return newItem;
                     }, item);
             })
-            .update((ii: Map<any, any>): Map<any, any>|DeletedEntity => {
-                return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
-            });
+            .map((item: Object): Object|DeletedEntity => {
+                return options.denormalizeFilter(item, deletedKeys) ? item : DELETED_ENTITY;
+            })
+            .value();
     }
-    merge(mapSchema: Object): MapSchema {
-        return new MapSchema(
-            Object.assign({}, this.definition, mapSchema.definition),
-            Object.assign({}, this.options, mapSchema.options)
+    merge(objectSchema: Object): ObjectSchema {
+        return new ObjectSchema(
+            Object.assign({}, this.definition, objectSchema.definition),
+            Object.assign({}, this.options, objectSchema.options)
         );
     }
 }
 
-export default function MapSchemaFactory(...args: any[]): MapSchema {
-    return new MapSchema(...args);
+export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
+    return new ObjectSchema(...args);
 }

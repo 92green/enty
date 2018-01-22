@@ -9,13 +9,13 @@ export {default as EntityApi} from './EntityApi';
 
 
 // Schemas
-export {default as ArraySchema} from './schema/ListSchema';
+export {default as ArraySchema} from './schema/ArraySchema';
 export {default as CompositeEntitySchema} from './schema/CompositeEntitySchema';
 export {default as DynamicSchema} from './schema/DynamicSchema';
 export {default as EntitySchema} from './schema/EntitySchema';
 export {default as ListSchema} from './schema/ListSchema';
 export {default as MapSchema} from './schema/MapSchema';
-export {default as ObjectSchema} from './schema/MapSchema';
+export {default as ObjectSchema} from './schema/ObjectSchema';
 export {default as ValueSchema} from './schema/ValueSchema';
 
 // Selectors
