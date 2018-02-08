@@ -73,19 +73,22 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
      */
     return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
 
-        const options: HockOptions = {
-            ...hockOptions,
-            onMutateProp: 'onMutate',
-            group: null,
-            propUpdate: aa => aa,
-            propChangeKeys: [],
-            ...optionsOverride
-        };
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
         return function EntityMutationHockApplier(Component: Element<any>): Element<any> {
-            const {group} = options;
+
+            const options: HockOptions = {
+                ...hockOptions,
+                onMutateProp: 'onMutate',
+                group: null,
+                propUpdate: aa => aa,
+                updateResultKey: aa => aa,
+                propChangeKeys: [],
+                ...optionsOverride
+            };
+
+            const {group, updateResultKey} = options;
 
             const blankConnect = Connect();
             const ComponentWithState = Connect((state: Object, props: Object): Object => {
@@ -119,7 +122,8 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
                 updateMutation(props: Object) {
                     this.mutation = (data: Object) => {
                         const payload = payloadCreator(data);
-                        const resultKey = options.resultKey || fromJS({hash: payload}).hashCode() + options.requestActionName;
+                        const resultKey = updateResultKey(options.resultKey || fromJS({hash: payload}).hashCode() + options.requestActionName, props);
+
                         this.setState({resultKey});
                         props.dispatch(actionCreator(payload, {...options, resultKey}));
                     };

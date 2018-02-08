@@ -29,8 +29,8 @@
     "test-all": "yarn lint && yarn flow && yarn coverage"
   },
   "peerDependencies": {
-    "redux": "^3.6.0",
-    "react-redux": ">=4"
+    "react-redux": ">=4",
+    "redux": "^3.6.0"
   },
   "dependencies": {
     "fronads": "^0.17.0",
@@ -58,6 +58,7 @@
     "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.8.0",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
+    "react-redux": "^5.0.6",
     "redux": "^3.6.0",
     "require.async": "^0.1.1"
   }

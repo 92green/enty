@@ -84,3 +84,17 @@ test('EntityMutationHockFactory will group props if a `group` config is provided
     tt.is(typeof getProp('fooGroup'), 'object');
     tt.is(typeof getProp('fooGroup').onMutate, 'function');
 });
+
+
+test("EntityMutationHockFactory can be configured to update resultKey based on props", (t: Object) => {
+    const actionCreator = spy();
+    const Child = () => <div></div>;
+
+    var Component = EntityMutationHockFactory(actionCreator, {})(NOOP, {updateResultKey: (hash, props) => props.id})(Child);
+    shallow(<Component store={STORE} id="FOO" />)
+        .dive()
+        .instance()
+        .mutation();
+
+    t.is(actionCreator.firstCall.args[1].resultKey, 'FOO');
+});

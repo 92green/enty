@@ -149,8 +149,8 @@ export default function EntityApi(schema: Object, actionMap: Object, hockOptions
                 .setIn(['actionTypes', FETCH], FETCH)
                 .setIn(['actionTypes', RECEIVE], RECEIVE)
                 .setIn(['actionTypes', ERROR], ERROR)
-                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, hockOptions))
-                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, hockOptions))
+                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName}))
+                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName}))
             ;
 
         }, Map())
