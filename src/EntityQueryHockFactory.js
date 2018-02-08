@@ -44,7 +44,6 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
      * @memberof module:Hocks
      */
     return function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): Function {
-
         function parseOptions(options: HockOptionsInput|Array<string>): Object {
             if(Array.isArray(options)) {
                 return {propChangeKeys: optionsOverride};
@@ -52,25 +51,38 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
             return options;
         }
 
-        const options: HockOptions = {
-            ...hockOptions,
-            group: null,
-            propUpdate: aa => aa,
-            propChangeKeys: [],
-            ...parseOptions(optionsOverride)
-        };
 
         // distinct memo must be unique to each useage of EntityQuery
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        function getHash(props: Object, options: HockOptions): string {
-            return (options.resultKey || fromJS({hash: queryCreator(props), requestActionName: options.requestActionName}).hashCode()) + '';
-        }
+
 
         return function EntityQueryHockApplier(Component: Element<any>): any {
 
+            const originalOptions: HockOptions = {
+                ...hockOptions,
+                group: null,
+                propUpdate: aa => aa,
+                updateResultKey: (aa) => aa,
+                propChangeKeys: [],
+                ...parseOptions(optionsOverride)
+            };
+
+            let options = {
+                ...originalOptions
+            };
+
+
+            function getHash(props: Object, options: HockOptions): string {
+                return (options.resultKey || fromJS({hash: queryCreator(props), requestActionName: options.requestActionName}).hashCode()) + '';
+            }
+
+
+            // console.log('Applier', options.requestActionName, options.resultKey);
+
             const withState = Connect((state: Object, props: Object): Object => {
-                const resultKey = getHash(props, options);
+                const resultKey = options.updateResultKey(getHash(props, options), props);
+
                 const data = selectEntityByResult(state, resultKey, options);
                 const childProps = options.propUpdate({
                     ...data,
@@ -87,7 +99,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
                 paths: options.propChangeKeys,
                 onPropChange: (props: Object): any => {
                     options.resultKey = getHash(props, options);
-                    return props.dispatch(actionCreator(queryCreator(props), options));
+                    return props.dispatch(actionCreator(queryCreator(props), {...options, resultKey: options.updateResultKey(options.resultKey, props)}));
                 }
             }));
 

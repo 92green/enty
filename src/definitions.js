@@ -21,6 +21,7 @@ export type HockOptions = {
     propChangeKeys: Array<string>,
     propUpdate: (Object) => Object,
     requestActionName?: string,
+    updateResultKey: (string, Object) => string,
     resultKey?: string,
     schemaKey?: string,
     stateKey?: string

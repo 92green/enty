@@ -6,6 +6,7 @@ import {shallow} from 'enzyme';
 import {fromJS} from 'immutable';
 import EntityQueryHockFactory from '../EntityQueryHockFactory';
 import {FetchingState} from '../RequestState';
+import sinon from 'sinon';
 
 var NOOP = () => {};
 var STORE = {
@@ -93,3 +94,30 @@ test('EntityQueryHockFactory will group props if a `group` config is provided', 
         .dive()
         .dive();
 });
+
+
+test('EntityQueryHockFactory can be configured to update resultKey based on props', (t: Object) => {
+    var actionCreator = sinon.spy();
+
+    var store = {
+        subscribe: STORE.subscribe,
+        dispatch: (aa) => aa,
+        getState: STORE.getState
+    };
+
+    const NOOP_COMPONENT = () => <div/>;
+    const mount = (comp) => shallow(comp)
+        .dive()
+        .instance()
+        .componentDidMount();
+
+
+    var Component = EntityQueryHockFactory(actionCreator)(NOOP, {updateResultKey: (hash, props) => props.id})(NOOP_COMPONENT);
+
+    mount(<Component store={store} id="1" />);
+    mount(<Component store={store} id="2" />);
+    mount(<Component store={store} id="3" />);
+
+    t.deepEqual(actionCreator.getCalls().map(ii => ii.args[1].resultKey), ['1', '2', '3']);
+});
+
