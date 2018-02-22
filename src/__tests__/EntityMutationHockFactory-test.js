@@ -98,3 +98,22 @@ test("EntityMutationHockFactory can be configured to update resultKey based on p
 
     t.is(actionCreator.firstCall.args[1].resultKey, 'FOO');
 });
+
+test('EntityMutationHockFactory will use the result key from `group` if provided', tt => {
+    const Child = (props: Object): React.Element<any> => {
+        tt.is(props.resultKey, 'bar');
+        tt.is(props.fooGroup.resultKey, 'foo');
+        tt.is(props.fooGroup.requestState.isFetching, true);
+        return <div></div>;
+    };
+
+    var Component = EntityMutationHockFactory(PASS)(PASS, {group: 'fooGroup', resultKey: 'foo'})(Child);
+
+    const wrapper = shallow(<Component store={STORE} resultKey="bar" />)
+        .dive();
+
+    // invoking the mutation updates the state of the hock so that it will now pass the resultKey `foo` through to its group props
+    wrapper.instance().mutation();
+    // at this point, the hock should pass the correct request state from the store down to Child
+    wrapper.dive().render();
+});
