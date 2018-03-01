@@ -1,0 +1,65 @@
+{
+  "name": "enty",
+  "version": "0.43.1",
+  "description": "An opinionated set of redux tools to cut down on boilerplate",
+  "main": "lib/index.js",
+  "license": "UNLICENSED",
+  "author": "Allan Hortle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/enty.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/blueflag/enty/issues"
+  },
+  "private": false,
+  "scripts": {
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
+    "build-examples": "cd example && yarn install && yarn run build && cd -",
+    "deploy-to-gh-pages": "yarn run build && yarn run build-examples && yarn run docs && node scripts/publish.js",
+    "prepublish": "yarn run build",
+    "docs": "jsdoc -c jsdoc.json --readme README.md",
+    "flow": "blueflag-test flow",
+    "lint": "blueflag-test lint",
+    "test": "blueflag-test test",
+    "coverage": "blueflag-test coverage",
+    "test-all": "yarn lint && yarn flow && yarn coverage"
+  },
+  "peerDependencies": {
+    "react-redux": ">=4",
+    "redux": "^3.6.0"
+  },
+  "dependencies": {
+    "fronads": "^0.17.0",
+    "immutable": "^3.8.1",
+    "jsdoc-react-proptypes": "^1.0.1",
+    "redux-actions": "^2.0.1",
+    "redux-thunk": "^2.1.0",
+    "stampy": "^0.26.1"
+  },
+  "devDependencies": {
+    "app-module-path": "^2.2.0",
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.0",
+    "babel-preset-blueflag": "^0.6.0",
+    "babel-register": "^6.23.0",
+    "dotenv": "^4.0.0",
+    "enzyme": "^2.6.0",
+    "eslint": "^4.7.2",
+    "gh-pages": "^0.11.0",
+    "git-url-parse": "^6.0.1",
+    "jsdoc": "^3.4.3",
+    "jsdoc-babel": "^0.2.1",
+    "jsdonk": "^0.7.0",
+    "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
+    "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.8.0",
+    "react": "^15.4.2",
+    "react-addons-test-utils": "^15.4.2",
+    "react-redux": "^5.0.6",
+    "redux": "^3.6.0",
+    "require.async": "^0.1.1"
+  }
+}
