@@ -1,11 +1,13 @@
+//@flow
 import test from 'ava';
-import {EntitySchema, MapSchema} from '../../index';
+import EntitySchema from '../EntitySchema';
+import MapSchema from '../MapSchema';
 import {fromJS, Map} from 'immutable';
 
 var foo = EntitySchema('foo').define(MapSchema());
 var bar = EntitySchema('bar').define(MapSchema());
 
-test('MapSchema can normalize objects', tt => {
+test('MapSchema can normalize objects', (tt: *) => {
     const schema = MapSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: "1"}});
 
@@ -13,7 +15,7 @@ test('MapSchema can normalize objects', tt => {
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
-test('MapSchema can normalize maps', tt => {
+test('MapSchema can normalize maps', (tt: *) => {
     const schema = MapSchema({foo});
     let {entities, result} = schema.normalize(Map({foo: {id: "1"}}));
 
@@ -21,14 +23,14 @@ test('MapSchema can normalize maps', tt => {
     tt.deepEqual(entities.foo["1"].toJS(), {id: "1"});
 });
 
-test('MapSchema.denormalize is the inverse of MapSchema.normalize', tt => {
+test('MapSchema.denormalize is the inverse of MapSchema.normalize', (tt: *) => {
     const schema = MapSchema({foo});
     const data = Map({foo: Map({id: "1"})});
     const output = schema.denormalize(schema.normalize(data));
     tt.true(data.equals(output));
 });
 
-test('MapSchema can normalize empty objects', tt => {
+test('MapSchema can normalize empty objects', (tt: *) => {
     const schema = MapSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
 
@@ -36,7 +38,7 @@ test('MapSchema can normalize empty objects', tt => {
     tt.deepEqual(result.toJS(), {bar: {}});
 });
 
-test('MapSchema can denormalize objects', tt => {
+test('MapSchema can denormalize objects', (tt: *) => {
     const schema = MapSchema({foo});
 
     const entities = fromJS({
@@ -52,7 +54,7 @@ test('MapSchema can denormalize objects', tt => {
 });
 
 
-test('MapSchema will not denormalize null values', tt => {
+test('MapSchema will not denormalize null values', (tt: *) => {
     const schema = MapSchema({foo});
 
     const entities = fromJS({
@@ -67,7 +69,7 @@ test('MapSchema will not denormalize null values', tt => {
     );
 });
 
-test('MapSchema will not denormalize unknown keys', tt => {
+test('MapSchema will not denormalize unknown keys', (tt: *) => {
     const schema = MapSchema({foo});
 
     const entities = fromJS({
@@ -82,7 +84,7 @@ test('MapSchema will not denormalize unknown keys', tt => {
     );
 });
 
-test('MapSchema will filter out DELETED_ENTITY keys', tt => {
+test('MapSchema will filter out DELETED_ENTITY keys', (tt: *) => {
     const schema = MapSchema({foo});
 
     const entities = fromJS({
@@ -97,7 +99,7 @@ test('MapSchema will filter out DELETED_ENTITY keys', tt => {
     );
 });
 
-test('MapSchema will pass any deleted keys to options.denormalizeFilter', tt => {
+test('MapSchema will pass any deleted keys to options.denormalizeFilter', (tt: *) => {
     const schema = MapSchema({foo}, {
         denormalizeFilter: (item, deletedKeys) => tt.deepEqual(deletedKeys, ['foo'])
     });
@@ -112,7 +114,7 @@ test('MapSchema will pass any deleted keys to options.denormalizeFilter', tt => 
 });
 
 
-test('MapSchema.merge() will perform a shallow merge of options and definition', tt => {
+test('MapSchema.merge() will perform a shallow merge of options and definition', (tt: *) => {
     const denormalizeFilter = () => true;
     const aa = MapSchema({foo});
     const bb = MapSchema({bar}, {denormalizeFilter});
@@ -125,7 +127,7 @@ test('MapSchema.merge() will perform a shallow merge of options and definition',
 });
 
 
-test('MapSchema will not mutate input objects', tt => {
+test('MapSchema will not mutate input objects', (tt: *) => {
     const schema = MapSchema({foo});
     const objectTest = {foo: {id: "1"}};
 

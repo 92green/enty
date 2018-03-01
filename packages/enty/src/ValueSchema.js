@@ -1,6 +1,6 @@
 // @flow
-import type {NormalizeState} from '../definitions';
-import type {DenormalizeState} from '../definitions';
+import type {NormalizeState} from './util/definitions';
+import type {DenormalizeState} from './util/definitions';
 
 /**
  * @module Schema
@@ -34,7 +34,7 @@ export class ValueSchema {
     /**
      * ValueSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: *, entities: Object = {}): NormalizeState {
         const {definition, constructor} = this.options;
         const {result, schemas} = definition.normalize(constructor(data), entities);
 

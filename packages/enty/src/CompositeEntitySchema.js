@@ -1,12 +1,12 @@
 // @flow
 import {getIn} from 'stampy/lib/util/CollectionUtils';
 
-import type {NormalizeState} from '../definitions';
-import type {DenormalizeState} from '../definitions';
+import type {NormalizeState} from './util/definitions';
+import type {DenormalizeState} from './util/definitions';
 
-import {CompositeDefinitionMustBeEntityError} from '../utils/Error';
-import {CompositeKeysMustBeEntitiesError} from '../utils/Error';
-import {NoDefinitionError} from '../utils/Error';
+import {CompositeDefinitionMustBeEntityError} from './util/Error';
+import {CompositeKeysMustBeEntitiesError} from './util/Error';
+import {NoDefinitionError} from './util/Error';
 
 /**
  * @module Schema

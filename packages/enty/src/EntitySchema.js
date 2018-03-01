@@ -1,10 +1,10 @@
 // @flow
 import {PerhapsEither} from 'fronads/lib/Either';
-import {NoDefinitionError} from '../utils/Error';
-import {UndefinedIdError} from '../utils/Error';
+import {NoDefinitionError} from './util/Error';
+import {UndefinedIdError} from './util/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
-import type {NormalizeState} from '../definitions';
-import type {DenormalizeState} from '../definitions';
+import type {NormalizeState} from './util/definitions';
+import type {DenormalizeState} from './util/definitions';
 
 /**
  * @module Schema

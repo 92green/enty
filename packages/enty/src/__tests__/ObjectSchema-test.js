@@ -1,10 +1,12 @@
+//@flow
 import test from 'ava';
-import {EntitySchema, ObjectSchema} from '../../index';
+import ObjectSchema from '../ObjectSchema';
+import EntitySchema from '../EntitySchema';
 
 var foo = EntitySchema('foo').define(ObjectSchema());
 var bar = EntitySchema('bar').define(ObjectSchema());
 
-test('ObjectSchema can normalize objects', tt => {
+test('ObjectSchema can normalize objects', (tt: *) => {
     const schema = ObjectSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: "1"}});
 
@@ -12,7 +14,7 @@ test('ObjectSchema can normalize objects', tt => {
     tt.deepEqual(entities.foo["1"], {id: "1"});
 });
 
-test('ObjectSchema can normalize maps', tt => {
+test('ObjectSchema can normalize maps', (tt: *) => {
     const schema = ObjectSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: "1"}});
 
@@ -20,14 +22,14 @@ test('ObjectSchema can normalize maps', tt => {
     tt.deepEqual(entities.foo["1"], {id: "1"});
 });
 
-test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', tt => {
+test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', (tt: *) => {
     const schema = ObjectSchema({foo});
     const data = {foo: {id: "1"}};
     const output = schema.denormalize(schema.normalize(data));
     tt.deepEqual(data, output);
 });
 
-test('ObjectSchema can normalize empty objects', tt => {
+test('ObjectSchema can normalize empty objects', (tt: *) => {
     const schema = ObjectSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
 
@@ -35,7 +37,7 @@ test('ObjectSchema can normalize empty objects', tt => {
     tt.deepEqual(result, {bar: {}});
 });
 
-test('ObjectSchema can denormalize objects', tt => {
+test('ObjectSchema can denormalize objects', (tt: *) => {
     const schema = ObjectSchema({foo});
 
     const entities = {
@@ -51,7 +53,7 @@ test('ObjectSchema can denormalize objects', tt => {
 });
 
 
-test('ObjectSchema will not denormalize null values', tt => {
+test('ObjectSchema will not denormalize null values', (tt: *) => {
     const schema = ObjectSchema({foo});
 
     const entities = {
@@ -66,7 +68,7 @@ test('ObjectSchema will not denormalize null values', tt => {
     );
 });
 
-test('ObjectSchema will not denormalize unknown keys', tt => {
+test('ObjectSchema will not denormalize unknown keys', (tt: *) => {
     const schema = ObjectSchema({foo});
 
     const entities = {
@@ -81,7 +83,7 @@ test('ObjectSchema will not denormalize unknown keys', tt => {
     );
 });
 
-test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
+test('ObjectSchema will filter out DELETED_ENTITY keys', (tt: *) => {
     const schema = ObjectSchema({foo});
 
     const entities = {
@@ -96,7 +98,7 @@ test('ObjectSchema will filter out DELETED_ENTITY keys', tt => {
     );
 });
 
-test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt => {
+test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', (tt: *) => {
     const schema = ObjectSchema({foo}, {
         denormalizeFilter: (item, deletedKeys) => tt.deepEqual(deletedKeys, ['foo'])
     });
@@ -111,7 +113,7 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', tt 
 });
 
 
-test('ObjectSchema.merge() will perform a shallow merge of options and definition', tt => {
+test('ObjectSchema.merge() will perform a shallow merge of options and definition', (tt: *) => {
     const denormalizeFilter = () => true;
     const aa = ObjectSchema({foo});
     const bb = ObjectSchema({bar}, {denormalizeFilter});
@@ -124,7 +126,7 @@ test('ObjectSchema.merge() will perform a shallow merge of options and definitio
 });
 
 
-test('ObjectSchema will not mutate input objects', tt => {
+test('ObjectSchema will not mutate input objects', (tt: *) => {
     const schema = ObjectSchema({foo});
     const objectTest = {foo: {id: "1"}};
 

@@ -1,9 +1,12 @@
+//@flow
 import test from 'ava';
-import {EntitySchema, ArraySchema, ObjectSchema} from '../../index';
+import EntitySchema from '../EntitySchema';
+import ArraySchema from '../ArraySchema';
+import ObjectSchema from '../ObjectSchema';
 
 const foo = EntitySchema('foo').define(ObjectSchema());
 
-test('ArraySchema can normalize arrays', tt => {
+test('ArraySchema can normalize arrays', (tt: *) => {
     const schema = ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: "1"}, {id: "2"}]);
 
@@ -12,7 +15,7 @@ test('ArraySchema can normalize arrays', tt => {
     tt.deepEqual(result, ["1", "2"]);
 });
 
-test('ArraySchema can normalize Lists', tt => {
+test('ArraySchema can normalize Lists', (tt: *) => {
     const schema = ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: "1"}, {id: "2"}]);
 
@@ -21,7 +24,7 @@ test('ArraySchema can normalize Lists', tt => {
     tt.deepEqual(result, ["1", "2"]);
 });
 
-test('ArraySchema can normalize nested things in arrays', tt => {
+test('ArraySchema can normalize nested things in arrays', (tt: *) => {
     const schema = ArraySchema(ObjectSchema({foo}));
     const {entities, result} = schema.normalize([{foo: {id: "1"}}]);
 
@@ -30,7 +33,7 @@ test('ArraySchema can normalize nested things in arrays', tt => {
 });
 
 
-test('ArraySchema can denormalize arrays', tt => {
+test('ArraySchema can denormalize arrays', (tt: *) => {
     const schema = ArraySchema(foo);
     const entities = {
         foo: {
@@ -47,7 +50,7 @@ test('ArraySchema can denormalize arrays', tt => {
 });
 
 
-test('ArraySchema will not return deleted entities', tt => {
+test('ArraySchema will not return deleted entities', (tt: *) => {
     const schema = ArraySchema(foo);
     const entities = {
         foo: {
@@ -65,13 +68,13 @@ test('ArraySchema will not return deleted entities', tt => {
 });
 
 
-test('ArraySchema will not try to denormalize null values', tt => {
+test('ArraySchema will not try to denormalize null values', (tt: *) => {
     const schema = ArraySchema(foo);
     tt.deepEqual(schema.denormalize({result: null, entities: {}}), null);
 });
 
 
-test('ArraySchema will not mutate input objects', tt => {
+test('ArraySchema will not mutate input objects', (tt: *) => {
 
     const schema = ArraySchema(foo);
     const arrayTest = [{id: "1"}];

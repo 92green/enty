@@ -1,12 +1,15 @@
 //@flow
 import test from 'ava';
-import {EntitySchema, ListSchema, DynamicSchema, MapSchema} from '../../index';
+import EntitySchema from '../EntitySchema';
+import ListSchema from '../ListSchema';
+import DynamicSchema from '../DynamicSchema';
+import MapSchema from '../MapSchema';
 
 const foo = EntitySchema('foo').define(MapSchema());
 const bar = EntitySchema('bar').define(MapSchema());
 const baz = EntitySchema('baz').define(MapSchema());
 
-const fooBarBaz = DynamicSchema(data => {
+const fooBarBaz = DynamicSchema((data: *): * => {
     switch(data.type || data.get('type')) {
         case 'foo':
             return foo;
@@ -18,14 +21,14 @@ const fooBarBaz = DynamicSchema(data => {
 });
 
 
-test('DynamicSchema can choose an appropriate schema to normalize', tt => {
+test('DynamicSchema can choose an appropriate schema to normalize', (tt: *) => {
     const unknownArray = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
         {type: 'bar', id: '1'},
         {type: 'baz', id: '2'}
     ];
-    const {entities, result} = unknownArray.normalize(data);
+    const {entities} = unknownArray.normalize(data);
 
 
     tt.deepEqual(entities.foo['0'].toJS(), data[0]);
@@ -34,7 +37,7 @@ test('DynamicSchema can choose an appropriate schema to normalize', tt => {
 });
 
 
-test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', tt => {
+test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', (tt: *) => {
     const schema = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
@@ -47,7 +50,7 @@ test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', tt =
     tt.deepEqual(data, output.toJS());
 });
 
-test('DynamicSchema.normalize', tt => {
+test('DynamicSchema.normalize', (tt: *) => {
     const data = {type: 'foo', id: '0'};
     const output = fooBarBaz.denormalize(fooBarBaz.normalize(data));
     tt.deepEqual(data, output.toJS());
@@ -55,7 +58,7 @@ test('DynamicSchema.normalize', tt => {
 
 
 
-test('DynamicSchema.normalize on to existing data', tt => {
+test('DynamicSchema.normalize on to existing data', (tt: *) => {
     const schema = ListSchema(fooBarBaz);
 
     const first = [
@@ -75,7 +78,7 @@ test('DynamicSchema.normalize on to existing data', tt => {
     tt.deepEqual(output.entities.baz['2'].toJS(), second[1]);
 });
 
-test('DynamicSchema can set definition through the `define` method', tt => {
+test('DynamicSchema can set definition through the `define` method', (tt: *) => {
     const schema = DynamicSchema();
     schema.define(() => {});
 

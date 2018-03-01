@@ -1,7 +1,8 @@
 //@flow
 import test from 'ava';
-import {EntitySchema, MapSchema} from '../../index';
-import {DELETED_ENTITY} from '../SchemaConstant';
+import EntitySchema from '../EntitySchema';
+import MapSchema from '../MapSchema';
+import {DELETED_ENTITY} from '../util/SchemaConstant';
 import {fromJS} from 'immutable';
 
 var foo = EntitySchema('foo');

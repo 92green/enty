@@ -3,7 +3,7 @@
 // import denormalize from './schema/Denormalize';
 import {Iterable, Map} from 'immutable';
 import ListSchema from './schema/ListSchema';
-import {getIn, get} from 'stampy/lib/util/CollectionUtils';
+import {getIn, get} from 'stampy/l./util/CollectionUtils';
 
 const defaultOptions = {
     schemaKey: 'ENTITY_RECEIVE',

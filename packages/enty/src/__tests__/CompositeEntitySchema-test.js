@@ -1,10 +1,8 @@
+//@flow
 import test from 'ava';
-import {EntitySchema} from '../../index';
-import {CompositeEntitySchema} from '../../index';
-import {MapSchema} from '../../index';
-
-import {NoDefinitionError} from '../../utils/Error';
-import {CompositeKeysMustBeEntitiesError} from '../../utils/Error';
+import EntitySchema from '../EntitySchema';
+import CompositeEntitySchema from '../CompositeEntitySchema';
+import MapSchema from '../MapSchema';
 
 var course = EntitySchema('course').define(MapSchema());
 var dog = EntitySchema('dog').define(MapSchema());

@@ -1,10 +1,13 @@
+//@flow
 import test from 'ava';
-import {EntitySchema, ListSchema, MapSchema} from '../../index';
+import EntitySchema from '../EntitySchema';
+import ListSchema from '../ListSchema';
+import MapSchema from '../MapSchema';
 import {fromJS} from 'immutable';
 
 const foo = EntitySchema('foo').define(MapSchema());
 
-test('ListSchema can normalize arrays', tt => {
+test('ListSchema can normalize arrays', (tt: *) => {
     const schema = ListSchema(foo);
     const {entities, result} = schema.normalize([{id: "1"}, {id: "2"}]);
 
@@ -13,7 +16,7 @@ test('ListSchema can normalize arrays', tt => {
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
-test('ListSchema can normalize Lists', tt => {
+test('ListSchema can normalize Lists', (tt: *) => {
     const schema = ListSchema(foo);
     const {entities, result} = schema.normalize(fromJS([{id: "1"}, {id: "2"}]));
 
@@ -22,7 +25,7 @@ test('ListSchema can normalize Lists', tt => {
     tt.deepEqual(result.toJS(), ["1", "2"]);
 });
 
-test('ListSchema can normalize nested things in arrays', tt => {
+test('ListSchema can normalize nested things in arrays', (tt: *) => {
     const schema = ListSchema(MapSchema({foo}));
     const {entities, result} = schema.normalize([{foo: {id: "1"}}]);
 
@@ -31,7 +34,7 @@ test('ListSchema can normalize nested things in arrays', tt => {
 });
 
 
-test('ListSchema can denormalize arrays', tt => {
+test('ListSchema can denormalize arrays', (tt: *) => {
     const schema = ListSchema(foo);
     const entities = fromJS({
         foo: {
@@ -48,7 +51,7 @@ test('ListSchema can denormalize arrays', tt => {
 });
 
 
-test('ListSchema will not return deleted entities', tt => {
+test('ListSchema will not return deleted entities', (tt: *) => {
     const schema = ListSchema(foo);
     const entities = fromJS({
         foo: {
@@ -66,13 +69,13 @@ test('ListSchema will not return deleted entities', tt => {
 });
 
 
-test('ListSchema will not try to denormalize null values', tt => {
+test('ListSchema will not try to denormalize null values', (tt: *) => {
     const schema = ListSchema(foo);
     tt.deepEqual(schema.denormalize({result: null, entities: {}}), null);
 });
 
 
-test('ListSchema will not mutate input objects', tt => {
+test('ListSchema will not mutate input objects', (tt: *) => {
 
     const schema = ListSchema(foo);
     const arrayTest = [{id: "1"}];
