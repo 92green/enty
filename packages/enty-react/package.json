@@ -24,6 +24,7 @@
     "redux": "^3.6.0"
   },
   "dependencies": {
+    "enty": "^0.44.0-1",
     "fronads": "^0.17.0",
     "immutable": "^3.8.1",
     "redux-actions": "^2.0.1",
