@@ -5,8 +5,8 @@
     "build": "lerna run build --parallel --",
     "flow": "blueflag-test flow",
     "lint": "blueflag-test lint",
-    "test": "blueflag-test test packages/**/*-test.js",
-    "coverage": "blueflag-test coverage packages/**/*-test.js",
+    "test": "blueflag-test test",
+    "coverage": "blueflag-test coverage",
     "test-all": "yarn lint && yarn flow && yarn coverage"
   },
   "workspaces": [
@@ -16,7 +16,7 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
     "babel-preset-blueflag": "^0.6.0",
-    "blueflag-test": "^0.12.0",
+    "blueflag-test": "^0.13.2",
     "enzyme": "^2.6.0",
     "lerna": "^2.9.0",
     "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
