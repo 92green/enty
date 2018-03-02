@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "pub": "yarn build && lerna publish",
+    "prepublishOnly": "yarn build",
     "build": "lerna run build --parallel --",
     "flow": "blueflag-test flow",
     "lint": "blueflag-test lint",
