@@ -1,5 +1,5 @@
 {
-  "name": "enty-react",
+  "name": "react-enty",
   "version": "0.1.0",
   "description": "React bindings for managing state with enty schemas",
   "main": "lib/index.js",
