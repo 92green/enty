@@ -3,12 +3,12 @@ import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
 
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
-import DistinctMemo from './utils/DistinctMemo';
-import Connect from './utils/Connect';
+import DistinctMemo from './util/DistinctMemo';
+import Connect from './util/Connect';
 import {fromJS} from 'immutable';
 import type {Element} from 'react';
-import type {HockOptions} from './definitions';
-import type {HockOptionsInput} from './definitions';
+import type {HockOptions} from './util/definitions';
+import type {HockOptionsInput} from './util/definitions';
 
 
 /**
@@ -99,7 +99,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
                 paths: options.propChangeKeys,
                 onPropChange: (props: Object): any => {
                     options.resultKey = getHash(props, options);
-                    return props.dispatch(actionCreator(queryCreator(props), {...options, resultKey: options.updateResultKey(options.resultKey, props)}));
+                    return props.dispatch(actionCreator(queryCreator(props), {...options, resultKey: options.resultKey && options.updateResultKey(options.resultKey, props)}));
                 }
             }));
 

@@ -1,8 +1,8 @@
 //@flow
 import test from 'ava';
-import EntitySchema from '../schema/EntitySchema';
-import MapSchema from '../schema/MapSchema';
-import ListSchema from '../schema/ListSchema';
+import EntitySchema from 'enty/lib/EntitySchema';
+import MapSchema from 'enty/lib/MapSchema';
+import ListSchema from 'enty/lib/ListSchema';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,

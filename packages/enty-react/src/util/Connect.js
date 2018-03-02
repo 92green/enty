@@ -1,6 +1,6 @@
 //@flow
 import {connect} from 'react-redux';
-import type {HockOptions} from '../definitions';
+import type {HockOptions} from './definitions';
 
 
 const defaultOptions = {

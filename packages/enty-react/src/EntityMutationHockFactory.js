@@ -1,12 +1,12 @@
 //@flow
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
-import DistinctMemo from './utils/DistinctMemo';
-import Connect from './utils/Connect';
+import DistinctMemo from './util/DistinctMemo';
+import Connect from './util/Connect';
 import {fromJS} from 'immutable';
 import React, {type Element} from 'react';
-import type {HockOptions} from './definitions';
-import type {HockOptionsInput} from './definitions';
+import type {HockOptions} from './util/definitions';
+import type {HockOptionsInput} from './util/definitions';
 
 
 /**

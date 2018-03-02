@@ -1,6 +1,9 @@
+//@flow
 import test from 'ava';
 import EntityReducerFactory from '../EntityReducerFactory';
-import {EntitySchema, ListSchema, MapSchema} from '../index.js';
+import EntitySchema from 'enty/lib/EntitySchema';
+import ListSchema from 'enty/lib/ListSchema';
+import MapSchema from 'enty/lib/MapSchema';
 import {is, fromJS, Map} from 'immutable';
 
 //
@@ -42,7 +45,7 @@ const INITIAL_STATE = fromJS({
     }
 });
 
-test('EntityReducerFactory normalizes a reuslt', tt => {
+test('EntityReducerFactory normalizes a reuslt', (tt: *) => {
     const examplePayload = {
         subreddit: {
             name: "MechanicalKeyboards",
@@ -70,13 +73,13 @@ test('EntityReducerFactory normalizes a reuslt', tt => {
     );
 });
 
-test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', tt => {
+test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', (tt: *) => {
     tt.is(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching, true);
 });
 
 
 
-test('EntityReducerFactory', tt => {
+test('EntityReducerFactory', (tt: *) => {
 
 
     const exampleAction = {
@@ -321,7 +324,7 @@ test('EntityReducerFactory', tt => {
 //
 // Don't update state for other actions.
 
-test("foreign actions will preserve state.entity's strict object equality", tt => {
+test("foreign actions will preserve state.entity's strict object equality", (tt: *) => {
     // check bad keys
     tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO'}), INITIAL_STATE);
     tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'}), INITIAL_STATE);

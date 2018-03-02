@@ -1,25 +1,10 @@
 {
-  "name": "enty",
-  "version": "0.43.1",
-  "description": "An opinionated set of redux tools to cut down on boilerplate",
-  "main": "lib/index.js",
-  "license": "UNLICENSED",
-  "author": "Allan Hortle",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/blueflag/enty.git"
-  },
-  "files": [
-    "lib"
-  ],
-  "bugs": {
-    "url": "https://github.com/blueflag/enty/issues"
-  },
   "private": true,
   "scripts": {
+    "build": "lerna run build --parallel --",
     "flow": "blueflag-test flow",
     "lint": "blueflag-test lint",
-    "test": "blueflag-test test",
+    "test": "blueflag-test test packages/**/*-test.js",
     "coverage": "blueflag-test coverage",
     "test-all": "yarn lint && yarn flow && yarn coverage"
   },
@@ -30,11 +15,13 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
     "babel-preset-blueflag": "^0.6.0",
+    "blueflag-test": "^0.12.0",
     "enzyme": "^2.6.0",
+    "lerna": "^2.9.0",
     "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
-    "proto-blueflag-test": "git+ssh://git@github.com/blueflag/proto-blueflag-test.git#v0.8.0",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.4.2",
+    "react-dom": "^15.4.2",
     "react-redux": "^5.0.6",
     "redux": "^3.6.0",
     "require.async": "^0.1.1"

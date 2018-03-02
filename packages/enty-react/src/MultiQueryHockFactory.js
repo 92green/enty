@@ -1,8 +1,8 @@
 //@flow
 import EntityQueryHockFactory from './EntityQueryHockFactory';
 import {createAllRequestAction} from './EntityApi';
-import type {HockOptionsInput} from './definitions';
-import type {SideEffect} from './definitions';
+import type {HockOptionsInput} from './util/definitions';
+import type {SideEffect} from './util/definitions';
 
 
 /**

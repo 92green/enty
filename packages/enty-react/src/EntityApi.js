@@ -6,8 +6,8 @@ import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
 import {fromJS, Map} from 'immutable';
 
-import type {HockOptionsInput} from './definitions';
-import type {SideEffect} from './definitions';
+import type {HockOptionsInput} from './util/definitions';
+import type {SideEffect} from './util/definitions';
 
 /**
 The Entity Api is the main access point for your data. It allows you to define the link between your views
