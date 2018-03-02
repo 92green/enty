@@ -1,0 +1,27 @@
+{
+  "name": "enty",
+  "version": "0.44.0-2",
+  "description": "An opinionated set of redux tools to cut down on boilerplate",
+  "main": "lib/index.js",
+  "license": "UNLICENSED",
+  "author": "Allan Hortle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/enty.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/blueflag/enty/issues"
+  },
+  "private": false,
+  "scripts": {
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js"
+  },
+  "dependencies": {
+    "fronads": "^0.17.0",
+    "immutable": "^3.8.1",
+    "stampy": "^0.26.1"
+  }
+}
