@@ -1,6 +1,6 @@
 {
   "name": "enty-react",
-  "version": "0.0.0",
+  "version": "0.1.0-0",
   "description": "React bindings for managing state with enty schemas",
   "main": "lib/index.js",
   "license": "UNLICENSED",
