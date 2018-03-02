@@ -6,7 +6,7 @@
     "flow": "blueflag-test flow",
     "lint": "blueflag-test lint",
     "test": "blueflag-test test packages/**/*-test.js",
-    "coverage": "blueflag-test coverage",
+    "coverage": "blueflag-test coverage packages/**/*-test.js",
     "test-all": "yarn lint && yarn flow && yarn coverage"
   },
   "workspaces": [
