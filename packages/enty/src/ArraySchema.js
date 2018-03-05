@@ -10,6 +10,8 @@ import type {DenormalizeState} from './util/definitions';
 /**
  * ArraySchema
  *
+ * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.
+ *
  * @memberof module:Schema
  */
 export class ArraySchema {

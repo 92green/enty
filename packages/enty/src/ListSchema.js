@@ -8,13 +8,14 @@ import {ArraySchema} from './ArraySchema';
 
 /**
  * ListSchema
- *
+ * An array schema that casts the data to an immutable js List
  * @memberof module:Schema
  */
 export class ListSchema extends ArraySchema {
 
     /**
      * @param {Schema} definition
+     * The defition of the list
      */
     constructor(definition: Object, options: Object = {}) {
         super(definition, options);

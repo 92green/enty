@@ -82,6 +82,7 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
 
 
 /**
+ * @name EntityApi2
  * Constructs an Entity Api based off a schema and an object of promise returning functions.
  *
  * EntityApi will construct QueryHocks and MutationHocks for each promise returning function,

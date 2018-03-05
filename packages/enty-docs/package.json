@@ -1,0 +1,30 @@
+{
+  "name": "enty-docs",
+  "version": "0.0.0",
+  "description": "Enty Documentation",
+  "author": "Allan Hortle <allanhortle@gmail.com>",
+  "dependencies": {
+    "gatsby": "^1.9.223",
+    "gatsby-link": "^1.6.38",
+    "gatsby-plugin-react-helmet": "^2.0.6",
+    "react-helmet": "^5.2.0"
+  },
+  "private": true,
+  "license": "MIT",
+  "main": "n/a",
+  "scripts": {
+    "build": "gatsby build",
+    "watch": "gatsby develop",
+    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write \"src/**/*.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "gatsby-plugin-github-pages": "^1.0.1",
+    "gatsby-source-filesystem": "^1.5.26",
+    "gatsby-transformer-documentationjs": "^1.4.10",
+    "gatsby-transformer-remark": "^1.7.34",
+    "immutable": "^3.8.2",
+    "prettier": "^1.11.1",
+    "prismjs": "^1.11.0"
+  }
+}
