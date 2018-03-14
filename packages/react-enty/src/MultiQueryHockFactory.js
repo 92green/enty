@@ -6,10 +6,14 @@ import type {SideEffect} from './util/definitions';
 
 
 /**
+ * Lorem ipsum dolor sit amet, consectetur _adipisicing_ elit. Commodi at optio quos animi aut officia
+ * in enim inventore quasi harum, deleniti praesentium, **sed** cumque dolor impedit necessitatibus. Nobis, blanditiis, quo!
  *
- * @param {function} sideEffect
- * @returns {EntityQueryHock}
- * @memberof module:Factories
+ * @param sideEffectList
+ * Descrition of the side effect list
+ *
+ * @returns
+ * It returns a function
  */
 export default function MultiQueryHockFactory(sideEffectList: Array<SideEffect>, hockOptions?: HockOptionsInput): Function {
     const actionPrefix = 'ENTITY';

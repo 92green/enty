@@ -8,19 +8,14 @@ import {CompositeDefinitionMustBeEntityError} from './util/Error';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
 import {NoDefinitionError} from './util/Error';
 
-/**
- * @module Schema
- */
-
-/**
- * CompositeEntitySchema
- *
- * @memberof module:Schema
- */
 export class CompositeEntitySchema {
     type: string;
     name: string;
     options: Object;
+
+    /**
+     * CompositeEntitySchema
+     */
     constructor(name: string, options: Object = {}) {
         this.name = name;
         this.type = 'entity';

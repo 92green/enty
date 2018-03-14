@@ -4,15 +4,7 @@ import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 
 /**
- * @module Schema
- */
-
-/**
- * ArraySchema
- *
- * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.
- *
- * @memberof module:Schema
+ * Class for array schema.
  */
 export class ArraySchema {
     type: string;
@@ -20,6 +12,7 @@ export class ArraySchema {
     options: Object;
 
     /**
+     * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.
      * @param {Schema} definition
      */
     constructor(definition: Object, options: Object = {}) {

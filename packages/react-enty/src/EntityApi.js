@@ -9,17 +9,6 @@ import {fromJS, Map} from 'immutable';
 import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
 
-/**
-The Entity Api is the main access point for your data. It allows you to define the link between your views
-and the services that they fetch their data from.
-Its main purpose it to:
-
-1. Construct a redux store from your schema.
-2. Create higher order components that connect data to your views.
-
-@module Api
-*/
-
 
 // Turns a nested object into a flat
 // UPPER_SNAKE case representation
@@ -34,12 +23,6 @@ function reduceActionMap(branch: Map<string, any>, parentKey: string = ''): Map<
     }, Map());
 }
 
-// @param {string} fetchAction     action name for fetching action
-// @param {string} recieveAction   action name for receiving action
-// @param {string} errorAction     action name for error action
-// @param {function} sideEffect    Promise returning side effect to call after fetch action.
-// @return {array}            list of action creators and action types
-// @memberof module:Api
 export function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: SideEffect): Function {
     function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
@@ -82,7 +65,11 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
 
 
 /**
- * @name EntityApi2
+ * The Entity Api is the main access point for your data. It allows you to define the link between your views
+ * and the services that they fetch their data from.
+ * Its main purpose it to:
+ * 1. Construct a redux store from your schema.
+ * 2. Create higher order components that connect data to your views.
  * Constructs an Entity Api based off a schema and an object of promise returning functions.
  *
  * EntityApi will construct QueryHocks and MutationHocks for each promise returning function,
@@ -115,11 +102,11 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  *     ArticleListMutationHock
  * } = Api;
  *
- * @param  {Schema} schema          A schema describing the relationships between your data
- * @param  {object} actionMap       deep object representation of api functions
- * @param  {HockOptionsInput} [hockOptions]
- * @return {EntityApi}
- * @memberof module:Api
+ * @param schema
+ * A schema describing the relationships between your data
+ *
+ * @param actionMap
+ * deep object representation of api functions
  */
 export default function EntityApi(schema: Object, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
 

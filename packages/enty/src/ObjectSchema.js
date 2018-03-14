@@ -4,15 +4,6 @@ import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 
-/**
- * @module Schema
- */
-
-/**
- * ObjectSchema
- *
- * @memberof module:Schema
- */
 export class ObjectSchema {
     type: string;
     definition: Object;

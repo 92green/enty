@@ -1,6 +1,6 @@
 const {createFilePath} = require('gatsby-source-filesystem');
 const path = require('path');
-const {List} = require('immutable');
+const fs = require('fs');
 
 const DOCUMENTATION_QUERY = `{
     allDocumentationJs {
@@ -10,6 +10,7 @@ const DOCUMENTATION_QUERY = `{
                 fields {
                     slug
                     name
+                    kind
                 }
                 description {
                     id
@@ -38,53 +39,101 @@ const DOCUMENTATION_QUERY = `{
 exports.onCreateNode = ({node, getNode, boundActionCreators}) => {
     const {createNodeField} = boundActionCreators;
 
-
-
     switch (node.internal.type) {
         case 'DocumentationJs':
-
-            // if(node.name === 'ArraySchema' || node.memberof === 'ArraySchema') {
-            //     console.log(`\n${node.name} ${node.memberof} ${node.kind}`);
-            //     console.log(node);
-
-            // }
-
-            // if(!(node.scope ? node.memberof : node.name)) {
-            //     console.log(node);
-            // }
-
-            // Create slugs for documentation types
+            const name = node.scope ? node.memberof : node.name;
 
             createNodeField({
                 node,
                 name: 'slug',
-                value: `/api${createFilePath({node, getNode, basePath: 'api'})}`
+                value: `/api/${name}`
+                //value: `/api${createFilePath({node, getNode, basePath: 'api'})}${name ? name : ''}`
             });
 
             createNodeField({
                 node,
                 name: 'name',
-                value: node.scope ? node.memberof : node.name
+                value: name
+            });
+
+            createNodeField({
+                node,
+                name: 'kind',
+                value: 'api'
             });
             break;
-
-        // case 'DocumentationJSComponentDescription':
     }
 };
+
+
 
 exports.createPages = ({graphql, boundActionCreators}) => {
     const {createPage} = boundActionCreators;
 
-    return graphql(DOCUMENTATION_QUERY)
-        .then(({data}) => data.allDocumentationJs.edges.map(({node}) => {
-            createPage({
-                path: node.fields.slug,
-                component: path.resolve(`./src/templates/DocumentationTemplate.jsx`),
-                context: {
-                    slug: node.fields.slug,
-                    name: node.fields.name || 'NONE'
+    function createDocumentation() {
+        return graphql(DOCUMENTATION_QUERY)
+            .then(({data}) => data.allDocumentationJs.edges.map(({node}) => {
+                createPage({
+                    path: node.fields.slug,
+                    component: path.resolve(`./src/templates/DocumentationTemplate.jsx`),
+                    context: {
+                        slug: node.fields.slug,
+                        kind: node.fields.kind,
+                        name: node.fields.name || 'NONE'
+                    }
+                });
+            }))
+    }
+
+    function createMarkdown() {
+        const blogPostTemplate = path.resolve(`src/templates/MarkdownTemplate.jsx`);
+
+        return graphql(`
+            {
+              allMarkdownRemark(
+                sort: { order: DESC, fields: [frontmatter___date] }
+                limit: 1000
+              ) {
+                edges {
+                  node {
+                    frontmatter {
+                      path
+                    }
+                  }
                 }
+              }
+            }
+        `)
+            .then(result => {
+                if (result.errors) {
+                    return Promise.reject(result.errors);
+                }
+
+                result.data.allMarkdownRemark.edges.forEach(({ node }) => {
+                    if(node.frontmatter.path) {
+                        createPage({
+                            path: node.frontmatter.path,
+                            component: blogPostTemplate,
+                            context: {}, // additional data can be passed via context
+                        });
+                    }
+                });
             });
-        }))
+    }
+
+    return Promise.resolve()
+        .then(createDocumentation)
+        .then(createMarkdown)
     ;
 };
+
+const circleYml = `
+general:
+  branches:
+    ignore:
+      - gh-pages
+`;
+
+exports.onPostBuild = () => {
+    fs.writeFileSync(`${__dirname}/public/circle.yml`, circleYml);
+}

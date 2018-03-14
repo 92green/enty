@@ -11,4 +11,4 @@ suppress_comment= \\(.\\|\n\\)*\\$FlowBug
 <PROJECT_ROOT>/.nyc_output/.*
 <PROJECT_ROOT>/scripts/.*
 <PROJECT_ROOT>/example/.*
-
+<PROJECT_ROOT>/.*/gatsby-node.js

@@ -7,21 +7,25 @@ import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 
 /**
- * @module Schema
+ * Meta information about the change
+ *
+ * @property {Object} event The event that triggered the change
+ * @property {Object} element The HTML element that triggered the change
  */
+type EntitySchemaOptions = {
+    idAttribute?: Function,
+    definition?: *
+};
 
-/**
-
-EntitySchema
-
-@memberof module:Schema
-
-*/
 export class EntitySchema {
     name: string;
     type: string;
     options: Object;
-    constructor(name: string, options: Object = {}) {
+
+    /**
+    @param {string} name - The name of the entity
+    */
+    constructor(name: string, options: EntitySchemaOptions = {}) {
         this.name = name;
         this.type = 'entity';
         this.options = {
