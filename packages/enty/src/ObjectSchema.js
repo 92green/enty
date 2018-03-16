@@ -8,22 +8,24 @@ import type {KeyedDefinition} from './util/definitions';
 import type {Schema} from './util/definitions';
 import type {Structure} from './util/definitions';
 
+/**
+ * The ObjectSchema is a structural schema used to define relationships in objects.
+ *
+ * @example
+ * const user = entity('user');
+ * user.set(ObjectSchema({
+ *     friends: ListSchema(user)
+ * }))
+ *
+ * @param {Object} definition - an object describing any entity relationships that should be traversed.
+ * @param {Object} options
+ *
+ * @memberof ObjectSchema
+ *
+ */
 export class ObjectSchema extends Keyed implements Schema<Structure> {
     options: Structure;
 
-    /**
-     * The ObjectSchema is a structural schema used to define relationships in objects.
-     *
-     * @example
-     * const user = entity('user');
-     * user.set(ObjectSchema({
-     *     friends: ListSchema(user)
-     * }))
-     *
-     * @param {Object} definition - an object describing any entity relationships that should be traversed.
-     * @param {Object} options
-     *
-     */
     constructor(definition: KeyedDefinition = {}, options: Object = {}) {
         super(definition);
         this.options = {

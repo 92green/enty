@@ -1706,7 +1706,7 @@ block-stream@*:
   dependencies:
     inherits "~2.0.0"
 
-bluebird@3.5.1, bluebird@^3.0.0, bluebird@^3.0.5, bluebird@^3.3.4, bluebird@^3.5.0, bluebird@^3.5.1:
+bluebird@3.5.1, bluebird@^3.0.0, bluebird@^3.0.5, bluebird@^3.3.4, bluebird@^3.5.0:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
@@ -4531,7 +4531,7 @@ gatsby-1-config-css-modules@^1.0.10:
   dependencies:
     babel-runtime "^6.26.0"
 
-gatsby-cli@^1.1.23, gatsby-cli@^1.1.45:
+gatsby-cli@^1.1.45:
   version "1.1.45"
   resolved "https://registry.yarnpkg.com/gatsby-cli/-/gatsby-cli-1.1.45.tgz#d68f780bc861130c9afe7dae7cd5bdb665b0f05a"
   dependencies:
@@ -4569,14 +4569,6 @@ gatsby-module-loader@^1.0.11:
   dependencies:
     babel-runtime "^6.26.0"
     loader-utils "^0.2.16"
-
-gatsby-plugin-github-pages@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/gatsby-plugin-github-pages/-/gatsby-plugin-github-pages-1.0.1.tgz#64bc5413de7a8e3bdcc59f5fdd019690d2b75535"
-  dependencies:
-    bluebird "^3.5.1"
-    gatsby-cli "^1.1.23"
-    gh-pages "^1.1.0"
 
 gatsby-plugin-react-helmet@^2.0.6:
   version "2.0.6"

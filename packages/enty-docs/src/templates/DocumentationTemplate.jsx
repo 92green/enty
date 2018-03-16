@@ -21,6 +21,8 @@ export default function DocumentationTemplate(props: Object): Node {
             const {returns} = node;
             const {description} = node;
 
+            console.log(node);
+
             const prettyName = name === 'constructor' ? node.fields.name : name;
             const typeAllLiteral = ii => ii.type === 'AllLiteral' ? '*' : ii.name;
 
