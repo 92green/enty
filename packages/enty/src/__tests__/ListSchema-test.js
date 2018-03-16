@@ -5,7 +5,7 @@ import ListSchema from '../ListSchema';
 import MapSchema from '../MapSchema';
 import {fromJS} from 'immutable';
 
-const foo = EntitySchema('foo').define(MapSchema());
+const foo = EntitySchema('foo').set(MapSchema());
 
 test('ListSchema can normalize arrays', (tt: *) => {
     const schema = ListSchema(foo);
@@ -84,4 +84,30 @@ test('ListSchema will not mutate input objects', (tt: *) => {
     tt.deepEqual(arrayTest, [{id: "1"}]);
 });
 
+//
+// Setters and Getters
+//
 
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = ListSchema();
+    t.is(schema.set(foo), schema);
+    t.is(schema.get(), foo);
+    t.is(schema.update(() => schema.definition), schema);
+});
+
+test('set will replace the definition at a key', (t: *) => {
+    const schema = ListSchema();
+    schema.set(foo);
+    t.is(schema.definition, foo);
+});
+
+test('get will return the definition at a key', (t: *) => {
+    const schema = ListSchema(foo);
+    t.is(schema.get(), foo);
+});
+
+test('update will replace the whole definition via an updater function', (t: *) => {
+    const schema = ListSchema(foo);
+    schema.update(() => foo);
+    t.is(schema.definition, foo);
+});

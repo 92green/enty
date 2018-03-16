@@ -1,20 +1,22 @@
 // @flow
 import {IdentityFactory as Identity} from 'fronads/lib/Identity';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
+import Keyed from './abstract/Keyed';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {KeyedDefinition} from './util/definitions';
+import type {Schema} from './util/definitions';
+import type {Structure} from './util/definitions';
 
-export class ObjectSchema {
-    type: string;
-    definition: Object;
-    options: Object;
+export class ObjectSchema extends Keyed implements Schema<Structure> {
+    options: Structure;
 
     /**
      * The ObjectSchema is a structural schema used to define relationships in objects.
      *
      * @example
      * const user = entity('user');
-     * user.define(ObjectSchema({
+     * user.set(ObjectSchema({
      *     friends: ListSchema(user)
      * }))
      *
@@ -22,9 +24,8 @@ export class ObjectSchema {
      * @param {Object} options
      *
      */
-    constructor(definition: Object = {}, options: Object = {}) {
-        this.type = 'object';
-        this.definition = definition;
+    constructor(definition: KeyedDefinition = {}, options: Object = {}) {
+        super(definition);
         this.options = {
             constructor: item => ({...item}),
             denormalizeFilter: item => item && !item.deleted,
@@ -104,12 +105,6 @@ export class ObjectSchema {
                 return options.denormalizeFilter(item, deletedKeys) ? item : DELETED_ENTITY;
             })
             .value();
-    }
-    merge(objectSchema: Object): ObjectSchema {
-        return new ObjectSchema(
-            Object.assign({}, this.definition, objectSchema.definition),
-            Object.assign({}, this.options, objectSchema.options)
-        );
     }
 }
 

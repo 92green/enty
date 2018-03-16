@@ -3,8 +3,8 @@ import test from 'ava';
 import ObjectSchema from '../ObjectSchema';
 import EntitySchema from '../EntitySchema';
 
-var foo = EntitySchema('foo').define(ObjectSchema());
-var bar = EntitySchema('bar').define(ObjectSchema());
+var foo = EntitySchema('foo').set(ObjectSchema());
+var bar = EntitySchema('bar').set(ObjectSchema());
 
 test('ObjectSchema can normalize objects', (tt: *) => {
     const schema = ObjectSchema({foo});
@@ -113,19 +113,6 @@ test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', (tt
 });
 
 
-test('ObjectSchema.merge() will perform a shallow merge of options and definition', (tt: *) => {
-    const denormalizeFilter = () => true;
-    const aa = ObjectSchema({foo});
-    const bb = ObjectSchema({bar}, {denormalizeFilter});
-    const merged = aa.merge(bb);
-
-
-    tt.is(merged.definition.foo.name, 'foo');
-    tt.is(merged.definition.bar.name, 'bar');
-    tt.is(merged.options.denormalizeFilter, denormalizeFilter);
-});
-
-
 test('ObjectSchema will not mutate input objects', (tt: *) => {
     const schema = ObjectSchema({foo});
     const objectTest = {foo: {id: "1"}};
@@ -137,3 +124,33 @@ test('ObjectSchema will not mutate input objects', (tt: *) => {
 });
 
 
+
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = ObjectSchema({foo});
+    t.is(schema.set('bar', bar), schema);
+    t.is(schema.get('foo'), foo);
+    t.is(schema.update(() => schema.definition), schema);
+});
+
+test('ObjectSchema.set will replace the definition at a key', (t: *) => {
+    const schema = ObjectSchema({foo});
+    schema.set('bar', bar);
+    t.is(schema.definition.bar, bar);
+});
+
+test('ObjectSchema.get will return the definition at a key', (t: *) => {
+    const schema = ObjectSchema({foo});
+    t.is(schema.get('foo'), foo);
+});
+
+test('ObjectSchema.update will replace the definition at a key via an updater function', (t: *) => {
+    const schema = ObjectSchema({foo});
+    schema.update('foo', () => bar);
+    t.is(schema.definition.foo, bar);
+});
+
+test('ObjectSchema.update will replace the whole definition via an updater function', (t: *) => {
+    const schema = ObjectSchema({foo});
+    schema.update(() => ({bar}));
+    t.is(schema.definition.bar, bar);
+});

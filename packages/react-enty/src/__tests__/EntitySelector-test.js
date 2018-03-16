@@ -11,7 +11,7 @@ import {
 } from '../EntitySelector';
 
 function constructState(): Object {
-    var foo = EntitySchema('foo').define(MapSchema());
+    var foo = EntitySchema('foo').set(MapSchema());
     var fooList = ListSchema(foo);
     var schema = MapSchema({
         fooList: ListSchema(foo),

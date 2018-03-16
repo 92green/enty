@@ -4,9 +4,9 @@ import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
 import MapSchema from '../MapSchema';
 
-var course = EntitySchema('course').define(MapSchema());
-var dog = EntitySchema('dog').define(MapSchema());
-var participant = EntitySchema('participant').define(MapSchema());
+var course = EntitySchema('course').set(MapSchema());
+var dog = EntitySchema('dog').set(MapSchema());
+var participant = EntitySchema('participant').set(MapSchema());
 
 var courseParticipant = CompositeEntitySchema('courseParticipant', {
     definition: participant,
@@ -100,7 +100,7 @@ test('CompositeEntitySchemas can defer their definition', (t: Object) => {
         }
     });
 
-    lateCourseParticipant.define(participant);
+    lateCourseParticipant.set(participant);
 
     t.notThrows(() => lateCourseParticipant.normalize(derek));
 });
@@ -113,7 +113,7 @@ test('CompositeEntitySchema compositeKeys will override defintion keys ', (t: Ob
         })
     });
 
-    const owl = EntitySchema('owl').define(MapSchema());
+    const owl = EntitySchema('owl').set(MapSchema());
 
     var catOwl = CompositeEntitySchema('catOwl', {
         definition: cat,
@@ -132,5 +132,30 @@ test('CompositeEntitySchema compositeKeys will override defintion keys ', (t: Ob
 
     t.truthy(entities.catOwl['sparky-hedwig']);
     t.falsy(entities.dog);
+});
+
+//
+// Getters and Setters
+//
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = courseParticipant;
+    t.is(schema.set(dog), schema);
+    t.is(schema.get(), dog);
+    t.is(schema.update(() => schema.definition), schema);
+});
+
+test('set will replace the definition at a key', (t: *) => {
+    const schema = courseParticipant
+    schema.set(dog);
+    t.is(schema.definition, dog);
+});
+
+test('get will return the definition at a key', (t: *) => {
+    t.is(courseParticipant.get(), dog);
+});
+
+test('update will replace the whole definition via an updater function', (t: *) => {
+    courseParticipant.update(() => dog);
+    t.is(courseParticipant.definition, dog);
 });
 

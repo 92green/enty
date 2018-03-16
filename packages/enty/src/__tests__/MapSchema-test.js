@@ -4,8 +4,8 @@ import EntitySchema from '../EntitySchema';
 import MapSchema from '../MapSchema';
 import {fromJS, Map} from 'immutable';
 
-var foo = EntitySchema('foo').define(MapSchema());
-var bar = EntitySchema('bar').define(MapSchema());
+var foo = EntitySchema('foo').set(MapSchema());
+var bar = EntitySchema('bar').set(MapSchema());
 
 test('MapSchema can normalize objects', (tt: *) => {
     const schema = MapSchema({foo});
@@ -113,20 +113,6 @@ test('MapSchema will pass any deleted keys to options.denormalizeFilter', (tt: *
     schema.denormalize({result: Map({foo: "1"}), entities});
 });
 
-
-test('MapSchema.merge() will perform a shallow merge of options and definition', (tt: *) => {
-    const denormalizeFilter = () => true;
-    const aa = MapSchema({foo});
-    const bb = MapSchema({bar}, {denormalizeFilter});
-    const merged = aa.merge(bb);
-
-
-    tt.is(merged.definition.foo.name, 'foo');
-    tt.is(merged.definition.bar.name, 'bar');
-    tt.is(merged.options.denormalizeFilter, denormalizeFilter);
-});
-
-
 test('MapSchema will not mutate input objects', (tt: *) => {
     const schema = MapSchema({foo});
     const objectTest = {foo: {id: "1"}};
@@ -138,3 +124,35 @@ test('MapSchema will not mutate input objects', (tt: *) => {
 });
 
 
+//
+// Getters and Setters
+//
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = MapSchema({foo});
+    t.is(schema.set('bar', bar), schema);
+    t.is(schema.get('foo'), foo);
+    t.is(schema.update(() => schema.definition), schema);
+});
+
+test('set will replace the definition at a key', (t: *) => {
+    const schema = MapSchema({foo});
+    schema.set('bar', bar);
+    t.is(schema.definition.bar, bar);
+});
+
+test('get will return the definition at a key', (t: *) => {
+    const schema = MapSchema({foo});
+    t.is(schema.get('foo'), foo);
+});
+
+test('update will replace the definition at a key via an updater function', (t: *) => {
+    const schema = MapSchema({foo});
+    schema.update('foo', () => bar);
+    t.is(schema.definition.foo, bar);
+});
+
+test('update will replace the whole definition via an updater function', (t: *) => {
+    const schema = MapSchema({foo});
+    schema.update(() => ({bar}));
+    t.is(schema.definition.bar, bar);
+});

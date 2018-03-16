@@ -1,20 +1,22 @@
 // @flow
 import {Map} from 'immutable';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
+import Keyed from './abstract/Keyed';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {KeyedDefinition} from './util/definitions';
+import type {Schema} from './util/definitions';
+import type {Structure} from './util/definitions';
+import type {StructureInput} from './util/definitions';
 
-export class MapSchema {
-    type: string;
-    definition: Object;
-    options: Object;
-
+export class MapSchema extends Keyed implements Schema<Structure> {
+    options: Structure;
     /**
      * The MapSchema is a structural schema used to define relationships in objects.
      *
      * @example
      * const user = entity('user');
-     * user.define(MapSchema({
+     * user.set(MapSchema({
      *     friends: ListSchema(user)
      * }))
      *
@@ -22,11 +24,9 @@ export class MapSchema {
      * @param {Object} options
      *
      */
-    constructor(definition: Object = {}, options: Object = {}) {
-        this.type = 'map';
-        this.definition = definition;
+    constructor(definition: KeyedDefinition = {}, options: StructureInput = {}) {
+        super(definition);
         this.options = {
-            ...this.options,
             constructor: item => Map(item),
             denormalizeFilter: item => item && !item.get('deleted'),
             merge: (previous, next) => previous.merge(next),
@@ -106,12 +106,6 @@ export class MapSchema {
             .update((ii: Map<any, any>): Map<any, any>|DeletedEntity => {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
             });
-    }
-    merge(mapSchema: Object): MapSchema {
-        return new MapSchema(
-            Object.assign({}, this.definition, mapSchema.definition),
-            Object.assign({}, this.options, mapSchema.options)
-        );
     }
 }
 

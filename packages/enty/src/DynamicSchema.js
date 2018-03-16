@@ -1,6 +1,9 @@
 // @flow
+import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {Schema} from './util/definitions';
+// import type {Structure} from './util/definitions';
 
 /**
  * @module Schema
@@ -11,23 +14,14 @@ import type {DenormalizeState} from './util/definitions';
  *
  * @memberof module:Schema
  */
-export class DynamicSchema {
-    type: string;
+export class DynamicSchema extends Child implements Schema<*> {
     options: Object;
     constructor(definition: Function, options: Object = {}) {
-        this.type = 'dynamic';
+        super(definition);
         this.options = {
             definition,
             ...options
         };
-    }
-
-    /**
-     * DynamicSchema.define
-     */
-    define(definition: any): DynamicSchema {
-        this.options.definition = definition;
-        return this;
     }
 
     /**

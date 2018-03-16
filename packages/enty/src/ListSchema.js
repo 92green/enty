@@ -1,7 +1,7 @@
 // @flow
 import {List} from 'immutable';
 import {ArraySchema} from './ArraySchema';
-
+import type {StructureInput} from './util/definitions';
 
 export class ListSchema extends ArraySchema {
 
@@ -11,12 +11,9 @@ export class ListSchema extends ArraySchema {
      * @param {Schema} definition
      * The defition of the list
      */
-    constructor(definition: Object, options: Object = {}): ListSchema {
+    constructor(definition: Object, options: StructureInput = {}) {
         super(definition, options);
-        this.type = 'list';
-
         this.options = {
-            ...this.options,
             constructor: item => List(item),
             merge: (previous, next) => previous.merge(next),
             ...options
