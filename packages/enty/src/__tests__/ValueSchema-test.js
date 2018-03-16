@@ -15,12 +15,12 @@ const fooValues = MapSchema({
 
 
 
-test('ValueSchema.denormalize is almost the inverse of ValueSchema.normalize', (tt: *) => {
+test('denormalize is almost the inverse of normalize', (tt: *) => {
     const data = {foo: '1'};
     tt.deepEqual(data.foo, fooValues.denormalize(fooValues.normalize(data)).toJS().foo.id);
 });
 
-test('ValueSchema.normalize', (tt: *) => {
+test('normalize', (tt: *) => {
     const data = Map({id: '1'});
     const entities = {
         foo: {
@@ -31,7 +31,7 @@ test('ValueSchema.normalize', (tt: *) => {
     tt.true(data.equals(ValueSchema(foo).normalize('1', undefined).entities.foo['1']));
 });
 
-test('ValueSchema.denormalize', (tt: *) => {
+test('denormalize', (tt: *) => {
     const data = Map({id: '1'});
     const entities = {
         foo: {
@@ -43,10 +43,29 @@ test('ValueSchema.denormalize', (tt: *) => {
 });
 
 
-test('ValueSchema can set definition through the `define` method', (tt: *) => {
+//
+// Getters and Setters
+//
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
     const schema = ValueSchema();
-    schema.define(foo);
-
-    tt.is(schema.options.definition.name, 'foo');
+    t.is(schema.set(foo), schema);
+    t.is(schema.get(), foo);
+    t.is(schema.update(() => schema.definition), schema);
 });
 
+test('set will replace the definition at a key', (t: *) => {
+    const schema = ValueSchema();
+    schema.set(foo);
+    t.is(schema.definition, foo);
+});
+
+test('get will return the definition at a key', (t: *) => {
+    const schema = ValueSchema(foo);
+    t.is(schema.get(), foo);
+});
+
+test('update will replace the whole definition via an updater function', (t: *) => {
+    const schema = ValueSchema(foo);
+    schema.update(() => foo);
+    t.is(schema.definition, foo);
+});

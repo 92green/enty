@@ -2,22 +2,24 @@
 import {DELETED_ENTITY} from './util/SchemaConstant';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {Schema} from './util/definitions';
+import type {Structure} from './util/definitions';
+import type {StructureInput} from './util/definitions';
+import type {ChildDefinition} from './util/definitions';
+import Child from './abstract/Child';
 
 /**
  * Class for array schema.
  */
-export class ArraySchema {
-    type: string;
-    definition: Object;
-    options: Object;
+export class ArraySchema extends Child implements Schema<Structure> {
+    options: Structure;
 
     /**
      * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.
      * @param {Schema} definition
      */
-    constructor(definition: Object, options: Object = {}) {
-        this.type = 'array';
-        this.definition = definition;
+    constructor(definition: ChildDefinition, options: StructureInput = {}) {
+        super(definition);
         this.options = {
             constructor: item => item,
             ...options
@@ -30,6 +32,9 @@ export class ArraySchema {
     normalize(data: Array<any>, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const {constructor} = this.options;
+        // const {denormalizeFilter} = this.options;
+        // console.log(denormalizeFilter());
+
 
         let schemas = {};
         const result = constructor(data)

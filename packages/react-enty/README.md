@@ -48,7 +48,7 @@ import {
 var user = EntitySchema('user');
 var userList = ListSchema(user);
 
-user.define(MapSchema({
+user.set(MapSchema({
     friendList: userList
 }))
 

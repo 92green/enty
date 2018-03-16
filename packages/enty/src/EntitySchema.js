@@ -3,52 +3,45 @@ import {PerhapsEither} from 'fronads/lib/Either';
 import {NoDefinitionError} from './util/Error';
 import {UndefinedIdError} from './util/Error';
 import {getIn, get} from 'stampy/lib/util/CollectionUtils';
+import Child from './abstract/Child';
+import NullSchema from './NullSchema';
+
+import type {Schema} from './util/definitions';
+import type {Entity} from './util/definitions';
+import type {Structure} from './util/definitions';
+
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {EntityInput} from './util/definitions';
 
-/**
- * Meta information about the change
- *
- * @property {Object} event The event that triggered the change
- * @property {Object} element The HTML element that triggered the change
- */
-type EntitySchemaOptions = {
-    idAttribute?: Function,
-    definition?: *
-};
 
-export class EntitySchema {
-    name: string;
+export class EntitySchema extends Child implements Schema<Entity> {
     type: string;
-    options: Object;
+    options: Entity;
+    definition: Schema<Structure>;
 
     /**
-    @param {string} name - The name of the entity
+    @param name - The name of the entity
     */
-    constructor(name: string, options: EntitySchemaOptions = {}) {
-        this.name = name;
-        this.type = 'entity';
+    constructor(
+        name: string,
+        {definition = new NullSchema(), ...options}: EntityInput = {}
+    ) {
+        super(definition);
         this.options = {
+            name,
             idAttribute: item => item && get(item, 'id'),
-            definition: null,
             ...options
         };
-    }
-
-    /**
-     * EntitySchema.define
-     */
-    define(definition: any): EntitySchema {
-        this.options.definition = definition;
-        return this;
+        this.type = 'entity';
     }
 
     /**
      * EntitySchema.normalize
      */
     normalize(data: Object, entities: Object = {}): NormalizeState {
-        const {options, name} = this;
-        const {idAttribute, definition} = options;
+        const {definition} = this;
+        const {idAttribute, name} = this.options;
 
         if(definition == null) {
             throw NoDefinitionError(name);
@@ -83,6 +76,7 @@ export class EntitySchema {
         // list this schema as one that has been used
         schemas[name] = this;
 
+
         if(previousEntity) {
             result = definition.options.merge(previousEntity, result);
         }
@@ -101,8 +95,8 @@ export class EntitySchema {
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
-        const {name, options} = this;
-        const {definition} = options;
+        const {definition} = this;
+        const {name} = this.options;
         const entity = getIn(entities, [name, result]);
 
         if(entity == null) {

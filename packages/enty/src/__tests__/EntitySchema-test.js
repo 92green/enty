@@ -9,14 +9,15 @@ var foo = EntitySchema('foo');
 var bar = EntitySchema('bar');
 var baz = EntitySchema('baz');
 
-foo.define(MapSchema({}));
-baz.define(MapSchema({bar}));
-bar.define(MapSchema({foo}));
+foo.set(MapSchema({}));
+baz.set(MapSchema({bar}));
+bar.set(MapSchema({foo}));
 
-test('EntitySchema can define definition through the `define` method', (tt: Object) => {
+test('EntitySchema can set definition through the `set` method', (tt: Object) => {
     var schema = EntitySchema('foo');
-    schema.define(MapSchema({bar: "1"}));
-    tt.is(schema.options.definition.type, 'map');
+    const definition = MapSchema({bar: "1"});
+    schema.set(definition);
+    tt.is(schema.definition, definition);
 });
 
 
@@ -43,8 +44,8 @@ test('EntitySchema will not cause an infinite recursion', (tt: Object) => {
     const foo = EntitySchema('foo');
     const bar = EntitySchema('bar');
 
-    foo.define(MapSchema({bar}));
-    bar.define(MapSchema({foo}));
+    foo.set(MapSchema({bar}));
+    bar.set(MapSchema({foo}));
 
     const entities = fromJS({
         bar: {"1": {id: "1", foo: "1"}},

@@ -4,7 +4,7 @@ import EntitySchema from '../EntitySchema';
 import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
 
-const foo = EntitySchema('foo').define(ObjectSchema());
+const foo = EntitySchema('foo').set(ObjectSchema());
 
 test('ArraySchema can normalize arrays', (tt: *) => {
     const schema = ArraySchema(foo);
@@ -83,4 +83,32 @@ test('ArraySchema will not mutate input objects', (tt: *) => {
     tt.deepEqual(arrayTest, [{id: "1"}]);
 });
 
+
+//
+// Setters and Getters
+//
+
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = ArraySchema();
+    t.is(schema.set(foo), schema);
+    t.is(schema.get(), foo);
+    t.is(schema.update(() => schema.definition), schema);
+});
+
+test('ArraySchema.set will replace the definition at a key', (t: *) => {
+    const schema = ArraySchema();
+    schema.set(foo);
+    t.is(schema.definition, foo);
+});
+
+test('ArraySchema.get will return the definition at a key', (t: *) => {
+    const schema = ArraySchema(foo);
+    t.is(schema.get(), foo);
+});
+
+test('ArraySchema.update will replace the whole definition via an updater function', (t: *) => {
+    const schema = ArraySchema(foo);
+    schema.update(() => foo);
+    t.is(schema.definition, foo);
+});
 

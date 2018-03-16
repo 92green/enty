@@ -1,6 +1,9 @@
 // @flow
+import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {Schema} from './util/definitions';
+import type {Entity} from './util/definitions';
 
 /**
  * @module Schema
@@ -11,32 +14,23 @@ import type {DenormalizeState} from './util/definitions';
  *
  * @memberof module:Schema
  */
-export class ValueSchema {
-    type: string;
-    options: Object;
-    constructor(definition: Function, options: Object = {}) {
-        this.type = 'value';
+export class ValueSchema extends Child implements Schema<Entity> {
+    options: Entity;
+
+    constructor(definition: Schema<Entity>, options: Object = {}) {
+        super(definition);
         this.options = {
-            definition,
             constructor: item => ({id: item}),
             ...options
         };
     }
 
     /**
-     * ValueSchema.define
-     */
-    define(definition: any): ValueSchema {
-        this.options.definition = definition;
-        return this;
-    }
-
-    /**
      * ValueSchema.normalize
      */
     normalize(data: *, entities: Object = {}): NormalizeState {
-        const {definition, constructor} = this.options;
-        const {result, schemas} = definition.normalize(constructor(data), entities);
+        const {constructor} = this.options;
+        const {result, schemas} = this.definition.normalize(constructor(data), entities);
 
         return {
             result,
@@ -49,7 +43,7 @@ export class ValueSchema {
      * ValueSchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        return this.options.definition.denormalize(denormalizeState, path);
+        return this.definition.denormalize(denormalizeState, path);
     }
 }
 

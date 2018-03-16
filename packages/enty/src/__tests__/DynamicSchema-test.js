@@ -5,9 +5,9 @@ import ListSchema from '../ListSchema';
 import DynamicSchema from '../DynamicSchema';
 import MapSchema from '../MapSchema';
 
-const foo = EntitySchema('foo').define(MapSchema());
-const bar = EntitySchema('bar').define(MapSchema());
-const baz = EntitySchema('baz').define(MapSchema());
+const foo = EntitySchema('foo').set(MapSchema());
+const bar = EntitySchema('bar').set(MapSchema());
+const baz = EntitySchema('baz').set(MapSchema());
 
 const fooBarBaz = DynamicSchema((data: *): * => {
     switch(data.type || data.get('type')) {
@@ -78,10 +78,30 @@ test('DynamicSchema.normalize on to existing data', (tt: *) => {
     tt.deepEqual(output.entities.baz['2'].toJS(), second[1]);
 });
 
-test('DynamicSchema can set definition through the `define` method', (tt: *) => {
-    const schema = DynamicSchema();
-    schema.define(() => {});
 
-    tt.is(typeof schema.options.definition, 'function');
+//
+// Getters and Setters
+//
+test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+    const schema = DynamicSchema();
+    t.is(schema.set(fooBarBaz), schema);
+    t.is(schema.get(), fooBarBaz);
+    t.is(schema.update(() => schema.definition), schema);
 });
 
+test('set will replace the definition at a key', (t: *) => {
+    const schema = DynamicSchema();
+    schema.set(fooBarBaz);
+    t.is(schema.definition, fooBarBaz);
+});
+
+test('get will return the definition at a key', (t: *) => {
+    const schema = DynamicSchema(fooBarBaz);
+    t.is(schema.get(), fooBarBaz);
+});
+
+test('update will replace the whole definition via an updater function', (t: *) => {
+    const schema = DynamicSchema(fooBarBaz);
+    schema.update(() => fooBarBaz);
+    t.is(schema.definition, fooBarBaz);
+});
