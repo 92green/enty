@@ -76,12 +76,12 @@ export class EntitySchema extends Child implements Schema<Entity> {
         // list this schema as one that has been used
         schemas[name] = this;
 
+        result = definition.options.constructor(result);
 
-        if(previousEntity) {
-            result = definition.options.merge(previousEntity, result);
-        }
-
-        entities[name][id] = definition.options.constructor(result);
+        entities[name][id] = previousEntity
+            ? definition.options.merge(previousEntity, result)
+            : result
+        ;
 
         return {
             entities,
