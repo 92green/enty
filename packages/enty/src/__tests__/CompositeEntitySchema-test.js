@@ -34,11 +34,11 @@ const derek = {
 
 
 
-test('CompositeEntitySchema.denormalize is the inverse of CompositeEntitySchema.normalize', (t: Object) => {
+test('denormalize is the inverse of normalize', (t: Object) => {
     t.deepEqual(courseParticipant.denormalize(courseParticipant.normalize(derek)).toJS(), derek);
 });
 
-test('CompositeEntitySchemas cannot be made up of structural types', (t: Object) => {
+test('cannot be made up of structural types', (t: Object) => {
     const badDefinition = CompositeEntitySchema('badDefinition', {
         definition: MapSchema({course})
     });
@@ -64,13 +64,13 @@ test('CompositeEntitySchemas cannot be made up of structural types', (t: Object)
     t.throws(() => badDefinition.normalize(data));
 });
 
-test('CompositeEntitySchemas throw without a definition', (t: Object) => {
+test('throw without a definition', (t: Object) => {
     const badDefinition = CompositeEntitySchema('badDefinition');
     t.throws(() => badDefinition.normalize(derek));
 });
 
 
-test('CompositeEntitySchemas can hold CompositeEntitySchemas', (t: Object) => {
+test('can hold CompositeEntitySchemas', (t: Object) => {
 
     const aa = {
         id: 'lassie',
@@ -93,7 +93,7 @@ test('CompositeEntitySchemas can hold CompositeEntitySchemas', (t: Object) => {
     t.is(result, 'lassie-123-spk456');
 });
 
-test('CompositeEntitySchemas can defer their definition', (t: Object) => {
+test('can defer their definition', (t: Object) => {
     var lateCourseParticipant = CompositeEntitySchema('courseParticipant', {
         compositeKeys: {
             course
@@ -106,7 +106,7 @@ test('CompositeEntitySchemas can defer their definition', (t: Object) => {
 });
 
 
-test('CompositeEntitySchema compositeKeys will override defintion keys ', (t: Object) => {
+test('compositeKeys will override defintion keys ', (t: Object) => {
     const cat = EntitySchema('cat', {
         definition: MapSchema({
             friend: dog
@@ -133,6 +133,17 @@ test('CompositeEntitySchema compositeKeys will override defintion keys ', (t: Ob
     t.truthy(entities.catOwl['sparky-hedwig']);
     t.falsy(entities.dog);
 });
+
+test('will not try to normalize null compositeKeys', (t: *) => {
+    t.notThrows(() => courseParticipant.normalize({id: 'rad'}));
+});
+
+test('will not try to denormalize null compositeKeys', (t: *) => {
+    const data = {id: 'rad'};
+    t.notThrows(() => courseParticipant.denormalize(courseParticipant.normalize(data)));
+});
+
+
 
 //
 // Getters and Setters
