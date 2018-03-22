@@ -68,6 +68,13 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
                     throw CompositeKeysMustBeEntitiesError(`${name}.${key}`, compositeKeys[key].type);
                 }
 
+                // Check that there is data before be continue
+                // normalizing compositeKeys
+                if(!adjustedData[key]) {
+                    rr[key] = null;
+                    return rr;
+                }
+
                 const {result: compositeResult} = compositeKeys[key].normalize(adjustedData[key], entities);
 
                 rr[key] = compositeResult;
@@ -121,6 +128,12 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
 
         const compositeDenormalizedState = Object.keys(compositeKeys)
             .reduce((rr: Object, key: string): Object => {
+                // Check that there is data before be continue
+                // denormalize compositeKeys
+                if(!entity[key]) {
+                    rr[key] = null;
+                    return rr;
+                }
                 rr[key] = compositeKeys[key].denormalize({result: entity[key], entities}, path);
                 return rr;
             }, Object.assign({}, this.compositeKeys));
