@@ -20,9 +20,13 @@ function NodePrefix({node}: Object): Node {
     return null;
 }
 
-function Keys(param: Object): Node {
+function Keys(param: Object, ii: number): Node {
+    console.log(param);
     const {name, type, description, default: def} = param;
-    return <Text element="div" key={name}>
+    // if(type.type === 'AllLiteral') {
+    //     return <NodeName node={param} />;
+    // }
+    return <Text element="div" key={`${name}${ii}`}>
         <Text>    </Text>
         <Text>{name}{type.type === 'OptionalType' ? '?' : ''}: </Text>
         <TypeLink type={type}/>
@@ -31,8 +35,20 @@ function Keys(param: Object): Node {
     </Text>;
 }
 
+function Spread(param: Object): Node {
+    const {name, type, description, default: def} = param;
+
+    return <Text element="div" key={name}>
+        <Text>        </Text>
+        {type && type.type === 'RestType' && '...'}
+        <Text>{name}</Text>
+        {def && <Text> = {def}</Text>}
+        {description && <Text modifier="muted">{` // ${description.internal.content.replace(/\n$/, "")}`}</Text>}
+    </Text>;
+}
+
 function NodeName({node}: Object): Node {
-    const {params, name, returns} = node;
+    const {params = [], name, returns = []} = node;
     const {kind} = node;
     const {properties} = node;
     const prettyName = name === 'constructor' ? node.fields.name : name;
@@ -46,8 +62,16 @@ function NodeName({node}: Object): Node {
         {pp.description && <Text modifier="muted">{` // ${pp.description.internal.content.replace(/\n$/, "")}`}</Text>}
     </Text>)[0];
 
+    if(name[0] === '$') {
+        return <Text>
+            <Text>{'   {'}</Text>
+            {properties.map(Spread)}
+            <Text>{'   }\n'}</Text>
+        </Text>;
+    }
 
-    if(kind === 'typedef') {
+
+    if(kind === 'typedef' || kind === 'interface') {
 
         if(properties.length) {
             return <Text>
@@ -125,10 +149,12 @@ export default function DocumentationTemplate(props: Object): Node {
     const {data} = props;
     const {edges} = data.allDocumentationJs;
 
+    console.log(edges.map(ii => ii.node));
+
     const extend = (node: Object): Node => {
         const {augments} = node;
         if(augments.length) {
-            return <Text>extends{augments.map(({name}) =>
+            return <Text>extends {augments.map(({name}) =>
                 <Text key={name}>
                     <Text> </Text>
                     <Link className="Link" to={`/api/${name}`}>{name}</Link>
@@ -141,15 +167,20 @@ export default function DocumentationTemplate(props: Object): Node {
         {edges.map(({node}: Object, index: number): Node => {
             const {name} = node;
             const {description} = node;
+            const {augments} = node;
+            const {kind} = node;
 
             return <div key={node.id} style={{marginTop: index === 0 ? '' : '6rem'}}>
                 {<Text element="h2" modifier={`${index === 0 ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
-                <Text modifier="muted">{extend(node)}</Text>
+                <Text modifier="block muted marginGiga">
+                    <Text>{kind} </Text>
+                    {augments.length > 0 && <Text>{extend(node)}</Text>}
+                </Text>
+                <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
                 <Text element="pre" modifier="marginGiga">
                     <NodePrefix node={node} />
                     <NodeName node={node} />
                 </Text>
-                <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
                 {node.examples.map(ee => <div className="Code" dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
             </div>;
         })}
@@ -192,24 +223,29 @@ query DocumentationQuery($name: String!) {
         properties {
           title
           name
+          description {
+            internal {
+              content
+            }
+          }
           type {
             type
             name
             expression {
               type
               name
-              applications {
-                type
-                name
-              }
+              #applications {
+              #  type
+              #  name
+              #}
               elements {
                 type
                 name
               }
-              expression {
-                type
-                name
-              }
+              #expression {
+              #  type
+              #  name
+              #}
             }
           }
         }
@@ -220,7 +256,6 @@ query DocumentationQuery($name: String!) {
         }
         returns {
           title
-
           type {
             name
             type
@@ -241,6 +276,14 @@ query DocumentationQuery($name: String!) {
             expression {
               type
               name
+            }
+          }
+          properties {
+            title
+            name
+            default
+            type {
+              type
             }
           }
           description {

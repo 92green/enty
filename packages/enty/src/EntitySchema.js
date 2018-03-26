@@ -12,30 +12,28 @@ import type {Structure} from './util/definitions';
 
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {EntityInput} from './util/definitions';
+import type {EntitySchemaOptions} from './util/definitions';
 
 /**
  *  EntitySchema
+ *  @param name - The name of the entity type
+ *  @param options - Quirks of this entity
  */
 export class EntitySchema extends Child implements Schema<Entity> {
     type: string;
     options: Entity;
     definition: Schema<Structure>;
 
-    /**
-     *  EntitySchema.constructor
-     * @param name - The name of the entity
-     */
     constructor(
         name: string,
-        optionsInput: EntityInput = {}
+        options?: EntitySchemaOptions = {definition: new NullSchema()}
     ) {
-        const {definition = new NullSchema(), ...options} = optionsInput;
+        const {definition, ...optionsRest} = options;
         super(definition);
         this.options = {
             name,
             idAttribute: item => item && get(item, 'id'),
-            ...options
+            ...optionsRest
         };
         this.type = 'entity';
     }

@@ -11,6 +11,7 @@ const DOCUMENTATION_QUERY = `{
                     slug
                     name
                     kind
+                    sortBy
                 }
                 description {
                     id
@@ -58,6 +59,12 @@ exports.onCreateNode = ({node, getNode, boundActionCreators}) => {
 
             createNodeField({
                 node,
+                name: 'sortBy',
+                value: name.toLowerCase()
+            });
+
+            createNodeField({
+                node,
                 name: 'kind',
                 value: 'api'
             });
@@ -79,6 +86,7 @@ exports.createPages = ({graphql, boundActionCreators}) => {
                     context: {
                         slug: node.fields.slug,
                         kind: node.fields.kind,
+                        sortBy: node.fields.sortBy,
                         name: node.fields.name || 'NONE'
                     }
                 });

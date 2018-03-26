@@ -49,6 +49,10 @@ export default function Navigation(props: Object): Node {
         <NavItem to="/api/selectEntityById">selectEntityById</NavItem>
         <NavItem to="/api/selectEntityByType">selectEntityByType</NavItem>
         <NavItem to="/api/selectRequestState">selectRequestState</NavItem>
+
+
+        <NavHeading>Misc</NavHeading>
+        <NavItem to="/types">All Types</NavItem>
     </ul>;
 }
 

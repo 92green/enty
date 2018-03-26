@@ -17,6 +17,7 @@ import type {Structure} from './util/definitions';
  *     friends: ListSchema(user)
  * }))
  *
+ *
  * @param definition - an object describing any entity relationships that should be traversed.
  * @param options
  *

@@ -2,7 +2,16 @@
 /* eslint-disable no-unused-vars */
 
 /**
- * DenormalizeState description
+ * NormalizeStateObjects is the result of calling normalize on a schema.
+ *
+ * @property entities
+ * The entities found in the data shape of this schema
+ *
+ * @property result
+ * A normalized representation of the data. Each entity is replaced by it's ID.
+ *
+ * @property schemas
+ * The schemas used in this normalization.
  */
 export type NormalizeState = {
     entities: Object,
@@ -55,15 +64,17 @@ export type StructureInput = {
 };
 
 /**
- * EntityInput description
+ * EntitySchemaOptions description
  */
-export type EntityInput = {
-    definition?: Schema<Structure>,
+export type EntitySchemaOptions = {
+    definition: Schema<Structure>,
     name?: string,
     idAttribute?: Function
 };
 
-
+/**
+ * SchemaInterface
+ */
 export interface Schema<Options> {
     normalize(data: *, entities: Object): NormalizeState,
     denormalize(denormalizeState: DenormalizeState, path: Array<*>): any,

@@ -46,14 +46,15 @@ function createDescriptionNode(
 }
 
 function createDoclet(docsJson, i, node, boundActionCreators) {
-    console.log('====createDoclet===:', i);
-    console.log(docsJson);
-    console.log('\n')
+    // console.log('====createDoclet===:', i);
+    // console.log(docsJson);
+    // console.log('\n')
     const { createNode, createParentChildLink } = boundActionCreators;
     const picked = _.pick(docsJson, [`kind`, `memberof`, `name`, `scope`, `members`, `augments`, `namespace`, `properties`, `type`])
 
     // Defaults
     picked.params = [{ name: ``, type: { type: ``, name: `` } }]
+    picked.properties = picked.properties || [];
     picked.returns = [{ type: { type: ``, name: `` } }]
     picked.examples = [{ raw: ``, highlighted: `` }]
 
@@ -118,6 +119,22 @@ function createDoclet(docsJson, i, node, boundActionCreators) {
             }
 
             return ret
+        })
+    }
+
+    if (picked.properties) {
+        picked.properties = picked.properties.map(prop => {
+            const tag = docsJson.tags.find(tag => tag.name === prop.name);
+            if (tag && tag.description) {
+                prop.description___NODE = createDescriptionNode(
+                    node,
+                    commentId(node.id, i),
+                    stringifyMarkdownAST(tag.description),
+                    tag.name,
+                    boundActionCreators
+                )
+            }
+            return prop;
         })
     }
 
