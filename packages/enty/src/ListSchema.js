@@ -24,7 +24,6 @@ export class ListSchema extends ArraySchema {
 
 /**
  * An array schema that casts the data to an immutable js List
- * @memberof module:ListSchema
  */
 export default function ListSchemaFactory(...args: any[]): ListSchema {
     return new ListSchema(...args);

@@ -9,21 +9,21 @@ import type {Schema} from './util/definitions';
 import type {Structure} from './util/definitions';
 import type {StructureInput} from './util/definitions';
 
+/**
+ * The MapSchema is a structural schema used to define relationships in objects.
+ *
+ * @example
+ * const user = entity('user');
+ * user.set(MapSchema({
+ *     friends: ListSchema(user)
+ * }))
+ *
+ * @param {Object} definition - an object describing any entity relationships that should be traversed.
+ * @param {Object} options
+ *
+ */
 export class MapSchema extends Keyed implements Schema<Structure> {
     options: Structure;
-    /**
-     * The MapSchema is a structural schema used to define relationships in objects.
-     *
-     * @example
-     * const user = entity('user');
-     * user.set(MapSchema({
-     *     friends: ListSchema(user)
-     * }))
-     *
-     * @param {Object} definition - an object describing any entity relationships that should be traversed.
-     * @param {Object} options
-     *
-     */
     constructor(definition: KeyedDefinition = {}, options: StructureInput = {}) {
         super(definition);
         this.options = {

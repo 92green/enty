@@ -7,14 +7,7 @@ module.exports = {
     plugins: [
         'gatsby-plugin-sass',
         'gatsby-plugin-react-helmet',
-        'gatsby-transformer-documentationjs',
-        {
-            resolve: 'gatsby-source-filesystem',
-            options: {
-                name: 'enty',
-                path: `${__dirname}/../enty/src`
-            }
-        },
+        'gatsby-transformer-blueflagdocs',
         {
             resolve: 'gatsby-source-filesystem',
             options: {
@@ -25,10 +18,24 @@ module.exports = {
         {
             resolve: 'gatsby-source-filesystem',
             options: {
+                name: 'enty',
+                path: `${__dirname}/../enty/src`
+            }
+        },
+        {
+            resolve: 'gatsby-source-filesystem',
+            options: {
                 path: `${__dirname}/docs`,
                 name: 'markdown-pages'
             }
         },
-        'gatsby-transformer-remark'
+        {
+            resolve: 'gatsby-transformer-remark',
+            options: {
+                plugins: [
+                    `gatsby-remark-prismjs`
+                ]
+            }
+        }
     ]
 };

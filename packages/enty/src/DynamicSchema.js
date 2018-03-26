@@ -5,14 +5,9 @@ import type {DenormalizeState} from './util/definitions';
 import type {Schema} from './util/definitions';
 // import type {Structure} from './util/definitions';
 
-/**
- * @module Schema
- */
 
 /**
  * DynamicSchema
- *
- * @memberof module:Schema
  */
 export class DynamicSchema extends Child implements Schema<*> {
     options: Object;

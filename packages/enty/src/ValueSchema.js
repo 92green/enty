@@ -6,13 +6,7 @@ import type {Schema} from './util/definitions';
 import type {Entity} from './util/definitions';
 
 /**
- * @module Schema
- */
-
-/**
  * ValueSchema
- *
- * @memberof module:Schema
  */
 export class ValueSchema extends Child implements Schema<Entity> {
     options: Entity;

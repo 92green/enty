@@ -26,11 +26,6 @@ import Logger from './Logger';
  *          }
  *     })
  * });
- *
- * @param {object} config.schemaMap - Map of schema action names.
- * @return {function}
- * @memberof module:Factories
- *
  */
 export default function EntityReducerFactory(config: Object): Function {
     const {

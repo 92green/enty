@@ -25,7 +25,6 @@ function constructState(): Object {
         }
     );
 
-    // console.log(JSON.stringify(normalized, null ,4));
     return {
         entity: fromJS({
             ...normalized.entities,

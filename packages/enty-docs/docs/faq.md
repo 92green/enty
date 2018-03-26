@@ -5,8 +5,8 @@ title: FAQ
 ---
 
 
-### What if I am using two Query/Mutation hocks
-Use the options override!
+### Q: What if I am using two Query/Mutation hocks
+### A: Use the group option!
 
 ```js
 const withQuery = CoreQueryHock(
@@ -17,7 +17,7 @@ const withQuery = CoreQueryHock(
         }
     }),
     {
-        queryRequestStateProp: 'userRequestState'
+        group: 'user'
     }
 );
 ```

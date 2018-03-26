@@ -4,7 +4,8 @@ import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 
 /**
- * Null schema
+ * The NullSchema isn't a useful type. It just declares the base functions
+ * all schemas must have.
  */
 export default class NullSchema implements Schema<*> {
     options: Object;

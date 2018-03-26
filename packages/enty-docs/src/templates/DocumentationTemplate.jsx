@@ -1,89 +1,156 @@
 //@flow
 import React from "react";
+import Link from 'gatsby-link';
 import type {Node} from 'react';
 import {Text} from 'obtuse';
 import {Typography} from 'obtuse';
-
 import getIn from 'unmutable/lib/getIn';
 
+function NodePrefix({node}: Object): Node {
+    const {scope, memberof, name} = node;
+
+    if(name === 'constructor') {
+        return <Text>new </Text>;
+    }
+
+    if(scope === 'instance') {
+        return <Text>{memberof[0].toLowerCase()}{memberof.slice(1)}.</Text>;
+    }
+
+    return null;
+}
+
+function Keys(param: Object): Node {
+    const {name, type, description, default: def} = param;
+    return <Text element="div" key={name}>
+        <Text>    </Text>
+        <Text>{name}{type.type === 'OptionalType' ? '?' : ''}: </Text>
+        <TypeLink type={type}/>
+        {def && <Text> = {def}</Text>}
+        {description && <Text modifier="muted">{` // ${description.internal.content.replace(/\n$/, "")}`}</Text>}
+    </Text>;
+}
+
+function NodeName({node}: Object): Node {
+    const {params, name, returns} = node;
+    const {kind} = node;
+    const {properties} = node;
+    const prettyName = name === 'constructor' ? node.fields.name : name;
+
+    const paramString = params
+        .map(Keys);
+
+    const returnString = returns.map(pp => <Text>
+        <Text>: </Text>
+        <TypeLink type={pp.type}/>
+        {pp.description && <Text modifier="muted">{` // ${pp.description.internal.content.replace(/\n$/, "")}`}</Text>}
+    </Text>)[0];
+
+
+    if(kind === 'typedef') {
+
+        if(properties.length) {
+            return <Text>
+                <Text>{'{'}</Text>
+                {properties.map(Keys)}
+                <Text>{'}'}</Text>
+            </Text>;
+        }
+        return <Text>
+            <Text>{name} = </Text>
+            <TypeLink type={node.type}/>
+        </Text>;
+
+    }
+
+    if(kind === 'class' || kind === 'function') {
+        return <Text>
+            {prettyName}
+            <Text>({paramString})</Text>
+            {returnString}
+        </Text>;
+    }
+
+    return null;
+}
+
+function TypeLink({type}: Object): Node {
+    const {expression, applications, elements, name} = type;
+    const typeAllLiteral = ii => ii.type === 'AllLiteral' ? '*' : ii.name;
+
+
+    let typeString;
+
+    if(elements) {
+        typeString = elements.map((ii: Object, index: number): Node => {
+            return <Text key={index}>
+                {index > 0 && <Text>|</Text>}
+                <TypeLink type={ii} />
+            </Text>;
+        });
+    }
+    else if(expression) {
+        if(applications) {
+            typeString = `${expression.name}<${applications.map(typeAllLiteral).join(', ')}>`;
+        }
+        else {
+            typeString = `${expression.name}`;
+        }
+    } else {
+        typeString = typeAllLiteral(type);
+    }
+
+
+    switch (name) {
+        case 'Object':
+        case 'Function':
+        case 'function':
+        case 'string':
+            return <Text modifier="primary">{name}</Text>;
+
+
+        default:
+            if(expression) {
+                if(expression.name) {
+                    return <Text modifier="primary">{typeString}</Text>;
+                }
+                return <TypeLink type={expression} />;
+            }
+            return <Link className="Link" to={`/api/${name}`}>{typeString}</Link>;
+    }
+}
 
 
 export default function DocumentationTemplate(props: Object): Node {
     const {data} = props;
     const {edges} = data.allDocumentationJs;
 
-    return <div>
-        <Text element="h1" modifier="sizeGiga marginGiga">{edges[0].node.fields.name}</Text>
+    const extend = (node: Object): Node => {
+        const {augments} = node;
+        if(augments.length) {
+            return <Text>extends{augments.map(({name}) =>
+                <Text key={name}>
+                    <Text> </Text>
+                    <Link className="Link" to={`/api/${name}`}>{name}</Link>
+                </Text>
+            )}</Text>;
+        }
+    };
 
-        {edges.map(({node}: Object): Node => {
+    return <div>
+        {edges.map(({node}: Object, index: number): Node => {
             const {name} = node;
-            const {params} = node;
-            const {returns} = node;
             const {description} = node;
 
-            console.log(node);
-
-            const prettyName = name === 'constructor' ? node.fields.name : name;
-            const typeAllLiteral = ii => ii.type === 'AllLiteral' ? '*' : ii.name;
-
-            const paramString = params
-                .map(pp => <Text element="div">
-                    <Text>    </Text>
-                    <Text>{pp.name}: </Text>
-                    <Text modifier="primary">{
-                        pp.type.expression && pp.type.applications
-                            ? String(pp.type.expression.name)
-                                .concat(`<${pp.type.applications.map(typeAllLiteral).join(', ')}>`)
-                            : typeAllLiteral(pp.type)
-                    }</Text>
-                    {pp.description && <Text modifier="muted">{` // ${pp.description.internal.content.replace(/\n$/, "")}`}</Text>}
-                </Text>);
-
-            const returnString = returns.map(pp => <Text>
-                <Text>: </Text>
-                <Text modifier="primary">{typeAllLiteral(pp.type)}</Text>
-                {pp.description && <Text modifier="muted">{` // ${pp.description.internal.content.replace(/\n$/, "")}`}</Text>}
-            </Text>)[0];
-
-            return <div key={node.id} style={{marginTop: '5rem'}}>
-                <Text element="h2" modifier="sizeMega marginGiga">{name}</Text>
-                <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
-                <Text element="pre">
-                    <Text>{name === 'constructor' ? 'new ' : ''}</Text>
-                    <Text>{prettyName}</Text>
-                    <Text>({paramString})</Text>
-                    <Text>{returnString}</Text>
+            return <div key={node.id} style={{marginTop: index === 0 ? '' : '6rem'}}>
+                {<Text element="h2" modifier={`${index === 0 ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
+                <Text modifier="muted">{extend(node)}</Text>
+                <Text element="pre" modifier="marginGiga">
+                    <NodePrefix node={node} />
+                    <NodeName node={node} />
                 </Text>
-
+                <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
                 {node.examples.map(ee => <div className="Code" dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
-                {/*
-                {description && <p>{description.internal.content}</p>}
-                <Text element="h3" modifier="sizeMega marginMega">Params</Text>
-                <Table>
-                    <TableBody>
-                        {params.map(pp => (
-                            <TableRow key={pp.name}>
-                                <TableCell>{pp.name}</TableCell>
-                                <TableCell>{pp.type.name}</TableCell>
-                                <TableCell>{pp.description && <p>{pp.description.internal.content}</p>}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
-                <Text element="h3" modifier="sizeMega marginMega">Returns</Text>
-                <Table>
-                    <TableBody>
-                        {returns.map(pp => (
-                            <TableRow key={pp.name}>
-                                <TableCell>{pp.name}</TableCell>
-                                <TableCell>{pp.type.name}</TableCell>
-                                <TableCell>{pp.description && <p>{pp.description.internal.content}</p>}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                */}
             </div>;
         })}
     </div>;
@@ -96,11 +163,55 @@ query DocumentationQuery($name: String!) {
       node {
         id
         name
+        namespace
+        memberof
+        augments {
+            title
+            name
+        }
         kind
         scope
         fields {
           slug
           name
+        }
+        type {
+          type
+          fields {
+            type
+            key
+          }
+          expression {
+            type
+            name
+          }
+          applications {
+            type
+          }
+        }
+        properties {
+          title
+          name
+          type {
+            type
+            name
+            expression {
+              type
+              name
+              applications {
+                type
+                name
+              }
+              elements {
+                type
+                name
+              }
+              expression {
+                type
+                name
+              }
+            }
+          }
         }
         description {
           childMarkdownRemark {
@@ -109,11 +220,7 @@ query DocumentationQuery($name: String!) {
         }
         returns {
           title
-          description {
-            internal {
-              content
-            }
-          }
+
           type {
             name
             type
@@ -131,10 +238,6 @@ query DocumentationQuery($name: String!) {
           type {
             name
             type
-            applications {
-              type
-              name
-            }
             expression {
               type
               name

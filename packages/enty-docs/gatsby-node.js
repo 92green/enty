@@ -41,13 +41,13 @@ exports.onCreateNode = ({node, getNode, boundActionCreators}) => {
 
     switch (node.internal.type) {
         case 'DocumentationJs':
-            const name = node.scope ? node.memberof : node.name;
+
+            const name = node.memberof || node.name;
 
             createNodeField({
                 node,
                 name: 'slug',
                 value: `/api/${name}`
-                //value: `/api${createFilePath({node, getNode, basePath: 'api'})}${name ? name : ''}`
             });
 
             createNodeField({

@@ -12,38 +12,21 @@ import type {HockOptionsInput} from './util/definitions';
 
 
 /**
+ * QueryHock is used to request data before a component renders.
+ * When one of the `updateKeys` on props changes the hock will pass the current props through
+ * `queryCreator` and on to its corresponding promise in EntityApi.
+ * The result of this promise is sent to the entity reducer along with a hash of `queryCreator` as a `resultKey`.
  *
- * @param {function} sideEffect
- * @returns {EntityQueryHock}
- * @memberof module:Factories
+ * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]
+ * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is
+ * fetching/re-fetching, has thrown an error, or has arrived safely.
  */
 export default function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Function {
-    /**
-     * Hocks are the primary means of connecting data to your views.
-     *
-     * @module Hocks
-     */
 
     /**
-     * QueryHock is used to request data before a component renders.
-     * When one of the `updateKeys` on props changes the hock will pass the current props through
-     * `queryCreator` and on to its corresponding promise in EntityApi.
-     * The result of this promise is sent to the entity reducer along with a hash of `queryCreator` as a `resultKey`.
-     *
-     * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]
-     * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is
-     * fetching/re-fetching, has thrown an error, or has arrived safely.
-     *
-     *
-     * @name QueryHock
-     * @kind function
-     * @param {function} queryCreator - turns
-     * @param {string[]} updateKeys - description
-     * @param {Object} [optionsOverride] - description
-     * @returns {function}
-     * @memberof module:Hocks
+     * EntityQueryHock
      */
-    return function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): Function {
+    function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): Function {
         function parseOptions(options: HockOptionsInput|Array<string>): Object {
             if(Array.isArray(options)) {
                 return {propChangeKeys: optionsOverride};
@@ -56,8 +39,10 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
 
-
-        return function EntityQueryHockApplier(Component: Element<any>): any {
+        /**
+         * EntityQueryHockApplier
+         */
+        function EntityQueryHockApplier(Component: Element<any>): any {
 
             const originalOptions: HockOptions = {
                 ...hockOptions,
@@ -76,9 +61,6 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
             function getHash(props: Object, options: HockOptions): string {
                 return (options.resultKey || fromJS({hash: queryCreator(props), requestActionName: options.requestActionName}).hashCode()) + '';
             }
-
-
-            // console.log('Applier', options.requestActionName, options.resultKey);
 
             const withState = Connect((state: Object, props: Object): Object => {
                 const resultKey = options.updateResultKey(getHash(props, options), props);
@@ -104,7 +86,11 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
             }));
 
             return withState(withPropChange(Component));
-        };
+        }
 
-    };
+        return EntityQueryHockApplier;
+
+    }
+
+    return EntityQueryHock;
 }

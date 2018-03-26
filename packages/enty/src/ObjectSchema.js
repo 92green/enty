@@ -17,15 +17,16 @@ import type {Structure} from './util/definitions';
  *     friends: ListSchema(user)
  * }))
  *
- * @param {Object} definition - an object describing any entity relationships that should be traversed.
- * @param {Object} options
- *
- * @memberof ObjectSchema
+ * @param definition - an object describing any entity relationships that should be traversed.
+ * @param options
  *
  */
 export class ObjectSchema extends Keyed implements Schema<Structure> {
     options: Structure;
 
+    /**
+     * ObjectSchema.constructor
+     */
     constructor(definition: KeyedDefinition = {}, options: Object = {}) {
         super(definition);
         this.options = {
@@ -110,6 +111,9 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
     }
 }
 
+/**
+ * ObjectSchemaFactory
+ */
 export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
     return new ObjectSchema(...args);
 }

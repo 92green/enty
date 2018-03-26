@@ -1,21 +1,34 @@
 /* @flow */
 /* eslint-disable no-unused-vars */
 
+/**
+ * DenormalizeState description
+ */
 export type NormalizeState = {
     entities: Object,
     result: any,
     schemas: Object
 };
 
+/**
+ * DenormalizeState description
+ */
 export type DenormalizeState = {
     entities: Object,
     result: any
 };
 
+
+/**
+ * KeyedDefinition description
+ */
 export type KeyedDefinition = {
     [string]: Schema<*>
 };
 
+/**
+ * ChildDefinition description
+ */
 export type ChildDefinition = Schema<*>;
 
 
@@ -31,7 +44,9 @@ export type Entity = {
     name: string
 };
 
-
+/**
+ * StructureInput description
+ */
 export type StructureInput = {
     definition?: ChildDefinition|KeyedDefinition,
     constructor?: Function,
@@ -39,6 +54,9 @@ export type StructureInput = {
     merge?: Function
 };
 
+/**
+ * EntityInput description
+ */
 export type EntityInput = {
     definition?: Schema<Structure>,
     name?: string,

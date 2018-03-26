@@ -20,7 +20,6 @@ const defaultOptions = {
  * @param  {string} resultKey
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
- * @memberof module:Selectors
  */
 export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): any {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
@@ -47,7 +46,6 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
  * @param  {string} id
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {object} entity map
- * @memberof module:Selectors
  */
 export function selectEntityById(state: Object, type: string, id: string, options: Object = {}): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
@@ -67,7 +65,6 @@ export function selectEntityById(state: Object, type: string, id: string, option
  * @param  {string} type
  * @param  {string} [schemaKey=ENTITY_RECEIVE]
  * @return {Immutable.List} entity list
- * @memberof module:Selectors
  */
 export function selectEntityByType(state: Object, type: string, options: Object = {}): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);
