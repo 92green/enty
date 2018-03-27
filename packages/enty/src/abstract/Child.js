@@ -8,9 +8,6 @@ import NullSchema from '../NullSchema';
 export default class Child extends NullSchema {
     definition: ChildDefinition;
 
-    /**
-     * Child constructor
-     */
     constructor(definition: ChildDefinition) {
         super();
         this.definition = definition;

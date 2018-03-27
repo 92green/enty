@@ -15,9 +15,8 @@ import type {DenormalizeState} from './util/definitions';
 import type {EntitySchemaOptions} from './util/definitions';
 
 /**
- *  EntitySchema
- *  @param name - The name of the entity type
- *  @param options - Quirks of this entity
+ *  Entity Schemas define
+ *  @param name - A name for the type of entity
  */
 export class EntitySchema extends Child implements Schema<Entity> {
     type: string;

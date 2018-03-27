@@ -30,6 +30,7 @@ export type DenormalizeState = {
 
 /**
  * KeyedDefinition description
+ *
  */
 export type KeyedDefinition = {
     [string]: Schema<*>
@@ -70,11 +71,13 @@ export type StructureInput = {
 
 /**
  * EntitySchemaOptions description
+ * @property definition - A Structure schema
+ * @property idAttribute - A function that returns the identifying feature of the entity
  */
 export type EntitySchemaOptions = {
     definition: Schema<Structure>,
     name?: string,
-    idAttribute?: Function
+    idAttribute?: (entity: Object) => string
 };
 
 /**
@@ -88,3 +91,6 @@ export interface Schema<Options> {
     definition: *,
     type?: string
 }
+
+
+

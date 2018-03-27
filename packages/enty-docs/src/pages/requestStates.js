@@ -6,7 +6,7 @@ import Link from 'gatsby-link';
 import {Text} from 'obtuse';
 import {Box} from 'obtuse';
 
-class Types extends React.Component<Object> {
+class RequestStates extends React.Component<Object> {
     render(): Node {
         return <Box modifier="paddingKilo">
             <ul>
@@ -20,10 +20,10 @@ class Types extends React.Component<Object> {
     }
 }
 
-export default Types;
+export default RequestStates;
 
 export const pageQuery = graphql`
-query Types {
+query RequestStates {
     allDocumentationJs(sort: {fields: [fields___sortBy, name]}) {
         edges {
             node {
