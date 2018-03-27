@@ -9,7 +9,12 @@
 // @include ObtuseBase;
 @include ObtuseLink;
 @include ObtuseTable;
-@include ObtuseText;
+@include ObtuseText {
+    &-definition {
+        background-color: grey(94);
+        padding: 1rem;
+    }
+};
 @include ObtuseTypography;
 @include ObtuseWrapper;
 

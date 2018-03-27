@@ -6,7 +6,29 @@ import {Text} from 'obtuse';
 import {Typography} from 'obtuse';
 import getIn from 'unmutable/lib/getIn';
 
+function separate(divider: string, mapper: Function): Function {
+    return (item, key) => <Text key={key}>
+        {key > 0 && <Text>{divider}</Text>}
+        {mapper(item, key)}
+    </Text>;
+}
+
+function FunctionType({type}: Object): Node {
+    if(!type.params && !type.result) {
+        return <Text modifier="primary">Function</Text>;
+    }
+    return <Text >
+        <Text>({type.params.map(separate(', ', (type) => <Text>
+            <Text>{type.name}: </Text>
+            <TypeLink type={type.expression}/>
+        </Text>))})</Text>
+        <Text> => {type.result ? <TypeLink type={type.result}/> : 'void'}</Text>
+    </Text>;
+}
+
 function NodePrefix({node}: Object): Node {
+
+
     const {scope, memberof, name} = node;
 
     if(name === 'constructor') {
@@ -21,11 +43,7 @@ function NodePrefix({node}: Object): Node {
 }
 
 function Keys(param: Object, ii: number): Node {
-    console.log(param);
     const {name, type, description, default: def} = param;
-    // if(type.type === 'AllLiteral') {
-    //     return <NodeName node={param} />;
-    // }
     return <Text element="div" key={`${name}${ii}`}>
         <Text>    </Text>
         <Text>{name}{type.type === 'OptionalType' ? '?' : ''}: </Text>
@@ -51,6 +69,7 @@ function NodeName({node}: Object): Node {
     const {params = [], name, returns = []} = node;
     const {kind} = node;
     const {properties} = node;
+    const {type} = node;
     const prettyName = name === 'constructor' ? node.fields.name : name;
 
     const paramString = params
@@ -72,6 +91,9 @@ function NodeName({node}: Object): Node {
 
 
     if(kind === 'typedef' || kind === 'interface') {
+        if(type && type.type === 'FunctionType') {
+            return <Text>{name} = <FunctionType type={type}/></Text>;
+        }
 
         if(properties.length) {
             return <Text>
@@ -105,17 +127,26 @@ function TypeLink({type}: Object): Node {
 
     let typeString;
 
-    if(elements) {
-        typeString = elements.map((ii: Object, index: number): Node => {
-            return <Text key={index}>
-                {index > 0 && <Text>|</Text>}
-                <TypeLink type={ii} />
-            </Text>;
-        });
+    if(type && type.type === 'FunctionType') {
+        return <FunctionType type={type} />;
     }
+
+    if(type && type.type === 'NullableType') {
+        return <Text modifier="primary">?<TypeLink type={type.expression} /></Text>;
+    }
+
+    if(elements) {
+        typeString = elements.map(separate('|', type => <TypeLink type={type} />));
+    }
+
     else if(expression) {
         if(applications) {
-            typeString = `${expression.name}<${applications.map(typeAllLiteral).join(', ')}>`;
+            typeString = <Text>
+                <TypeLink type={expression} />
+                <Text>{'<'}</Text>
+                <Text>{applications.map(separate(', ', (ii) => <TypeLink type={ii} />))}</Text>
+                <Text>{'>'}</Text>
+            </Text>;
         }
         else {
             typeString = `${expression.name}`;
@@ -126,6 +157,7 @@ function TypeLink({type}: Object): Node {
 
 
     switch (name) {
+        case 'Array':
         case 'Object':
         case 'Function':
         case 'function':
@@ -140,6 +172,11 @@ function TypeLink({type}: Object): Node {
                 }
                 return <TypeLink type={expression} />;
             }
+
+            if(type && type.type === 'AllLiteral') {
+                return <Text modifier="primary">{typeString}</Text>;
+            }
+
             return <Link className="Link" to={`/api/${name}`}>{typeString}</Link>;
     }
 }
@@ -148,8 +185,6 @@ function TypeLink({type}: Object): Node {
 export default function DocumentationTemplate(props: Object): Node {
     const {data} = props;
     const {edges} = data.allDocumentationJs;
-
-    console.log(edges.map(ii => ii.node));
 
     const extend = (node: Object): Node => {
         const {augments} = node;
@@ -169,19 +204,23 @@ export default function DocumentationTemplate(props: Object): Node {
             const {description} = node;
             const {augments} = node;
             const {kind} = node;
+            const {scope} = node;
+
+            console.log(node);
 
             return <div key={node.id} style={{marginTop: index === 0 ? '' : '6rem'}}>
                 {<Text element="h2" modifier={`${index === 0 ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
                 <Text modifier="block muted marginGiga">
-                    <Text>{kind} </Text>
+                    <Text>{scope} {kind} </Text>
                     {augments.length > 0 && <Text>{extend(node)}</Text>}
                 </Text>
                 <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
-                <Text element="pre" modifier="marginGiga">
+                <Text element="pre" modifier="marginGiga definition">
                     <NodePrefix node={node} />
                     <NodeName node={node} />
                 </Text>
-                {node.examples.map(ee => <div className="Code" dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
+                {node.examples.length > 0 && <Text modifier="strong">Examples</Text>}
+                {node.examples.map((ee, key) => <div className="Code" key={key} dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
             </div>;
         })}
     </div>;
@@ -197,8 +236,8 @@ query DocumentationQuery($name: String!) {
         namespace
         memberof
         augments {
-            title
-            name
+          title
+          name
         }
         kind
         scope
@@ -219,6 +258,24 @@ query DocumentationQuery($name: String!) {
           applications {
             type
           }
+          params {
+            type
+            name
+            expression {
+              type
+              name
+            }
+          }
+          result {
+            type
+            expression {
+              type
+              name
+            }
+            applications {
+              type
+            }
+          }
         }
         properties {
           title
@@ -231,21 +288,57 @@ query DocumentationQuery($name: String!) {
           type {
             type
             name
+            result {
+              type
+              name
+            }
+            params {
+              type
+              name
+              expression {
+                type
+                name
+                expression {
+                  type
+                  name
+                }
+                applications {
+                  type
+                }
+              }
+            }
+            applications {
+              type
+              name
+            }
             expression {
               type
               name
-              #applications {
-              #  type
-              #  name
-              #}
+              expression {
+                type
+                name
+              }
+              applications {
+                type
+                name
+              }
+              params {
+                type
+                name
+                expression {
+                  type
+                  name
+                }
+              }
+              result {
+                type
+                name
+              }
               elements {
                 type
                 name
               }
-              #expression {
-              #  type
-              #  name
-              #}
+
             }
           }
         }

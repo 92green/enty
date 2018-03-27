@@ -6,27 +6,33 @@ import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './util/DistinctMemo';
 import Connect from './util/Connect';
 import {fromJS} from 'immutable';
-import type {Element} from 'react';
-import type {HockOptions} from './util/definitions';
+import type {ComponentType} from 'react';
+import type {HockApplier} from './util/definitions';
 import type {HockOptionsInput} from './util/definitions';
+import type {HockOptions} from './util/definitions';
+import type {Hock} from './util/definitions';
 
 
 /**
- * QueryHock is used to request data before a component renders.
- * When one of the `updateKeys` on props changes the hock will pass the current props through
- * `queryCreator` and on to its corresponding promise in EntityApi.
- * The result of this promise is sent to the entity reducer along with a hash of `queryCreator` as a `resultKey`.
- *
- * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]
- * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is
- * fetching/re-fetching, has thrown an error, or has arrived safely.
+ * EntityQueryHockFactory
  */
-export default function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Function {
+function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Hock {
 
     /**
      * EntityQueryHock
+     *
+     * QueryHock is used to request data before a component renders.
+     * When one of the `updateKeys` on props changes the hock will pass the current props through
+     * `queryCreator` and on to its corresponding promise in EntityApi.
+     * The result of this promise is sent to the entity reducer along with a hash of `queryCreator` as a `resultKey`.
+     *
+     * The data is normalized, stored in state and then returned to the component. At each stage of the [entity flow]
+     * An appropriate `RequestState` is given to the component. This means the component can be sure that the query is
+     * fetching/re-fetching, has thrown an error, or has arrived safely.
+     *
+     * @kind function
      */
-    function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): Function {
+    function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): HockApplier {
         function parseOptions(options: HockOptionsInput|Array<string>): Object {
             if(Array.isArray(options)) {
                 return {propChangeKeys: optionsOverride};
@@ -42,7 +48,7 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
         /**
          * EntityQueryHockApplier
          */
-        function EntityQueryHockApplier(Component: Element<any>): any {
+        function EntityQueryHockApplier(Component: ComponentType<any>): ComponentType<any> {
 
             const originalOptions: HockOptions = {
                 ...hockOptions,
@@ -94,3 +100,5 @@ export default function EntityQueryHockFactory(actionCreator: Function, hockOpti
 
     return EntityQueryHock;
 }
+
+export default EntityQueryHockFactory;

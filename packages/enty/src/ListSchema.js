@@ -3,14 +3,11 @@ import {List} from 'immutable';
 import {ArraySchema} from './ArraySchema';
 import type {StructureInput} from './util/definitions';
 
+/**
+ * An array schema that casts the data to an immutable js List
+ */
 export class ListSchema extends ArraySchema {
 
-    /**
-     * An array schema that casts the data to an immutable js List
-     *
-     * @param {Schema} definition
-     * The defition of the list
-     */
     constructor(definition: Object, options: StructureInput = {}) {
         super(definition, options);
         this.options = {

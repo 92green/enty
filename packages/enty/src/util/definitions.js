@@ -41,13 +41,18 @@ export type KeyedDefinition = {
 export type ChildDefinition = Schema<*>;
 
 
-
+/**
+ * Structure description
+ */
 export type Structure = {
     constructor: Function,
     denormalizeFilter: Function,
     merge: Function
 };
 
+/**
+ * Entity description
+ */
 export type Entity = {
     idAttribute: Function,
     name: string
@@ -74,6 +79,7 @@ export type EntitySchemaOptions = {
 
 /**
  * SchemaInterface
+ *
  */
 export interface Schema<Options> {
     normalize(data: *, entities: Object): NormalizeState,
