@@ -12,13 +12,14 @@ const defaultOptions = {
  * @function
  */
 export default function Connect(connector?: Function, options?: HockOptions): Function {
-    const {stateKey} = Object.assign({}, defaultOptions, options);
+    const {stateKey, storeKey} = Object.assign({}, defaultOptions, options);
 
     return connect(
         connector,
         null,
         null,
         {
+            storeKey,
             areStatesEqual: (prev, next) => prev[stateKey] === next[stateKey]
         }
     );
