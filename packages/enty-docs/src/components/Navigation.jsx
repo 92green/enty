@@ -34,10 +34,12 @@ export default function Navigation(props: Object): Node {
         <NavItem to="/api/CompositeEntitySchema">CompositeEntitySchema</NavItem>
 
 
+
         <NavHeading>React Entity</NavHeading>
         <NavItem to="/api/EntityApi">EntityApi</NavItem>
         <NavItem to="/api/EntityQueryHock">EntityQueryHock</NavItem>
         <NavItem to="/api/EntityMutationHock">EntityMutationHock</NavItem>
+        <NavItem to="/requestStates">RequestState</NavItem>
 
         <NavHeading>React Entity - Internal</NavHeading>
         <NavItem to="/api/EntityQueryHockFactory">EntityQueryHockFactory</NavItem>

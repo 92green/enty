@@ -208,8 +208,6 @@ export default function Doclet(props: Object): Node {
     const {kind} = node;
     const {scope} = node;
 
-    console.log(node);
-
     return <div key={node.id} style={{marginTop: primary ? '' : '6rem'}}>
         {<Text element="h2" modifier={`${primary ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
         <Text modifier="block muted marginGiga">
