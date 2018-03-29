@@ -23,3 +23,9 @@ jobs:
       - run: git diff | cat
       - run: test -z "$(git status --porcelain)"
       - run: yarn test-all
+      - deploy:
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              yarn deploy-docs
+            fi
+

@@ -7,7 +7,8 @@
     "lint": "blueflag-test lint",
     "test": "blueflag-test test",
     "coverage": "blueflag-test coverage",
-    "test-all": "yarn lint && yarn flow && yarn coverage"
+    "test-all": "yarn lint && yarn flow && yarn coverage",
+    "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
   "workspaces": [
     "packages/*"
