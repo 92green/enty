@@ -41,7 +41,6 @@ fragment Node on DocumentationJs {
   }
   type {
     type
-    name
     fields {
       type
       key

@@ -8,7 +8,7 @@ import {fromJS, Map} from 'immutable';
 
 import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
-import type {Schema} from './util/definitions';
+import type {Schema} from 'enty/lib/util/definitions';
 
 
 // Turns a nested object into a flat
@@ -108,7 +108,7 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  *     ArticleListMutationHock
  * } = Api;
  */
-function EntityApi(schema: Schema, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
+function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
 
     return reduceActionMap(fromJS(actionMap))
         .reduce((state: Map<string, any>, sideEffect: SideEffect, action: string): Map<string, any> => {

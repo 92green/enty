@@ -34,7 +34,8 @@ test('EntityQueryHockFactorys hockedComponent should be a function', (tt: Object
 });
 
 test('EntityQueryHockFactorys hockedComponent should be an auto request', (tt: Object) => {
-    var RunTheHock = hockedComponent();
+    const NOOP_COMPONENT = () => <div/>;
+    var RunTheHock = hockedComponent(NOOP_COMPONENT);
     tt.is(RunTheHock.displayName, 'Connect(PropChangeHock)');
 });
 

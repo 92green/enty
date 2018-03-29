@@ -43,11 +43,13 @@ function constructState(): Object {
 // selectEntityByResult()
 
 test('selectEntityByResult() should return a map for single items', (tt: Object) => {
-    tt.truthy(selectEntityByResult(constructState(), 'single').foo);
+    const data = selectEntityByResult(constructState(), 'single');
+    tt.truthy(data && data.foo);
 });
 
 test('selectEntityByResult() should return an array for indexed items', (tt: Object) => {
-    tt.is(selectEntityByResult(constructState(), 'fooList').length, 3);
+    const data = selectEntityByResult(constructState(), 'fooList');
+    tt.is(data && data.length, 3);
 });
 
 test('selectEntityByResult() should return nothing if the denormalize fails', (tt: Object) => {
@@ -59,7 +61,8 @@ test('selectEntityByResult() should return nothing if the denormalize fails', (t
 // selectEntityById()
 
 test('selectEntityById() should return an item from entity state by path', (tt: Object) => {
-    tt.is(selectEntityById(constructState(), 'foo', 'bar').get('id'), 'bar');
+    const data = selectEntityById(constructState(), 'foo', 'bar');
+    tt.is(data && data.get('id'), 'bar');
 });
 
 

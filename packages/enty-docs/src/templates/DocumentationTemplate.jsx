@@ -41,7 +41,6 @@ query DocumentationQuery($name: String!) {
         }
         type {
           type
-          name
           fields {
             type
             key

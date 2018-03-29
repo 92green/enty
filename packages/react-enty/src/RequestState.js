@@ -15,6 +15,13 @@ type RequestStateFlatMapper = (value: *) => RequestState;
 /**
  * RequestStateType description
  */
+
+// type EmptyState = RequestState;
+// type FetchingState = RequestState;
+// type RefetchingState = RequestState;
+// type ErrorState = RequestState;
+// type SuccessState = RequestState;
+
 export type RequestState = {
     emptyFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
     emptyMap: (mapper: RequestStateMapper) => RequestState,
@@ -39,32 +46,34 @@ export type RequestState = {
     value: (defaultValue: *) => *
 };
 
+
+
 const RequestStates = StateFunctorFactory(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);
 
 /**
  * EmptyState description
  */
-export const EmptyState: RequestState = RequestStates.EmptyState;
+export const EmptyState: () => RequestState = RequestStates.EmptyState;
 
 /**
  * FetchingState description
  */
-export const FetchingState: RequestState = RequestStates.FetchingState;
+export const FetchingState: () => RequestState = RequestStates.FetchingState;
 
 /**
  * RefetchingState description
  */
-export const RefetchingState: RequestState = RequestStates.RefetchingState;
+export const RefetchingState: () => RequestState = RequestStates.RefetchingState;
 
 /**
  * ErrorState description
  */
-export const ErrorState: RequestState = RequestStates.ErrorState;
+export const ErrorState: (*) => RequestState = RequestStates.ErrorState;
 
 /**
  * SuccessState description
  *
  */
-export const SuccessState: RequestState = RequestStates.SuccessState;
+export const SuccessState: () => RequestState = RequestStates.SuccessState;
 
 

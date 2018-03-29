@@ -46,9 +46,9 @@ function createDescriptionNode(
 }
 
 function createDoclet(docsJson, i, node, boundActionCreators) {
-    console.log('====createDoclet===:', i);
-    console.log(docsJson);
-    console.log('\n')
+    // console.log('====createDoclet===:', i);
+    // console.log(docsJson);
+    // console.log('\n')
     const { createNode, createParentChildLink } = boundActionCreators;
     const picked = _.pick(docsJson, [`kind`, `memberof`, `name`, `scope`, `members`, `augments`, `namespace`, `properties`, `type`])
 
