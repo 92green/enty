@@ -90,7 +90,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
 
             const {group, updateResultKey} = options;
 
-            const blankConnect = Connect();
+            const blankConnect = Connect(undefined, options);
             const ComponentWithState = Connect((state: Object, props: Object): Object => {
                 const resultKey = group ? props[group].resultKey : props.resultKey;
                 const data = selectEntityByResult(state, resultKey, options);
