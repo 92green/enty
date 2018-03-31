@@ -29,5 +29,9 @@
     "prismjs": "^1.11.0",
     "react-helmet": "^5.2.0",
     "unmutable": "^0.25.0"
+  },
+  "dependencies": {
+    "gatsby": "^1.9.223",
+    "gatsby-remark-prismjs": "^1.2.21"
   }
 }

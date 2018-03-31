@@ -44,7 +44,6 @@ test("EntityMutationHockFactory's hocked component will be given props.onMutate"
     var Component = EntityMutationHockFactory(PASS, {})(PASS, {})(Child);
     var ComponentB = EntityMutationHockFactory(PASS, {})(PASS, {onMutateProp: "MUTATE"})(Child);
 
-    // console.log(shallow(<ComponentB store={STORE}/>).props());
     tt.is(typeof shallow(<Component store={STORE}/>).dive().prop('onMutate'), 'function');
     tt.is(typeof shallow(<ComponentB store={STORE}/>).dive().prop('onMutate'), 'undefined');
     tt.is(typeof shallow(<ComponentB store={STORE}/>).dive().prop('MUTATE'), 'function');

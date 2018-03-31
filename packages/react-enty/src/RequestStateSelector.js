@@ -15,7 +15,6 @@ const defaultOptions = {
  * @param  {object} state            the current state
  * @param  {string} requestStateKey  either result key or action prefix
  * @return {object}                  the curerent request state
- * @memberof module:Selectors
  */
 export default function selectRequestState(state: Object, requestStateKey: string, options?: ?Object): any {
     const {stateKey} = Object.assign({}, defaultOptions, options);

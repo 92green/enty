@@ -11,6 +11,7 @@ const DOCUMENTATION_QUERY = `{
                     slug
                     name
                     kind
+                    sortBy
                 }
                 description {
                     id
@@ -41,19 +42,25 @@ exports.onCreateNode = ({node, getNode, boundActionCreators}) => {
 
     switch (node.internal.type) {
         case 'DocumentationJs':
-            const name = node.scope ? node.memberof : node.name;
+
+            const name = node.memberof || node.name;
 
             createNodeField({
                 node,
                 name: 'slug',
                 value: `/api/${name}`
-                //value: `/api${createFilePath({node, getNode, basePath: 'api'})}${name ? name : ''}`
             });
 
             createNodeField({
                 node,
                 name: 'name',
                 value: name
+            });
+
+            createNodeField({
+                node,
+                name: 'sortBy',
+                value: name.toLowerCase()
             });
 
             createNodeField({
@@ -79,6 +86,7 @@ exports.createPages = ({graphql, boundActionCreators}) => {
                     context: {
                         slug: node.fields.slug,
                         kind: node.fields.kind,
+                        sortBy: node.fields.sortBy,
                         name: node.fields.name || 'NONE'
                     }
                 });

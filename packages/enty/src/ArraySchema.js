@@ -10,14 +10,12 @@ import Child from './abstract/Child';
 
 /**
  * Class for array schema.
+ * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.wrap
+ *
  */
 export class ArraySchema extends Child implements Schema<Structure> {
     options: Structure;
 
-    /**
-     * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.
-     * @param {Schema} definition
-     */
     constructor(definition: ChildDefinition, options: StructureInput = {}) {
         super(definition);
         this.options = {

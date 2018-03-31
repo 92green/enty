@@ -11,19 +11,24 @@ import type {Entity} from './util/definitions';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 
+
+/**
+ * CompositeEntitySchemaOptions
+ */
 type CompositeInput = {
     definition: Object,
     compositeKeys: *
 };
 
+/**
+ * CompositeEntitySchema
+ */
 export class CompositeEntitySchema extends Child implements Schema<Entity> {
     type: string;
     options: Entity;
     compositeKeys: Object;
     definition: Schema<Entity>;
-    /**
-     * CompositeEntitySchema
-     */
+
     constructor(
         name: string,
         {

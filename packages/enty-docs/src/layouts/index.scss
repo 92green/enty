@@ -8,8 +8,14 @@
 @include ObtuseBase;
 // @include ObtuseBase;
 @include ObtuseLink;
+@include ObtuseBox;
 @include ObtuseTable;
-@include ObtuseText;
+@include ObtuseText {
+    &-definition {
+        background-color: grey(94);
+        padding: 1rem;
+    }
+};
 @include ObtuseTypography;
 @include ObtuseWrapper;
 
@@ -36,6 +42,19 @@ body {
     white-space: pre;
     background-color: #333;
     color: #e6e6e6;
+}
+
+.gatsby-highlight pre > code {
+    background-color: grey(90);
+    padding: 1rem;
+    margin: 2rem 0;
+    white-space: pre;
+    background-color: #333;
+    color: #e6e6e6;
+
+    &:after {
+        content: '';
+    }
 }
 
 /*

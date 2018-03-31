@@ -8,20 +8,8 @@ import React, {type Element} from 'react';
 import type {HockOptions} from './util/definitions';
 import type {HockOptionsInput} from './util/definitions';
 
-
-/**
- * woot
- * @module Factories
- */
-
-
 /**
  * EntityMutationHockFactory
- *
- * @param {function} actionCreator
- * @param {HockOptions} hockOptions
- * @returns {MutationHock}
- * @memberof module:Factories
  */
 export default function EntityMutationHockFactory(actionCreator: Function, hockOptions?: HockOptionsInput): Function {
 
@@ -63,20 +51,16 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
      * const withMutation = DeleteUserMutationHock();
      *
      * export default withMutation(User);
-     *
-     * @name MutationHock
-     * @kind function
-     * @param {function} payloadCreator - turns
-     * @param {Object} [optionsOverride] - description
-     * @returns {function}
-     * @memberof module:Hocks
      */
-    return function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
+    function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
 
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
-        return function EntityMutationHockApplier(Component: Element<any>): Element<any> {
+        /**
+         * EntityMutationHockFactory
+         */
+        function EntityMutationHockApplier(Component: Element<any>): Element<any> {
 
             const options: HockOptions = {
                 ...hockOptions,
@@ -147,8 +131,10 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
             MutationHock.displayName = `MutationHock(${options.resultKey || ''})`;
 
             return blankConnect(MutationHock);
-        };
+        }
+        return EntityMutationHockApplier;
 
-    };
+    }
+    return EntityMutationHock;
 }
 

@@ -8,6 +8,7 @@ import {fromJS, Map} from 'immutable';
 
 import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
+import type {Schema} from 'enty/lib/util/definitions';
 
 
 // Turns a nested object into a flat
@@ -75,6 +76,11 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  * EntityApi will construct QueryHocks and MutationHocks for each promise returning function,
  * and a Redux store and reducer for your entity state.
  *
+ * @param schema
+ * A schema describing the relationships between your data
+ *
+ * @param actionMap
+ * deep object representation of api functions
  *
  * @example
  * import {EntityApi} from 'enty';
@@ -101,14 +107,8 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  *     ArticleListQueryHock,
  *     ArticleListMutationHock
  * } = Api;
- *
- * @param schema
- * A schema describing the relationships between your data
- *
- * @param actionMap
- * deep object representation of api functions
  */
-export default function EntityApi(schema: Object, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
+function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
 
     return reduceActionMap(fromJS(actionMap))
         .reduce((state: Map<string, any>, sideEffect: SideEffect, action: string): Map<string, any> => {
@@ -166,4 +166,4 @@ export default function EntityApi(schema: Object, actionMap: Object, hockOptions
         .toJS();
 }
 
-
+export default EntityApi;

@@ -15,14 +15,9 @@ const defaultOptions = {
  */
 
 /**
- * The primary means of accessing entity state. Given a requestKey it will return the denormalized state object.
- * @param  {object} state
- * @param  {string} resultKey
- * @param  {string} [schemaKey=ENTITY_RECEIVE]
- * @return {object} entity map
- * @memberof module:Selectors
+ * Given a requestKey it will return the denormalized state object.
  */
-export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): any {
+export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): * {
     const {schemaKey, stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = getIn(entities, ['_baseSchema', schemaKey]);
@@ -42,14 +37,8 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
  * Given a type and id of and entity in state it will return the denormalized state.
  * This function is only used when you are certain you need the exact id in entity state.
  * Most often the request key is more appropriate.
- * @param  {object} state
- * @param  {string} type
- * @param  {string} id
- * @param  {string} [schemaKey=ENTITY_RECEIVE]
- * @return {object} entity map
- * @memberof module:Selectors
  */
-export function selectEntityById(state: Object, type: string, id: string, options: Object = {}): any {
+export function selectEntityById(state: Object, type: string, id: string, options: Object = {}): * {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = getIn(entities, ['_schemas', type]);
@@ -63,13 +52,8 @@ export function selectEntityById(state: Object, type: string, id: string, option
 
 /**
  * Access a whole entity type as a list
- * @param  {object} state
- * @param  {string} type
- * @param  {string} [schemaKey=ENTITY_RECEIVE]
- * @return {Immutable.List} entity list
- * @memberof module:Selectors
  */
-export function selectEntityByType(state: Object, type: string, options: Object = {}): any {
+export function selectEntityByType(state: Object, type: string, options: Object = {}): * {
     const {stateKey} = Object.assign({}, defaultOptions, options);
     const entities = state[stateKey];
     const schema = ListSchema(getIn(entities, ['_schemas', type]));

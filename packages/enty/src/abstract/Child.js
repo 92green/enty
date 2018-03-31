@@ -4,7 +4,6 @@ import NullSchema from '../NullSchema';
 
 /**
  * Child
- * @implements {NullSchema}
  */
 export default class Child extends NullSchema {
     definition: ChildDefinition;

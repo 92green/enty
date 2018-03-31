@@ -2,12 +2,13 @@
 import test from 'ava';
 import sinon from 'sinon';
 import EntityApi from '../EntityApi';
+import ObjectSchema from 'enty/lib/ObjectSchema';
 import {createAllRequestAction} from '../EntityApi';
 
 const RESOLVE = (aa) => Promise.resolve(aa);
 const REJECT = (aa) => Promise.reject(aa);
 
-var actions = EntityApi({}, {
+var actions = EntityApi(ObjectSchema({}), {
     resolve: RESOLVE,
     reject: REJECT,
     foo: {

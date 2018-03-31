@@ -34,14 +34,27 @@ export default function Navigation(props: Object): Node {
         <NavItem to="/api/CompositeEntitySchema">CompositeEntitySchema</NavItem>
 
 
+
         <NavHeading>React Entity</NavHeading>
         <NavItem to="/api/EntityApi">EntityApi</NavItem>
-        <NavItem to="/api/QueryHock">QueryHock</NavItem>
-        <NavItem to="/api/MutationHock">MutationHock</NavItem>
+        <NavItem to="/api/EntityQueryHock">EntityQueryHock</NavItem>
+        <NavItem to="/api/EntityMutationHock">EntityMutationHock</NavItem>
+        <NavItem to="/requestStates">RequestState</NavItem>
+
+        <NavHeading>React Entity - Internal</NavHeading>
+        <NavItem to="/api/EntityQueryHockFactory">EntityQueryHockFactory</NavItem>
+        <NavItem to="/api/EntityMutationHockFactory">EntityMutationHockFactory</NavItem>
         <NavItem to="/api/MultiQueryHockFactory">MultiQueryHockFactory</NavItem>
         <NavItem to="/api/MultiMutationHockFactory">MultiMutationHockFactory</NavItem>
+
+        <NavItem to="/api/selectEntityByResult">selectEntityByResult</NavItem>
+        <NavItem to="/api/selectEntityById">selectEntityById</NavItem>
         <NavItem to="/api/selectEntityByType">selectEntityByType</NavItem>
         <NavItem to="/api/selectRequestState">selectRequestState</NavItem>
+
+
+        <NavHeading>Misc</NavHeading>
+        <NavItem to="/types">All Types</NavItem>
     </ul>;
 }
 
