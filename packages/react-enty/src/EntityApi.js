@@ -40,13 +40,13 @@ export function createRequestAction(fetchAction: string, recieveAction: string, 
             resultKey: meta.resultKey || resultKey
         });
 
-        dispatch(action(fetchAction)(null, {resultKey: meta.resultKey || fetchAction}));
+        dispatch(action(fetchAction)(null, actionMeta(fetchAction)));
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data: any): Promise<any> => {
                 return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
             },
             (error: any): Promise<any> => {
-                return dispatch(action(errorAction)(error, {resultKey: meta.resultKey || errorAction}));
+                return dispatch(action(errorAction)(error, actionMeta(errorAction)));
             }
         );
     };

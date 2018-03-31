@@ -57,6 +57,22 @@ test('ERROR action resultKey defaults to ERROR action name', (t: Object): Promis
         });
 });
 
+test('FETCH RECIEVE action will pass meta through', (t: Object): Promise<any> => {
+    var dispatch = sinon.spy();
+    return actions.resolve(RESOLVE, {foo: 'bar'})(dispatch)
+        .then(() => {
+            t.is('bar', dispatch.firstCall.args[0].meta.foo);
+            t.is('bar', dispatch.secondCall.args[0].meta.foo);
+        });
+});
+
+test('ERROR action will pass meta through', (t: Object): Promise<any> => {
+    var dispatch = sinon.spy();
+    return actions.reject(REJECT, {foo: 'bar'})(dispatch)
+        .then(() => {
+            t.is('bar', dispatch.secondCall.args[0].meta.foo);
+        });
+});
 
 
 // Create Multi ActionCreator
