@@ -7,7 +7,7 @@
   "main": "n/a",
   "scripts": {
     "build": "gatsby build",
-    "prepublishOnly": "yarn build",
+    "preversion": "yarn build",
     "deploy": "gatsby build --prefix-paths && gh-pages -d public",
     "watch": "gatsby develop",
     "format": "prettier --trailing-comma es5 --no-semi --single-quote --write \"src/**/*.js\"",
