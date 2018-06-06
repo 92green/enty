@@ -4,6 +4,7 @@ import EntitySchema from '../EntitySchema';
 import ListSchema from '../ListSchema';
 import MapSchema from '../MapSchema';
 import {fromJS} from 'immutable';
+import {List} from 'immutable';
 
 const foo = EntitySchema('foo').set(MapSchema());
 
@@ -76,12 +77,16 @@ test('ListSchema will not try to denormalize null values', (tt: *) => {
 
 
 test('ListSchema will not mutate input objects', (tt: *) => {
-
     const schema = ListSchema(foo);
     const arrayTest = [{id: "1"}];
 
     schema.normalize(arrayTest);
     tt.deepEqual(arrayTest, [{id: "1"}]);
+});
+
+test('ListSchema can merge lists by replacing the previous with the next', (tt: *) => {
+    const schema = ListSchema(foo);
+    tt.true(List([2]).equals(schema.options.merge(List([1]), List([2]))));
 });
 
 //

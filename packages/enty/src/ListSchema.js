@@ -12,7 +12,7 @@ export class ListSchema extends ArraySchema {
         super(definition, options);
         this.options = {
             constructor: item => List(item),
-            merge: (previous, next) => previous.merge(next),
+            merge: (previous, next) => next,
             ...options
         };
     }
