@@ -4,6 +4,7 @@ import EntitySchema from '../EntitySchema';
 import MapSchema from '../MapSchema';
 import {DELETED_ENTITY} from '../util/SchemaConstant';
 import {fromJS} from 'immutable';
+import {NoDefinitionError} from '../util/Error';
 
 var foo = EntitySchema('foo');
 var bar = EntitySchema('bar');
@@ -77,6 +78,20 @@ test('EntitySchema will not denormalize null entities', (tt: Object) => {
         undefined
     );
 });
+
+test('will not denormalize null definitions', (t: Object) => {
+    const NullSchemaEnitity = EntitySchema('foo');
+    // $FlowBug - deliberate misuse of types for testing
+    const NullDefinitionEnitity = EntitySchema('bar').set(null);
+
+    const nullSchemaError = t.throws(() => NullSchemaEnitity.normalize({}, {}));
+    const nullDefinitionError = t.throws(() => NullDefinitionEnitity.normalize({}, {}));
+
+    t.deepEqual(NoDefinitionError('foo'), nullSchemaError);
+    t.deepEqual(NoDefinitionError('bar'), nullDefinitionError);
+
+});
+
 
 
 test('EntitySchema will return DELETED_ENTITY placeholder if denormalizeFilter fails', (tt: Object) => {

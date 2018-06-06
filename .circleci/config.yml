@@ -26,6 +26,8 @@ jobs:
       - deploy:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git config --global user.email blueflag
+              git config --global user.name blueflag
               yarn deploy-docs
             fi
 

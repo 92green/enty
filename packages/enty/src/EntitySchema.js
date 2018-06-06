@@ -44,7 +44,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const {definition} = this;
         const {idAttribute, name} = this.options;
 
-        if(definition == null) {
+        if(definition == null || definition.constructor === NullSchema) {
             throw NoDefinitionError(name);
         }
 
