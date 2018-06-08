@@ -11,9 +11,12 @@ import RequestStateSelector from './RequestStateSelector';
 import ErrorSelector from './ErrorSelector';
 import {RequestHockNoNameError} from './util/Error';
 import {selectEntityByResult} from './EntitySelector';
+import Message from './data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
 import identity from 'unmutable/lib/identity';
 import pipe from 'unmutable/lib/util/pipe';
+
+
 
 
 /**
@@ -31,25 +34,16 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
             const {auto} = config;
 
             if(!name) {
-                RequestHockNoNameError(hockMeta.requestActionName);
+                throw RequestHockNoNameError(hockMeta.requestActionName);
             }
-
 
             const RequestHock = composeWith(
                 (ComponentWithState) => class RequestHock extends React.Component<*, *> {
-                    updateRequest: Function;
-                    request: (payload: *) => Promise<*>;
+                    request: Function;
                     constructor(props: *) {
                         super(props);
                         this.state = {};
-                        this.updateRequest();
-                    }
 
-                    componentWillReceiveProps() {
-                        this.updateRequest();
-                    }
-
-                    updateRequest = () => {
                         this.request = pipe(
                             payloadCreator,
                             (payload: *): Promise<*> => {
@@ -117,20 +111,20 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                     // Merge State and dispatch
                     (stateProps, dispatchProps, ownProps) => ({
                         ...ownProps,
-                        [name]: {
+                        [name]: new Message({
                             ...stateProps[name],
                             onRequest: dispatchProps[name].onRequest
-                        }
+                        })
                     }),
                     hockMeta
                 ),
 
                 // apply the prop change hock if auto is configured
                 auto
-                    ? PropChangeHock({
+                    ? PropChangeHock(() => ({
                         paths: typeof auto === 'boolean' ? [] : auto,
                         onPropChange: (props) => props[name].onRequest(props)
-                    })
+                    }))
                     : identity(),
                 Component
             );
