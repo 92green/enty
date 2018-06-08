@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "gatsby": "^1.9.223",
-    "gatsby-remark-prismjs": "^1.2.21"
+    "gatsby-remark-prismjs": "^1.2.21",
+    "react-redux": "^5.0.7"
   }
 }

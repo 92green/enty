@@ -17,7 +17,8 @@
   },
   "private": false,
   "scripts": {
-    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js"
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
+    "watch": "yarn build -w"
   },
   "dependencies": {
     "fronads": "^0.17.0",
