@@ -65,7 +65,6 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
             const options: HockOptions = {
                 ...hockOptions,
                 onMutateProp: 'onMutate',
-                group: null,
                 propUpdate: aa => aa,
                 updateResultKey: aa => aa,
                 propChangeKeys: [],

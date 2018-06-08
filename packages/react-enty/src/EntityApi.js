@@ -1,9 +1,12 @@
 //@flow
 import {createAction} from 'redux-actions';
 import EntityQueryHockFactory from './EntityQueryHockFactory';
+import RequestHockFactory from './RequestHockFactory';
 import EntityMutationHockFactory from './EntityMutationHockFactory';
 import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
+import {selectEntityByResult} from './EntitySelector';
+import RequestStateSelector from './RequestStateSelector';
 import {fromJS, Map} from 'immutable';
 
 import type {HockOptionsInput} from './util/definitions';
@@ -42,11 +45,13 @@ export function createRequestAction(fetchAction: string, recieveAction: string, 
 
         dispatch(action(fetchAction)(null, actionMeta(fetchAction)));
         return sideEffect(requestPayload, sideEffectMeta).then(
-            (data: any): Promise<any> => {
-                return dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
+            (data: any): * => {
+                dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
+                return selectEntityByResult(getState(), actionMeta(recieveAction).resultKey);
             },
-            (error: any): Promise<any> => {
-                return dispatch(action(errorAction)(error, actionMeta(errorAction)));
+            (error: any): * => {
+                dispatch(action(errorAction)(error, actionMeta(errorAction)));
+                return Promise.reject(RequestStateSelector(getState(), actionMeta(errorAction).resultKey).value());
             }
         );
     };
@@ -129,6 +134,14 @@ function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOption
 
             hockOptions.requestActionName = requestActionName;
 
+            const HockMeta = {
+                generateResultKey: (payload) => fromJS({payload, requestActionName}).hashCode().toString(),
+                requestActionName,
+                schemaKey: hockOptions.schemaKey,
+                storeKey: hockOptions.storeKey,
+                stateKey: hockOptions.stateKey
+            };
+
             return state
                 // nested action creators
                 .setIn(requestActionPath, requestAction)
@@ -137,17 +150,13 @@ function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOption
                 .setIn(['actionTypes', FETCH], FETCH)
                 .setIn(['actionTypes', RECEIVE], RECEIVE)
                 .setIn(['actionTypes', ERROR], ERROR)
+                .set(`${requestActionName}RequestHock`, RequestHockFactory(requestAction, HockMeta))
                 .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName}))
                 .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName}))
             ;
 
         }, Map())
         .update((api: Map<string, any>): Map<string, any> => {
-            // convert receive actions to a standard that EntityReducerFactory can understand
-            // {
-            //     ACTION_RECIEVE: schema
-            //     ...
-            // }
             const schemaMap = api
                 .get('actionTypes')
                 .filter((action, key) => /_RECEIVE$/g.test(key))
