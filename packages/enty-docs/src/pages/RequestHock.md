@@ -125,8 +125,14 @@ const UserWithData = withUser(withPet(User));
 
 ```
 
-## Combining multiple requests into one.
-Sometimes it's useful to mix a couple of requests together 
+## Combining multiple requests into one
+
+Sometimes it's useful to mix a couple of requests together. The <TypeLink name="MultiRequestHock" /> lets you create a 
+new <TypeLink name="Message" /> object based on the result of a promise-returning callback derived from props.
+
+In the below example we apply a pet and user hock, then use a <TypeLink name="MultiRequestHock" /> to 
+combine both EntityRequesters into a single message object. This gives us a single `requestState`
+but still allows us to get the data from the user and pet messages individually.
 
 
 ```js
@@ -143,7 +149,7 @@ class RequestUserButton extends Component {
                 .fetchingMap(() => 'Fetching user and pet...')
                 .refetchingMap(() => 'Fetching user and pet again...')
                 .errorMap(() => 'Fetching user and pet did not work.')
-                .successMap(() => 'User fetched!')
+                .successMap(() => 'User and pet fetched!')
                 .value()}
         </button>;
     }

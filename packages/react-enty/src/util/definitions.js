@@ -65,6 +65,10 @@ export type RequestHockConfig = {
     resultKey?: string
 };
 
+
+/**
+ * MultiRequestHockConfig description
+ */
 export type MultiRequestHockConfig = {
     name: string,
     onRequest: (props: *) => Promise<*>,
