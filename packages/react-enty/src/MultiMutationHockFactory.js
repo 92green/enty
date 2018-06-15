@@ -13,6 +13,7 @@ function MultiMutationHockFactory(sideEffectList: Array<SideEffect>, hockOptions
     const RECEIVE = `${actionPrefix}_RECEIVE`;
     const ERROR = `${actionPrefix}_ERROR`;
 
+    console.log('DEPRECATED: MultiMutationHockFactory has been deprecated in favor of much improved MultiRequestHock. Check the docs for usage instructions.');
     return EntityMutationHockFactory(createAllRequestAction(FETCH, RECEIVE, ERROR, sideEffectList), hockOptions);
 }
 
