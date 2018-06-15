@@ -10,7 +10,7 @@ import {
     selectEntityByType
 } from '../EntitySelector';
 
-function constructState(): Object {
+function constructState(): * {
     var foo = EntitySchema('foo').set(MapSchema());
     var fooList = ListSchema(foo);
     var schema = MapSchema({
@@ -42,17 +42,17 @@ function constructState(): Object {
 //
 // selectEntityByResult()
 
-test('selectEntityByResult() should return a map for single items', (tt: Object) => {
+test('selectEntityByResult() should return a map for single items', (tt: *) => {
     const data = selectEntityByResult(constructState(), 'single');
     tt.truthy(data && data.foo);
 });
 
-test('selectEntityByResult() should return an array for indexed items', (tt: Object) => {
+test('selectEntityByResult() should return an array for indexed items', (tt: *) => {
     const data = selectEntityByResult(constructState(), 'fooList');
     tt.is(data && data.length, 3);
 });
 
-test('selectEntityByResult() should return nothing if the denormalize fails', (tt: Object) => {
+test('selectEntityByResult() should return nothing if the denormalize fails', (tt: *) => {
     tt.is(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE'), undefined);
 });
 
@@ -60,16 +60,22 @@ test('selectEntityByResult() should return nothing if the denormalize fails', (t
 //
 // selectEntityById()
 
-test('selectEntityById() should return an item from entity state by path', (tt: Object) => {
-    const data = selectEntityById(constructState(), 'foo', 'bar');
-    tt.is(data && data.get('id'), 'bar');
+test('selectEntityById() should return an item from entity state by path', (tt: *) => {
+    // $FlowFixMe
+    tt.is(selectEntityById(constructState(), 'foo', 'bar').get('id'), 'bar');
 });
+
+test('selectEntityById() will return undefined if there is no schema for type', (tt: *) => {
+    const data = selectEntityById(constructState(), 'blerge', 'bar');
+    tt.is(data, undefined);
+});
+
 
 
 //
 // selectEntityByType()
 
-test('selectEntityByType() should return an list of entities', (tt: Object) => {
+test('selectEntityByType() should return an list of entities', (tt: *) => {
     tt.true(List.isList(selectEntityByType(constructState(), 'foo')));
 });
 

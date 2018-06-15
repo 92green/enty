@@ -16,11 +16,6 @@ import {SuccessState} from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const multiRequestHock = MultiRequestHock({
     name: 'foo', 
     onRequest: (props) => props.resolveFoo()
@@ -31,7 +26,7 @@ const MultiComponent = multiRequestHock(() => null);
 test('will create a message in props.[name]', t => {
     const hock = MultiRequestHock({
         name: 'foo', 
-        onRequest: () => {}
+        onRequest: () => Promise.resolve()
     });
     const Comp = hock((props) => {
         t.true(props.foo instanceof Message);
@@ -42,6 +37,7 @@ test('will create a message in props.[name]', t => {
 });
 
 test('will throw an error is config.name is not supplied', t => {
+    // $FlowFixMe - deliberate misuse of types for testing
     const requestHockError = t.throws(() => MultiRequestHock({})(() => null));
     t.deepEqual(RequestHockNoNameError('MultiRequestHock'), requestHockError);
 });

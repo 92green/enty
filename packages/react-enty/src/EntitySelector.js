@@ -61,10 +61,6 @@ export function selectEntityByType(state: Object, type: string, options: Object 
     const entities = state[stateKey];
     const schema = ListSchema(getIn(entities, ['_schemas', type]));
 
-    if(!schema) {
-        return;
-    }
-
     const data = schema.denormalize({
         result: get(entities, type, Map())
             .keySeq()

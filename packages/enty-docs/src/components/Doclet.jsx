@@ -23,7 +23,7 @@ function FunctionType({type}: Object): Node {
     return <Text >
         <Text>({type.params.map(separate(', ', (type) => <Text>
             <Text>{type.name}: </Text>
-            <TypeLink type={type.expression}/>
+            {type.expression && <TypeLink type={type.expression}/>}
         </Text>))})</Text>
         <Text> => {type.result ? <TypeLink type={type.result}/> : 'void'}</Text>
     </Text>;
@@ -48,7 +48,7 @@ function Keys(param: Object, ii: number): Node {
     return <Text element="div" key={`${name}${ii}`}>
         <Text>    </Text>
         <Text>{name}{type.type === 'OptionalType' ? '?' : ''}: </Text>
-        <TypeLink type={type}/>
+        {type && <TypeLink type={type}/>}
         {def && <Text> = {def}</Text>}
         {description && <Text modifier="muted">{` // ${description.internal.content.replace(/\n$/, "")}`}</Text>}
     </Text>;
@@ -67,7 +67,6 @@ function Spread(param: Object): Node {
 }
 
 function NodeName({node}: Object): Node {
-    console.log('NodeName', node);
     const {params = [], name, returns = []} = node;
     const {kind} = node;
     const {properties} = node;
@@ -135,10 +134,11 @@ function NodeName({node}: Object): Node {
 }
 
 function TypeLink({type}: Object): Node {
-    console.log('TypeLink', type);
-    const {expression, applications, elements, name} = type;
+    if(!type) {
+        return null;
+    }
+    const {expression, applications, elements, name} = type || {};
     const typeAllLiteral = ii => ii.type === 'AllLiteral' ? '*' : ii.name;
-
 
     let typeString;
 
@@ -223,6 +223,8 @@ export default function Doclet(props: Object): Node {
     const {showKind = true} = props;
     const {showExamples = true} = props;
     const {showType = true} = props;
+
+    console.log(node);
 
     return <div key={node.id} style={{marginTop: primary ? '' : '6rem'}}>
         {showName && <Text element="h2" modifier={`${primary ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
