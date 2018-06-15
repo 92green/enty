@@ -65,6 +65,13 @@ export type RequestHockConfig = {
     resultKey?: string
 };
 
+export type MultiRequestHockConfig = {
+    name: string,
+    onRequest: (props: *) => Promise<*>,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean
+};
+
 export type ActionMeta = {
     resultKey: string
 };
