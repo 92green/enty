@@ -15,3 +15,7 @@ export function CompositeDefinitionMustBeEntityError(name: string, type: string)
 export function UndefinedIdError(name: string, value: *): Error {
     return new Error(`${name}.idAttribute() returned ${value}. Entities need some sort of id so they can be stored and retrieved. You should check the schema to see what is going on.`);
 }
+
+export function RequestHockNoNameError(requestHock: *): Error {
+    return new Error(`${requestHock} has been instantiated without a name. You must provide a name to each instance of a RequestHock`);
+}

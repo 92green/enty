@@ -37,9 +37,8 @@ export default function Navigation(props: Object): Node {
 
         <NavHeading>React Entity</NavHeading>
         <NavItem to="/api/EntityApi">EntityApi</NavItem>
-        <NavItem to="/api/EntityQueryHock">EntityQueryHock</NavItem>
-        <NavItem to="/api/EntityMutationHock">EntityMutationHock</NavItem>
-        <NavItem to="/requestStates">RequestState</NavItem>
+        <NavItem to="/RequestHock">RequestHock</NavItem>
+        <NavItem to="/api/Message">Message</NavItem>
 
         <NavHeading>React Entity - Internal</NavHeading>
         <NavItem to="/api/EntityQueryHockFactory">EntityQueryHockFactory</NavItem>

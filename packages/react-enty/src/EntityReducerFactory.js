@@ -36,6 +36,7 @@ export default function EntityReducerFactory(config: Object): Function {
         _baseSchema: Map(schemaMap),
         _schemas: Map(),
         _result: Map(),
+        _error: Map(),
         _requestState: Map()
     });
 
@@ -59,6 +60,7 @@ export default function EntityReducerFactory(config: Object): Function {
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
 
         const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
+        const errorPath = ['_error', resultKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -76,7 +78,10 @@ export default function EntityReducerFactory(config: Object): Function {
             }
         } else if(/_ERROR$/g.test(type)) {
             Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
-            state = state.setIn(requestStatePath, ErrorState(payload));
+            state = state
+                .setIn(requestStatePath, ErrorState(payload))
+                .setIn(errorPath, payload)
+            ;
         }
 
 

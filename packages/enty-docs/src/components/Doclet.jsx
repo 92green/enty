@@ -14,13 +14,16 @@ function separate(divider: string, mapper: Function): Function {
 }
 
 function FunctionType({type}: Object): Node {
+    if(type.type === 'AllLiteral') {
+        return <Text modifier="primary">*</Text>;
+    }
     if(!type.params && !type.result) {
         return <Text modifier="primary">Function</Text>;
     }
     return <Text >
         <Text>({type.params.map(separate(', ', (type) => <Text>
             <Text>{type.name}: </Text>
-            <TypeLink type={type.expression}/>
+            {type.expression && <TypeLink type={type.expression}/>}
         </Text>))})</Text>
         <Text> => {type.result ? <TypeLink type={type.result}/> : 'void'}</Text>
     </Text>;
@@ -45,7 +48,7 @@ function Keys(param: Object, ii: number): Node {
     return <Text element="div" key={`${name}${ii}`}>
         <Text>    </Text>
         <Text>{name}{type.type === 'OptionalType' ? '?' : ''}: </Text>
-        <TypeLink type={type}/>
+        {type && <TypeLink type={type}/>}
         {def && <Text> = {def}</Text>}
         {description && <Text modifier="muted">{` // ${description.internal.content.replace(/\n$/, "")}`}</Text>}
     </Text>;
@@ -68,6 +71,7 @@ function NodeName({node}: Object): Node {
     const {kind} = node;
     const {properties} = node;
     const {type} = node;
+    const {scope} = node;
     const prettyName = name === 'constructor' ? node.fields.name : name;
 
     const paramString = params
@@ -85,6 +89,10 @@ function NodeName({node}: Object): Node {
             {properties.map(Spread)}
             <Text>{'   }\n'}</Text>
         </Text>;
+    }
+
+    if(scope === 'instance') {
+        return <Text>{name} = <TypeLink type={node.type}/></Text>;
     }
 
 
@@ -126,9 +134,11 @@ function NodeName({node}: Object): Node {
 }
 
 function TypeLink({type}: Object): Node {
-    const {expression, applications, elements, name} = type;
+    if(!type) {
+        return null;
+    }
+    const {expression, applications, elements, name} = type || {};
     const typeAllLiteral = ii => ii.type === 'AllLiteral' ? '*' : ii.name;
-
 
     let typeString;
 
@@ -208,18 +218,26 @@ export default function Doclet(props: Object): Node {
     const {kind} = node;
     const {scope} = node;
 
+    const {showDescription = true} = props;
+    const {showName = true} = props;
+    const {showKind = true} = props;
+    const {showExamples = true} = props;
+    const {showType = true} = props;
+
+    console.log(node);
+
     return <div key={node.id} style={{marginTop: primary ? '' : '6rem'}}>
-        {<Text element="h2" modifier={`${primary ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
-        <Text modifier="block muted marginGiga">
+        {showName && <Text element="h2" modifier={`${primary ? 'sizeGiga' : 'sizeMega'} marginGiga`}>{name}</Text>}
+        {showKind && <Text modifier="block muted marginGiga">
             <Text>{scope} {kind} </Text>
             {augments.length > 0 && <Text>{extend(node)}</Text>}
-        </Text>
-        <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>
-        <Text element="pre" modifier="marginGiga definition">
+        </Text>}
+        {showDescription && <Typography dangerouslySetInnerHTML={{__html: getIn(['childMarkdownRemark', 'html'])(description)}}/>}
+        {showType && <Text element="pre" modifier="marginGiga definition">
             <NodePrefix node={node} />
             <NodeName node={node} />
-        </Text>
-        {node.examples.length > 0 && <Text modifier="strong">Examples</Text>}
-        {node.examples.map((ee, key) => <div className="Code" key={key} dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
+        </Text>}
+        {showExamples && node.examples.length > 0 && <Text modifier="strong">Examples</Text>}
+        {showExamples && node.examples.map((ee, key) => <div className="Code" key={key} dangerouslySetInnerHTML={{__html: ee.highlighted}}/>)}
     </div>;
 }

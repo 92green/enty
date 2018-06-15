@@ -81,7 +81,7 @@ test('EntitySchema will not denormalize null entities', (tt: Object) => {
 
 test('will not denormalize null definitions', (t: Object) => {
     const NullSchemaEnitity = EntitySchema('foo');
-    // $FlowBug - deliberate misuse of types for testing
+    // $FlowFixMe - deliberate misuse of types for testing
     const NullDefinitionEnitity = EntitySchema('bar').set(null);
 
     const nullSchemaError = t.throws(() => NullSchemaEnitity.normalize({}, {}));

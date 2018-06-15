@@ -53,7 +53,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
      * export default withMutation(User);
      */
     function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
-
+        console.log('DEPRECATED: EntityMutationHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 
@@ -65,7 +65,6 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
             const options: HockOptions = {
                 ...hockOptions,
                 onMutateProp: 'onMutate',
-                group: null,
                 propUpdate: aa => aa,
                 updateResultKey: aa => aa,
                 propChangeKeys: [],
