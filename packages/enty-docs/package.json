@@ -34,6 +34,8 @@
   "dependencies": {
     "gatsby": "^1.9.223",
     "gatsby-remark-prismjs": "^1.2.21",
+    "mdx-loader": "^1.1.0",
+    "mdxc": "^1.1.1",
     "react-redux": "^5.0.7",
     "unmutable": "^0.29.2"
   }

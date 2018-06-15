@@ -3,13 +3,15 @@ import type {ComponentType} from 'react';
 import type {Element} from 'react';
 import type {RequestHockConfig} from './util/definitions';
 import type {HockMeta} from './util/definitions';
+import type {HockApplier} from './util/definitions';
+import type {Hock} from './util/definitions';
 
 import {ConnectFull} from './util/Connect';
 import React from 'react';
-import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
 import RequestStateSelector from './RequestStateSelector';
 import ErrorSelector from './ErrorSelector';
 import {RequestHockNoNameError} from './util/Error';
+import AutoHockFactory from './util/AutoHockFactory';
 import {selectEntityByResult} from './EntitySelector';
 import Message from './data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
@@ -22,16 +24,23 @@ import pipe from 'unmutable/lib/util/pipe';
 /**
  * RequestHockFactory
  */
-export default function RequestHockFactory(actionCreator: Function, hockMeta: HockMeta): Function {
+export default function RequestHockFactory(actionCreator: Function, hockMeta: HockMeta): Hock {
 
-    return function RequestHock(config: RequestHockConfig): Function {
+    /**
+     * RequestHock
+     *
+     * @kind function
+     */
+    function RequestHock(config: RequestHockConfig): HockApplier {
 
-        return function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
+        /**
+         * RequestHockApplier
+         */
+        function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
             const {payloadCreator = () => {}} = config;
             const {updateResultKey = identity()} = config;
             const {name} = config;
-            const {auto} = config;
 
             if(!name) {
                 throw RequestHockNoNameError(hockMeta.requestActionName);
@@ -118,21 +127,18 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                     }),
                     hockMeta
                 ),
-
-                // apply the prop change hock if auto is configured
-                auto
-                    ? PropChangeHock(() => ({
-                        paths: typeof auto === 'boolean' ? [] : auto,
-                        onPropChange: (props) => props[name].onRequest(props)
-                    }))
-                    : identity(),
+                AutoHockFactory(config),
                 Component
             );
 
             RequestHock.displayName = `RequestHock(${name})`;
             return RequestHock;
-        };
+        }
 
-    };
+        return RequestHockApplier;
+
+    }
+
+    return RequestHock;
 }
 

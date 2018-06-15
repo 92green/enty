@@ -37,7 +37,9 @@ export type HockOptionsInput = {
 
 
 
-
+/**
+ * RequestHockConfig description
+ */
 export type RequestHockConfig = {
     // Required name to isolate data when passing through props
     name: string,
@@ -49,6 +51,9 @@ export type RequestHockConfig = {
     // if true, request on the first render
     // if array of strings, request on the first render and each time one of the props changes
     auto?: boolean|Array<string>,
+
+    // If auto requesting is enabled, this hook lets you cancel the request based on props.
+    shouldComponentAutoRequest?: (props: *) => boolean,
 
     // thunk to amend the result key based on props, used when you only have one instance of hock,
     // but it is invoked in various ways.
