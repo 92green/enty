@@ -33,7 +33,7 @@ function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptio
      * @kind function
      */
     function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): HockApplier {
-        console.log('DEPRECATED: EntityQueryHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
+        console.warn('DEPRECATED: EntityQueryHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
         function parseOptions(options: HockOptionsInput|Array<string>): Object {
             if(Array.isArray(options)) {
                 return {propChangeKeys: optionsOverride};

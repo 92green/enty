@@ -15,7 +15,7 @@ function MultiQueryHockFactory(sideEffectList: Array<SideEffect>, hockOptions?: 
     const RECEIVE = `${actionPrefix}_RECEIVE`;
     const ERROR = `${actionPrefix}_ERROR`;
 
-    console.log('DEPRECATED: MultiQueryHockFactory has been deprecated in favor of much improved MultiRequestHock. Check the docs for usage instructions.');
+    console.warn('DEPRECATED: MultiQueryHockFactory has been deprecated in favor of much improved MultiRequestHock. Check the docs for usage instructions.');
     return EntityQueryHockFactory(createAllRequestAction(FETCH, RECEIVE, ERROR, sideEffectList), hockOptions);
 }
 
