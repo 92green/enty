@@ -61,18 +61,18 @@ export default function MultiRequestHock(config: MultiRequestHockConfig): HockAp
                 updateMessage = (fetched: boolean, payload: *) => {
                     this.setState({
                         fetched,
-                        message: new Message({...this.state, ...payload})
+                        message: new Message({...this.state.message, ...payload})
                     });
                 }
 
-                onRequest = () => {
+                onRequest = (): Promise<*> => {
                     const requestState = this.state.fetched
                         ? RefetchingState()
                         : FetchingState()
                     ;
 
                     this.updateMessage(false, {requestState});
-                    config
+                    return config
                         .onRequest(this.props)
                         .then(response => this.updateMessage(true, {
                             response,

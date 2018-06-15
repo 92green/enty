@@ -85,7 +85,7 @@ test('config.payloadCreator will create the payload', t => {
 
 test('config.updateResultKey will by default be an identity function', t => {
     const actionCreator = spy();
-    const RequestHock = RequestHockFactory(actionCreator, {generateResultKey: () => 'fooResultKey'});
+    const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
         props.foo.onRequest();
@@ -97,7 +97,7 @@ test('config.updateResultKey will by default be an identity function', t => {
 
 test('config.updateResultKey will update the resultKey', t => {
     const actionCreator = spy();
-    const RequestHock = RequestHockFactory(actionCreator, {generateResultKey: () => 'fooResultKey'});
+    const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({
         name: 'foo',
         updateResultKey: (resultKey) => `${resultKey}-bar`
@@ -112,7 +112,7 @@ test('config.updateResultKey will update the resultKey', t => {
 
 test('config.updateResultKey is called with the resultKey and props', t => {
     const updateResultKey = spy();
-    const RequestHock = RequestHockFactory(fake(), {generateResultKey: () => 'fooResultKey'});
+    const RequestHock = RequestHockFactory(fake(), {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({
         name: 'foo',
         updateResultKey
