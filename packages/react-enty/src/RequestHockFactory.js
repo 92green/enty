@@ -38,7 +38,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
          */
         function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
-            const {payloadCreator = () => {}} = config;
+            const {payloadCreator = identity()} = config;
             const {updateResultKey = identity()} = config;
             const {name} = config;
 
@@ -56,7 +56,10 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                         this.request = pipe(
                             payloadCreator,
                             (payload: *): Promise<*> => {
-                                const nextResultKey = updateResultKey(config.resultKey || hockMeta.generateResultKey(payload));
+                                const nextResultKey = updateResultKey(
+                                    config.resultKey || hockMeta.generateResultKey(payload),
+                                    props
+                                );
                                 this.setState({
                                     nextResultKey,
                                     resultKey: this.state.nextResultKey

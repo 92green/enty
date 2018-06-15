@@ -58,6 +58,74 @@ test('will throw an error is config.name is not supplied', t => {
     t.deepEqual(RequestHockNoNameError('FooAction'), requestHockError);
 });
 
+test('config.payloadCreator will by default be an identity function', t => {
+    const actionCreator = spy();
+    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
+    const RequestHockApplier = RequestHock({name: 'foo'});
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest('foo');
+        return null;
+    });
+    shallow(<Child store={STORE}/>).dive().dive();
+    t.is(actionCreator.firstCall.args[0], 'foo');
+});
+
+test('config.payloadCreator will create the payload', t => {
+    const actionCreator = spy();
+    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
+    const RequestHockApplier = RequestHock({name: 'foo', payloadCreator: () => 'bar'});
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest('foo');
+        return null;
+    });
+    shallow(<Child store={STORE}/>).dive().dive();
+    t.is(actionCreator.firstCall.args[0], 'bar');
+    t.not(actionCreator.firstCall.args[0], 'foo');
+});
+
+test('config.updateResultKey will by default be an identity function', t => {
+    const actionCreator = spy();
+    const RequestHock = RequestHockFactory(actionCreator, {generateResultKey: () => 'fooResultKey'});
+    const RequestHockApplier = RequestHock({name: 'foo'});
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest();
+        return null;
+    });
+    shallow(<Child store={STORE}/>).dive().dive();
+    t.is(actionCreator.firstCall.args[1].resultKey, 'fooResultKey');
+});
+
+test('config.updateResultKey will update the resultKey', t => {
+    const actionCreator = spy();
+    const RequestHock = RequestHockFactory(actionCreator, {generateResultKey: () => 'fooResultKey'});
+    const RequestHockApplier = RequestHock({
+        name: 'foo',
+        updateResultKey: (resultKey) => `${resultKey}-bar`
+    });
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest();
+        return null;
+    });
+    shallow(<Child store={STORE}/>).dive().dive();
+    t.is(actionCreator.firstCall.args[1].resultKey, 'fooResultKey-bar');
+});
+
+test('config.updateResultKey is called with the resultKey and props', t => {
+    const updateResultKey = spy();
+    const RequestHock = RequestHockFactory(fake(), {generateResultKey: () => 'fooResultKey'});
+    const RequestHockApplier = RequestHock({
+        name: 'foo',
+        updateResultKey
+    });
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest();
+        return null;
+    });
+    shallow(<Child store={STORE} extraProp="bar" />).dive().dive();
+    t.is(updateResultKey.firstCall.args[0], 'fooResultKey');
+    t.deepEqual(updateResultKey.firstCall.args[1], {store: STORE, extraProp: 'bar'});
+});
+
 
 test('hocked component will be given and Message to props.[name]', t => {
     const Child = RequestHockApplier((props) => {
