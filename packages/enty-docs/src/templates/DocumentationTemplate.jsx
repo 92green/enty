@@ -44,6 +44,26 @@ query DocumentationQuery($name: String!) {
           fields {
             type
             key
+            value {
+              type
+              name
+              expression {
+                type
+                name
+                elements {
+                  type
+                  name
+                  applications {
+                    type
+                    name
+                  }
+                  expression {
+                    type
+                    name
+                  }
+                }
+              }
+            }
           }
           expression {
             type
@@ -132,8 +152,15 @@ query DocumentationQuery($name: String!) {
               elements {
                 type
                 name
+                expression {
+                  type
+                  name
+                }
+                applications {
+                  type
+                  name
+                }
               }
-
             }
           }
         }

@@ -26,14 +26,14 @@ import {UserItemRequestHock} from './EntityApi';
 
 function User(props) {
     const {requestState} = props.user;
-    const {payload} = props.user;
+    const {response} = props.user;
     const {requestError} = props.user;
 
     return requestState
         .fetchingMap(() => <Loader />)
         .refetchingMap(() => <Loader />)
         .errorMap(() => <Error errorData={requestError} />)
-        .successMap(() => <div>My name is: {payload.userItem.name}</div>)
+        .successMap(() => <div>My name is: {response.userItem.name}</div>)
         .value();
 }
 
