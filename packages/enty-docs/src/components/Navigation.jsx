@@ -41,10 +41,10 @@ export default function Navigation(props: Object): Node {
         <NavItem to="/api/Message">Message</NavItem>
 
         <NavHeading>React Entity - Internal</NavHeading>
-        <NavItem to="/api/EntityQueryHockFactory">EntityQueryHockFactory</NavItem>
+        {/*<NavItem to="/api/EntityQueryHockFactory">EntityQueryHockFactory</NavItem>
         <NavItem to="/api/EntityMutationHockFactory">EntityMutationHockFactory</NavItem>
         <NavItem to="/api/MultiQueryHockFactory">MultiQueryHockFactory</NavItem>
-        <NavItem to="/api/MultiMutationHockFactory">MultiMutationHockFactory</NavItem>
+        <NavItem to="/api/MultiMutationHockFactory">MultiMutationHockFactory</NavItem>*/}
 
         <NavItem to="/api/selectEntityByResult">selectEntityByResult</NavItem>
         <NavItem to="/api/selectEntityById">selectEntityById</NavItem>

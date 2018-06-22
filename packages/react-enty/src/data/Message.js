@@ -1,5 +1,5 @@
 // @flow
-
+import {EmptyState} from '../RequestState';
 
 /**
  * A Message bundles up all of the information surrounding a request and response from the api.
@@ -44,10 +44,10 @@ export default class Message {
      * The unique key that binds the request, the normalized data and the requestState together
      */
     resultKey: string;
-    constructor(props: *) {
+    constructor(props: * = {}) {
         this.resultKey = props.resultKey;
         this.response = props.response;
-        this.requestState = props.requestState;
+        this.requestState = props.requestState || EmptyState();
         this.requestError = props.requestError;
         this.onRequest = props.onRequest;
     }
