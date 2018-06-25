@@ -13,6 +13,7 @@
     "format": "prettier --trailing-comma es5 --no-semi --single-quote --write \"src/**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "private": true,
   "devDependencies": {
     "bruce": "^4.0.0",
     "gatsby": "^1.9.223",
