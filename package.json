@@ -1,7 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "prepublishOnly": "yarn build",
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
     "flow": "blueflag-test flow",
