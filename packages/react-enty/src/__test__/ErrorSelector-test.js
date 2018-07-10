@@ -1,9 +1,8 @@
 // @flow
-import test from 'ava';
-import {fromJS} from 'immutable';
+import { fromJS } from 'immutable';
 import ErrorSelector from '../ErrorSelector';
 
-test('will select errors out of state', t => {
+test('will select errors out of state', () => {
 
     var state = {
         entity: fromJS({
@@ -13,10 +12,10 @@ test('will select errors out of state', t => {
         })
     };
 
-    t.is(ErrorSelector(state, 'foo'), 'error');
+    expect(ErrorSelector(state, 'foo')).toBe('error');
 });
 
-test('can override stateKey', t => {
+test('can override stateKey', () => {
 
     var state = {
         bar: fromJS({
@@ -26,5 +25,5 @@ test('can override stateKey', t => {
         })
     };
 
-    t.is(ErrorSelector(state, 'foo', {stateKey: 'bar'}), 'error');
+    expect(ErrorSelector(state, 'foo', {stateKey: 'bar'})).toBe('error');
 });

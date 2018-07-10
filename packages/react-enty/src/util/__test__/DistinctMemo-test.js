@@ -1,10 +1,9 @@
-import test from 'ava';
 import {spy} from 'sinon';
 import DistinctMemo from '../DistinctMemo';
 
 const OLD = {a: 2};
 
-test('DistinctMemo will cache values', tt => {
+test('DistinctMemo will cache values', () => {
     const update = spy();
     const memo = new DistinctMemo((ii) => {
         update();
@@ -15,7 +14,7 @@ test('DistinctMemo will cache values', tt => {
     value = memo.value(OLD);
     value = memo.value(OLD);
 
-    tt.is(value, OLD);
-    tt.is(update.callCount, 1);
+    expect(value).toBe(OLD);
+    expect(update.callCount).toBe(1);
     // memo.value(NEW);
 });

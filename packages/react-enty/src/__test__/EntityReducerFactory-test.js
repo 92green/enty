@@ -1,24 +1,25 @@
 //@flow
-import test from 'ava';
 import EntityReducerFactory from '../EntityReducerFactory';
 import EntitySchema from 'enty/lib/EntitySchema';
 import ListSchema from 'enty/lib/ListSchema';
 import MapSchema from 'enty/lib/MapSchema';
+import get from 'unmutable/lib/get';
 import {is, fromJS, Map} from 'immutable';
 
 //
 // Schemas
 //
 
-var author = EntitySchema('author', {idAttribute: item => item.fullnameId});
+var author = EntitySchema('author', {idAtribute: get('fullnameId')})
+    .set(MapSchema({}))
 
 var topListings = EntitySchema('topListings', {
-    idAttribute: item => item.fullnameId,
+    idAttribute: get('fullnameId'),
     definition: MapSchema({author})
 });
 
 var subreddit = EntitySchema('subreddit', {
-    idAttribute: item => item.fullnameId,
+    idAttribute: get('fullnameId'),
     definition: MapSchema({topListings: ListSchema(topListings)})
 });
 
@@ -45,7 +46,7 @@ const INITIAL_STATE = fromJS({
     }
 });
 
-test('EntityReducerFactory normalizes a reuslt', (tt: *) => {
+test('EntityReducerFactory normalizes a reuslt', () => {
     const examplePayload = {
         subreddit: {
             name: "MechanicalKeyboards",
@@ -62,62 +63,43 @@ test('EntityReducerFactory normalizes a reuslt', (tt: *) => {
         payload: examplePayload
     };
 
+    const state = EntityReducer(INITIAL_STATE, exampleReceiveAction);
 
-    tt.true(
-        is(
-            EntityReducer(INITIAL_STATE, exampleReceiveAction)
-                .getIn(['subreddit', 'MK'])
-                .delete('topListings'),
-            fromJS(examplePayload.subreddit).delete('topListings')
-        )
-    );
+    expect(state.getIn(['subreddit', 'MK', 'fullnameId']))
+        .toBe(examplePayload.subreddit.fullnameId);
 });
 
-test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', (tt: *) => {
-    tt.is(EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching, true);
+test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', () => {
+    expect(
+        EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching
+    ).toBe(true);
 });
 
-
-
-test('EntityReducerFactory', (tt: *) => {
+test('EntityReducerFactory', () => {
 
 
     const exampleAction = {
         type: "myType"
     };
 
-    tt.true(
-        is(
-            EntityReducer(undefined, exampleAction).get('_baseSchema'),
-            Map(schemaMap)
-        ),
-        'Immutable version of schema is returned under _baseSchema when reducer is called with no existing state'
-    );
+    expect(is(
+        EntityReducer(undefined, exampleAction).get('_baseSchema'),
+        Map(schemaMap)
+    )).toBe(true);
 
-    tt.true(
-        is(
-            EntityReducer(undefined, exampleAction).get('_result'),
-            Map()
-        ),
-        '_result is empty  when reducer is called with no existing state'
-    );
+    expect(is(
+        EntityReducer(undefined, exampleAction).get('_result'),
+        Map()
+    )).toBe(true);
 
 
 
-    tt.is(
-        EntityReducer(undefined, exampleAction)
-            .getIn(['_requestState', 'myType']),
-        undefined,
-        '_requestState is undefined when action type does not end with _FETCH'
-    );
+    expect(EntityReducer(undefined, exampleAction)
+        .getIn(['_requestState', 'myType'])).toBe(undefined);
 
-    tt.is(
-        EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'})
-            .getIn(['_requestState', 'TEST'])
-            .errorFlatMap(ii => ii),
-        'errorPayload',
-        '_requestState.error equals payload when action type ends with _ERROR'
-    );
+    expect(EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'})
+        .getIn(['_requestState', 'TEST'])
+        .errorFlatMap(ii => ii)).toBe('errorPayload');
 
     const exampleState = fromJS({
         thing: {
@@ -125,13 +107,10 @@ test('EntityReducerFactory', (tt: *) => {
         }
     });
 
-    tt.true(
-        is(
-            EntityReducer(exampleState, exampleAction).get('thing'),
-            fromJS({abc: '123'})
-        ),
-        'data on state is unchanged when not receiving data'
-    );
+    expect(is(
+        EntityReducer(exampleState, exampleAction).get('thing'),
+        fromJS({abc: '123'})
+    )).toBe(true);
 
     const exampleStateWithResults = fromJS({
         thing: {
@@ -147,13 +126,10 @@ test('EntityReducerFactory', (tt: *) => {
         }
     });
 
-    tt.true(
-        is(
-            EntityReducer(exampleStateWithResults, exampleAction).get('_result'),
-            exampleStateWithResults.get('_result')
-        ),
-        'state._result is unchanged when not receiving data'
-    );
+    expect(is(
+        EntityReducer(exampleStateWithResults, exampleAction).get('_result'),
+        exampleStateWithResults.get('_result')
+    )).toBe(true);
 
     const exampleActionNoResultReset = {
         type: 'TEST_FETCH',
@@ -162,22 +138,16 @@ test('EntityReducerFactory', (tt: *) => {
         }
     };
 
-    tt.true(
-        is(
-            EntityReducer(exampleStateWithResults, exampleActionNoResultReset).get('_result'),
-            exampleStateWithResults.get('_result').delete('TEST_FETCH')
-        ),
-        'state._result.TYPE is deleted when TYPE is fetched and resultResetOnFetch is true'
-    );
+    expect(is(
+        EntityReducer(exampleStateWithResults, exampleActionNoResultReset).get('_result'),
+        exampleStateWithResults.get('_result').delete('TEST_FETCH')
+    )).toBe(true);
 
 
-    tt.true(
-        is(
-            EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
-            exampleStateWithResults.get('_result')
-        ),
-        'state._result.TYPE is unchanged when a type is fetched AND meta.resultResetOnFetch is false'
-    );
+    expect(is(
+        EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
+        exampleStateWithResults.get('_result')
+    )).toBe(true);
 
     const examplePayload = {
         subreddit: {
@@ -201,29 +171,21 @@ test('EntityReducerFactory', (tt: *) => {
         payload: examplePayload
     };
 
-    tt.is(
-        EntityReducer(exampleState, exampleReceiveAction).getIn(['_result', 'TEST_RECEIVE', 'subreddit']),
-        'MK',
-        'Normalized results are stored in state under _result.ACTIONNAME.KEY'
-    );
+    expect(
+        EntityReducer(exampleState, exampleReceiveAction).getIn(['_result', 'TEST_RECEIVE', 'subreddit'])
+    ).toBe('MK');
 
-    tt.true(
-        is(
-            EntityReducer(exampleState, exampleReceiveAction)
-                .getIn(['subreddit', 'MK'])
-                .delete('topListings'),
-            fromJS(examplePayload.subreddit).delete('topListings')
-        ),
-        'Normalized entities are stored in state under ENTITYNAME.ID'
-    );
+    expect(is(
+        EntityReducer(exampleState, exampleReceiveAction)
+            .getIn(['subreddit', 'MK'])
+            .delete('topListings'),
+        fromJS(examplePayload.subreddit).delete('topListings')
+    )).toBe(true);
 
-    tt.true(
-        is(
-            EntityReducer(exampleState, exampleReceiveAction).getIn(['topListings', 'NT']),
-            fromJS(examplePayload.subreddit.topListings[1])
-        ),
-        'Normalized nested entities are stored in state under ENTITYNAME.ID'
-    );
+    expect(is(
+        EntityReducer(exampleState, exampleReceiveAction).getIn(['topListings', 'NT']),
+        fromJS(examplePayload.subreddit.topListings[1])
+    )).toBe(true);
 
     const mergeExamplePayloadOne = {
         subreddit: {
@@ -281,58 +243,27 @@ test('EntityReducerFactory', (tt: *) => {
     const mergeStateOne = EntityReducer(exampleState, mergeExampleReceiveActionOne);
     const mergeStateTwo = EntityReducer(mergeStateOne, mergeExampleReceiveActionTwo);
 
-    tt.is(
-        mergeStateTwo.getIn(['subreddit', 'MK', 'name']),
-        mergeExamplePayloadTwo.subreddit.name,
-        'Receiving updated values on the top level of an entity item will replace existing values'
-    );
-
-    tt.deepEqual(
-        mergeStateTwo.getIn(['subreddit', 'MK', 'tags']),
-        mergeExamplePayloadTwo.subreddit.tags,
-        'Receiving updated non-entity values on the second level of an entity are not merged, they are replaced'
-    );
-
-    tt.is(
-        mergeStateTwo.getIn(['subreddit', 'MK', 'code']),
-        mergeExamplePayloadOne.subreddit.code,
-        'Existing top level keys and values on an entity item will remain when subsequent received data does not contain those top level keys'
-    );
-
-    tt.deepEqual(
-        mergeStateTwo.getIn(['topListings', 'NT']).toJS(),
-        mergeExamplePayloadTwo.subreddit.topListings[0],
-        'Receiving updated info for an entity will replace nested entities'
-    );
-
-    tt.deepEqual(
-        mergeStateTwo.getIn(['topListings', 'CT']).toJS(),
-        mergeExamplePayloadOne.subreddit.topListings[0],
-        'Once an entity is received, its entity data is retained even if subsequent received entities dont contain it'
-    );
-
-    tt.deepEqual(
-        mergeStateTwo.getIn(['topListings', 'GL']).toJS(),
-        mergeExamplePayloadTwo.subreddit.topListings[1],
-        'Newly received nested entites are merged into their entity container'
-    );
-
-
+    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'name'])).toBe(mergeExamplePayloadTwo.subreddit.name);
+    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'tags'])).toEqual(mergeExamplePayloadTwo.subreddit.tags);
+    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'code'])).toBe(mergeExamplePayloadOne.subreddit.code);
+    expect(mergeStateTwo.getIn(['topListings', 'NT']).toJS()).toEqual(mergeExamplePayloadTwo.subreddit.topListings[0]);
+    expect(mergeStateTwo.getIn(['topListings', 'CT']).toJS()).toEqual(mergeExamplePayloadOne.subreddit.topListings[0]);
+    expect(mergeStateTwo.getIn(['topListings', 'GL']).toJS()).toEqual(mergeExamplePayloadTwo.subreddit.topListings[1]);
 
 });
 
 //
 // Don't update state for other actions.
 
-test("foreign actions will preserve state.entity's strict object equality", (tt: *) => {
+test("foreign actions will preserve state.entity's strict object equality", () => {
     // check bad keys
-    tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO'}), INITIAL_STATE);
-    tt.is(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'}), INITIAL_STATE);
+    expect(EntityReducer(INITIAL_STATE, {type: 'FOO'})).toBe(INITIAL_STATE);
+    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'})).toBe(INITIAL_STATE);
 
     // check the reverse
-    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH'}), INITIAL_STATE);
-    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_ERROR'}), INITIAL_STATE);
-    tt.not(EntityReducer(INITIAL_STATE, {type: 'FOO_RECEIVE'}), INITIAL_STATE);
+    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH'})).not.toBe(INITIAL_STATE);
+    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_ERROR'})).not.toBe(INITIAL_STATE);
+    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_RECEIVE'})).not.toBe(INITIAL_STATE);
 });
 
 

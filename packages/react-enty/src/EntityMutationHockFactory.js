@@ -107,7 +107,6 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
                     this.mutation = (data: Object) => {
                         const payload = payloadCreator(data);
                         const resultKey = updateResultKey(options.resultKey || fromJS({hash: payload}).hashCode() + options.requestActionName, props);
-
                         this.setState({resultKey});
                         props.dispatch(actionCreator(payload, {...options, resultKey}));
                     };
@@ -118,6 +117,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
                         resultKey: this.state.resultKey,
                         [String(options.onMutateProp)]: this.mutation
                     };
+                    // console.log('render', childProps);
                     const props = group
                         ? {[group]: childProps}
                         : childProps

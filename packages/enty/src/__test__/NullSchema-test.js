@@ -1,5 +1,4 @@
 //@flow
-import test from 'ava';
 import NullSchema from '../NullSchema';
 import MapSchema from '../MapSchema';
 import {DELETED_ENTITY} from '../util/SchemaConstant';
@@ -9,28 +8,28 @@ import {NoDefinitionError} from '../util/Error';
 var foo = new NullSchema();
 const denormalizeState = {entities: {}, result: {}};
 
-test('denormalize will return null', (t: *) => {
-    t.is(foo.denormalize(denormalizeState), null);
+test('denormalize will return null', () => {
+    expect(foo.denormalize(denormalizeState)).toBe(null);
 });
 
 
-test('denormalize does not care about path', (t: *) => {
-    t.notThrows(() => foo.denormalize(denormalizeState));
-    t.notThrows(() => foo.denormalize(denormalizeState, ['foo']));
+test('denormalize does not care about path', () => {
+    expect(() => foo.denormalize(denormalizeState)).not.toThrow();
+    expect(() => foo.denormalize(denormalizeState, ['foo'])).not.toThrow();
 });
 
-test('normalize will return blank NormalizeState', (t: *) => {
+test('normalize will return blank NormalizeState', () => {
     const state = foo.normalize('_', {foo: 'foo'});
 
-    t.is(state.entities.foo, 'foo');
-    t.is(state.result, null);
-    t.deepEqual(state.schemas, {});
+    expect(state.entities.foo).toBe('foo');
+    expect(state.result).toBe(null);
+    expect(state.schemas).toEqual({});
 });
 
-test('normalize will not mutate entities', (t: *) => {
+test('normalize will not mutate entities', () => {
     const entities = {foo: {}};
     const state = foo.normalize('_', entities);
 
-    t.is(state.entities.foo, entities.foo);
+    expect(state.entities.foo).toBe(entities.foo);
 });
 

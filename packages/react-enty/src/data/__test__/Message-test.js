@@ -1,10 +1,8 @@
 //@flow
 //
-import test from 'ava';
-
 import Message from '../Message';
 
-test('will let you set resultKey, response, requestState, requestError, onRequest', (t: Object) => {
+test('will let you set resultKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
         resultKey: 'foo',
         response: 'bar',
@@ -13,14 +11,14 @@ test('will let you set resultKey, response, requestState, requestError, onReques
         onRequest: 'quux',
     });
 
-    t.is(message.resultKey, 'foo');
-    t.is(message.response, 'bar');
-    t.is(message.requestState, 'baz');
-    t.is(message.requestError, 'qux');
-    t.is(message.onRequest , 'quux');
+    expect(message.resultKey).toBe('foo');
+    expect(message.response).toBe('bar');
+    expect(message.requestState).toBe('baz');
+    expect(message.requestError).toBe('qux');
+    expect(message.onRequest).toBe('quux');
 });
 
 
-test('will default requestState to Empty', (t: Object) => {
-    t.is(new Message().requestState.isEmpty, true);
+test('will default requestState to Empty', () => {
+    expect(new Message().requestState.isEmpty).toBe(true);
 });

@@ -1,5 +1,4 @@
 //@flow
-import test from 'ava';
 import sinon from 'sinon';
 import {Map} from 'immutable';
 import EntityApi from '../EntityApi';
@@ -21,11 +20,11 @@ const getState = () => ({
     entity: Map()
 })
 
-test('createRequestActionSet', (t: Object) => {
-    t.true(typeof actions.foo.bar === 'function', 'should have an action creator');
-    t.is(actions.actionTypes.FOO_BAR_FETCH, 'FOO_BAR_FETCH', 'should have FETCH action type');
-    t.is(actions.actionTypes.FOO_BAR_RECEIVE, 'FOO_BAR_RECEIVE', 'should have RECIEVE action type');
-    t.is(actions.actionTypes.FOO_BAR_ERROR, 'FOO_BAR_ERROR', 'should have ERROR action type');
+test('createRequestActionSet', () => {
+    expect(typeof actions.foo.bar === 'function').toBe(true);
+    expect(actions.actionTypes.FOO_BAR_FETCH).toBe('FOO_BAR_FETCH');
+    expect(actions.actionTypes.FOO_BAR_RECEIVE).toBe('FOO_BAR_RECEIVE');
+    expect(actions.actionTypes.FOO_BAR_ERROR).toBe('FOO_BAR_ERROR');
 });
 
 
@@ -34,75 +33,75 @@ test('createRequestActionSet', (t: Object) => {
 
 // const getRequest = (side) => createRequestAction('FOO_FETCH', 'FOO_RECEIVE', 'FOO_ERROR', side);
 
-test('createRequestAction returns a function', (t: Object) => {
-    t.is(typeof actions.resolve(), 'function');
+test('createRequestAction returns a function', () => {
+    expect(typeof actions.resolve()).toBe('function');
 });
 
-test('createRequestAction dispatches FETCH always', (t: Object): Promise<any> => {
+test('createRequestAction dispatches FETCH always', () => {
     var dispatch = sinon.spy();
     return actions.resolve(RESOLVE)(dispatch, getState)
         .then(() => {
-            t.is('RESOLVE_FETCH', dispatch.firstCall.args[0].type);
+            expect('RESOLVE_FETCH').toBe(dispatch.firstCall.args[0].type);
         });
 });
 
-test('RECEIVE action resultKey defaults to RECEIVE action name', (t: Object): Promise<any> => {
+test('RECEIVE action resultKey defaults to RECEIVE action name', () => {
     var dispatch = sinon.spy();
     return actions.resolve(RESOLVE)(dispatch, getState)
         .then(() => {
-            t.is(dispatch.secondCall.args[0].type, 'RESOLVE_RECEIVE');
+            expect(dispatch.secondCall.args[0].type).toBe('RESOLVE_RECEIVE');
         });
 });
 
-test('ERROR action resultKey defaults to ERROR action name', (t: Object): Promise<any> => {
+test('ERROR action resultKey defaults to ERROR action name', () => {
     var dispatch = sinon.spy();
     return actions.reject(REJECT)(dispatch, getState)
         .catch(_ => _)
         .then(() => {
-            t.is('REJECT_ERROR', dispatch.secondCall.args[0].type);
+            expect('REJECT_ERROR').toBe(dispatch.secondCall.args[0].type);
         });
 });
 
-test('FETCH RECIEVE action will pass meta through', (t: Object): Promise<any> => {
+test('FETCH RECIEVE action will pass meta through', () => {
     var dispatch = sinon.spy();
     return actions.resolve(RESOLVE, {foo: 'bar'})(dispatch, getState)
         .then(() => {
-            t.is('bar', dispatch.firstCall.args[0].meta.foo);
-            t.is('bar', dispatch.secondCall.args[0].meta.foo);
+            expect('bar').toBe(dispatch.firstCall.args[0].meta.foo);
+            expect('bar').toBe(dispatch.secondCall.args[0].meta.foo);
         });
 });
 
-test('ERROR action will pass meta through', (t: Object): Promise<any> => {
+test('ERROR action will pass meta through', () => {
     var dispatch = sinon.spy();
     return actions.reject(REJECT, {foo: 'bar'})(dispatch, getState)
         .catch(_ => _)
         .then(() => {
-            t.is('bar', dispatch.secondCall.args[0].meta.foo);
+            expect('bar').toBe(dispatch.secondCall.args[0].meta.foo);
         });
 });
 
 
 // Create Multi ActionCreator
 
-test('createAllRequestAction will call all sideffects', (t: Object): Promise<any> => {
+test('createAllRequestAction will call all sideffects', () => {
     var aa = sinon.spy();
     var bb = sinon.spy();
 
     return createAllRequestAction('a', 'a', 'a', [aa,bb])()(sinon.spy(), getState)
         .then(() => {
-            t.is(aa.callCount, 1);
-            t.is(bb.callCount, 1);
-        })
+            expect(aa.callCount).toBe(1);
+            expect(bb.callCount).toBe(1);
+        });
 });
 
-test('createAllRequestAction will merge resulting objects', (t: Object): Promise<any> => {
+test('createAllRequestAction will merge resulting objects', () => {
     var aa = async () => ({aa: 'aa'});
     var bb = async () => ({bb: 'bb'});
     var dispatch = sinon.spy();
 
     return createAllRequestAction('a', 'a', 'a', [aa,bb])()(dispatch, getState)
         .then(() => {
-            t.is(null, dispatch.firstCall.args[0].payload);
-            t.deepEqual({aa: 'aa', bb: 'bb'}, dispatch.secondCall.args[0].payload);
+            expect(null).toBe(dispatch.firstCall.args[0].payload);
+            expect({aa: 'aa', bb: 'bb'}).toEqual(dispatch.secondCall.args[0].payload);
         });
 });

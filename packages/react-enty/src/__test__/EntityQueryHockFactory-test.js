@@ -1,12 +1,16 @@
 //@flow
-import test from 'ava';
 import React from 'react';
 import type {Element} from 'react';
-import {shallow} from 'enzyme';
 import {fromJS} from 'immutable';
 import EntityQueryHockFactory from '../EntityQueryHockFactory';
 import {FetchingState} from '../RequestState';
 import sinon from 'sinon';
+
+import {configure} from 'enzyme';
+import {shallow} from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+configure({adapter: new Adapter()});
+
 
 var NOOP = () => {};
 var STORE = {
@@ -21,33 +25,36 @@ var STORE = {
     })
 };
 
+global.console = {warn: jest.fn()}
+
 var QUERY_CREATOR = () => `query`;
 var entityQuery = EntityQueryHockFactory(NOOP);
 var hockedComponent = entityQuery(QUERY_CREATOR, ['keys']);
 
-test('EntityQueryHockFactory should return a function', (tt: Object) => {
-    tt.is(typeof entityQuery, 'function');
+
+test('EntityQueryHockFactory should return a function', () => {
+    expect(typeof entityQuery).toBe('function');
 });
 
-test('EntityQueryHockFactorys hockedComponent should be a function', (tt: Object) => {
-    tt.is(typeof hockedComponent, 'function');
+test('EntityQueryHockFactorys hockedComponent should be a function', () => {
+    expect(typeof hockedComponent).toBe('function');
 });
 
-test('EntityQueryHockFactorys hockedComponent should be an auto request', (tt: Object) => {
+test('EntityQueryHockFactorys hockedComponent should be an auto request', () => {
     const NOOP_COMPONENT = () => <div/>;
     var RunTheHock = hockedComponent(NOOP_COMPONENT);
-    tt.is(RunTheHock.displayName, 'Connect(PropChangeHock)');
+    expect(RunTheHock.displayName).toBe('Connect(PropChangeHock)');
 });
 
 
-test('resultKey is derived either from the metaOverride or a hash of the queryCreator', (tt: Object) => {
+test('resultKey is derived either from the metaOverride or a hash of the queryCreator', () => {
     const NOOP_COMPONENT = () => <div/>;
     const sideEffectA = (aa: any, bb: any) => {
-        tt.is(bb.resultKey, 'foo');
+        expect(bb.resultKey).toBe('foo');
     };
 
     const sideEffectB = (aa: any, bb: any) => {
-        tt.is(bb.resultKey, '431296113');
+        expect(bb.resultKey).toBe('431296113');
     };
 
 
@@ -68,10 +75,10 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
 });
 
 
-test('requestState will return an empty RequestState for unknown resultKey', (tt: Object) => {
+test('requestState will return an empty RequestState for unknown resultKey', () => {
     const Child = (props: Object): Element<any> => {
-        tt.truthy(props.requestState instanceof FetchingState().constructor);
-        tt.is(props.requestState.value('foo'), 'foo');
+        expect(props.requestState instanceof FetchingState().constructor).toBeTruthy();
+        expect(props.requestState.value('foo')).toBe('foo');
         return <div></div>;
     };
 
@@ -82,10 +89,10 @@ test('requestState will return an empty RequestState for unknown resultKey', (tt
         .dive();
 });
 
-test('EntityQueryHockFactory will group props if a `group` config is provided', (tt: Object) => {
+test('EntityQueryHockFactory will group props if a `group` config is provided', () => {
     const Child = (props: Object): Element<any> => {
-        tt.is(props.fooGroup.requestState instanceof FetchingState().constructor, true);
-        tt.is(props.fooGroup.requestState.value('foo'), 'foo');
+        expect(props.fooGroup.requestState instanceof FetchingState().constructor).toBe(true);
+        expect(props.fooGroup.requestState.value('foo')).toBe('foo');
         return <div></div>;
     };
 
@@ -97,12 +104,13 @@ test('EntityQueryHockFactory will group props if a `group` config is provided', 
 });
 
 
-test('EntityQueryHockFactory can be configured to update resultKey based on props', (t: Object) => {
-    var actionCreator = sinon.spy();
+test('EntityQueryHockFactory can be configured to update resultKey based on props', () => {
+    var actionCreator = jest.fn();
+    var dispatch = jest.fn();
 
     var store = {
         subscribe: STORE.subscribe,
-        dispatch: (aa) => aa,
+        dispatch,
         getState: STORE.getState
     };
 
@@ -119,6 +127,10 @@ test('EntityQueryHockFactory can be configured to update resultKey based on prop
     mount(<Component store={store} id="2" />);
     mount(<Component store={store} id="3" />);
 
-    t.deepEqual(actionCreator.getCalls().map(ii => ii.args[1].resultKey), ['1', '2', '3']);
+    const calls = actionCreator.mock.calls;
+
+    expect(calls[0][1].resultKey).toBe('1');
+    expect(calls[2][1].resultKey).toBe('2');
+    expect(calls[4][1].resultKey).toBe('3');
 });
 
