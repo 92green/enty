@@ -10,9 +10,15 @@
     "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/gatsby*",
+      "**/gatsby*/**"
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
