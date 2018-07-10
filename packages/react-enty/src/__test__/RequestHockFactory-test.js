@@ -51,6 +51,7 @@ const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
 const RequestHockApplier = RequestHock({name: 'foo'});
 
 beforeEach(() => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReset();
 })
 
@@ -68,6 +69,7 @@ test('will throw an error is config.name is not supplied', () => {
 });
 
 test('config.payloadCreator will by default be an identity function', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
 
     const actionCreator = jest.fn();
@@ -82,6 +84,7 @@ test('config.payloadCreator will by default be an identity function', () => {
 });
 
 test('config.payloadCreator will create the payload', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
@@ -95,6 +98,7 @@ test('config.payloadCreator will create the payload', () => {
 });
 
 test('config.updateResultKey will by default be an identity function', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
@@ -108,6 +112,7 @@ test('config.updateResultKey will by default be an identity function', () => {
 });
 
 test('config.updateResultKey will update the resultKey', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
@@ -125,6 +130,7 @@ test('config.updateResultKey will update the resultKey', () => {
 });
 
 test('config.updateResultKey is called with the resultKey and props', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const updateResultKey = jest.fn();
     const RequestHock = RequestHockFactory(jest.fn(), {...hockMeta, generateResultKey: () => 'fooResultKey'});
@@ -142,6 +148,7 @@ test('config.updateResultKey is called with the resultKey and props', () => {
 
 
 test('hocked component will be given and Message to props.[name]', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const Child = RequestHockApplier((props) => {
         expect(props.foo).toBeInstanceOf(Message);
@@ -153,6 +160,7 @@ test('hocked component will be given and Message to props.[name]', () => {
 
 
 test('Message.onRequest will dispatch an action', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
 
     const dispatch = jest.fn();
@@ -174,6 +182,7 @@ test('Message.onRequest will dispatch an action', () => {
 
 test('will only use a new response key once a request as returned', () => {
     const runTest = (state, key) => {
+    // $FlowFixMe - flow cant tell that this has been mocked
         RequestStateSelector.mockReturnValue(state);
         const responseKeyMock = jest.fn();
         const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
@@ -204,6 +213,7 @@ test('will only use a new response key once a request as returned', () => {
 
 
 test('will strip errors out of requestStates', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(ErrorState({message: 'error!'}));
 
     const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);

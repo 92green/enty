@@ -5,9 +5,8 @@
     "watch": "lerna run watch --parallel --",
     "flow": "blueflag-test flow",
     "lint": "blueflag-test lint",
-    "test": "blueflag-test test -M",
-    "coverage": "blueflag-test coverage -M",
-    "test-all": "yarn lint && yarn flow && yarn coverage",
+    "test": "yarn jest",
+    "test-all": "yarn lint && yarn flow && yarn test",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
   "workspaces": [
