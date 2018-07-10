@@ -5,6 +5,8 @@ module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
 suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
 
+[libs]
+./node_modules/blueflag-test/flow-typed-shims/immutable-3.8.x/
 
 [ignore]
 <PROJECT_ROOT>/coverage/.*
@@ -15,3 +17,4 @@ suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
 <PROJECT_ROOT>/node_modules/graphql
 <PROJECT_ROOT>/.*/gatsby-node.js
 <PROJECT_ROOT>/packages/enty-docs/.*
+<PROJECT_ROOT>/node_modules/immutable

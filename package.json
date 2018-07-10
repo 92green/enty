@@ -4,9 +4,10 @@
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
     "flow": "blueflag-test flow",
+    "flow-coverage": "blueflag-test flow-coverage -M",
     "lint": "blueflag-test lint",
     "test": "yarn jest",
-    "test-all": "yarn lint && yarn flow && yarn test",
+    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
   "workspaces": [
@@ -17,7 +18,7 @@
     "babel-core": "^6.23.0",
     "babel-jest": "^23.2.0",
     "babel-preset-blueflag": "^0.6.0",
-    "blueflag-test": "^0.18.1",
+    "blueflag-test": "^0.19.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "gatsby": "^1.9.223",
