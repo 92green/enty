@@ -27,8 +27,7 @@ test('onRequest will only fire if config.shouldComponentAutoRequest returns true
     });
     const willFire = AutoHockFactory({
         name: 'foo',
-        auto: true,
-        shouldComponentAutoRequest: () => true
+        auto: true
     });
 
     willFire().onPropChange({foo: {onRequest}});

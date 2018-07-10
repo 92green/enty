@@ -13,5 +13,8 @@
 coverage
 dist
 lib
+tags*
+.yalc
+yalc.lock
 **/node_modules
 public
