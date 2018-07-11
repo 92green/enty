@@ -1,41 +1,32 @@
 //@flow
 //
-import test from 'ava';
-
-import {NoDefinitionError} from '../Error';
+import { NoDefinitionError } from '../Error';
 import {CompositeKeysMustBeEntitiesError} from '../Error';
 import {CompositeDefinitionMustBeEntityError} from '../Error';
 import {UndefinedIdError} from '../Error';
 
-test('NoDefinitionError', (t: Object) => {
-    const error = t.throws(() => {
+test('NoDefinitionError', () => {
+    const error = expect(() => {
         throw NoDefinitionError('foo');
-    });
-    t.is(error.message.indexOf('foo') !== -1, true);
+    }).toThrow(/foo/);
 });
 
 
-test('CompositeKeysMustBeEntitiesError', (t: Object) => {
-    const error = t.throws(() => {
+test('CompositeKeysMustBeEntitiesError', () => {
+    const error = expect(() => {
         throw CompositeKeysMustBeEntitiesError('foo', 'bar');
-    });
-    t.is(error.message.indexOf('foo') !== -1, true);
-    t.is(error.message.indexOf('bar') !== -1, true);
+    }).toThrow(/foo.*bar/);
 });
 
 
-test('CompositeDefinitionMustBeEntityError', (t: Object) => {
-    const error = t.throws(() => {
+test('CompositeDefinitionMustBeEntityError', () => {
+    const error = expect(() => {
         throw CompositeDefinitionMustBeEntityError('foo', 'bar');
-    });
-    t.is(error.message.indexOf('foo') !== -1, true);
-    t.is(error.message.indexOf('bar') !== -1, true);
+    }).toThrow(/foo.*bar/);
 });
 
-test('UndefinedIdError', (t: Object) => {
-    const error = t.throws(() => {
+test('UndefinedIdError', () => {
+    const error = expect(() => {
         throw UndefinedIdError('foo', 'bar');
-    });
-    t.is(error.message.indexOf('foo') !== -1, true);
-    t.is(error.message.indexOf('bar') !== -1, true);
+    }).toThrow(/foo.*bar/);
 });

@@ -1,5 +1,3 @@
-import test from 'ava';
-import {shallow} from 'enzyme';
 import React from 'react';
 import Connect from '../Connect';
 
@@ -22,23 +20,23 @@ const Compy = Connect(state => state)(() => {
     return null;
 });
 
-test('Connect will check strict equality on state.[stateKey] before updating', tt => {
+test('Connect will check strict equality on state.[stateKey] before updating', () => {
     const wrapper = shallowWithState(<Compy/>);
     wrapper.setProps({a:1});
     wrapper.setProps({a:2});
-    tt.is(OLD, wrapper.prop('entity'));
+    expect(wrapper.prop('entity')).toBe(OLD);
 });
 
-test('Connect will check strict equality on state.[stateKey] before updating', tt => {
+test('Connect will check strict equality on state.[stateKey] before updating', () => {
     const wrapper = shallowWithState(<Compy/>);
     wrapper.setProps({a:1});
     STATE = {entity: NEW};
     wrapper.setProps({a:2});
-    tt.not(OLD, wrapper.prop('entity'));
+    expect(OLD).not.toBe(wrapper.prop('entity'));
 });
 
 
-test('Connect will check other state keys', tt => {
+test('Connect will check other state keys', () => {
     var OLD = {a: 1};
     var NEW = {a: 1};
     STATE = {other: OLD};
@@ -51,5 +49,5 @@ test('Connect will check other state keys', tt => {
     wrapper.setProps({a:1});
     STATE = {other: NEW};
     wrapper.setProps({a:2});
-    tt.not(OLD, wrapper.prop('other'));
+    expect(OLD).not.toBe(wrapper.prop('other'));
 });

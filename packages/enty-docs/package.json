@@ -19,6 +19,7 @@
     "gatsby": "^1.9.223",
     "gatsby-link": "^1.6.38",
     "gatsby-plugin-react-helmet": "^2.0.6",
+    "gatsby-plugin-react-next": "^1.0.11",
     "gatsby-plugin-sass": "^1.0.20",
     "gatsby-source-filesystem": "^1.5.26",
     "gatsby-transformer-documentationjs": "^1.4.10",

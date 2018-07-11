@@ -1,46 +1,25 @@
 //@flow
-//
-import test from 'ava';
-import {stub} from 'sinon';
-const proxyquire = require('proxyquire').noCallThru();
+import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+import AutoHockFactory from '../AutoHockFactory';
+
+jest.mock('stampy/lib/hock/PropChangeHock');
+PropChangeHock.mockImplementation((_) => _);
 
 
+test('will apply propChange hock if config.auto is truthy', () => {
+    AutoHockFactory({name: 'foo', auto: false});
+    expect(PropChangeHock).not.toHaveBeenCalled();
 
-test('will apply propChange hock if config.auto is truthy', t => {
-    const PropChangeHock = stub().returns(config => config);
-    const AutoHockFactory = proxyquire('../AutoHockFactory', {
-        'stampy/lib/hock/PropChangeHock': PropChangeHock
-    }).default;
+    AutoHockFactory({name: 'foo', auto: true});
+    expect(PropChangeHock.mock.calls[0][0]().paths).toEqual([]);
 
-
-    AutoHockFactory({auto: false});
-    t.is(
-        PropChangeHock.callCount,
-        0,
-        'will not call PropChangeHock if auto is false'
-    );
-
-    AutoHockFactory({auto: true});
-    t.deepEqual(
-        PropChangeHock.args[0][0]().paths,
-        [],
-        'will pass an empty array if auto is `true`'
-    );
-
-    AutoHockFactory({auto: ['foo', 'bar']});
-    t.deepEqual(
-        PropChangeHock.args[1][0]().paths,
-        ['foo', 'bar'],
-        'will pass auto to paths if it is not a boolean'
-    );
+    AutoHockFactory({name: 'foo', auto: ['foo', 'bar']});
+    expect(PropChangeHock.mock.calls[1][0]().paths).toEqual(['foo', 'bar']);
 });
 
 
-test('onRequest will only fire if config.shouldComponentAutoRequest returns true', t => {
-    const AutoHockFactory = proxyquire('../AutoHockFactory', {
-        'stampy/lib/hock/PropChangeHock': xx => xx
-    }).default;
-
+test('onRequest will only fire if config.shouldComponentAutoRequest returns true', () => {
+    const onRequest = jest.fn();
     const wontFire = AutoHockFactory({
         name: 'foo',
         auto: true,
@@ -48,10 +27,11 @@ test('onRequest will only fire if config.shouldComponentAutoRequest returns true
     });
     const willFire = AutoHockFactory({
         name: 'foo',
-        auto: true,
-        shouldComponentAutoRequest: () => true
+        auto: true
     });
 
-    willFire().onPropChange({foo: {onRequest: (props) => t.pass('this function should exceute')}});
-    wontFire().onPropChange({foo: {onRequest: () => t.fail('this function should never exceute')}});
+    willFire().onPropChange({foo: {onRequest}});
+    wontFire().onPropChange({foo: {onRequest}});
+
+    expect(onRequest).toBeCalledTimes(1);
 });

@@ -1,9 +1,8 @@
-import test from 'ava';
 import selectRequestState from '../RequestStateSelector';
 import {fromJS} from 'immutable';
 import {EmptyState} from '../RequestState';
 
-test('RequestStateSelector', tt => {
+test('RequestStateSelector', () => {
 
     var state = {
         entity: fromJS({
@@ -13,7 +12,7 @@ test('RequestStateSelector', tt => {
         })
     };
 
-    tt.is(selectRequestState(state, 'ACTION'), 'awesome');
-    tt.truthy(selectRequestState(state, 'BERG') instanceof EmptyState().constructor);
+    expect(selectRequestState(state, 'ACTION')).toBe('awesome');
+    expect(selectRequestState(state, 'BERG') instanceof EmptyState().constructor).toBeTruthy();
 
 });

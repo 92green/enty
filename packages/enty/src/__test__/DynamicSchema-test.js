@@ -1,5 +1,4 @@
 //@flow
-import test from 'ava';
 import EntitySchema from '../EntitySchema';
 import ListSchema from '../ListSchema';
 import DynamicSchema from '../DynamicSchema';
@@ -21,7 +20,7 @@ const fooBarBaz = DynamicSchema((data: *): * => {
 });
 
 
-test('DynamicSchema can choose an appropriate schema to normalize', (tt: *) => {
+test('DynamicSchema can choose an appropriate schema to normalize', () => {
     const unknownArray = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
@@ -31,13 +30,13 @@ test('DynamicSchema can choose an appropriate schema to normalize', (tt: *) => {
     const {entities} = unknownArray.normalize(data);
 
 
-    tt.deepEqual(entities.foo['0'].toJS(), data[0]);
-    tt.deepEqual(entities.bar['1'].toJS(), data[1]);
-    tt.deepEqual(entities.baz['2'].toJS(), data[2]);
+    expect(entities.foo['0'].toJS()).toEqual(data[0]);
+    expect(entities.bar['1'].toJS()).toEqual(data[1]);
+    expect(entities.baz['2'].toJS()).toEqual(data[2]);
 });
 
 
-test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', (tt: *) => {
+test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', () => {
     const schema = ListSchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
@@ -47,18 +46,18 @@ test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', (tt:
     const output = schema.denormalize(schema.normalize(data));
 
 
-    tt.deepEqual(data, output.toJS());
+    expect(data).toEqual(output.toJS());
 });
 
-test('DynamicSchema.normalize', (tt: *) => {
+test('DynamicSchema.normalize', () => {
     const data = {type: 'foo', id: '0'};
     const output = fooBarBaz.denormalize(fooBarBaz.normalize(data));
-    tt.deepEqual(data, output.toJS());
+    expect(data).toEqual(output.toJS());
 });
 
 
 
-test('DynamicSchema.normalize on to existing data', (tt: *) => {
+test('DynamicSchema.normalize on to existing data', () => {
     const schema = ListSchema(fooBarBaz);
 
     const first = [
@@ -73,35 +72,35 @@ test('DynamicSchema.normalize on to existing data', (tt: *) => {
     const {entities} = schema.normalize(first);
     const output = schema.normalize(second, entities);
 
-    tt.deepEqual(output.entities.foo['0'].toJS(), first[0]);
-    tt.deepEqual(output.entities.bar['1'].toJS(), second[0]);
-    tt.deepEqual(output.entities.baz['2'].toJS(), second[1]);
+    expect(output.entities.foo['0'].toJS()).toEqual(first[0]);
+    expect(output.entities.bar['1'].toJS()).toEqual(second[0]);
+    expect(output.entities.baz['2'].toJS()).toEqual(second[1]);
 });
 
 
 //
-// Getters and Setters
+// Geters and Seters
 //
-test('set, get & update dont mutate the schema while still returning it', (t: *) => {
+test('set, get & update dont mutate the schema while still returning it', () => {
     const schema = DynamicSchema();
-    t.is(schema.set(fooBarBaz), schema);
-    t.is(schema.get(), fooBarBaz);
-    t.is(schema.update(() => schema.definition), schema);
+    expect(schema.set(fooBarBaz)).toBe(schema);
+    expect(schema.get()).toBe(fooBarBaz);
+    expect(schema.update(() => schema.definition)).toBe(schema);
 });
 
-test('set will replace the definition at a key', (t: *) => {
+test('set will replace the definition at a key', () => {
     const schema = DynamicSchema();
     schema.set(fooBarBaz);
-    t.is(schema.definition, fooBarBaz);
+    expect(schema.definition).toBe(fooBarBaz);
 });
 
-test('get will return the definition at a key', (t: *) => {
+test('get will return the definition at a key', () => {
     const schema = DynamicSchema(fooBarBaz);
-    t.is(schema.get(), fooBarBaz);
+    expect(schema.get()).toBe(fooBarBaz);
 });
 
-test('update will replace the whole definition via an updater function', (t: *) => {
+test('update will replace the whole definition via an updater function', () => {
     const schema = DynamicSchema(fooBarBaz);
     schema.update(() => fooBarBaz);
-    t.is(schema.definition, fooBarBaz);
+    expect(schema.definition).toBe(fooBarBaz);
 });

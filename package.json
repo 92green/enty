@@ -4,30 +4,34 @@
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
     "flow": "blueflag-test flow",
+    "flow-coverage": "blueflag-test flow-coverage -M",
     "lint": "blueflag-test lint",
-    "test": "blueflag-test test -M",
-    "coverage": "blueflag-test coverage -M",
-    "test-all": "yarn lint && yarn flow && yarn coverage",
+    "test": "yarn jest",
+    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/gatsby*",
+      "**/gatsby*/**"
+    ]
+  },
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
     "babel-preset-blueflag": "^0.6.0",
-    "blueflag-test": "^0.18.1",
-    "enzyme": "^2.6.0",
+    "blueflag-test": "^0.20.0",
     "gatsby": "^1.9.223",
     "lerna": "^2.9.0",
     "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
-    "proxyquire": "^2.0.1",
-    "react": "^15.4.2",
-    "react-addons-test-utils": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-redux": "^5.0.6",
     "redux": "^3.6.0",
     "require.async": "^0.1.1"
-  }
+  },
+  "dependencies": {}
 }

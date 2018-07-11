@@ -1,89 +1,88 @@
-import test from 'ava';
 import sinon from 'sinon';
 import Logger from '../Logger';
 
-test('Logger: uses global console by default', tt => {
-    tt.is(Logger._console, console);
+test('Logger: uses global console by default', () => {
+    expect(Logger._console).toBe(console);
 });
 
-test('Logger: can use custom console with setConsole', tt => {
+test('Logger: can use custom console with setConsole', () => {
     var fakeConsole = {
         error: sinon.spy()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("...");
-    tt.true(fakeConsole.error.calledOnce);
+    expect(fakeConsole.error.calledOnce).toBe(true);
 });
 
-test('Logger: getLevelIndex returns a number when given a number', tt => {
-    tt.is(Logger.getLevelIndex(0), 0);
-    tt.is(Logger.getLevelIndex(1), 1);
-    tt.is(Logger.getLevelIndex(-1), -1);
+test('Logger: getLevelIndex returns a number when given a number', () => {
+    expect(Logger.getLevelIndex(0)).toBe(0);
+    expect(Logger.getLevelIndex(1)).toBe(1);
+    expect(Logger.getLevelIndex(-1)).toBe(-1);
 });
 
-test('Logger: getLevelIndex returns the index of a log level when given a string name of a log level', tt => {
-    tt.is(Logger.getLevelIndex("error"), 0);
-    tt.is(Logger.getLevelIndex("warn"), 1);
-    tt.is(Logger.getLevelIndex("info"), 2);
-    tt.is(Logger.getLevelIndex("verbose"), 3);
-    tt.is(Logger.getLevelIndex("silly"), 4);
+test('Logger: getLevelIndex returns the index of a log level when given a string name of a log level', () => {
+    expect(Logger.getLevelIndex("error")).toBe(0);
+    expect(Logger.getLevelIndex("warn")).toBe(1);
+    expect(Logger.getLevelIndex("info")).toBe(2);
+    expect(Logger.getLevelIndex("verbose")).toBe(3);
+    expect(Logger.getLevelIndex("silly")).toBe(4);
 });
 
-test('Logger: setLogLevel sets the log level number correctly', tt => {
+test('Logger: setLogLevel sets the log level number correctly', () => {
     for(var i = 0; i < 5; i++) {
         Logger.setLogLevel(i);
-        tt.is(Logger.logLevel, i);
+        expect(Logger.logLevel).toBe(i);
     }
 });
 
-test('Logger: willLog will log correct stuff when log level is 0 (error)', tt => {
+test('Logger: willLog will log correct stuff when log level is 0 (error)', () => {
     Logger.setLogLevel("error");
-    tt.true(Logger.willLog("error"), 'will log error');
-    tt.false(Logger.willLog("warn"), 'will not log warn');
-    tt.false(Logger.willLog("info"), 'will not log info');
-    tt.false(Logger.willLog("verbose"), 'will not log verbose');
-    tt.false(Logger.willLog("silly"), 'will not log silly');
+    expect(Logger.willLog("error")).toBe(true);
+    expect(Logger.willLog("warn")).toBe(false);
+    expect(Logger.willLog("info")).toBe(false);
+    expect(Logger.willLog("verbose")).toBe(false);
+    expect(Logger.willLog("silly")).toBe(false);
 });
 
-test('Logger: willLog will log correct stuff when log level is 1 (warn)', tt => {
+test('Logger: willLog will log correct stuff when log level is 1 (warn)', () => {
     Logger.setLogLevel("warn");
-    tt.true(Logger.willLog("error"), 'will log error');
-    tt.true(Logger.willLog("warn"), 'will log warn');
-    tt.false(Logger.willLog("info"), 'will not log warn');
-    tt.false(Logger.willLog("verbose"), 'will not log silly');
-    tt.false(Logger.willLog("silly"), 'will not log silly');
+    expect(Logger.willLog("error")).toBe(true);
+    expect(Logger.willLog("warn")).toBe(true);
+    expect(Logger.willLog("info")).toBe(false);
+    expect(Logger.willLog("verbose")).toBe(false);
+    expect(Logger.willLog("silly")).toBe(false);
 });
 
-test('Logger: willLog will log correct stuff when log level is 2 (info)', tt => {
+test('Logger: willLog will log correct stuff when log level is 2 (info)', () => {
     Logger.setLogLevel("info");
-    tt.true(Logger.willLog("error"), 'will log error');
-    tt.true(Logger.willLog("warn"), 'will log warn');
-    tt.true(Logger.willLog("info"), 'will log warn');
-    tt.false(Logger.willLog("verbose"), 'will not log silly');
-    tt.false(Logger.willLog("silly"), 'will not log silly');
+    expect(Logger.willLog("error")).toBe(true);
+    expect(Logger.willLog("warn")).toBe(true);
+    expect(Logger.willLog("info")).toBe(true);
+    expect(Logger.willLog("verbose")).toBe(false);
+    expect(Logger.willLog("silly")).toBe(false);
 });
 
 
-test('Logger: willLog will log correct stuff when log level is 3 (verbose)', tt => {
+test('Logger: willLog will log correct stuff when log level is 3 (verbose)', () => {
     Logger.setLogLevel("verbose");
-    tt.true(Logger.willLog("error"), 'will log error');
-    tt.true(Logger.willLog("warn"), 'will log warn');
-    tt.true(Logger.willLog("info"), 'will log warn');
-    tt.true(Logger.willLog("verbose"), 'will log silly');
-    tt.false(Logger.willLog("silly"), 'will not log silly');
+    expect(Logger.willLog("error")).toBe(true);
+    expect(Logger.willLog("warn")).toBe(true);
+    expect(Logger.willLog("info")).toBe(true);
+    expect(Logger.willLog("verbose")).toBe(true);
+    expect(Logger.willLog("silly")).toBe(false);
 });
 
 
-test('Logger: willLog will log correct stuff when log level is 4 (silly)', tt => {
+test('Logger: willLog will log correct stuff when log level is 4 (silly)', () => {
     Logger.setLogLevel("silly");
-    tt.true(Logger.willLog("error"), 'will log error');
-    tt.true(Logger.willLog("warn"), 'will log warn');
-    tt.true(Logger.willLog("info"), 'will log warn');
-    tt.true(Logger.willLog("verbose"), 'will log silly');
-    tt.true(Logger.willLog("silly"), 'will log silly');
+    expect(Logger.willLog("error")).toBe(true);
+    expect(Logger.willLog("warn")).toBe(true);
+    expect(Logger.willLog("info")).toBe(true);
+    expect(Logger.willLog("verbose")).toBe(true);
+    expect(Logger.willLog("silly")).toBe(true);
 });
 
-test('Logger: setLogLevel will create correct log methods on itself when log level is 0 (error)', tt => {
+test('Logger: setLogLevel will create correct log methods on itself when log level is 0 (error)', () => {
     Logger.setLogLevel("error");
     var fakeConsole = {
         error: sinon.spy(),
@@ -97,12 +96,14 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    tt.true(fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error");
-    tt.false(fakeConsole.warn.called);
-    tt.false(fakeConsole.log.called);
+    expect(
+        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
+    ).toBe(true);
+    expect(fakeConsole.warn.called).toBe(false);
+    expect(fakeConsole.log.called).toBe(false);
 });
 
-test('Logger: setLogLevel will create correct log methods on itself when log level is 1 (warn)', tt => {
+test('Logger: setLogLevel will create correct log methods on itself when log level is 1 (warn)', () => {
     Logger.setLogLevel("warn");
     var fakeConsole = {
         error: sinon.spy(),
@@ -116,12 +117,16 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    tt.true(fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error");
-    tt.true(fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn");
-    tt.false(fakeConsole.log.called);
+    expect(
+        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
+    ).toBe(true);
+    expect(
+        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
+    ).toBe(true);
+    expect(fakeConsole.log.called).toBe(false);
 });
 
-test('Logger: setLogLevel will create correct log methods on itself when log level is 2 (info)', tt => {
+test('Logger: setLogLevel will create correct log methods on itself when log level is 2 (info)', () => {
     Logger.setLogLevel("info");
     var fakeConsole = {
         error: sinon.spy(),
@@ -135,13 +140,17 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    tt.true(fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error");
-    tt.true(fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn");
-    tt.true(fakeConsole.log.calledOnce && fakeConsole.log.firstCall.args[0] == "info");
+    expect(
+        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
+    ).toBe(true);
+    expect(
+        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
+    ).toBe(true);
+    expect(fakeConsole.log.calledOnce && fakeConsole.log.firstCall.args[0] == "info").toBe(true);
 });
 
 
-test('Logger: setLogLevel will create correct log methods on itself when log level is 3 (verbose)', tt => {
+test('Logger: setLogLevel will create correct log methods on itself when log level is 3 (verbose)', () => {
     Logger.setLogLevel("verbose");
     var fakeConsole = {
         error: sinon.spy(),
@@ -155,13 +164,19 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    tt.true(fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error");
-    tt.true(fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn");
-    tt.true(fakeConsole.log.calledTwice && fakeConsole.log.firstCall.args[0] == "info");
-    tt.true(fakeConsole.log.calledTwice && fakeConsole.log.secondCall.args[0] == "verbose");
+    expect(
+        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
+    ).toBe(true);
+    expect(
+        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
+    ).toBe(true);
+    expect(fakeConsole.log.calledTwice && fakeConsole.log.firstCall.args[0] == "info").toBe(true);
+    expect(
+        fakeConsole.log.calledTwice && fakeConsole.log.secondCall.args[0] == "verbose"
+    ).toBe(true);
 });
 
-test('Logger: setLogLevel will create correct log methods on itself when log level is 4 (silly)', tt => {
+test('Logger: setLogLevel will create correct log methods on itself when log level is 4 (silly)', () => {
     Logger.setLogLevel("silly");
     var fakeConsole = {
         error: sinon.spy(),
@@ -175,11 +190,21 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    tt.true(fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error");
-    tt.true(fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn");
-    tt.true(fakeConsole.log.calledThrice && fakeConsole.log.firstCall.args[0] == "info");
-    tt.true(fakeConsole.log.calledThrice && fakeConsole.log.secondCall.args[0] == "verbose");
-    tt.true(fakeConsole.log.calledThrice && fakeConsole.log.thirdCall.args[0] == "silly");
+    expect(
+        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
+    ).toBe(true);
+    expect(
+        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
+    ).toBe(true);
+    expect(
+        fakeConsole.log.calledThrice && fakeConsole.log.firstCall.args[0] == "info"
+    ).toBe(true);
+    expect(
+        fakeConsole.log.calledThrice && fakeConsole.log.secondCall.args[0] == "verbose"
+    ).toBe(true);
+    expect(
+        fakeConsole.log.calledThrice && fakeConsole.log.thirdCall.args[0] == "silly"
+    ).toBe(true);
 });
 
 

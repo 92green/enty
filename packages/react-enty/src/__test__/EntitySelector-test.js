@@ -1,5 +1,4 @@
 //@flow
-import test from 'ava';
 import EntitySchema from 'enty/lib/EntitySchema';
 import MapSchema from 'enty/lib/MapSchema';
 import ListSchema from 'enty/lib/ListSchema';
@@ -42,32 +41,32 @@ function constructState(): * {
 //
 // selectEntityByResult()
 
-test('selectEntityByResult() should return a map for single items', (tt: *) => {
+test('selectEntityByResult() should return a map for single items', () => {
     const data = selectEntityByResult(constructState(), 'single');
-    tt.truthy(data && data.foo);
+    expect(data && data.foo).toBeTruthy();
 });
 
-test('selectEntityByResult() should return an array for indexed items', (tt: *) => {
+test('selectEntityByResult() should return an array for indexed items', () => {
     const data = selectEntityByResult(constructState(), 'fooList');
-    tt.is(data && data.length, 3);
+    expect(data && data.length).toBe(3);
 });
 
-test('selectEntityByResult() should return nothing if the denormalize fails', (tt: *) => {
-    tt.is(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE'), undefined);
+test('selectEntityByResult() should return nothing if the denormalize fails', () => {
+    expect(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE')).toBe(undefined);
 });
 
 
 //
 // selectEntityById()
 
-test('selectEntityById() should return an item from entity state by path', (tt: *) => {
+test('selectEntityById() should return an item from entity state by path', () => {
     // $FlowFixMe
-    tt.is(selectEntityById(constructState(), 'foo', 'bar').get('id'), 'bar');
+    expect(selectEntityById(constructState(), 'foo', 'bar').get('id')).toBe('bar');
 });
 
-test('selectEntityById() will return undefined if there is no schema for type', (tt: *) => {
+test('selectEntityById() will return undefined if there is no schema for type', () => {
     const data = selectEntityById(constructState(), 'blerge', 'bar');
-    tt.is(data, undefined);
+    expect(data).toBe(undefined);
 });
 
 
@@ -75,8 +74,8 @@ test('selectEntityById() will return undefined if there is no schema for type', 
 //
 // selectEntityByType()
 
-test('selectEntityByType() should return an list of entities', (tt: *) => {
-    tt.true(List.isList(selectEntityByType(constructState(), 'foo')));
+test('selectEntityByType() should return an list of entities', () => {
+    expect(List.isList(selectEntityByType(constructState(), 'foo'))).toBe(true);
 });
 
 

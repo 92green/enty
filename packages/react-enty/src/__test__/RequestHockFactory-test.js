@@ -1,23 +1,23 @@
 // @flow
 import type {HockMeta} from '../util/definitions';
 
-import test from 'ava';
 import React from 'react';
-import {shallow} from 'enzyme';
-import {spy} from 'sinon';
-import {fake} from 'sinon';
-import {stub} from 'sinon';
 import {fromJS} from 'immutable';
 import RequestHockFactory from '../RequestHockFactory';
+import * as EntitySelector from '../EntitySelector';
+import RequestStateSelector from '../RequestStateSelector';
 import {FetchingState} from '../RequestState';
 import {EmptyState} from '../RequestState';
 import {RefetchingState} from '../RequestState';
 import {ErrorState} from '../RequestState';
 import {SuccessState} from '../RequestState';
+import * as RequestState from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
-const proxyquire = require('proxyquire').noCallThru();
+jest.mock('../RequestStateSelector');
+
+
 
 const noop = () => {};
 const identity = (aa) => aa;
@@ -45,21 +45,29 @@ const queryCreator = () => `query`;
 const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
 const RequestHockApplier = RequestHock({name: 'foo'});
 
-test('will return a function', t => {
-    t.is(typeof RequestHock, 'function');
+beforeEach(() => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReset();
+})
+
+test('will return a function', () => {
+    expect(typeof RequestHock).toBe('function');
 });
 
-test('hockApplier should be a function', t => {
-    t.is(typeof RequestHockApplier, 'function');
+test('hockApplier should be a function', () => {
+    expect(typeof RequestHockApplier).toBe('function');
 });
 
-test('will throw an error is config.name is not supplied', t => {
-    const requestHockError = t.throws(() => RequestHock({})(() => null));
-    t.deepEqual(RequestHockNoNameError('FooAction'), requestHockError);
+test('will throw an error is config.name is not supplied', () => {
+    expect(() => RequestHock({})(() => null))
+        .toThrow(RequestHockNoNameError('FooAction'));
 });
 
-test('config.payloadCreator will by default be an identity function', t => {
-    const actionCreator = spy();
+test('config.payloadCreator will by default be an identity function', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+
+    const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
@@ -67,11 +75,13 @@ test('config.payloadCreator will by default be an identity function', t => {
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    t.is(actionCreator.firstCall.args[0], 'foo');
+    expect(actionCreator).toHaveBeenCalledWith('foo', {resultKey: 'foo-resultKey'});
 });
 
-test('config.payloadCreator will create the payload', t => {
-    const actionCreator = spy();
+test('config.payloadCreator will create the payload', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo', payloadCreator: () => 'bar'});
     const Child = RequestHockApplier((props) => {
@@ -79,12 +89,13 @@ test('config.payloadCreator will create the payload', t => {
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    t.is(actionCreator.firstCall.args[0], 'bar');
-    t.not(actionCreator.firstCall.args[0], 'foo');
+    expect(actionCreator).not.toHaveBeenCalledWith('foo', {resultKey: 'foo-resultKey'});
 });
 
-test('config.updateResultKey will by default be an identity function', t => {
-    const actionCreator = spy();
+test('config.updateResultKey will by default be an identity function', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
@@ -92,11 +103,13 @@ test('config.updateResultKey will by default be an identity function', t => {
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    t.is(actionCreator.firstCall.args[1].resultKey, 'fooResultKey');
+    expect(actionCreator).toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey'});
 });
 
-test('config.updateResultKey will update the resultKey', t => {
-    const actionCreator = spy();
+test('config.updateResultKey will update the resultKey', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({
         name: 'foo',
@@ -107,12 +120,15 @@ test('config.updateResultKey will update the resultKey', t => {
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    t.is(actionCreator.firstCall.args[1].resultKey, 'fooResultKey-bar');
+    expect(actionCreator).toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey-bar'});
+    expect(actionCreator).not.toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey'});
 });
 
-test('config.updateResultKey is called with the resultKey and props', t => {
-    const updateResultKey = spy();
-    const RequestHock = RequestHockFactory(fake(), {...hockMeta, generateResultKey: () => 'fooResultKey'});
+test('config.updateResultKey is called with the resultKey and props', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const updateResultKey = jest.fn();
+    const RequestHock = RequestHockFactory(jest.fn(), {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({
         name: 'foo',
         updateResultKey
@@ -122,14 +138,15 @@ test('config.updateResultKey is called with the resultKey and props', t => {
         return null;
     });
     shallow(<Child store={STORE} extraProp="bar" />).dive().dive();
-    t.is(updateResultKey.firstCall.args[0], 'fooResultKey');
-    t.deepEqual(updateResultKey.firstCall.args[1], {store: STORE, extraProp: 'bar'});
+    expect(updateResultKey).toHaveBeenCalledWith('fooResultKey', {store: STORE, extraProp: 'bar'});
 });
 
 
-test('hocked component will be given and Message to props.[name]', t => {
+test('hocked component will be given and Message to props.[name]', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
     const Child = RequestHockApplier((props) => {
-        t.true(props.foo instanceof Message);
+        expect(props.foo).toBeInstanceOf(Message);
         return null;
     });
 
@@ -137,15 +154,15 @@ test('hocked component will be given and Message to props.[name]', t => {
 });
 
 
-test.cb('Message.onRequest will dispatch an action', t => {
-    t.plan(1);
+test('Message.onRequest will dispatch an action', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+
+    const dispatch = jest.fn();
     const store = {
         subscribe: () => {},
         getState: STORE.getState,
-        dispatch: payload => {
-            t.pass()
-            t.end()
-        }
+        dispatch
     };
 
     const Child = RequestHockApplier((props) => {
@@ -154,65 +171,52 @@ test.cb('Message.onRequest will dispatch an action', t => {
     });
 
     const component = shallow(<Child store={store}/>).dive().dive();
+    expect(dispatch).toHaveBeenCalled();
 });
 
 
-test('will only use a new response key once a request as returned', t => {
-    const EmptySpy = spy();
-    const FetchingSpy = spy();
-    const RefetchingSpy = spy();
-    const ErrorSpy = spy();
-    const SuccessSpy = spy();
-
-    const hock = (requestState, selectEntityByResult) => {
-        const RequestHockFactory = proxyquire('../RequestHockFactory', {
-            './EntitySelector': {
-                selectEntityByResult
-            },
-            './RequestStateSelector': () => requestState
-        }).default;
-
+test('will only use a new response key once a request as returned', () => {
+    const runTest = (state, key) => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+        RequestStateSelector.mockReturnValue(state);
+        const responseKeyMock = jest.fn();
         const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
         const RequestHockApplier = RequestHock({name: 'foo', resultKey: 'bar'});
         const Child = RequestHockApplier((props) => {
+            responseKeyMock(props.foo.resultKey);
             return null;
         });
         shallow(<Child store={STORE}/>).dive()
             .setProps({
                 foo: {
-                    request: fake(),
+                    request: jest.fn(),
                     resultKey: 'foo',
                     nextResultKey: 'bar'
                 }
             })
+            .dive();
+
+        expect(responseKeyMock).toHaveBeenLastCalledWith(key);
     };
 
-    hock(EmptyState(), EmptySpy);
-    hock(FetchingState(), FetchingSpy);
-    hock(RefetchingState(), RefetchingSpy);
-    hock(ErrorState(), ErrorSpy);
-    hock(SuccessState(), SuccessSpy);
-
-    t.is(EmptySpy.args[1][1], 'foo');
-    t.is(FetchingSpy.args[1][1], 'foo');
-    t.is(RefetchingSpy.args[1][1], 'foo');
-    t.is(ErrorSpy.args[1][1], 'bar');
-    t.is(SuccessSpy.args[1][1], 'bar');
+    runTest(EmptyState(), 'foo');
+    runTest(FetchingState(), 'foo');
+    runTest(RefetchingState(), 'foo');
+    runTest(ErrorState(), 'bar');
+    runTest(SuccessState(), 'bar');
 });
 
 
-test('will strip errors out of requestStates', t => {
-    const RequestHockFactory = proxyquire('../RequestHockFactory', {
-            './EntitySelector': {
-                selectEntityByResult: spy()
-            },
-            './RequestStateSelector': () => ErrorState({message: 'error!'})
-        }).default;
+test('will strip errors out of requestStates', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(ErrorState({message: 'error!'}));
 
     const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
-        props.foo.requestState.errorMap(data => t.is(data, null));
+        props.foo.requestState.errorMap(data => {
+            expect(data).toBe(null);
+        });
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();

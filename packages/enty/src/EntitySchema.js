@@ -44,6 +44,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const {definition} = this;
         const {idAttribute, name} = this.options;
 
+        // $FlowFixMe - flow cant tell that constructor exists
         if(definition == null || definition.constructor === NullSchema) {
             throw NoDefinitionError(name);
         }
@@ -63,6 +64,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const id = PerhapsEither(idAttribute(data))
             .map(id => id.toString())
             .leftMap((value: *) => {
+                console.log(data, value);
                 throw UndefinedIdError(name, value);
             })
             .value();

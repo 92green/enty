@@ -1,12 +1,9 @@
 // @flow
-import test from 'ava';
 import React from 'react';
 import {Component} from 'react';
 import MultiRequestHock from '../MultiRequestHock';
-import {shallow} from 'enzyme';
 import {fake} from 'sinon';
 import {spy} from 'sinon';
-
 
 import {FetchingState} from '../RequestState';
 import {EmptyState} from '../RequestState';
@@ -17,33 +14,33 @@ import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
 const multiRequestHock = MultiRequestHock({
-    name: 'foo', 
+    name: 'foo',
     onRequest: (props) => props.resolveFoo()
         .then(props.resolveBar)
 });
 const MultiComponent = multiRequestHock(() => null);
 
-test('will create a message in props.[name]', t => {
+test('will create a message in props.[name]', () => {
     const hock = MultiRequestHock({
-        name: 'foo', 
+        name: 'foo',
         onRequest: () => Promise.resolve()
     });
     const Comp = hock((props) => {
-        t.true(props.foo instanceof Message);
+        expect(props.foo instanceof Message).toBe(true);
         return null;
     });
 
     shallow(<Comp/>).dive();
 });
 
-test('will throw an error is config.name is not supplied', t => {
+test('will throw an error is config.name is not supplied', () => {
     // $FlowFixMe - deliberate misuse of types for testing
-    const requestHockError = t.throws(() => MultiRequestHock({})(() => null));
-    t.deepEqual(RequestHockNoNameError('MultiRequestHock'), requestHockError);
+    const noName = () => MultiRequestHock({})(() => null);
+    expect(noName).toThrow(RequestHockNoNameError('MultiRequestHock'));
 });
 
 
-test('will request and response to resolved promises', t => {
+test('will request and response to resolved promises', () => {
     const wrapper = shallow(<MultiComponent
         resolveFoo={() => Promise.resolve('foo')}
         resolveBar={() => Promise.resolve('bar')}
@@ -53,14 +50,14 @@ test('will request and response to resolved promises', t => {
     return wrapper.prop('foo')
         .onRequest()
         .then(() => {
-            t.is(wrapper.prop('foo').requestState.isSuccess, true);
-            t.is(wrapper.prop('foo').response, 'bar');
-        })
-    ;
+            wrapper.update();
+            expect(wrapper.prop('foo').requestState.isSuccess).toBe(true);
+            expect(wrapper.prop('foo').response).toBe('bar');
+        });
 });
 
 
-test('will request and response to rejected promises', t => {
+test('will request and response to rejected promises', () => {
     const wrapper = shallow(<MultiComponent
         resolveFoo={() => Promise.resolve('foo')}
         resolveBar={() => Promise.reject('bar')}
@@ -70,15 +67,15 @@ test('will request and response to rejected promises', t => {
     return wrapper.prop('foo')
         .onRequest()
         .then(() => {
-            t.is(wrapper.prop('foo').requestState.isError, true);
-            t.is(wrapper.prop('foo').requestError, 'bar');
-        })
-    ;
+            wrapper.update();
+            expect(wrapper.prop('foo').requestState.isError).toBe(true);
+            expect(wrapper.prop('foo').requestError).toBe('bar');
+        });
 });
 
 
-test.cb('will handle rerequests', t => {
-    t.plan(1);
+test('will handle rerequests', done => {
+    expect.assertions(1);
     let wrapper = shallow(<MultiComponent
         resolveFoo={() => Promise.resolve('foo')}
         resolveBar={() => Promise.resolve('bar')}
@@ -89,10 +86,11 @@ test.cb('will handle rerequests', t => {
     wrapper.prop('foo')
         .onRequest()
         .then(() => {
-            t.end();
+            done();
         })
     ;
+    wrapper.update();
 
-    t.is(wrapper.prop('foo').requestState.isRefetching, true);
 
+    expect(wrapper.prop('foo').requestState.isRefetching).toBe(true);
 });

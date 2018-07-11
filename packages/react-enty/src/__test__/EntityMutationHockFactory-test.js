@@ -1,10 +1,10 @@
-import test from 'ava';
 import React from 'react';
-import {shallow} from 'enzyme';
 import {spy} from 'sinon';
 import {fromJS} from 'immutable';
 import EntityMutationHockFactory from '../EntityMutationHockFactory';
 import {FetchingState} from '../RequestState';
+
+global.console.warn = jest.fn();
 
 var NOOP = () => {};
 var PASS = (aa) => aa;
@@ -24,19 +24,19 @@ var QUERY_CREATOR = () => `query`;
 var entityMutation = EntityMutationHockFactory(PASS);
 var hockedComponent = entityMutation(QUERY_CREATOR, ['keys']);
 
-test("EntityMutationHockFactory should return a function", tt => {
-    tt.is(typeof entityMutation, "function");
+test("EntityMutationHockFactory should return a function", () => {
+    expect(typeof entityMutation).toBe("function");
 });
 
-test("EntityMutationHockFactory's hockedComponent should be a function", tt => {
-    tt.is(typeof hockedComponent, "function");
+test("EntityMutationHockFactory's hockedComponent should be a function", () => {
+    expect(typeof hockedComponent).toBe("function");
 });
 
-test("EntityMutationHockFactory's hockedComponent should be an auto request", tt => {
-    tt.is(hockedComponent(state => state).displayName, "Connect(MutationHock())");
+test("EntityMutationHockFactory's hockedComponent should be an auto request", () => {
+    expect(hockedComponent(state => state).displayName).toBe("Connect(MutationHock())");
 });
 
-test("EntityMutationHockFactory's hocked component will be given props.onMutate", tt => {
+test("EntityMutationHockFactory's hocked component will be given props.onMutate", () => {
     const Child = (props) => {
         return <div></div>;
     };
@@ -44,14 +44,14 @@ test("EntityMutationHockFactory's hocked component will be given props.onMutate"
     var Component = EntityMutationHockFactory(PASS, {})(PASS, {})(Child);
     var ComponentB = EntityMutationHockFactory(PASS, {})(PASS, {onMutateProp: "MUTATE"})(Child);
 
-    tt.is(typeof shallow(<Component store={STORE}/>).dive().prop('onMutate'), 'function');
-    tt.is(typeof shallow(<ComponentB store={STORE}/>).dive().prop('onMutate'), 'undefined');
-    tt.is(typeof shallow(<ComponentB store={STORE}/>).dive().prop('MUTATE'), 'function');
+    expect(shallow(<Component store={STORE}/>).dive()).toHaveProp('onMutate');
+    expect(shallow(<ComponentB store={STORE}/>).dive()).not.toHaveProp('onMutate');
+    expect(shallow(<ComponentB store={STORE}/>).dive()).toHaveProp('MUTATE');
 });
 
 
-test("EntityMutationHockFactory will update the onMutate with new props", tt => {
-    const spy1 = spy();
+test("EntityMutationHockFactory will update the onMutate with new props", () => {
+    const spy1 = jest.fn();
     const queryCreator = ({spy}) => spy && spy();
     const Child = (props) => {
         return <div></div>;
@@ -60,13 +60,13 @@ test("EntityMutationHockFactory will update the onMutate with new props", tt => 
     var Component = EntityMutationHockFactory(PASS, {})(queryCreator, {})(Child);
     var wrapper = shallow(<Component store={STORE}/>);
     wrapper.render();
-    tt.is(spy1.callCount, 0);
+    expect(spy1).not.toHaveBeenCalled();
 
     wrapper.dive().dive().prop('onMutate')({spy: spy1});
-    tt.is(spy1.callCount, 1);
+    expect(spy1).toHaveBeenCalled();
 });
 
-test('EntityMutationHockFactory will group props if a `group` config is provided', tt => {
+test('EntityMutationHockFactory will group props if a `group` config is provided', () => {
     const Child = (props: Object): React.Element<any> => {
         return <div></div>;
     };
@@ -80,12 +80,12 @@ test('EntityMutationHockFactory will group props if a `group` config is provided
             .prop(key);
     }
 
-    tt.is(typeof getProp('fooGroup'), 'object');
-    tt.is(typeof getProp('fooGroup').onMutate, 'function');
+    expect(typeof getProp('fooGroup')).toBe('object');
+    expect(typeof getProp('fooGroup').onMutate).toBe('function');
 });
 
 
-test("EntityMutationHockFactory can be configured to update resultKey based on props", (t: Object) => {
+test("EntityMutationHockFactory can be configured to update resultKey based on props", () => {
     const actionCreator = spy();
     const Child = () => <div></div>;
 
@@ -95,14 +95,15 @@ test("EntityMutationHockFactory can be configured to update resultKey based on p
         .instance()
         .mutation();
 
-    t.is(actionCreator.firstCall.args[1].resultKey, 'FOO');
+    expect(actionCreator.firstCall.args[1].resultKey).toBe('FOO');
 });
 
-test('EntityMutationHockFactory will use the result key from `group` if provided', tt => {
+test('EntityMutationHockFactory will use the result key from `group` if provided', () => {
+    const checkProps = jest.fn();
     const Child = (props: Object): React.Element<any> => {
-        tt.is(props.resultKey, 'bar');
-        tt.is(props.fooGroup.resultKey, 'foo');
-        tt.is(props.fooGroup.requestState.isFetching, true);
+        expect(props.resultKey).toBe('bar');
+        expect(props.fooGroup.resultKey).toBe('foo');
+        expect(props.fooGroup.requestState.isFetching).toBe(true);
         return <div></div>;
     };
 
@@ -113,6 +114,7 @@ test('EntityMutationHockFactory will use the result key from `group` if provided
 
     // invoking the mutation updates the state of the hock so that it will now pass the resultKey `foo` through to its group props
     wrapper.instance().mutation();
+    wrapper.update();
     // at this point, the hock should pass the correct request state from the store down to Child
     wrapper.dive().render();
 });
