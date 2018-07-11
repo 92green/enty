@@ -4,12 +4,6 @@ import type {Element} from 'react';
 import {fromJS} from 'immutable';
 import EntityQueryHockFactory from '../EntityQueryHockFactory';
 import {FetchingState} from '../RequestState';
-import sinon from 'sinon';
-
-import {configure} from 'enzyme';
-import {shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-configure({adapter: new Adapter()});
 
 
 var NOOP = () => {};

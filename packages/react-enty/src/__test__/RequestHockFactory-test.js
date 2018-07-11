@@ -15,11 +15,6 @@ import * as RequestState from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
-import {configure} from 'enzyme';
-import {shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-configure({adapter: new Adapter()});
-
 jest.mock('../RequestStateSelector');
 
 

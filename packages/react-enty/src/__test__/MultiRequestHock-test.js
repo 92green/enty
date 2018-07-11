@@ -13,12 +13,6 @@ import {SuccessState} from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
-import {configure} from 'enzyme';
-import {shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-configure({adapter: new Adapter()});
-
-
 const multiRequestHock = MultiRequestHock({
     name: 'foo',
     onRequest: (props) => props.resolveFoo()

@@ -4,11 +4,6 @@ import {fromJS} from 'immutable';
 import EntityMutationHockFactory from '../EntityMutationHockFactory';
 import {FetchingState} from '../RequestState';
 
-import {configure} from 'enzyme';
-import {shallow} from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-configure({adapter: new Adapter()});
-
 global.console.warn = jest.fn();
 
 var NOOP = () => {};
@@ -49,14 +44,14 @@ test("EntityMutationHockFactory's hocked component will be given props.onMutate"
     var Component = EntityMutationHockFactory(PASS, {})(PASS, {})(Child);
     var ComponentB = EntityMutationHockFactory(PASS, {})(PASS, {onMutateProp: "MUTATE"})(Child);
 
-    expect(typeof shallow(<Component store={STORE}/>).dive().prop('onMutate')).toBe('function');
-    expect(typeof shallow(<ComponentB store={STORE}/>).dive().prop('onMutate')).toBe('undefined');
-    expect(typeof shallow(<ComponentB store={STORE}/>).dive().prop('MUTATE')).toBe('function');
+    expect(shallow(<Component store={STORE}/>).dive()).toHaveProp('onMutate');
+    expect(shallow(<ComponentB store={STORE}/>).dive()).not.toHaveProp('onMutate');
+    expect(shallow(<ComponentB store={STORE}/>).dive()).toHaveProp('MUTATE');
 });
 
 
 test("EntityMutationHockFactory will update the onMutate with new props", () => {
-    const spy1 = spy();
+    const spy1 = jest.fn();
     const queryCreator = ({spy}) => spy && spy();
     const Child = (props) => {
         return <div></div>;
@@ -65,10 +60,10 @@ test("EntityMutationHockFactory will update the onMutate with new props", () => 
     var Component = EntityMutationHockFactory(PASS, {})(queryCreator, {})(Child);
     var wrapper = shallow(<Component store={STORE}/>);
     wrapper.render();
-    expect(spy1.callCount).toBe(0);
+    expect(spy1).not.toHaveBeenCalled();
 
     wrapper.dive().dive().prop('onMutate')({spy: spy1});
-    expect(spy1.callCount).toBe(1);
+    expect(spy1).toHaveBeenCalled();
 });
 
 test('EntityMutationHockFactory will group props if a `group` config is provided', () => {
