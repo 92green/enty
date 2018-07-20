@@ -1,5 +1,18 @@
 // @flow
 import {EmptyState} from '../RequestState';
+import {FetchingState} from '../RequestState';
+import {RefetchingState} from '../RequestState';
+import {SuccessState} from '../RequestState';
+import {ErrorState} from '../RequestState';
+import type {RequestState} from '../RequestState';
+
+type MessageProps = {
+    resultKey?: ?string,
+    response?: any,
+    requestState?: RequestState,
+    requestError?: any,
+    onRequest?: ?(response: *) => Promise<*>
+};
 
 /**
  * A Message bundles up all of the information surrounding a request and response from the api.
@@ -12,7 +25,7 @@ export default class Message {
     /**
      * onRequest is a callback that will trigger your EntityRequester and start the normalizing flow.
      */
-    onRequest: (payload: *) => Promise<*>;
+    onRequest: (response: *) => Promise<*>;
 
     /**
      * The request state is a variant that exists in one of either empty, fetching, refetching, error or success states.
@@ -52,3 +65,31 @@ export default class Message {
         this.onRequest = props.onRequest;
     }
 }
+
+export const EmptyMessage = (rest: MessageProps) => new Message(
+    rest
+);
+
+export const FetchingMessage = (rest: MessageProps) => new Message({
+    requestState: FetchingState(),
+    ...rest
+});
+
+export const SuccessMessage = (response: *, rest: MessageProps) => new Message({
+    response,
+    requestState: SuccessState(),
+    ...rest
+});
+
+export const RefetchingMessage = (response: *, rest: MessageProps) => new Message({
+    response,
+    requestState: RefetchingState(),
+    ...rest
+});
+
+export const ErrorMessage = (requestError: *, rest: MessageProps) => new Message({
+    requestError,
+    requestState: ErrorState(),
+    ...rest
+});
+
