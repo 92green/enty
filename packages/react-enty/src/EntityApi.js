@@ -78,7 +78,7 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  * 2. Create higher order components that connect data to your views.
  * Constructs an Entity Api based off a schema and an object of promise returning functions.
  *
- * EntityApi will construct QueryHocks and MutationHocks for each promise returning function,
+ * EntityApi will construct RequestHocks for each promise returning function,
  * and a Redux store and reducer for your entity state.
  *
  * @param schema
@@ -92,7 +92,6 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  * import ApplicationSchema from './entity/ApplicationSchema';
  *
  * const Api = EntityApi(ApplicationSchema, {
- *     core: payload => post('/graphql', payload),
  *     user: payload => post('/user', payload),
  *     article: {
  *         create: payload => post('/article', payload),
@@ -103,14 +102,9 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  * export const {
  *     EntityStore,
  *
- *     CoreQueryHock,
- *     CoreMutationHock,
- *     UserQueryHock,
- *     UserMutationHock,
- *     ArticleCreateQueryHock,
- *     ArticleCreateMutationHock,
- *     ArticleListQueryHock,
- *     ArticleListMutationHock
+ *     UserRequestHock,
+ *     ArticleCreateRequestHock,
+ *     ArticleListRequestHock
  * } = Api;
  */
 function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {

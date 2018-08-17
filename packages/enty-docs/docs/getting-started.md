@@ -3,7 +3,7 @@ path: /getting-started
 title: Getting Started
 ---
 
-Enty has two parts: A Schema and an EntityApi.
+Enty has two parts: A Schema and an Api.
 
 ### 1. Schema
 The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
@@ -31,7 +31,7 @@ export default MapSchema({
 ```
 
 ### 2. API
-The second thing we need to do is to create our EntityApi from our schema;
+The second thing we need to do is to create an api from our schema. This will let us fetch some data.
 
 ```js
 // entity/EntityApi.js
@@ -39,14 +39,14 @@ import {EntityApi} from 'enty';
 import ApplicationSchema from './ApplicationSchema';
 
 const Api = EntityApi(ApplicationSchema, {
-    core: payload => request('/graphql', payload)
+    user: variables => request('/graphql', {query: UserQuery, variables}),
+    userList: variables => request('/graphql', {query: UserListQuery, variables})
 });
 
-export const {
-    EntityStore,
-    CoreQueryHock,
-    CoreMutationHock,
-} = Api;
+export const EntityProvider = Api.EntityProvider;
+export const UserRequestHock = Api.UserRequestHock;
+export const UserListRequestHock = Api.UserListRequestHock;
+
 
 ```
 
@@ -69,28 +69,30 @@ ReactDOM.render(
 
 ```
 
-### 4. Make a Query
+### 4. Make a Request
 
 ```jsx
 // component/User.jsx
 import {React} from 'react';
-import {CoreQueryHock} from '../entity/EntityApi';
+import {UserRequestHock} from '../entity/EntityApi';
+
+const withUserData = UserRequestHock({
+    name: 'userMessage',
+    auto: ['userId'],
+    payloadCreator: (props) => ({id: props.userId})
+});
 
 function User(props) {
-    const {user} = props;
-    return <img src={user.get('avatar')} />;
+    const {response, requestState, requestError} = props.userMessage;
+    return requestState
+        .fetchingMap(() => <Loader/>)
+        .refetchingMap(() => <Loader/>)
+        .errorMap(() => <ErrorMessage error={requestError} />)
+        .successMap(() => <img src={response.user.avatar} />)
+        .value();
 }
 
-const withData = CoreQueryHock(props => {
-    return {
-        query: UserDataQuery,
-        variables: {
-            id: props.id
-        }
-    };
-}, ['id']);
-
-export default withData(User);
+export default withUserData(User);
 
 ```
 

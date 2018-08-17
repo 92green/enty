@@ -5,37 +5,13 @@ title: FAQ
 ---
 
 
-### Q: What if I am using two Query/Mutation hocks
-### A: Use the group option!
-
-```js
-const withQuery = CoreQueryHock(
-    props => ({
-        query: UserQuery, 
-        variables: {
-            id: props.id
-        }
-    }),
-    {
-        group: 'user'
-    }
-);
-```
-
-
-### How do I load things?
-
-### Why is react-redux a peer dependency (it's not yet... but it should be)
-
 ### How do I handle endpoints that return arrays?
-We have found the cleanest way is to add a new service to your api and modify the data before it is given to Enty
+The cleanest way is to add a new service to your api and modify the data before it is given to Enty
 
 ```js
 // EntityApi.js
 const Api = EntityApi(ApplicationSchema, {
-    core: payload => request('/graphql', payload),
     userList: payload => request('/user', payload).then(data => ({userList: data}))
 });
 ```
 
-### Do I have to export an MapSchema from my EntityApi?
