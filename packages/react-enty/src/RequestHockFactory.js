@@ -156,11 +156,11 @@ function prepareConfig(config: RequestHockConfigInput): RequestHockConfig {
     );
 }
 
-function mapResponseToProps({mapResponseToProps, name}: RequestHockConfigInput): (Object => Object) {
-    if(mapResponseToProps === true) return identity();
-    if(typeof mapResponseToProps === 'function') {
+function mapResponseToProps({name, ...config}: RequestHockConfigInput): (Object => Object) {
+    if(config.mapResponseToProps === true) return identity();
+    if(typeof config.mapResponseToProps === 'function') {
         return pipe(
-            mapResponseToProps,
+            config.mapResponseToProps,
             newProps => {
                 if(Object.keys(newProps).includes(name)) {
                     throw new Error(`mapResponseToProps attempted to overwrite ${name} prop`);

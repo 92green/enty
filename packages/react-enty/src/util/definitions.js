@@ -32,12 +32,19 @@ export type HockOptionsInput = {
     stateKey?: string
 };
 
+export type AutoHockConfig = {
+    // Auto call the request on page load and prop change
+    // if true, request on the first render
+    // if array of strings, request on the first render and each time one of the props changes
+    auto?: boolean|Array<string>,
+
+    // If auto requesting is enabled, this hook lets you cancel the request based on props.
+    shouldComponentAutoRequest?: (props: *) => boolean
+};
+
 export type RequestHockConfigInput = {
     // Required name to isolate data when passing through props
     name: string,
-
-    // function to map props to your api payload
-    payloadCreator?: (props: *) => *,
 
     // Auto call the request on page load and prop change
     // if true, request on the first render
@@ -46,6 +53,9 @@ export type RequestHockConfigInput = {
 
     // If auto requesting is enabled, this hook lets you cancel the request based on props.
     shouldComponentAutoRequest?: (props: *) => boolean,
+
+    // function to map props to your api payload
+    payloadCreator?: (props: *) => *,
 
     // thunk to amend the result key based on props, used when you only have one instance of hock,
     // but it is invoked in various ways.
@@ -65,11 +75,9 @@ export type RequestHockConfigInput = {
  * This is the same as RequestHockConfigInput, but mapResponseToProps will now always return an object
  * allowing for it to always be spread
  */
-export type RequestHockConfig = {
+export type RequestHockConfig = AutoHockConfig & {
     name: string,
     payloadCreator?: (props: *) => *,
-    auto?: boolean|Array<string>,
-    shouldComponentAutoRequest?: (props: *) => boolean,
     updateResultKey?: (resultKey: string, props: *) => string,
     resultKey?: string,
     mapResponseToProps: Object => Object
@@ -78,11 +86,9 @@ export type RequestHockConfig = {
 /**
  * MultiRequestHockConfig description
  */
-export type MultiRequestHockConfig = {
-    name: string,
+export type MultiRequestHockConfig = AutoHockConfig & {
     onRequest: (props: *) => Promise<*>,
-    auto?: boolean|Array<string>,
-    shouldComponentAutoRequest?: (props: *) => boolean
+    name: string
 };
 
 export type ActionMeta = {
