@@ -32,15 +32,7 @@ export type HockOptionsInput = {
     stateKey?: string
 };
 
-
-
-
-
-
-/**
- * RequestHockConfig description
- */
-export type RequestHockConfig = {
+export type RequestHockConfigInput = {
     // Required name to isolate data when passing through props
     name: string,
 
@@ -66,9 +58,22 @@ export type RequestHockConfig = {
 
     // Function to map response back and then spread it back onto props.
     // Useful for when you don't wish to fish the response out of the request message.
-    mapResponseToProps?: Object => Object
+    mapResponseToProps?: boolean|Object => Object
 };
 
+/**
+ * This is the same as RequestHockConfigInput, but mapResponseToProps will now always return an object
+ * allowing for it to always be spread
+ */
+export type RequestHockConfig = {
+    name: string,
+    payloadCreator?: (props: *) => *,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean,
+    updateResultKey?: (resultKey: string, props: *) => string,
+    resultKey?: string,
+    mapResponseToProps: Object => Object
+};
 
 /**
  * MultiRequestHockConfig description

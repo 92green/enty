@@ -161,6 +161,48 @@ test('config.mapResponseToProps will spread the response onto the hocked compone
     expect(component.prop('entity')).toBe(component.prop('foo').response.entity);
 });
 
+test('config.mapResponseToProps will be an identity function if given a value of "true"', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
+    const RequestHockApplier = RequestHock({name: 'foo', mapResponseToProps: true});
+    const Child = RequestHockApplier((props) => null);
+    const component = shallow(<Child store={STORE}/>)
+        .dive()
+        .setProps({foo: {resultKey: 'foo'}});
+
+    expect(component.prop('entity')).toBe(component.prop('foo').response.entity);
+});
+
+test('config.mapResponseToProps will throw an error if the new props will collide with the message prop', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    expect(function () {
+        const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
+        const RequestHockApplier = RequestHock({
+            name: 'foo',
+            mapResponseToProps: response => ({foo: response.entity})
+        });
+        const Child = RequestHockApplier((props) => null);
+        const component = shallow(<Child store={STORE}/>)
+            .dive()
+            .setProps({foo: {resultKey: 'foo'}})
+    }).toThrow();
+});
+
+test('the response will not be mapped to props if config.mapResponseToProps is undefined', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
+    const RequestHockApplier = RequestHock({name: 'foo'});
+    const Child = RequestHockApplier((props) => null);
+    const component = shallow(<Child store={STORE}/>)
+        .dive()
+        .setProps({foo: {resultKey: 'foo'}})
+
+    expect(component.prop('entity')).toBe(undefined);
+});
+
 
 test('hocked component will be given and Message to props.[name]', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
