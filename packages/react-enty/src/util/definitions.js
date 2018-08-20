@@ -33,6 +33,9 @@ export type HockOptionsInput = {
 };
 
 export type AutoHockConfig = {
+    // Required name to isolate data when passing through props
+    name: string,
+
     // Auto call the request on page load and prop change
     // if true, request on the first render
     // if array of strings, request on the first render and each time one of the props changes
@@ -75,20 +78,24 @@ export type RequestHockConfigInput = {
  * This is the same as RequestHockConfigInput, but mapResponseToProps will now always return an object
  * allowing for it to always be spread
  */
-export type RequestHockConfig = AutoHockConfig & {
+export type RequestHockConfig = {
     name: string,
     payloadCreator?: (props: *) => *,
     updateResultKey?: (resultKey: string, props: *) => string,
     resultKey?: string,
-    mapResponseToProps: Object => Object
+    mapResponseToProps: Object => Object,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean
 };
 
 /**
  * MultiRequestHockConfig description
  */
-export type MultiRequestHockConfig = AutoHockConfig & {
+export type MultiRequestHockConfig = {
     onRequest: (props: *) => Promise<*>,
-    name: string
+    name: string,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean
 };
 
 export type ActionMeta = {
