@@ -3,32 +3,39 @@ import type {HockMeta} from '../util/definitions';
 
 import React from 'react';
 import {fromJS} from 'immutable';
+import {Map} from 'immutable';
 import RequestHockFactory from '../RequestHockFactory';
-import * as EntitySelector from '../EntitySelector';
 import RequestStateSelector from '../RequestStateSelector';
 import {FetchingState} from '../RequestState';
 import {EmptyState} from '../RequestState';
 import {RefetchingState} from '../RequestState';
 import {ErrorState} from '../RequestState';
 import {SuccessState} from '../RequestState';
-import * as RequestState from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
+import MapSchema from 'enty/lib/MapSchema';
+import ObjectSchema from 'enty/lib/ObjectSchema';
+import identity from 'unmutable/lib/identity';
 
 jest.mock('../RequestStateSelector');
 
-
-
-const noop = () => {};
-const identity = (aa) => aa;
 const resolve = (x) => () => Promise.resolve(x);
-const reject = (x) => () => Promise.reject(x);
 
-var STORE = {
+const STORE = {
     subscribe: () => {},
     dispatch: (aa) => aa,
     getState: () => ({
         entity: fromJS({
+            _baseSchema: Map({
+                SCHEMA_KEY: ObjectSchema({
+                    entity: ObjectSchema({})
+                })
+            }),
+            _result: {
+                foo: {
+                    entity: {bar: 123}
+                }
+            },
             _requestState: {
                 foo: FetchingState()
             }
@@ -38,17 +45,17 @@ var STORE = {
 
 const hockMeta: HockMeta = {
     generateResultKey: props => `${props}-resultKey`,
-    requestActionName: 'FooAction'
-}
+    requestActionName: 'FooAction',
+    schemaKey: 'SCHEMA_KEY'
+};
 
-const queryCreator = () => `query`;
 const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
 const RequestHockApplier = RequestHock({name: 'foo'});
 
 beforeEach(() => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReset();
-})
+});
 
 test('will return a function', () => {
     expect(typeof RequestHock).toBe('function');
@@ -119,7 +126,7 @@ test('config.updateResultKey will update the resultKey', () => {
         props.foo.onRequest();
         return null;
     });
-    shallow(<Child store={STORE}/>).dive().dive();
+    shallow(<Child resultKey="foo" store={STORE}/>).dive().dive();
     expect(actionCreator).toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey-bar'});
     expect(actionCreator).not.toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey'});
 });
@@ -141,6 +148,19 @@ test('config.updateResultKey is called with the resultKey and props', () => {
     expect(updateResultKey).toHaveBeenCalledWith('fooResultKey', {store: STORE, extraProp: 'bar'});
 });
 
+test('config.mapResponseToProps will spread the response onto the hocked component\'s props', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
+    const RequestHockApplier = RequestHock({name: 'foo', mapResponseToProps: identity()});
+    const Child = RequestHockApplier((props) => null);
+    const component = shallow(<Child store={STORE}/>)
+        .dive()
+        .setProps({foo: {resultKey: 'foo'}});
+
+    expect(component.prop('entity')).toBe(component.prop('foo').response.entity);
+});
+
 
 test('hocked component will be given and Message to props.[name]', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
@@ -150,7 +170,7 @@ test('hocked component will be given and Message to props.[name]', () => {
         return null;
     });
 
-    const component = shallow(<Child store={STORE}/>).dive().dive();
+    shallow(<Child store={STORE}/>).dive().dive();
 });
 
 
@@ -170,7 +190,7 @@ test('Message.onRequest will dispatch an action', () => {
         return null;
     });
 
-    const component = shallow(<Child store={store}/>).dive().dive();
+    shallow(<Child store={store}/>).dive().dive();
     expect(dispatch).toHaveBeenCalled();
 });
 

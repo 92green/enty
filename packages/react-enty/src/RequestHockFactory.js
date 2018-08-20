@@ -123,6 +123,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                     // Merge State and dispatch
                     (stateProps, dispatchProps, ownProps) => ({
                         ...ownProps,
+                        ...(config.mapResponseToProps ? config.mapResponseToProps(stateProps[name].response) : {}),
                         [name]: new Message({
                             ...stateProps[name],
                             onRequest: dispatchProps[name].onRequest

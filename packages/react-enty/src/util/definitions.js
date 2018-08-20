@@ -62,7 +62,11 @@ export type RequestHockConfig = {
     updateResultKey?: (resultKey: string, props: *) => string,
 
     // custom hardcoded resultKey
-    resultKey?: string
+    resultKey?: string,
+
+    // Function to map response back and then spread it back onto props.
+    // Useful for when you don't wish to fish the response out of the request message.
+    mapResponseToProps?: Object => Object
 };
 
 
