@@ -32,20 +32,22 @@ export type HockOptionsInput = {
     stateKey?: string
 };
 
-
-
-
-
-
-/**
- * RequestHockConfig description
- */
-export type RequestHockConfig = {
+export type AutoHockConfig = {
     // Required name to isolate data when passing through props
     name: string,
 
-    // function to map props to your api payload
-    payloadCreator?: (props: *) => *,
+    // Auto call the request on page load and prop change
+    // if true, request on the first render
+    // if array of strings, request on the first render and each time one of the props changes
+    auto?: boolean|Array<string>,
+
+    // If auto requesting is enabled, this hook lets you cancel the request based on props.
+    shouldComponentAutoRequest?: (props: *) => boolean
+};
+
+export type RequestHockConfigInput = {
+    // Required name to isolate data when passing through props
+    name: string,
 
     // Auto call the request on page load and prop change
     // if true, request on the first render
@@ -55,6 +57,9 @@ export type RequestHockConfig = {
     // If auto requesting is enabled, this hook lets you cancel the request based on props.
     shouldComponentAutoRequest?: (props: *) => boolean,
 
+    // function to map props to your api payload
+    payloadCreator?: (props: *) => *,
+
     // thunk to amend the result key based on props, used when you only have one instance of hock,
     // but it is invoked in various ways.
     //
@@ -62,16 +67,33 @@ export type RequestHockConfig = {
     updateResultKey?: (resultKey: string, props: *) => string,
 
     // custom hardcoded resultKey
-    resultKey?: string
+    resultKey?: string,
+
+    // Function to map response back and then spread it back onto props.
+    // Useful for when you don't wish to fish the response out of the request message.
+    mapResponseToProps?: boolean|Object => Object
 };
 
+/**
+ * This is the same as RequestHockConfigInput, but mapResponseToProps will now always return an object
+ * allowing for it to always be spread
+ */
+export type RequestHockConfig = {
+    name: string,
+    payloadCreator?: (props: *) => *,
+    updateResultKey?: (resultKey: string, props: *) => string,
+    resultKey?: string,
+    mapResponseToProps: Object => Object,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean
+};
 
 /**
  * MultiRequestHockConfig description
  */
 export type MultiRequestHockConfig = {
-    name: string,
     onRequest: (props: *) => Promise<*>,
+    name: string,
     auto?: boolean|Array<string>,
     shouldComponentAutoRequest?: (props: *) => boolean
 };

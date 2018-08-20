@@ -1,10 +1,9 @@
 //@flow
 import identity from 'unmutable/lib/identity';
 import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
-import type {RequestHockConfig} from './definitions';
-import type {MultiRequestHockConfig} from './definitions';
+import type {AutoHockConfig} from './definitions';
 
-export default function AutoHockFactory(config: RequestHockConfig|MultiRequestHockConfig): * {
+export default function AutoHockFactory(config: AutoHockConfig & {name: string}): * {
     // eslint-disable-next-line
     const {shouldComponentAutoRequest = (_) => true} = config;
     const {name} = config;
