@@ -65,7 +65,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                     );
                                     this.setState({
                                         nextResultKey,
-                                        resultKey: this.state.nextResultKey
+                                        resultKey: this.state.nextResultKey || nextResultKey
                                     });
                                     return actionCreator(payload, {resultKey: nextResultKey});
                                 }
