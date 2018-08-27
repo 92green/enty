@@ -40,7 +40,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
              */
             function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
-                const {payloadCreator = identity()} = config;
+                const {payloadCreator = () => ({})} = config;
                 const {updateResultKey = identity()} = config;
                 const {name} = config;
                 const {mapResponseToProps} = config;
