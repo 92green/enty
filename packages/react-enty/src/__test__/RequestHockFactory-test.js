@@ -70,7 +70,7 @@ test('will throw an error is config.name is not supplied', () => {
         .toThrow(RequestHockNoNameError('FooAction'));
 });
 
-test('config.payloadCreator will by default be an identity function', () => {
+test('config.payloadCreator will by default return an empty object', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
 
@@ -78,11 +78,11 @@ test('config.payloadCreator will by default be an identity function', () => {
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
-        props.foo.onRequest('foo');
+        props.foo.onRequest();
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith('foo', {resultKey: 'foo-resultKey'});
+    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: '[object Object]-resultKey'});
 });
 
 test('config.payloadCreator will create the payload', () => {
@@ -92,11 +92,11 @@ test('config.payloadCreator will create the payload', () => {
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo', payloadCreator: () => 'bar'});
     const Child = RequestHockApplier((props) => {
-        props.foo.onRequest('foo');
+        props.foo.onRequest();
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).not.toHaveBeenCalledWith('foo', {resultKey: 'foo-resultKey'});
+    expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'bar-resultKey'});
 });
 
 test('config.updateResultKey will by default be an identity function', () => {
@@ -110,7 +110,7 @@ test('config.updateResultKey will by default be an identity function', () => {
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey'});
+    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'fooResultKey'});
 });
 
 test('config.updateResultKey will update the resultKey', () => {
@@ -127,8 +127,8 @@ test('config.updateResultKey will update the resultKey', () => {
         return null;
     });
     shallow(<Child resultKey="foo" store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey-bar'});
-    expect(actionCreator).not.toHaveBeenCalledWith(undefined, {resultKey: 'fooResultKey'});
+    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'fooResultKey-bar'});
+    expect(actionCreator).not.toHaveBeenCalledWith({}, {resultKey: 'fooResultKey'});
 });
 
 test('config.updateResultKey is called with the resultKey and props', () => {
