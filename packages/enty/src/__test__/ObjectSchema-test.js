@@ -85,6 +85,24 @@ test('ObjectSchema will filter out DELETED_ENTITY keys', () => {
     expect(schema.denormalize({result: {foo: "1"}, entities})).toEqual({});
 });
 
+test('ObjectSchema can denormalize objects without mutating', () => {
+    const schema = ObjectSchema({foo});
+
+    const result = {foo: "1"};
+    const originalResult = {...result};
+
+    const entities = {
+        foo: {
+            "1": {id: "1"}
+        }
+    };
+
+    schema.denormalize({result, entities});
+
+    expect(result).toEqual(originalResult);
+});
+
+
 test('ObjectSchema will pass any deleted keys to options.denormalizeFilter', () => {
     const schema = ObjectSchema({foo}, {
         denormalizeFilter: (item, deletedKeys) => expect(deletedKeys).toEqual(['foo'])
