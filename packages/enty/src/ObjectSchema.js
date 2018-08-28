@@ -1,4 +1,5 @@
 // @flow
+import clone from 'unmutable/lib/clone';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
 import Keyed from './abstract/Keyed';
@@ -78,6 +79,7 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
 
         return pipeWith(
             result,
+            clone(),
             (item: Object): Object => {
                 if(path.indexOf(this) !== -1) {
                     return item;
