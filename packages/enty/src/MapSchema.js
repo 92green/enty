@@ -1,5 +1,6 @@
 // @flow
 import {Map} from 'immutable';
+import pipeWith from 'unmutable/lib/util/pipeWith';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
 import Keyed from './abstract/Keyed';
 import type {NormalizeState} from './util/definitions';
@@ -66,7 +67,7 @@ export class MapSchema extends Keyed implements Schema<Structure> {
         const {definition, options} = this;
         let deletedKeys = [];
 
-        if(result == null) {
+        if(result == null || path.indexOf(this) !== -1) {
             return result;
         }
 
@@ -74,38 +75,36 @@ export class MapSchema extends Keyed implements Schema<Structure> {
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
-        //
-        // Lots of `item.keySeq().reduce(() => {}, item) because Immutable can't map records without
-        // mutating them...
-        return result
-            .update((item: Map<any, any>): Map<any, any> => {
-                return item.keySeq()
+
+        let keys: string[] = [...result.keys()];
+
+        return pipeWith(
+            result,
+            (item: Map<any, any>): Map<any, any> => {
+                return keys
                     .reduce((newItem: any, key: string): Map<any, any> => {
-                        var value = newItem.get(key);
-                        var newValue;
-
-                        if(path.indexOf(this) !== -1) {
-                            newValue = value;
-                        } else if(definition[key]) {
-                            newValue = definition[key].denormalize({result: value, entities}, path.concat(this));
-                        } else {
-                            newValue = value;
+                        if(definition[key]) {
+                            let result = newItem.get(key);
+                            let newValue = definition[key].denormalize({result, entities}, path.concat(this));
+                            return newItem.set(key, newValue);
                         }
-
-                        return newItem.set(key, newValue);
+                        return newItem;
                     }, item);
-            })
-            .update((item: any): any => {
-                return item.keySeq()
-                    .filter(key => item.get(key) === DELETED_ENTITY)
+            },
+            (item: any): any => {
+                return keys
                     .reduce((newItem: Map<any, any>, deleteKey: string): Map<any, any> => {
-                        deletedKeys.push(deleteKey);
-                        return newItem.delete(deleteKey);
+                        if(item.get(deleteKey) === DELETED_ENTITY) {
+                            deletedKeys.push(deleteKey);
+                            return newItem.delete(deleteKey);
+                        }
+                        return newItem;
                     }, item);
-            })
-            .update((ii: Map<any, any>): Map<any, any>|DeletedEntity => {
+            },
+            (ii: Map<any, any>): Map<any, any>|DeletedEntity => {
                 return options.denormalizeFilter(ii, deletedKeys) ? ii : DELETED_ENTITY;
-            });
+            }
+        );
     }
 }
 
