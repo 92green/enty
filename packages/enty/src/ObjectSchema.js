@@ -65,7 +65,7 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
         const {definition, options} = this;
         let deletedKeys = [];
 
-        if(result == null || path.indexOf(this) !== -1) {
+        if(result == null) {
             return result;
         }
 
@@ -79,6 +79,9 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
         return pipeWith(
             result,
             (item: Object): Object => {
+                if(path.indexOf(this) !== -1) {
+                    return item;
+                }
                 return keys
                     .reduce((newItem: Object, key: string): Object => {
                         if(definition[key]) {

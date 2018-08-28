@@ -67,7 +67,7 @@ export class MapSchema extends Keyed implements Schema<Structure> {
         const {definition, options} = this;
         let deletedKeys = [];
 
-        if(result == null || path.indexOf(this) !== -1) {
+        if(result == null) {
             return result;
         }
 
@@ -81,6 +81,9 @@ export class MapSchema extends Keyed implements Schema<Structure> {
         return pipeWith(
             result,
             (item: Map<any, any>): Map<any, any> => {
+                if(path.indexOf(this) !== -1) {
+                    return item;
+                }
                 return keys
                     .reduce((newItem: any, key: string): Map<any, any> => {
                         if(definition[key]) {
