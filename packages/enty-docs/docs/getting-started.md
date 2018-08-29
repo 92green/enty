@@ -3,35 +3,48 @@ path: /getting-started
 title: Getting Started
 ---
 
+## Installation
+
+```
+yarn add react-enty
+```
+_Note: the `enty` package only contains the schemas. `react-enty` contains the api, which lets you use those schemas in a react project.
+React Enty depends on Enty, so you only need to add react enty to your project._
+
+## Setup
+
 Enty has two parts: A Schema and an Api.
 
 ### 1. Schema
-The first step in implementing Enty is to define your schema. This defines what relationships your entities have. A user might have a list of friends which are also users. So we can define that as a user
+The first step in implementing Enty is to create your schema. This defines the relationships between your entities. 
+In this example we'll say a user has a list of friends which are also users. 
 
 ```js
 // entity/ApplicationSchema.js
 import {
-    MapSchema,
-    ListSchema,
+    ObjectSchema,
+    ArraySchema,
     EntitySchema,
-} from 'enty';
+} from 'react-enty';
 
 var user = EntitySchema('user');
-var userList = ListSchema(user);
+var userList = ArraySchema(user);
 
-user.set(MapSchema({
+user.set(ObjectSchema({
     friendList: userList
 }))
 
-export default MapSchema({
+export default ObjectSchema({
    user,
    userList
 });
 
 ```
+Read more: [Schemas]
 
 ### 2. API
 The second thing we need to do is to create an api from our schema. This will let us fetch some data.
+The EntityApi takes a bunch of promise returning functions and turns them into hocs that fetch, normalize and then provide data to our application. 
 
 ```js
 // entity/EntityApi.js
@@ -49,8 +62,13 @@ export const UserListRequestHock = Api.UserListRequestHock;
 
 
 ```
+Read more: [Api]
 
 ### 3. Connect to react
+Currently Enty uses redux to store it's data. The api we recently created exports a store that
+we can dump into a redux provider. 
+TODO: enty should export a provider and completely abastract away the store. 
+TODO: invesitgate context api / hidden redux pros and cons.
 
 ```jsx
 // client.jsx
@@ -68,8 +86,11 @@ ReactDOM.render(
 );
 
 ```
+Read more: [Redux]
+
 
 ### 4. Make a Request
+Now we can use one of the request hocs exported from our api to request data.
 
 ```jsx
 // component/User.jsx
@@ -96,4 +117,12 @@ export default withUserData(User);
 
 ```
 
+Read more: [RequestHock], [Message], [RequestState]
+
+[Schemas]: /Schemas
+[Api]: /Api
+[Redux]: /Redux
+[RequestHock]: /RequestHock
+[Message]: /Message
+[RequestState]: /RequestState
 
