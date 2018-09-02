@@ -17,15 +17,15 @@
     }
 };
 @include ObtuseTypography;
-@include ObtuseWrapper;
+@include ObtuseWrapper() {
+    width: 50rem;
+}
 
 body {
     padding: 2rem;
 }
 
 .Navigation {
-
-
     @include BruceBreakpoint(72rem) {
         position: fixed;
         top: 0;

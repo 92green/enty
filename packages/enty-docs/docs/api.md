@@ -1,14 +1,13 @@
 ---
-path: /schemas
-date: 2017-11-07
-title: Schemas
+path: /api
+date: 2018-09-03
+title: API
 ---
-Schemas are a way to describe to Enty the shape of your api responses and the 
-relationships between your data. With this information Enty is able to normalize any response so that
-each entity is only ever stored in memory once. This means that when ever your refer to one of your 
-entities you can be confident that it is up to date. 
+The Enty API provides a standard way to bind your data fetching code to the normalizing process.
+The API lets you declare groups of Promise returning functions, that are then converted to hocs
+that hide away all the normalizing and request states.
+u
 
-There are two main types of schema: structural schemas and entity schemas.
 
 ## Structure
 Structural schemas describe the shape of your responses and let Enty traverse your data looking for entities.
@@ -149,7 +148,6 @@ define models. Or the ArraySchema to create list of notifications bound to the v
 even define your own schema that has unqique logic for normalizing and denormalizing. 
 
 ### Unorthodox Entities
-
 
 
 ## Unique Data Structures
