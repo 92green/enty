@@ -27,16 +27,17 @@
     "gh-pages": "^1.1.0",
     "immutable": "^3.8.2",
     "jsdonk": "^0.7.0",
-    "obtuse": "^0.7.3",
     "prettier": "^1.11.1",
     "prismjs": "^1.11.0",
-    "react-helmet": "^5.2.0"
+    "react-helmet": "^5.2.0",
+    "stampy": "^0.43.0"
   },
   "dependencies": {
     "gatsby": "^1.9.223",
     "gatsby-remark-prismjs": "^1.2.21",
     "mdx-loader": "^1.1.0",
     "mdxc": "^1.1.1",
+    "obtuse": "^0.7.4",
     "react-redux": "^5.0.7",
     "unmutable": "^0.29.2"
   }

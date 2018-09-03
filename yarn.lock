@@ -9096,14 +9096,15 @@ observable-to-promise@^0.5.0:
     is-observable "^0.2.0"
     symbol-observable "^1.0.4"
 
-obtuse@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/obtuse/-/obtuse-0.7.3.tgz#f23626265cd037afe1f94d5b78dac040cbf73a48"
+obtuse@^0.7.4:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/obtuse/-/obtuse-0.7.4.tgz#62c8abd5545cea5d302f0a31438fb626b933e7af"
   dependencies:
     goose-css "^0.12.0"
     moment "^2.18.1"
     numeral "^2.0.6"
     prop-types "^15.5.8"
+    stampy "^0.43.0"
 
 on-finished@~2.3.0:
   version "2.3.0"
