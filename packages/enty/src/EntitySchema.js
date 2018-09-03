@@ -10,7 +10,7 @@ import {PerhapsEither} from 'fronads/lib/Either';
 import {NoDefinitionError} from './util/Error';
 import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
-import get from 'unmutable/lib/getIn';
+import get from 'unmutable/lib/get';
 import Child from './abstract/Child';
 import NullSchema from './NullSchema';
 
@@ -32,7 +32,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         super(definition);
         this.options = {
             name,
-            idAttribute: get('id'),
+            idAttribute: item => item && get('id')(item),
             ...optionsRest
         };
         this.type = 'entity';
@@ -65,7 +65,6 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const id = PerhapsEither(idAttribute(data))
             .map(id => id.toString())
             .leftMap((value: *) => {
-                console.log(data, value);
                 throw UndefinedIdError(name, value);
             })
             .value();

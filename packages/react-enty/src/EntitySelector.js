@@ -2,7 +2,7 @@
 import {Iterable, Map} from 'immutable';
 import ListSchema from 'enty/lib/ListSchema';
 import getIn from 'unmutable/lib/getIn';
-import get from 'unmutable/lib/getIn';
+import get from 'unmutable/lib/get';
 
 /**
  * @module Selectors
