@@ -1,6 +1,6 @@
 {
   "name": "react-enty",
-  "version": "0.6.2",
+  "version": "0.7.0-0",
   "description": "React bindings for managing state with enty schemas",
   "main": "lib/index.js",
   "license": "UNLICENSED",
@@ -26,7 +26,7 @@
     "redux": "^3.6.0"
   },
   "dependencies": {
-    "enty": "^0.47.1",
+    "enty": "^0.48.0-0",
     "fronads": "^0.17.0",
     "immutable": "^3.8.1",
     "redux-actions": "^2.0.1",
