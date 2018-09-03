@@ -12216,6 +12216,17 @@ stampy@^0.43.0:
     unmutable "^0.34.0"
     url-search-params "^0.9.0"
 
+stampy@^0.43.2:
+  version "0.43.2"
+  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.43.2.tgz#c1b84be196564a6d496a10fe46db06170fa966af"
+  dependencies:
+    blueflag-test "^0.18.1"
+    classnames "^2.2.5"
+    element-resize-detector "^1.1.12"
+    is-plain-object "^2.0.3"
+    unmutable "^0.34.1"
+    url-search-params "^0.9.0"
+
 state-toggle@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/state-toggle/-/state-toggle-1.0.0.tgz#d20f9a616bb4f0c3b98b91922d25b640aa2bc425"
@@ -13150,6 +13161,14 @@ unmutable@^0.29.2:
 unmutable@^0.34.0:
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.34.0.tgz#512ad3f5286215cab8ce554741d42c2ca8822a70"
+  dependencies:
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
+
+unmutable@^0.34.1:
+  version "0.34.1"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.34.1.tgz#e417973cf11540756565fb15027402275401b311"
   dependencies:
     fast-deep-equal "^1.0.0"
     is-plain-object "^2.0.4"
