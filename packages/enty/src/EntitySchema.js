@@ -1,18 +1,19 @@
 // @flow
-import {PerhapsEither} from 'fronads/lib/Either';
-import {NoDefinitionError} from './util/Error';
-import {UndefinedIdError} from './util/Error';
-import {getIn, get} from 'stampy/lib/util/CollectionUtils';
-import Child from './abstract/Child';
-import NullSchema from './NullSchema';
-
 import type {Schema} from './util/definitions';
 import type {Entity} from './util/definitions';
 import type {Structure} from './util/definitions';
-
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {EntitySchemaOptions} from './util/definitions';
+
+import {PerhapsEither} from 'fronads/lib/Either';
+import {NoDefinitionError} from './util/Error';
+import {UndefinedIdError} from './util/Error';
+import getIn from 'unmutable/lib/getIn';
+import get from 'unmutable/lib/getIn';
+import Child from './abstract/Child';
+import NullSchema from './NullSchema';
+
 
 /**
  *  Entity Schemas define
@@ -31,7 +32,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         super(definition);
         this.options = {
             name,
-            idAttribute: item => item && get(item, 'id'),
+            idAttribute: get('id'),
             ...optionsRest
         };
         this.type = 'entity';
@@ -100,7 +101,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const {result, entities} = denormalizeState;
         const {definition} = this;
         const {name} = this.options;
-        const entity = getIn(entities, [name, result]);
+        const entity = getIn([name, result])(entities);
 
         if(entity == null) {
             return entity;

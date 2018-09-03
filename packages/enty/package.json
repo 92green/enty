@@ -24,6 +24,6 @@
   "dependencies": {
     "fronads": "^0.17.0",
     "immutable": "^3.8.1",
-    "stampy": "^0.26.1"
+    "stampy": "^0.43.0"
   }
 }

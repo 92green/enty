@@ -31,7 +31,7 @@
     "immutable": "^3.8.1",
     "redux-actions": "^2.0.1",
     "redux-thunk": "^2.1.0",
-    "stampy": "^0.26.1",
+    "stampy": "^0.43.0",
     "unmutable": "^0.29.2"
   }
 }

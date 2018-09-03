@@ -1,15 +1,15 @@
 // @flow
-import {getIn} from 'stampy/lib/util/CollectionUtils';
+import type {Schema} from './util/definitions';
+import type {Entity} from './util/definitions';
+import type {NormalizeState} from './util/definitions';
+import type {DenormalizeState} from './util/definitions';
+
+import getIn from 'unmutable/lib/getIn';
 import {CompositeDefinitionMustBeEntityError} from './util/Error';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
 import {NoDefinitionError} from './util/Error';
 import Child from './abstract/Child';
 import NullSchema from './NullSchema';
-
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
-import type {NormalizeState} from './util/definitions';
-import type {DenormalizeState} from './util/definitions';
 
 
 /**
@@ -125,7 +125,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
         const {name} = this.options;
         const {result, entities} = denormalizeState;
 
-        const entity = getIn(entities, [name, result]);
+        const entity = getIn([name, result])(entities);
 
         const mainDenormalizedState = definition.denormalize({result: entity[definition.options.name], entities}, path);
 

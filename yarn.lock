@@ -847,6 +847,17 @@ babel-core@^6.0.14, babel-core@^6.17.0, babel-core@^6.23.0, babel-core@^6.24.1, 
     slash "^1.0.0"
     source-map "^0.5.6"
 
+babel-eslint@^8.0.0:
+  version "8.2.6"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.2.6.tgz#6270d0c73205628067c0f7ae1693a9e797acefd9"
+  dependencies:
+    "@babel/code-frame" "7.0.0-beta.44"
+    "@babel/traverse" "7.0.0-beta.44"
+    "@babel/types" "7.0.0-beta.44"
+    babylon "7.0.0-beta.44"
+    eslint-scope "3.7.1"
+    eslint-visitor-keys "^1.0.0"
+
 babel-eslint@^8.2.5:
   version "8.2.5"
   resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.2.5.tgz#dc2331c259d36782aa189da510c43dedd5adc7a3"
@@ -1894,6 +1905,29 @@ bluebird@3.5.1, bluebird@^3.0.0, bluebird@^3.0.5, bluebird@^3.3.4, bluebird@^3.5
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
 
+blueflag-test@^0.18.1:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/blueflag-test/-/blueflag-test-0.18.1.tgz#2f1ef068b6a270f9152e872a52cab61b740162bd"
+  dependencies:
+    app-module-path "^2.2.0"
+    ava "^0.25.0"
+    babel-cli "^6.23.0"
+    babel-core "^6.26.3"
+    babel-preset-blueflag "^0.6.0"
+    babel-register "^6.23.0"
+    chalk "^2.1.0"
+    commander "^2.11.0"
+    dotenv "^4.0.0"
+    eslint "^4.7.2"
+    eslint-config-blueflag "^0.7.0"
+    eslint-plugin-flowtype "^2.36.0"
+    eslint-plugin-react "^7.4.0"
+    flow-bin "0.54"
+    fs-extra "^6.0.0"
+    nyc "^11.7.2"
+    proxyquire "^1.7.10"
+    sinon "^5.0.7"
+
 blueflag-test@^0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/blueflag-test/-/blueflag-test-0.20.0.tgz#b9d91b18a5c9ea3ad97109e10e955b5a91022dd5"
@@ -2116,12 +2150,6 @@ browserslist@^2.1.2:
   dependencies:
     caniuse-lite "^1.0.30000792"
     electron-to-chromium "^1.3.30"
-
-bruce@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/bruce/-/bruce-0.9.0.tgz#bec3d4a2a13eaddc8c72be6ca398e0b0043d1f9f"
-  dependencies:
-    exports-loader "^0.6.2"
 
 bruce@^4.0.0:
   version "4.0.0"
@@ -2497,7 +2525,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.2.4, classnames@^2.2.5:
+classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -3888,7 +3916,7 @@ electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
   version "1.3.40"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.40.tgz#1fbd6d97befd72b8a6f921dc38d22413d2f6fddf"
 
-element-resize-detector@^1.1.12, element-resize-detector@^1.1.9:
+element-resize-detector@^1.1.12:
   version "1.1.14"
   resolved "https://registry.yarnpkg.com/element-resize-detector/-/element-resize-detector-1.1.14.tgz#af064a0a618a820ad570a95c5eec5b77be0128c1"
   dependencies:
@@ -4169,6 +4197,15 @@ escodegen@^1.9.0:
   optionalDependencies:
     source-map "~0.6.1"
 
+eslint-config-blueflag@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-blueflag/-/eslint-config-blueflag-0.7.0.tgz#4c5daba8e514bed0c261784e71afd741fedea2a8"
+  dependencies:
+    babel-eslint "^8.0.0"
+    eslint "^4.7.2"
+    eslint-plugin-flowtype "^2.29.1"
+    eslint-plugin-react "^7.4.0"
+
 eslint-config-blueflag@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/eslint-config-blueflag/-/eslint-config-blueflag-0.8.0.tgz#15c5c336c484f3dcf4dc1ff4505aa9e5c2deb6d3"
@@ -4178,17 +4215,17 @@ eslint-config-blueflag@^0.8.0:
     eslint-plugin-flowtype "^2.49.3"
     eslint-plugin-react "^7.10.0"
 
+eslint-plugin-flowtype@^2.29.1, eslint-plugin-flowtype@^2.49.3:
+  version "2.50.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.50.0.tgz#953e262fa9b5d0fa76e178604892cf60dfb916da"
+  dependencies:
+    lodash "^4.17.10"
+
 eslint-plugin-flowtype@^2.36.0:
   version "2.46.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.46.1.tgz#c4f81d580cd89c82bc3a85a1ccf4ae3a915143a4"
   dependencies:
     lodash "^4.15.0"
-
-eslint-plugin-flowtype@^2.49.3:
-  version "2.50.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.50.0.tgz#953e262fa9b5d0fa76e178604892cf60dfb916da"
-  dependencies:
-    lodash "^4.17.10"
 
 eslint-plugin-react@^7.10.0:
   version "7.10.0"
@@ -4208,7 +4245,7 @@ eslint-plugin-react@^7.4.0:
     jsx-ast-utils "^2.0.1"
     prop-types "^15.6.0"
 
-eslint-scope@^3.7.1, eslint-scope@~3.7.1:
+eslint-scope@3.7.1, eslint-scope@^3.7.1, eslint-scope@~3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-3.7.1.tgz#3d63c3edfda02e06e01a452ad88caacc7cdcb6e8"
   dependencies:
@@ -4880,6 +4917,10 @@ flow-annotation-check@1.8.0:
     babel-plugin-transform-object-rest-spread "^6.20.2"
     glob "7.1.1"
     load-pkg "^3.0.1"
+
+flow-bin@0.54:
+  version "0.54.1"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.54.1.tgz#7101bcccf006dc0652714a8aef0c72078a760510"
 
 flow-bin@^0.76.0:
   version "0.76.0"
@@ -7921,6 +7962,10 @@ lodash.pick@^4.2.1:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
 
+lodash.range@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
+
 lodash.reduce@^4.4.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
@@ -8028,10 +8073,6 @@ lru-cache@^4.0.1:
   dependencies:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
-
-lru-memoize@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/lru-memoize/-/lru-memoize-1.0.2.tgz#f5ae84d288e7d55fec8388ec0bd725621bc815d0"
 
 ltcdr@^2.2.1:
   version "2.2.1"
@@ -10271,7 +10312,7 @@ proxy-addr@~2.0.3:
     forwarded "~0.1.2"
     ipaddr.js "1.6.0"
 
-proxyquire@^1.7.10, proxyquire@^1.7.11:
+proxyquire@^1.7.10:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-1.8.0.tgz#02d514a5bed986f04cbb2093af16741535f79edc"
   dependencies:
@@ -10527,16 +10568,6 @@ react-hot-loader@^3.0.0-beta.6:
     redbox-react "^1.3.6"
     source-map "^0.6.1"
 
-react-immutable-proptypes@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
-
-react-input-autosize@^2.1.2:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"
-  dependencies:
-    prop-types "^15.5.8"
-
 react-is@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.4.1.tgz#d624c4650d2c65dbd52c72622bbf389435d9776e"
@@ -10589,14 +10620,6 @@ react-router@^4.1.1, react-router@^4.2.0:
     path-to-regexp "^1.7.0"
     prop-types "^15.5.4"
     warning "^3.0.0"
-
-react-select@^1.0.0-rc.4:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-select/-/react-select-1.2.1.tgz#a2fe58a569eb14dcaa6543816260b97e538120d1"
-  dependencies:
-    classnames "^2.2.4"
-    prop-types "^15.5.8"
-    react-input-autosize "^2.1.2"
 
 react-side-effect@^1.1.0:
   version "1.1.5"
@@ -12172,23 +12195,6 @@ stackframe@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/stackframe/-/stackframe-1.0.4.tgz#357b24a992f9427cba6b545d96a14ed2cbca187b"
 
-stampy@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.26.1.tgz#8a15f32c604fac6a7521932371e72f15bb5d7bec"
-  dependencies:
-    bruce "^0.9.0"
-    classnames "^2.2.5"
-    element-resize-detector "^1.1.9"
-    immutable "^3.8.1"
-    lru-memoize "^1.0.2"
-    moment "^2.18.1"
-    numeral "^2.0.6"
-    prop-types "^15.5.8"
-    proxyquire "^1.7.11"
-    react-immutable-proptypes "^2.1.0"
-    react-select "^1.0.0-rc.4"
-    url-search-params "^0.7.0"
-
 stampy@^0.34.0:
   version "0.34.0"
   resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.34.0.tgz#0cc642bcffc36cacf3f17a0c7f250041c512b38c"
@@ -12196,6 +12202,17 @@ stampy@^0.34.0:
     classnames "^2.2.5"
     element-resize-detector "^1.1.12"
     is-plain-object "^2.0.3"
+    url-search-params "^0.9.0"
+
+stampy@^0.43.0:
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.43.0.tgz#4ea7faf37578c9ddd5b852d0c041ba3b00845890"
+  dependencies:
+    blueflag-test "^0.18.1"
+    classnames "^2.2.5"
+    element-resize-detector "^1.1.12"
+    is-plain-object "^2.0.3"
+    unmutable "^0.34.0"
     url-search-params "^0.9.0"
 
 state-toggle@^1.0.0:
@@ -13129,6 +13146,14 @@ unmutable@^0.29.2:
     fast-deep-equal "^1.0.0"
     is-plain-object "^2.0.4"
 
+unmutable@^0.34.0:
+  version "0.34.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.34.0.tgz#512ad3f5286215cab8ce554741d42c2ca8822a70"
+  dependencies:
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
+
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"
@@ -13209,10 +13234,6 @@ url-parse@^1.1.8:
   dependencies:
     querystringify "~1.0.0"
     requires-port "~1.0.0"
-
-url-search-params@^0.7.0:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/url-search-params/-/url-search-params-0.7.1.tgz#e4ec5766ca34f1c72a9fb03cfbbe4b4fbc707d20"
 
 url-search-params@^0.9.0:
   version "0.9.0"
