@@ -1,7 +1,8 @@
 //@flow
 import {Iterable, Map} from 'immutable';
 import ListSchema from 'enty/lib/ListSchema';
-import {getIn, get} from 'stampy/lib/util/CollectionUtils';
+import getIn from 'unmutable/lib/getIn';
+import get from 'unmutable/lib/get';
 
 /**
  * @module Selectors
@@ -15,7 +16,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
     const {stateKey = 'entity'} = options;
 
     const entities = state[stateKey];
-    const schema = getIn(entities, ['_baseSchema', schemaKey]);
+    const schema = getIn(['_baseSchema', schemaKey])(entities);
 
 
     if(!schema) {
@@ -23,7 +24,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
     }
 
     const result = resultKey
-        ? getIn(entities, ['_result', resultKey], schema.options.constructor())
+        ? getIn(['_result', resultKey], schema.options.constructor())(entities)
         : schema.options.constructor()
     ;
 
@@ -44,7 +45,7 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
 export function selectEntityById(state: Object, type: string, id: string, options: Object = {}): * {
     const {stateKey = 'entity'} = options;
     const entities = state[stateKey];
-    const schema = getIn(entities, ['_schemas', type]);
+    const schema = getIn(['_schemas', type])(entities);
 
     if(!schema) {
         return;
@@ -59,10 +60,10 @@ export function selectEntityById(state: Object, type: string, id: string, option
 export function selectEntityByType(state: Object, type: string, options: Object = {}): * {
     const {stateKey = 'entity'} = options;
     const entities = state[stateKey];
-    const schema = ListSchema(getIn(entities, ['_schemas', type]));
+    const schema = ListSchema(getIn(['_schemas', type])(entities));
 
     const data = schema.denormalize({
-        result: get(entities, type, Map())
+        result: get(type, Map())(entities)
             .keySeq()
             .toList(),
         entities
