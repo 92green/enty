@@ -3,157 +3,142 @@ path: /api
 date: 2018-09-03
 title: API
 ---
-The Enty API provides a standard way to bind your data fetching code to the normalizing process.
+
+The Enty API provides a standard way to bind your data fetching to your components.
 The API lets you declare groups of Promise returning functions, that are then converted to hocs
-that hide away all the normalizing and request states.
-u
+that hide away all the normalizing and keeping track of request state.
 
+## Api 
+The EntityApi function takes an object of promise returning functions and turns them into hocs.
+This abstraction is helpful as it creates a barrier between your data fetching code and your views.
 
-## Structure
-Structural schemas describe the shape of your responses and let Enty traverse your data looking for entities.
-They also provide hooks to let you construct and merge data shapes.
-
-### Relationships
-Take the following naive data structure. 
-
+* It is declarative
+* It is shimmable
+* It is shareable
+* It is non-prescriptive
 
 ```js
-{
-    peopleList: [
-        {
-            id: '3', 
-            name: 'steve',
-            mother: {
-                id: '1',
-                name: 'sally'
-            }
-            father: {
-                id: '2',
-                name: 'john'
-            }
-        },
-        {
-            id: '4', 
-            name: 'susan',
-            mother: {
-                id: '1',
-                name: 'sally'
-            }
-            father: {
-                id: '2',
-                name: 'john'
-            }
-        }
-    ]
+const api = EntityApi({
+    userItem: variables => fetch('/graphql', {query: serItemQuery, variables}),
+    userList: variables => fetch('/graphql', {query: UserListQuery, variables}),
+
+    jobItem: variables => fetch('/graphql', {query: JobItemQuery, variables}),
+    jobList: variables => fetch('/graphql', {query: JobListQuery, variables})
+});
+
+export UserItemRequestHock = api.UserItemRequestHock;
+export UserListRequestHock = api.UserItemRequestHock;
+export JobItemRequestHock = api.JobItemRequestHock;
+export JobListRequestHock = api.JobItemRequestHock;
+```
+
+## Request Hocs
+Once you have declared your api you can export the request hocks an apply them to your components.
+
+```
+const ProfileView = UserItemRequestHock({
+    name: 'userMessage',
+    auto: true
+});
+```
+
+### Automatic or Callback? 
+Each request hock can be configured to request automatically or wait for a callback.
+
+
+
+### Messages
+Each hoc requires a name prop, all the data associated with that request will be stored on that name.
+This lets you stack up multiple requests without having to worry about namespace collisions.
+
+#### Message.onRequest
+Each message is given an onRequest callback that is bound to the promise in the api.
+Calling the onRequest will call the api function and return a promise that will either contain 
+the next normalized response or the requests error.
+
+This lets your either trigger multiple actions in parrallel or sequence them together.
+
+
+#### Message.requestState
+One of Enty's core goals is to be a declartive state management library. Because of this Enty uses 
+a version of the variant pattern to declare hold the current state of each request.
+
+This pattern lets you delcare upfront what should happen at each state and stops you writing adhoc 
+and complicated null/boolean tests to check if your data has arrived.
+
+
+```jsx
+const {requestState} = this.props.userMessage;
+const {response} = this.props.userMessage;
+const {requestError} = this.props.userMessage;
+return requestState
+    .fetchingMap(() => <Loader/>)
+    .refetchingMap(() => <Loader/>)
+    .successMap(() => <div>{response.user.name}</div>)
+    .errorMap(() => <Error error={requestError}/>)
+    .value();
+```
+
+Becuase the request state is a concrete data type, rather than just a series of booleans, it 
+is very easy to abstract common loading situations away behind a function or a hoc.
+
+```
+const LoadingHoc (config) => (Component) => (props) => {
+    const message = this.props[config.message];
+    const {requestState} = message;
+    const {response} = message;
+    const {requestError} = message;
+
+    return requestState
+        .fetchingMap(() => <Loader/>)
+        .refetchingMap(() => <Loader/>)
+        .successMap(() => <Component {...this.props} />)
+        .errorMap(() => <Error error={requestError}/>)
+        .value();
 }
-
 ```
 
-From this we can assert that:
+You can even use a reduce to combine multiple request states together.
+At each iteration if the previous requestState is a success it will replace it with the next.
+This means that all must be true for the final state to render.
+But if any are fetching or errored we will still get the right state.
 
-* userList is an array of people
-* people have a mother who is a person
-* people have a father who is a person
+```
+return this.props[config.messages]
+    .reduce((previous, next) => previous.successFlatMap(() => next))
+    .fetchingMap(() => <Loader/>)
+    .refetchingMap(() => <Loader/>)
+    .errorMap(() => <Error error={requestError}/>)
+    .successMap(() => <Component {...this.props} />)
+    .value();
+```
 
-So that enty can normalize the data correctly we need to define a person entity and show that they 
-can exist both in an personList and as a mother or father
+TODO: Request state any successMap example
 
-```js
-// define our person and personList
-const person = EntitySchema('person');
-const personList = ArraySchema(person);
+#### Message.response
+When the request is successful the entities matching your request will be avaiable in the messages response.
+The response data is stored here rather than props to stop namespace collisions between other messages and hocs.
+If this becomes a hassle you can use the `config.mapResponseToProps` to hoist the data out of the message.
 
-// lazily define the relationships between people and their parents
-person.set(ObjectSchema({
-    mother: person,
-    father: person
-}));
-
-// export a schema that matches the shape of our api
-export default ObjectSchema({
-    personList
+```jsx
+// Map the whole response object to props
+const withData = RequestHoc({
+    name: 'userMessage',
+    mapResponseToProps: response => response
 });
-```
 
-### Constructing
-Often data is represented through models or records. Making sure to correctly construct and manage 
-these models is a pain in the front-end. Because enty uses the visitor pattern it is easy for
-you to define a single consructor for each structural schema and let enty do the constructing for you. 
-
-This lets you define your models but never worry about constructing them. As new data comes in it 
-is automatically constructed for you.
-
-We can extend the previous example by adding a constructor to our people structural schema
-
-```js
-person.set(ObjectSchema(
-    {
-        mother: person,
-        father: person
-    }
-    {constructor: data => new Person(data)}
-));
-
-```
-
-_NOTE: constructors are defined on structure schemas not their entities. This is because the entity 
-schema is really just a reference to an id in state. Because an entity could be of any
-shape entity schemas must have a structural definition assigned to it so that enty knows how to
-correctly contruct or merge it._
-
-
-### Merging
-Because an entity could be of any shape, when Enty is finds an entity that already exists in state 
-it simply calls the merge function on the entities definition. This lets enty be smart about how to merge things.
-An object schema performs a shallow merge, while the array schema just replaces the old with the new.
-
-
-
-## Entities
-Entity schemas describe to enty where a unique entity can be found in your data shape.
-
-* entities must have a unique name.
-* entities must have a unique id.
-* entities must have some sort of shape.
-
-```js
-const user = EntitySchema('user');
-const friendList = ArraySchema(user);
-user.set(ObjectSchema({
-    friendList
-}));
-```
-In this example we have first defined a user as a type of entity, giving it the unique name of `user`.
-Next we define a fiendList that is made up of users.
-Next we define the shape of our friend as an object. 
-Finally we declare the relationship that users can have friendList's that are arrays of users.
-
-TODO: FriendList normalizing example.
-
-### Changing the idAttribute
-By default the EntitySchema looks to the user.id property to uniquly idetify each user.
-This can be conigured to match your own data structure.
-
-```
-const user = EntitySchema('user', {
-    idAttribute: user => user.email
+// Map a single prop
+const withData = RequestHoc({
+    name: 'userMessage',
+    mapResponseToProps: response => ({data: response.userItem})
 });
+
 ```
 
-### Why does an entity require a structure?
-Entitites are really nothing more than a category and an id; they are closer to a variable than a real data structure. 
-Because of this they need some other information to describe their shape. Enty chooses to use structural schemas
-to describe this information as it lets you construct entities of any shape. You can use the common Object schema 
-define models. Or the ArraySchema to create list of notifications bound to the viewer of the app. You can
-even define your own schema that has unqique logic for normalizing and denormalizing. 
-
-### Unorthodox Entities
 
 
-## Unique Data Structures
 
-### Dynamic Schemas
-### Orphans
-### Composite Entities (Tainting)
-### Values
-### Rest API's 
+
+
+
+
