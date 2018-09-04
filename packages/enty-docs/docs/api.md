@@ -7,9 +7,9 @@ title: API
 The Enty API provides a standard way to separate your data fetching code from your views.
 The API lets you declare groups of Promise returning functions that are then converted to hocs.
 
-These hocs handle the requesting of data and how that is normalized into state. They then provide your
-views with a consitent data stucture that holds both the most up to date version of your request and 
-what stage the request cycle is up to. 
+These hocs handle when data is requested and it is normalized into state. They then provide your
+views with a consitent data stucture that holds both the most up to date version of your requested
+data and what stage the request cycle is currently in.
 
 This abstraction is helpful as it creates a barrier between your data fetching code and your views.
 
@@ -21,7 +21,6 @@ This abstraction is helpful as it creates a barrier between your data fetching c
 
 ## Declaring an API
 The EntityApi function takes your application schema and an object of promise returning functions 
-
 Below is an example of an api that can fetch both users and jobs from a graphql server.
 
 ```js
@@ -56,7 +55,6 @@ export default {
 import UserApi from './UserApi';
 import CoffeeApi from './CoffeeApi';
 import CatApi from './CatApi';
-
 
 const Api = EntityApi(ApplicationSchema, {
     ...UserApi,
@@ -103,17 +101,17 @@ Each request hock can be configured to request automatically or wait for a callb
 If `config.auto` is set to true the api function will be called immediately whenever the component mounts.
 This is useful for upfront fetching of a pages data.
 
-If `config.auto` is set to an array of strings that match to prop names. The api function will be called 
+If `config.auto` is set to an array of strings that match to prop names the api function will be called 
 immediately on component mount, and everytime one of those props changes.
 This is useful for fetching data in a component that changes often.
-
 
 If `config.auto` is not declared nothing will happen until the `onRequest` callback is fired.
 This is useful for mutations triggered by user interaction like save, update or delete.
 
 ### Messages
-Each hoc requires a name prop, all the data associated with that request will be stored on that name.
-This lets you stack up multiple requests without having to worry about namespace collisions.
+Each request hoc requires a name prop, all the data associated with that request will be stored 
+on a props of that name. This lets you stack up multiple requests without having to 
+worry about namespace collisions.
 
 #### Message.onRequest
 Each message is given an onRequest callback that is bound to the promise in the api.
