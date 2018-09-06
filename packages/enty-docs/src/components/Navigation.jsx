@@ -20,6 +20,8 @@ export default function Navigation(props: Object): Node {
         <NavHeading>Enty</NavHeading>
         <NavItem to="/">Introduction</NavItem>
         <NavItem to="/getting-started">Getting Started</NavItem>
+        <NavItem to="/schemas">Schemas</NavItem>
+        <NavItem to="/api">API</NavItem>
         <NavItem to="/entity-flow">Entity Flow</NavItem>
         <NavItem to="/faq">FAQ</NavItem>
 
