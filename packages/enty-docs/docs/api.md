@@ -4,18 +4,24 @@ date: 2018-09-03
 title: API
 ---
 
-The Enty API provides a standard way to bind your data fetching to your components.
-The API lets you declare groups of Promise returning functions, that are then converted to hocs
-that hide away all the normalizing and keeping track of request state.
+The Enty API provides a standard way to separate your data fetching code from your views.
+The API lets you declare groups of Promise returning functions that are then converted to hocs.
 
-## Api 
-The EntityApi function takes an object of promise returning functions and turns them into hocs.
+These hocs handle when data is requested and it is normalized into state. They then provide your
+views with a consitent data stucture that holds both the most up to date version of your requested
+data and what stage the request cycle is currently in.
+
 This abstraction is helpful as it creates a barrier between your data fetching code and your views.
 
 * It is declarative
-* It is shimmable
 * It is shareable
 * It is non-prescriptive
+* It is shimmable
+
+
+## Declaring an API
+The EntityApi function takes your application schema and an object of promise returning functions 
+Below is an example of an api that can fetch both users and jobs from a graphql server.
 
 ```js
 const api = EntityApi({
@@ -32,24 +38,80 @@ export JobItemRequestHock = api.JobItemRequestHock;
 export JobListRequestHock = api.JobItemRequestHock;
 ```
 
-## Request Hocs
-Once you have declared your api you can export the request hocks an apply them to your components.
+### Sharing
+Because the api is declared up front it becomes really easy to split your core api into smaller parts.
 
 ```
-const ProfileView = UserItemRequestHock({
+// UserApi.js
+
+export default {
+    userItem: (variables) => fetch('/graphql', {query: UserItemQuery, variables}),
+    userList: (variables) => fetch('/graphql', {query: UserListQuery, variables}),
+    userCreate: (variables) => fetch('/graphql', {query: UserCreateMutation, variables})
+}
+
+
+// ApplicationApi.js
+import UserApi from './UserApi';
+import CoffeeApi from './CoffeeApi';
+import CatApi from './CatApi';
+
+const Api = EntityApi(ApplicationSchema, {
+    ...UserApi,
+    ...CoffeeApi,
+    ...CatApi
+});
+
+```
+
+### Non prescriptive
+TODO: Becuase promises are standard you can use any promise returning logic. (RX)
+
+### Api shimming
+One of the benefits of declaring your api separate to your views is that it provides a space
+to shim data before it enters your app. If an external api can only provide you with data in a certain 
+shape you can change it to a shape that makes sense to your entities before entering the [enty flow].
+
+Say you are integrating with a rest endpoint that returns an array of user but because your application 
+schema can support multiple types it really makes sense to return an object with the key of `userList`
+that contains an array of users.
+
+```
+EntityApi(ApplicationSchema, {
+    userList: (payload) => fetch('/api/users', payload)
+        .then(userList => ({userList}))
+});
+```
+
+## Request Hocs
+Once you have declared your api you can export the request hocks and apply them to your components.
+
+```
+const withUser = UserItemRequestHock({
     name: 'userMessage',
     auto: true
 });
+
+export default withUser(UserProfile);
 ```
 
 ### Automatic or Callback? 
 Each request hock can be configured to request automatically or wait for a callback.
 
+If `config.auto` is set to true the api function will be called immediately whenever the component mounts.
+This is useful for upfront fetching of a pages data.
 
+If `config.auto` is set to an array of strings that match to prop names the api function will be called 
+immediately on component mount, and everytime one of those props changes.
+This is useful for fetching data in a component that changes often.
+
+If `config.auto` is not declared nothing will happen until the `onRequest` callback is fired.
+This is useful for mutations triggered by user interaction like save, update or delete.
 
 ### Messages
-Each hoc requires a name prop, all the data associated with that request will be stored on that name.
-This lets you stack up multiple requests without having to worry about namespace collisions.
+Each request hoc requires a name prop, all the data associated with that request will be stored 
+on a props of that name. This lets you stack up multiple requests without having to 
+worry about namespace collisions.
 
 #### Message.onRequest
 Each message is given an onRequest callback that is bound to the promise in the api.
