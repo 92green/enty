@@ -70,13 +70,28 @@ test('will throw an error is config.name is not supplied', () => {
         .toThrow(RequestHockNoNameError('FooAction'));
 });
 
-test('config.payloadCreator will by default return an empty object', () => {
+test('config.payloadCreator will default to an identity if config.auto is falsy', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
 
     const actionCreator = jest.fn();
     const RequestHock = RequestHockFactory(actionCreator, hockMeta);
     const RequestHockApplier = RequestHock({name: 'foo'});
+    const Child = RequestHockApplier((props) => {
+        props.foo.onRequest('bar');
+        return null;
+    });
+    shallow(<Child store={STORE}/>).dive().dive();
+    expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'bar-resultKey'});
+});
+
+test('config.payloadCreator will by default return an empty object if config.auto is truthy', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+
+    const actionCreator = jest.fn();
+    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
+    const RequestHockApplier = RequestHock({name: 'foo', auto: true});
     const Child = RequestHockApplier((props) => {
         props.foo.onRequest();
         return null;
@@ -106,7 +121,7 @@ test('config.updateResultKey will by default be an identity function', () => {
     const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
     const RequestHockApplier = RequestHock({name: 'foo'});
     const Child = RequestHockApplier((props) => {
-        props.foo.onRequest();
+        props.foo.onRequest({});
         return null;
     });
     shallow(<Child store={STORE}/>).dive().dive();
@@ -123,7 +138,7 @@ test('config.updateResultKey will update the resultKey', () => {
         updateResultKey: (resultKey) => `${resultKey}-bar`
     });
     const Child = RequestHockApplier((props) => {
-        props.foo.onRequest();
+        props.foo.onRequest({});
         return null;
     });
     shallow(<Child resultKey="foo" store={STORE}/>).dive().dive();
@@ -148,7 +163,7 @@ test('config.updateResultKey is called with the resultKey and props', () => {
     expect(updateResultKey).toHaveBeenCalledWith('fooResultKey', {store: STORE, extraProp: 'bar'});
 });
 
-test('config.mapResponseToProps will spread the response onto the hocked component\'s props', () => {
+test('config.mapResponseToProps will spread the response onto the hocked components props', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
     const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
