@@ -120,6 +120,10 @@ the next normalized response or the requests error.
 
 This lets your either trigger multiple actions in parrallel or sequence them together.
 
+```
+
+```
+
 
 #### Message.requestState
 One of Enty's core goals is to be a declartive state management library. Because of this Enty uses 
@@ -165,7 +169,7 @@ At each iteration if the previous requestState is a success it will replace it w
 This means that all must be true for the final state to render.
 But if any are fetching or errored we will still get the right state.
 
-```
+```jsx
 return this.props[config.messages]
     .reduce((previous, next) => previous.successFlatMap(() => next))
     .fetchingMap(() => <Loader/>)
