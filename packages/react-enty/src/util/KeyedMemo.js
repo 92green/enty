@@ -9,7 +9,7 @@ export default class KeyedMemo {
         this.compare = {};
     }
     value(key: string, compare: any, update: Function): any {
-        if(compare === this.compare[key]) {
+        if(this.compare[key] !== undefined  && compare === this.compare[key]) {
             return this.cache[key];
         }
 

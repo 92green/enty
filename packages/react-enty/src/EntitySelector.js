@@ -15,11 +15,6 @@ import KeyedMemo from './util/KeyedMemo';
 
 const DenormalizeCache = new KeyedMemo();
 
-const denormalize = ({result, entities, schema}) => {
-    console.log('DNORMALIZE');
-    return schema.denormalize({result, entities});
-};
-
 export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): * {
     const {schemaKey = 'ENTITY_RECEIVE'} = options;
     const {stateKey = 'entity'} = options;
