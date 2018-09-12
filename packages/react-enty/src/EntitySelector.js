@@ -3,6 +3,7 @@ import {Iterable, Map} from 'immutable';
 import ListSchema from 'enty/lib/ListSchema';
 import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
+import KeyedMemo from './util/KeyedMemo';
 
 /**
  * @module Selectors
@@ -11,12 +12,21 @@ import get from 'unmutable/lib/get';
 /**
  * Given a requestKey it will return the denormalized state object.
  */
+
+const DenormalizeCache = new KeyedMemo();
+
+const denormalize = ({result, entities, schema}) => {
+    console.log('DNORMALIZE');
+    return schema.denormalize({result, entities});
+};
+
 export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): * {
     const {schemaKey = 'ENTITY_RECEIVE'} = options;
     const {stateKey = 'entity'} = options;
 
     const entities = state[stateKey];
     const schema = getIn(['_baseSchema', schemaKey])(entities);
+    const normalizeCount = getIn(['_stats', 'normalizeCount'])(entities);
 
 
     if(!schema) {
@@ -28,8 +38,11 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
         : schema.options.constructor()
     ;
 
-    var data = schema.denormalize({result, entities});
-
+    var data = DenormalizeCache.value(
+        resultKey,
+        normalizeCount,
+        () => schema.denormalize({result, entities})
+    );
 
     if(Iterable.isIndexed(data)) {
         return data.toArray ? data.toArray() : data;
@@ -46,12 +59,17 @@ export function selectEntityById(state: Object, type: string, id: string, option
     const {stateKey = 'entity'} = options;
     const entities = state[stateKey];
     const schema = getIn(['_schemas', type])(entities);
+    const normalizeCount = getIn(['_stats', 'normalizeCount'])(entities);
 
     if(!schema) {
         return;
     }
 
-    return schema.denormalize({result: id, entities});
+    return DenormalizeCache.value(
+        `${type}-${id}`,
+        normalizeCount,
+        () => schema.denormalize({result: id, entities})
+    );
 }
 
 /**
@@ -61,14 +79,18 @@ export function selectEntityByType(state: Object, type: string, options: Object 
     const {stateKey = 'entity'} = options;
     const entities = state[stateKey];
     const schema = ListSchema(getIn(['_schemas', type])(entities));
+    const normalizeCount = getIn(['_stats', 'normalizeCount'])(entities);
 
-    const data = schema.denormalize({
-        result: get(type, Map())(entities)
-            .keySeq()
-            .toList(),
-        entities
-    });
 
-    return data;
+    return DenormalizeCache.value(
+        type,
+        normalizeCount,
+        () => schema.denormalize({
+            result: get(type, Map())(entities)
+                .keySeq()
+                .toList(),
+            entities
+        })
+    );
 }
 
