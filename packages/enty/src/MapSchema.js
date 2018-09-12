@@ -71,13 +71,15 @@ export class MapSchema extends Keyed implements Schema<Structure> {
             return result;
         }
 
+        // If we are at the root level use the result keys,
+        // That will always be smaller than the schema. Once past the root level
+        // the schemas keys will be less than the value
+        let keys: string[] = path.length ? Object.keys(this.definition) : [...result.keys()];
+
         // Map denormalize to the values of result, but only
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
-
-        let keys: string[] = [...result.keys()];
-
         return pipeWith(
             result,
             (item: Map<any, any>): Map<any, any> => {
