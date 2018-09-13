@@ -8,10 +8,17 @@ import NullSchema from '../NullSchema';
  */
 export default class Keyed extends NullSchema {
     definition: KeyedDefinition;
+    keys: Array<string>;
 
     constructor(definition: KeyedDefinition) {
         super();
         this.definition = definition;
+        this._refreshKeys();
+        this.keys = Object.keys(definition);
+    }
+
+    _refreshKeys() {
+        this.keys = Object.keys(this.definition);
     }
 
     /**
@@ -26,6 +33,7 @@ export default class Keyed extends NullSchema {
      */
     set(key: string, value: *): Keyed {
         this.definition[key] = value;
+        this._refreshKeys();
         return this;
     }
 
@@ -35,6 +43,7 @@ export default class Keyed extends NullSchema {
     update(key: string|Function, updater?: Function): Keyed {
         if(typeof key ==='function') {
             this.definition = key(this.definition);
+            this._refreshKeys();
             return this;
         }
 
