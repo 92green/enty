@@ -1,5 +1,8 @@
 // @flow
 import clone from 'unmutable/lib/clone';
+import get from 'unmutable/lib/get';
+import del from 'unmutable/lib/delete';
+import set from 'unmutable/lib/set';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
 import Keyed from './abstract/Keyed';
@@ -43,12 +46,14 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
         const dataMap = this.options.constructor(data);
         let schemas = {};
 
-        const result = Object.entries(dataMap)
-            .reduce((result: Object, [key]: *): any => {
-                if(definition[key] && dataMap[key]) {
-                    const {result: childResult, schemas: childSchemas} = definition[key].normalize(dataMap[key], entities);
+        const result = this.keys
+            .reduce((result: Object, key: *): any => {
+                const value = get(key)(dataMap);
+                const schema = get(key)(definition);
+                if(value) {
+                    const {result: childResult, schemas: childSchemas} = schema.normalize(value, entities);
                     Object.assign(schemas, childSchemas);
-                    result[key] = childResult;
+                    result = set(key, childResult)(result);
                 }
 
                 return result;
@@ -74,9 +79,6 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
-
-        let keys: string[] = Object.keys(result);
-
         return pipeWith(
             result,
             clone(),
@@ -84,22 +86,19 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
                 if(path.indexOf(this) !== -1) {
                     return item;
                 }
-                return keys
+                return this.keys
                     .reduce((newItem: Object, key: string): Object => {
-                        if(definition[key]) {
-                            let result = newItem[key];
-                            newItem[key] = definition[key].denormalize({result, entities}, path.concat(this));
+                        const schema = get(key)(definition);
+                        const result = get(key)(newItem);
+                        const value = schema.denormalize({result, entities}, path.concat(this));
+
+                        if(value !== DELETED_ENTITY) {
+                            newItem = set(key, value)(newItem);
+                        } else {
+                            newItem = del(key)(newItem);
+                            deletedKeys.push(key);
                         }
-                        return newItem;
-                    }, item);
-            },
-            (item: any): any => {
-                return keys
-                    .reduce((newItem: Object, deleteKey: string): Object => {
-                        if(item[deleteKey] === DELETED_ENTITY) {
-                            deletedKeys.push(deleteKey);
-                            delete newItem[deleteKey];
-                        }
+
                         return newItem;
                     }, item);
             },

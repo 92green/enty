@@ -1,5 +1,7 @@
 //@flow
 import {Map} from 'immutable';
+import updateIn from 'unmutable/lib/updateIn';
+import pipeWith from 'unmutable/lib/util/pipeWith';
 
 import {
     FetchingState,
@@ -37,7 +39,10 @@ export default function EntityReducerFactory(config: Object): Function {
         _schemas: Map(),
         _result: Map(),
         _error: Map(),
-        _requestState: Map()
+        _requestState: Map(),
+        _stats: Map({
+            normalizeCount: 0
+        })
     });
 
     const defaultMeta = {
@@ -119,8 +124,11 @@ export default function EntityReducerFactory(config: Object): Function {
                     .setIn(['_result', resultKey], result)
                     .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous))
                     .update((state: *): * => {
-                        Logger.silly('state', state);
-                        return state;
+                        return pipeWith(
+                            state,
+                            updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                            state => Logger.silly('state', state) || state
+                        );
                     })
                 ;
             }
