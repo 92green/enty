@@ -27,15 +27,8 @@ const schema = MapSchema({
     subreddit
 });
 
-const schemaMap = {
-    ENTITY_RECEIVE: schema,
-    TEST_RECEIVE: schema
-};
 
-const EntityReducer = EntityReducerFactory({
-    schemaMap,
-    afterNormalize: value => value
-});
+const EntityReducer = EntityReducerFactory({schema});
 
 
 // Mock data
@@ -84,7 +77,7 @@ test('EntityReducerFactory', () => {
 
     expect(is(
         EntityReducer(undefined, exampleAction).get('_baseSchema'),
-        Map(schemaMap)
+        schema
     )).toBe(true);
 
     expect(is(

@@ -1,32 +1,52 @@
 //@flow
+import type {HockOptionsInput} from './util/definitions';
+import type {SideEffect} from './util/definitions';
+import type {Schema} from 'enty/lib/util/definitions';
+
 import {createAction} from 'redux-actions';
 import EntityQueryHockFactory from './EntityQueryHockFactory';
 import RequestHockFactory from './RequestHockFactory';
 import EntityMutationHockFactory from './EntityMutationHockFactory';
 import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
+import EntityProviderFactory from './EntityProviderFactory';
+import {fromJS} from 'immutable';
 import {selectEntityByResult} from './EntitySelector';
 import RequestStateSelector from './RequestStateSelector';
-import {fromJS, Map} from 'immutable';
 
-import type {HockOptionsInput} from './util/definitions';
-import type {SideEffect} from './util/definitions';
-import type {Schema} from 'enty/lib/util/definitions';
+import reduce from 'unmutable/lib/reduce';
+import set from 'unmutable/lib/set';
+import pipeWith from 'unmutable/lib/util/pipeWith';
+import isKeyed from 'unmutable/lib/util/isKeyed';
 
 
-// Turns a nested object into a flat
-// UPPER_SNAKE case representation
-function reduceActionMap(branch: Map<string, any>, parentKey: string = ''): Map<string, any> {
-    return branch.reduce((rr: Map<string, any>, ii: any, key: string): Map<string, any> => {
-        var prefix = `${parentKey}${key}`;
-        if(Map.isMap(ii)) {
-            return rr.merge(reduceActionMap(ii, `${prefix}_`));
-        } else {
-            return rr.set(prefix, ii);
-        }
-    }, Map());
+//
+// Recurse through deep objects and apply the visitor to
+// anything that isnt another object.
+//
+function visitActionMap(branch: *, visitor: Function, path: string[] = [], state: * = {}): * {
+    return pipeWith(
+        branch,
+        reduce(
+            (reduction: *, item: *, key: string): * => {
+                if(isKeyed(item)) {
+                    reduction[key] = visitActionMap(item, visitor, path.concat(key), reduction);
+                } else {
+                    reduction[key] = visitor(item, path.concat(key));
+                }
+                return reduction;
+            },
+            state
+        ),
+    );
 }
 
+//
+// Creates the redux-thunk promise action.
+// Insetead of returning the dispatch function though. This uses the getState method
+// to select the next denormalized state and return that to the promise chain.
+// This means request functions can be chained, yet still contain the latests state.
+//
 export function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: SideEffect): Function {
     function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
@@ -57,6 +77,10 @@ export function createRequestAction(fetchAction: string, recieveAction: string, 
     };
 }
 
+
+// @DEPRECATED
+// This is only used by the mutation and query hocks
+// RequestHoc has more powerful composition and so the actions dont need to be chained
 export function createAllRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
     function sideEffect(requestPayload: *, meta: Object): Promise<*> {
         return Promise
@@ -108,65 +132,42 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
  * } = Api;
  */
 function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOptionsInput = {}): Object {
+    const {storeKey = 'enty'} = hockOptions;
 
-    return reduceActionMap(fromJS(actionMap))
-        .reduce((state: Map<string, any>, sideEffect: SideEffect, action: string): Map<string, any> => {
+    const reducer = EntityReducerFactory({schema});
+    const store = EntityStoreFactory({reducer});
+    const provider = EntityProviderFactory({store, storeKey});
 
-            const snakeAction = action.toUpperCase();
-
-            const FETCH = `${snakeAction}_FETCH`;
-            const RECEIVE = `${snakeAction}_RECEIVE`;
-            const ERROR = `${snakeAction}_ERROR`;
-
+    return pipeWith(
+        actionMap,
+        actionMap => visitActionMap(actionMap, (sideEffect, path) => {
+            const actionName = path.join('_').toUpperCase();
+            const FETCH = `${actionName}_FETCH`;
+            const RECEIVE = `${actionName}_RECEIVE`;
+            const ERROR = `${actionName}_ERROR`;
             const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
-            const requestActionPath = action.split('_');
-            const requestActionName = action
-                .split('_')
-                .map(ss => ss.replace(/^./, mm => mm.toUpperCase()))
-                .join('');
-
-
-            hockOptions.requestActionName = requestActionName;
 
             const HockMeta = {
-                generateResultKey: (payload) => fromJS({payload, requestActionName}).hashCode().toString(),
-                requestActionName,
-                schemaKey: hockOptions.schemaKey,
-                storeKey: hockOptions.storeKey,
+                // @TODO: internalize the hashing algorithm
+                generateResultKey: (payload) => fromJS({payload, actionName}).hashCode().toString(),
+                requestActionName: actionName,
+                schemaKey: hockOptions.schemaKey, // @TODO remove this when there is only a single schema per api
+                storeKey,
                 stateKey: hockOptions.stateKey
             };
 
-            return state
-                // nested action creators
-                .setIn(requestActionPath, requestAction)
+            return {
+                _deprecated: {
+                    query: EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName: actionName}),
+                    mutation: EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName: actionName})
+                },
+                request: RequestHockFactory(requestAction, HockMeta)
+            };
+        }),
+        set('_enty', {reducer, store}),
+        set('EntityProvider', provider)
 
-                // root api
-                .setIn(['actionTypes', FETCH], FETCH)
-                .setIn(['actionTypes', RECEIVE], RECEIVE)
-                .setIn(['actionTypes', ERROR], ERROR)
-                .set(`${requestActionName}RequestHock`, RequestHockFactory(requestAction, HockMeta))
-                .set(`${requestActionName}QueryHock`, EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName}))
-                .set(`${requestActionName}MutationHock`, EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName}))
-            ;
-
-        }, Map())
-        .update((api: Map<string, any>): Map<string, any> => {
-            const schemaMap = api
-                .get('actionTypes')
-                .filter((action, key) => /_RECEIVE$/g.test(key))
-                .reduce((schemaMap, key) => schemaMap.set(key, schema), Map())
-                .set(hockOptions.schemaKey || 'ENTITY_RECEIVE', schema)
-                .toObject()
-            ;
-
-            const reducer = EntityReducerFactory({schemaMap});
-
-            return api
-                .set('EntityReducer', reducer)
-                .set('sideEffects', actionMap)
-                .set('EntityStore', EntityStoreFactory(reducer));
-        })
-        .toJS();
+    );
 }
 
 export default EntityApi;

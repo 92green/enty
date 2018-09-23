@@ -21,14 +21,12 @@
     "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
     "watch": "yarn build -w"
   },
-  "peerDependencies": {
-    "react-redux": ">=4",
-    "redux": "^3.6.0"
-  },
   "dependencies": {
     "enty": "^0.48.1",
     "fronads": "^0.17.0",
     "immutable": "^3.8.1",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
     "redux-actions": "^2.0.1",
     "redux-thunk": "^2.1.0",
     "stampy": "^0.43.2",

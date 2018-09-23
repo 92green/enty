@@ -2,8 +2,12 @@
 import thunk from 'redux-thunk';
 import {combineReducers, compose, createStore, applyMiddleware} from 'redux';
 
-// create and export the store
-export default function EntityStoreFactory(reducer: any): any {
+type Config = {
+    reducer: Function
+};
+
+export default function EntityStoreFactory(config: Config): any {
+    const {reducer} = config;
     // create middleware
     var middleware = applyMiddleware(thunk);
 

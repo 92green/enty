@@ -16,13 +16,10 @@ import KeyedMemo from './util/KeyedMemo';
 const DenormalizeCache = new KeyedMemo();
 
 export function selectEntityByResult(state: Object, resultKey: string, options: Object = {}): * {
-    const {schemaKey = 'ENTITY_RECEIVE'} = options;
     const {stateKey = 'entity'} = options;
-
     const entities = state[stateKey];
-    const schema = getIn(['_baseSchema', schemaKey])(entities);
+    const schema = getIn(['_baseSchema'])(entities);
     const normalizeCount = getIn(['_stats', 'normalizeCount'])(entities);
-
 
     if(!schema) {
         return;
