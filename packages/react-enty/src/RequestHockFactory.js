@@ -99,6 +99,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                 .successMap(() => nextResultKey)
                                 .value();
 
+
                             return {
                                 [name]: {
                                     // @TODO rename resultKey to responseKey

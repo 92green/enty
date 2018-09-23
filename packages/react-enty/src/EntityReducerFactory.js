@@ -29,13 +29,11 @@ import Logger from './Logger';
  *     })
  * });
  */
-export default function EntityReducerFactory(config: Object): Function {
-    const {
-        schemaMap
-    } = config;
+export default function EntityReducerFactory(config: {schema: Schema}): Function {
+    const {schema} = config;
 
     const initialState = Map({
-        _baseSchema: Map(schemaMap),
+        _baseSchema: schema,
         _schemas: Map(),
         _result: Map(),
         _error: Map(),
@@ -51,13 +49,11 @@ export default function EntityReducerFactory(config: Object): Function {
 
     // Return our constructed reducer
     return function EntityReducer(state: Map<any, any> = initialState, {type, payload, meta}: Object): Map<any, any> {
-        // debugger;
 
         Logger.info(`\n\nEntity reducer:`);
 
 
         const {
-            schema = schemaMap[type],
             resultKey = type,
             resultResetOnFetch
         } = Object.assign({}, defaultMeta, meta);
@@ -107,7 +103,7 @@ export default function EntityReducerFactory(config: Object): Function {
 
             if(schema && payload) {
                 let previousEntities = state
-                    .map(ii => ii.toObject())
+                    .map(ii => ii.toObject ? ii.toObject() : ii)
                     .delete('_actionSchema')
                     .delete('_result')
                     .delete('_requestState')
@@ -121,6 +117,7 @@ export default function EntityReducerFactory(config: Object): Function {
                 return state
                     // set results
                     .update(state => state.merge(Map(entities).map(ii => Map(ii))))
+                    .set('_baseSchema', schema)
                     .setIn(['_result', resultKey], result)
                     .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous))
                     .update((state: *): * => {

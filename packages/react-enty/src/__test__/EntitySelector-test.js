@@ -29,10 +29,7 @@ function constructState(): * {
             ...normalized.entities,
             _result: normalized.result,
             _schemas: normalized.schemas,
-            _baseSchema: Map({
-                ENTITY_RECEIVE: schema,
-                fooList
-            })
+            _baseSchema: schema
         })
     };
 }
