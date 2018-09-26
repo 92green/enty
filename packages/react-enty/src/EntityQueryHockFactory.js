@@ -1,16 +1,17 @@
 //@flow
-import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
-
-import RequestStateSelector from './RequestStateSelector';
-import {selectEntityByResult} from './EntitySelector';
-import DistinctMemo from './util/DistinctMemo';
-import Connect from './util/Connect';
-import {fromJS} from 'immutable';
 import type {ComponentType} from 'react';
 import type {HockApplier} from './util/definitions';
 import type {HockOptionsInput} from './util/definitions';
 import type {HockOptions} from './util/definitions';
 import type {Hock} from './util/definitions';
+
+import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+import {fromJS} from 'immutable';
+import RequestStateSelector from './RequestStateSelector';
+import {selectEntityByResult} from './EntitySelector';
+import DistinctMemo from './util/DistinctMemo';
+import Connect from './util/Connect';
+import Deprecated from './util/Deprecated';
 
 
 /**
@@ -33,7 +34,7 @@ function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptio
      * @kind function
      */
     function EntityQueryHock(queryCreator: Function = () => null, optionsOverride: HockOptionsInput|Array<string>): HockApplier {
-        console.warn('DEPRECATED: EntityQueryHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
+        Deprecated('EntityQueryHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
         function parseOptions(options: HockOptionsInput|Array<string>): Object {
             if(Array.isArray(options)) {
                 return {propChangeKeys: optionsOverride};
