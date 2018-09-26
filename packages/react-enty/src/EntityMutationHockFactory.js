@@ -1,12 +1,14 @@
 //@flow
+import type {HockOptions} from './util/definitions';
+import type {HockOptionsInput} from './util/definitions';
+
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './util/DistinctMemo';
 import Connect from './util/Connect';
 import {fromJS} from 'immutable';
 import React, {type Element} from 'react';
-import type {HockOptions} from './util/definitions';
-import type {HockOptionsInput} from './util/definitions';
+import Deprecated from './util/Deprecated';
 
 /**
  * EntityMutationHockFactory
@@ -53,7 +55,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
      * export default withMutation(User);
      */
     function EntityMutationHock(payloadCreator: Function = aa => aa, optionsOverride: HockOptionsInput): Function {
-        console.warn('DEPRECATED: EntityMutationHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
+        Deprecated('EntityMutationHock has been deprecated in favor of much improved RequestHock. Check the docs for usage instructions.');
 
         const distinctSuccessMap = new DistinctMemo((value, data) => value.successMap(() => data));
 

@@ -1,9 +1,10 @@
 //@flow
-import EntityQueryHockFactory from './EntityQueryHockFactory';
-import {createAllRequestAction} from './EntityApi';
 import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
 
+import EntityQueryHockFactory from './EntityQueryHockFactory';
+import {createAllRequestAction} from './EntityApi';
+import Deprecated from './util/Deprecated';
 
 /**
  * Lorem ipsum dolor sit amet, consectetur _adipisicing_ elit. Commodi at optio quos animi aut officia
@@ -15,7 +16,7 @@ function MultiQueryHockFactory(sideEffectList: Array<SideEffect>, hockOptions?: 
     const RECEIVE = `${actionPrefix}_RECEIVE`;
     const ERROR = `${actionPrefix}_ERROR`;
 
-    console.warn('DEPRECATED: MultiQueryHockFactory has been deprecated in favor of much improved MultiRequestHock. Check the docs for usage instructions.');
+    Deprecated('MultiQueryHockFactory has been deprecated in favor of much improved MultiRequestHock. Check the docs for usage instructions.');
     return EntityQueryHockFactory(createAllRequestAction(FETCH, RECEIVE, ERROR, sideEffectList), hockOptions);
 }
 
