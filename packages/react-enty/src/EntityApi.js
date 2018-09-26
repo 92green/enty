@@ -47,7 +47,7 @@ function visitActionMap(branch: *, visitor: Function, path: string[] = [], state
 // to select the next denormalized state and return that to the promise chain.
 // This means request functions can be chained, yet still contain the latests state.
 //
-export function createRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffect: SideEffect): Function {
+export function createRequestAction(fetchAction: string, receiveAction: string, errorAction: string, sideEffect: SideEffect): Function {
     function action(aa: string): Function {
         return createAction(aa, (payload) => payload, (payload, meta) => meta);
     }
@@ -66,8 +66,8 @@ export function createRequestAction(fetchAction: string, recieveAction: string, 
         dispatch(action(fetchAction)(null, actionMeta(fetchAction)));
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data: any): * => {
-                dispatch(action(recieveAction)(data, actionMeta(recieveAction)));
-                return selectEntityByResult(getState(), actionMeta(recieveAction).resultKey);
+                dispatch(action(receiveAction)(data, actionMeta(receiveAction)));
+                return selectEntityByResult(getState(), actionMeta(receiveAction).resultKey);
             },
             (error: any): * => {
                 dispatch(action(errorAction)(error, actionMeta(errorAction)));
@@ -81,7 +81,7 @@ export function createRequestAction(fetchAction: string, recieveAction: string, 
 // @DEPRECATED
 // This is only used by the mutation and query hocks
 // RequestHoc has more powerful composition and so the actions dont need to be chained
-export function createAllRequestAction(fetchAction: string, recieveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
+export function createAllRequestAction(fetchAction: string, receiveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
     function sideEffect(requestPayload: *, meta: Object): Promise<*> {
         return Promise
             // call all sideeffects
@@ -90,7 +90,7 @@ export function createAllRequestAction(fetchAction: string, recieveAction: strin
             .then(payloads => payloads.reduce((out, payload) => Object.assign(out, payload), {}))
         ;
     }
-    return createRequestAction(fetchAction, recieveAction, errorAction, sideEffect);
+    return createRequestAction(fetchAction, receiveAction, errorAction, sideEffect);
 }
 
 

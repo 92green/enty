@@ -20,7 +20,7 @@ var actions = EntityApi(ObjectSchema({}), {
 const getState = () => ({
     entity: Map()
 });
-const fakeAction = (sideEffect) => createRequestAction('fetch', 'recieve', 'error', sideEffect);
+const fakeAction = (sideEffect) => createRequestAction('fetch', 'receive', 'error', sideEffect);
 
 test('createRequestActionSet', () => {
     expect(typeof actions.foo.bar.request === 'function').toBe(true);
@@ -45,7 +45,7 @@ test('RECEIVE action resultKey defaults to RECEIVE action name', () => {
     var dispatch = sinon.spy();
     return fakeAction(RESOLVE)()(dispatch, getState)
         .then(() => {
-            expect(dispatch.secondCall.args[0].type).toBe('recieve');
+            expect(dispatch.secondCall.args[0].type).toBe('receive');
         });
 });
 
@@ -58,7 +58,7 @@ test('ERROR action resultKey defaults to ERROR action name', () => {
         });
 });
 
-test('FETCH RECIEVE action will pass meta through', () => {
+test('FETCH RECEIVE action will pass meta through', () => {
     var dispatch = sinon.spy();
     return fakeAction(RESOLVE)({}, {foo: 'bar'})(dispatch, getState)
         .then(() => {
