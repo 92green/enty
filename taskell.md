@@ -1,9 +1,19 @@
-## To Do
+## Backlog
 
+- Add request hock caching
+- Deprecate select by type and id
+- Remove Stampy Dependency
+
+
+## Current Release
+
+- Remove immutable from reducer
+- Check and remove result reset on fetch
+
+## In Progress
 - Move Entities to sub key
 
 ## Done
 
 - Stop Flattening the api
-    > just plain traverse the api and replace each function with a hoc.
 - Create an entity provider
