@@ -10,7 +10,7 @@ type Config = {
 
 export default function EntityProviderFactory({store, storeKey}: Config): Function {
     const Provider = createProvider(storeKey);
-    return function EntityProvider(props: *): Node {
-        return <Provider store={store} children={props.children} />;
+    return () => (Component) => function EntityProvider(props: *): Node {
+        return <Provider store={store} children={<Component {...props}/>} />;
     };
 }
