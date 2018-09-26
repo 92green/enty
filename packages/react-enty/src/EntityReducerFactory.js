@@ -1,4 +1,7 @@
 //@flow
+import type {Schema} from 'enty/lib/util/definitions';
+import type {Structure} from 'enty/lib/util/definitions';
+
 import {Map} from 'immutable';
 import updateIn from 'unmutable/lib/updateIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
@@ -29,7 +32,7 @@ import Logger from './Logger';
  *     })
  * });
  */
-export default function EntityReducerFactory(config: {schema: Schema}): Function {
+export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
     const {schema} = config;
 
     const initialState = Map({

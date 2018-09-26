@@ -3,17 +3,18 @@ import React from 'react';
 import EntityProviderFactory from '../EntityProviderFactory';
 import EntityApi from '../EntityApi';
 import ObjectSchema from 'enty/lib/ObjectSchema';
-import composeWith from 'unmutable/lib/util/composeWith';
+import compose from 'unmutable/lib/util/compose';
 import pipe from 'unmutable/lib/util/pipe';
 
-function render(element, predicate, hocs = _ => _) {
+function render(elementThunk: Function, predicate: Function) {
     return new Promise((resolve, reject) => {
         let wrapper;
-        const component = composeWith(hocs, (props) => {
-            predicate(props, () => resolve(props, wrapper), () => reject(props, wrapper));
+        const component = (props) => {
+            predicate(props, () => resolve(props));
             return <div/>;
-        });
-        wrapper = mount(element(component));
+        };
+        const Element = elementThunk(component);
+        wrapper = mount(<Element/>);
     });
 }
 
@@ -22,15 +23,17 @@ test('EntityProviderFactory returns a function', () => {
 });
 
 test('EntityProvider can store state', () => {
-    const Schema = ObjectSchema({});
-    const Api = EntityApi(Schema, {
+    const Api = EntityApi(ObjectSchema({}), {
         foo: () => Promise.resolve({foo: 'foo!'})
     });
 
     return render(
-        (Component) => <Api.EntityProvider><Component/></Api.EntityProvider>,
+        compose(
+            Api.EntityProvider(),
+            Api.foo.request({name: 'foo', auto: true})
+        ),
+        // resolve once foo message is a success
         (props, resolve) => props.foo.requestState.successMap(resolve),
-        Api.foo.request({name: 'foo', auto: true})
     )
         .then((props) => expect(props.foo.response).toEqual({foo: 'foo!'}));
 
@@ -38,28 +41,25 @@ test('EntityProvider can store state', () => {
 });
 
 test('Different EntityProviders can be stacked transparently', () => {
-    const SchemaA = ObjectSchema({});
-    const SchemaB = ObjectSchema({});
-    const ApiA = EntityApi(SchemaA, {
+    const ApiA = EntityApi(ObjectSchema({}), {
         foo: () => Promise.resolve({foo: 'foo!'})
     });
-    const ApiB = EntityApi(SchemaA, {
+    const ApiB = EntityApi(ObjectSchema({}), {
         bar: () => Promise.resolve({bar: 'bar!'})
     });
 
     return render(
-        (Component) => <ApiA.EntityProvider>
-            <ApiB.EntityProvider>
-                <Component/>
-            </ApiB.EntityProvider>
-        </ApiA.EntityProvider>,
-        (props, resolve) => props.foo.requestState
-            .successFlatMap(() => props.bar.requestState)
-            .successMap(resolve),
-        pipe(
+        compose(
+            ApiA.EntityProvider(),
+            ApiB.EntityProvider(),
             ApiA.foo.request({name: 'foo', auto: true}),
             ApiB.bar.request({name: 'bar', auto: true})
-        )
+        ),
+        // resolve the render promise when both
+        // request states are success
+        (props, resolve) => props.foo.requestState
+            .successFlatMap(() => props.bar.requestState)
+            .successMap(resolve)
     )
         .then((props) => {
             expect(props.foo.response).toEqual({foo: 'foo!'});
