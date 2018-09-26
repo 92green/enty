@@ -26,10 +26,8 @@ const STORE = {
     dispatch: (aa) => aa,
     getState: () => ({
         entity: fromJS({
-            _baseSchema: Map({
-                SCHEMA_KEY: ObjectSchema({
-                    entity: ObjectSchema({})
-                })
+            _baseSchema: ObjectSchema({
+                entity: ObjectSchema({})
             }),
             _result: {
                 foo: {
@@ -45,8 +43,7 @@ const STORE = {
 
 const hockMeta: HockMeta = {
     generateResultKey: props => `${props}-resultKey`,
-    requestActionName: 'FooAction',
-    schemaKey: 'SCHEMA_KEY'
+    requestActionName: 'FooAction'
 };
 
 const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
