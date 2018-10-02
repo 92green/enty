@@ -8,6 +8,7 @@ import setIn from 'unmutable/lib/setIn';
 import set from 'unmutable/lib/set';
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
+import merge from 'unmutable/lib/merge';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 
 import {FetchingState} from './RequestState';
@@ -120,11 +121,12 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
 
+
                 return pipeWith(
                     state,
                     set('_entities', entities),
                     setIn(['_result', resultKey], result),
-                    updateIn(['_schemas'], (previous) => Map(schemas).merge(previous)),
+                    updateIn(['_schemas'], merge(schemas)),
                     updateIn(['_stats', 'normalizeCount'], count => count + 1),
                     state => Logger.silly('state', state) || state
                 );
