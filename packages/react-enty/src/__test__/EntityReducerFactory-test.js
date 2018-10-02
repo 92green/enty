@@ -100,11 +100,8 @@ describe('EntityReducer Config', () => {
             .toBe(schema);
     });
 
-    test('result starts with an empty map', () => {
-        expect(is(
-            EntityReducer(undefined, {type: 'nothing'}).get('_result'),
-            Map()
-        )).toBe(true);
+    test('result starts with an empty object', () => {
+        expect(EntityReducer(undefined, {type: 'nothing'}).get('_result')).toEqual({});
     });
 
     test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {

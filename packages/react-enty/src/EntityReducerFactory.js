@@ -5,6 +5,7 @@ import type {Structure} from 'enty/lib/util/definitions';
 import {Map} from 'immutable';
 import updateIn from 'unmutable/lib/updateIn';
 import setIn from 'unmutable/lib/setIn';
+import deleteIn from 'unmutable/lib/deleteIn';
 import set from 'unmutable/lib/set';
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -50,8 +51,8 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
 
         let state = previousState || Map({
             _baseSchema: schema,
-            _schemas: Map(),
-            _result: Map(),
+            _schemas: {},
+            _result: {},
             _error: Map(),
             _requestState: Map(),
             _entities: {},
@@ -101,7 +102,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
         // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
         if(resultResetOnFetch && /_FETCH$/g.test(type)) {
             Logger.info(`Type is *_FETCH and resultResetOnFetch is true, returning state with deleted _result key`);
-            return state.deleteIn(['_result', resultKey]);
+            return deleteIn(['_result', resultKey])(state);
         }
 
 
