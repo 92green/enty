@@ -4,14 +4,15 @@ import type {Structure} from 'enty/lib/util/definitions';
 
 import {Map} from 'immutable';
 import updateIn from 'unmutable/lib/updateIn';
+import setIn from 'unmutable/lib/setIn';
+import set from 'unmutable/lib/set';
+import get from 'unmutable/lib/get';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 
-import {
-    FetchingState,
-    RefetchingState,
-    ErrorState,
-    SuccessState
-} from './RequestState';
+import {FetchingState} from './RequestState';
+import {RefetchingState} from './RequestState';
+import {ErrorState} from './RequestState';
+import {SuccessState} from './RequestState';
 import Logger from './Logger';
 
 
@@ -41,6 +42,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
         _result: Map(),
         _error: Map(),
         _requestState: Map(),
+        _entities: {},
         _stats: Map({
             normalizeCount: 0
         })
@@ -61,9 +63,12 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             resultResetOnFetch
         } = Object.assign({}, defaultMeta, meta);
 
-        var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
 
+        // @FIXME: resultKey should be defined before the reducer.
+        // The reducer should not have to infer any data.
+        var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
         const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
+
         const errorPath = ['_error', resultKey];
 
 
@@ -105,32 +110,22 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             state = state.setIn(requestStatePath, SuccessState());
 
             if(schema && payload) {
-                let previousEntities = state
-                    .map(ii => ii.toObject ? ii.toObject() : ii)
-                    .delete('_actionSchema')
-                    .delete('_result')
-                    .delete('_requestState')
-                    .toObject();
-
-                const {result, entities, schemas} = schema.normalize(payload, previousEntities);
+                const {result, entities, schemas} = schema.normalize(
+                    payload,
+                    get('_entities')(state)
+                );
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
 
-                return state
-                    // set results
-                    .update(state => state.merge(Map(entities).map(ii => Map(ii))))
-                    .set('_baseSchema', schema)
-                    .setIn(['_result', resultKey], result)
-                    .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous))
-                    .update((state: *): * => {
-                        return pipeWith(
-                            state,
-                            updateIn(['_stats', 'normalizeCount'], count => count + 1),
-                            state => Logger.silly('state', state) || state
-                        );
-                    })
-                ;
+                return pipeWith(
+                    state,
+                    set('_entities', entities),
+                    setIn(['_result', resultKey], result),
+                    updateIn(['_schemas'], (previous) => Map(schemas).merge(previous)),
+                    updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                    state => Logger.silly('state', state) || state
+                );
             }
 
 
