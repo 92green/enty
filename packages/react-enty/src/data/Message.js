@@ -1,10 +1,13 @@
 // @flow
+import type {RequestState} from '../RequestState';
 import {EmptyState} from '../RequestState';
 import {FetchingState} from '../RequestState';
 import {RefetchingState} from '../RequestState';
 import {SuccessState} from '../RequestState';
 import {ErrorState} from '../RequestState';
-import type {RequestState} from '../RequestState';
+
+import get from 'unmutable/lib/get';
+import getIn from 'unmutable/lib/getIn';
 
 type MessageProps = {
     resultKey?: ?string,
@@ -64,30 +67,43 @@ export default class Message {
         this.requestError = props.requestError;
         this.onRequest = props.onRequest;
     }
+
+    get(key: string, notFoundValue: *): * {
+        return get(key, notFoundValue)(this.response);
+    }
+
+    getIn(path: string[], notFoundValue: *): * {
+        return getIn(path, notFoundValue)(this.response);
+    }
 }
 
-export const EmptyMessage = (rest: MessageProps) => new Message(
+
+//
+// Constructors
+//
+
+export const EmptyMessage = (rest?: MessageProps = {}) => new Message(
     rest
 );
 
-export const FetchingMessage = (rest: MessageProps) => new Message({
+export const FetchingMessage = (rest?: MessageProps = {}) => new Message({
     requestState: FetchingState(),
     ...rest
 });
 
-export const SuccessMessage = (response: *, rest: MessageProps) => new Message({
+export const SuccessMessage = (response: *, rest?: MessageProps = {}) => new Message({
     response,
     requestState: SuccessState(),
     ...rest
 });
 
-export const RefetchingMessage = (response: *, rest: MessageProps) => new Message({
+export const RefetchingMessage = (response: *, rest?: MessageProps = {}) => new Message({
     response,
     requestState: RefetchingState(),
     ...rest
 });
 
-export const ErrorMessage = (requestError: *, rest: MessageProps) => new Message({
+export const ErrorMessage = (requestError: *, rest?: MessageProps = {}) => new Message({
     requestError,
     requestState: ErrorState(),
     ...rest
