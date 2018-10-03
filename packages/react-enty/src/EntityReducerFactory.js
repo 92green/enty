@@ -2,16 +2,15 @@
 import type {Schema} from 'enty/lib/util/definitions';
 import type {Structure} from 'enty/lib/util/definitions';
 
-import {Map} from 'immutable';
-import updateIn from 'unmutable/lib/updateIn';
-import setIn from 'unmutable/lib/setIn';
-import getIn from 'unmutable/lib/getIn';
-import deleteIn from 'unmutable/lib/deleteIn';
-import set from 'unmutable/lib/set';
 import clone from 'unmutable/lib/clone';
+import deleteIn from 'unmutable/lib/deleteIn';
 import get from 'unmutable/lib/get';
+import getIn from 'unmutable/lib/getIn';
 import merge from 'unmutable/lib/merge';
 import pipeWith from 'unmutable/lib/util/pipeWith';
+import set from 'unmutable/lib/set';
+import setIn from 'unmutable/lib/setIn';
+import updateIn from 'unmutable/lib/updateIn';
 
 import {FetchingState} from './RequestState';
 import {RefetchingState} from './RequestState';
@@ -31,7 +30,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
 
         Logger.info(`\n\nEntity reducer:`);
 
-        let state = previousState || Map({
+        let state = previousState || {
             _baseSchema: schema,
             _schemas: {},
             _result: {},
@@ -41,7 +40,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             _stats: {
                 normalizeCount: 0
             }
-        });
+        };
 
 
         const {
