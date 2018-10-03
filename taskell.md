@@ -1,12 +1,11 @@
 ## Backlog
 
-- Add request hock caching
+- Add api level caching
 - Deprecate select by type and id
 - Remove Stampy Dependency
 
 ## Current Release
 
-- Check and remove result reset on fetch
 
 ## In Progress
 
@@ -17,3 +16,4 @@
 - Create an entity provider
 - Move Entities to sub key
 - Remove immutable from reducer
+- Check and remove result reset on fetch

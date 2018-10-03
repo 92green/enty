@@ -121,40 +121,6 @@ describe('EntityReducer Config', () => {
 
 });
 
-describe('EntityReducer resultResetOnFetch', () => {
-    test('if true it will delete resultKey on FETCH action', () => {
-        const initialState = Map({
-            _result: Map({
-                FOO: 'FOO',
-                BAR: 'BAR'
-            })
-        });
-        const state = EntityReducer(initialState, {
-            type: 'FOO_FETCH',
-            meta: {resultKey: 'FOO', resultResetOnFetch: true}
-        });
-
-        expect(getIn(['_result', 'FOO'])(state)).toBe(undefined);
-        expect(getIn(['_result', 'BAR'])(state)).toBe('BAR');
-    });
-
-    test('if false it will not delete resultKey on FETCH action', () => {
-        const initialState = Map({
-            _result: Map({
-                FOO: 'FOO',
-                BAR: 'BAR'
-            })
-        });
-        const state = EntityReducer(initialState, {
-            type: 'FOO_FETCH',
-            meta: {resultKey: 'FOO', resultResetOnFetch: false}
-        });
-
-        expect(getIn(['_result', 'FOO'])(state)).toBe('FOO');
-        expect(getIn(['_result', 'BAR'])(state)).toBe('BAR');
-    });
-});
-
 describe('EntityReducer Normalizing', () => {
     test('it will store normalized results on _result.resultKey', () => {
         const action = {

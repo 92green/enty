@@ -3,7 +3,6 @@ import type {Schema} from 'enty/lib/util/definitions';
 import type {Structure} from 'enty/lib/util/definitions';
 
 import clone from 'unmutable/lib/clone';
-import deleteIn from 'unmutable/lib/deleteIn';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import merge from 'unmutable/lib/merge';
@@ -18,15 +17,22 @@ import {ErrorState} from './RequestState';
 import {SuccessState} from './RequestState';
 import Logger from './Logger';
 
+type State = {
+    _baseSchema: Schema<Structure>,
+    _schemas: {[key: string]: Schema<any>},
+    _result: {[key: string]: *},
+    _error: {[key: string]: *},
+    _requestState: {[key: string]: *},
+    _entities: {[key: string]: *},
+    _stats: {
+        normalizeCount: number
+    }
+};
 
 export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
     const {schema} = config;
 
-    const defaultMeta = {
-        resultResetOnFetch: false
-    };
-
-    return function EntityReducer(previousState: *, {type, payload, meta}: Object): Map<any, any> {
+    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
 
         Logger.info(`\n\nEntity reducer:`);
 
@@ -42,11 +48,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             }
         };
 
-
-        const {
-            resultKey = type,
-            resultResetOnFetch
-        } = Object.assign({}, defaultMeta, meta);
+        const {resultKey = type} = meta;
 
 
         // @FIXME: resultKey should be defined before the reducer.
@@ -78,13 +80,6 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             );
         }
 
-
-
-        // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
-        if(resultResetOnFetch && /_FETCH$/g.test(type)) {
-            Logger.info(`Type is *_FETCH and resultResetOnFetch is true, returning state with deleted _result key`);
-            return deleteIn(['_result', resultKey])(state);
-        }
 
 
         if(/_RECEIVE$/g.test(type)) {
