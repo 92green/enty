@@ -19,32 +19,13 @@ import {SuccessState} from './RequestState';
 import Logger from './Logger';
 
 
-
-
-/**
- *
- * @example
- * import {createEntityReducer} from 'enty';
- * import EntitySchema from 'myapp/EntitySchema';
- *
- * export default combineReducers({
- *     entity: EntityReducerFactory({
- *          schemaMap: {
- *              GRAPHQL_RECEIVE: EntitySchema,
- *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema
- *          }
- *     })
- * });
- */
 export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
     const {schema} = config;
-
 
     const defaultMeta = {
         resultResetOnFetch: false
     };
 
-    // Return our constructed reducer
     return function EntityReducer(previousState: *, {type, payload, meta}: Object): Map<any, any> {
 
         Logger.info(`\n\nEntity reducer:`);
@@ -53,7 +34,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             _baseSchema: schema,
             _schemas: {},
             _result: {},
-            _error: Map(),
+            _error: {},
             _requestState: Map(),
             _entities: {},
             _stats: Map({
@@ -72,7 +53,6 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
         // The reducer should not have to infer any data.
         var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
         const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
-
         const errorPath = ['_error', resultKey];
 
 
@@ -91,10 +71,11 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             }
         } else if(/_ERROR$/g.test(type)) {
             Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
-            state = state
-                .setIn(requestStatePath, ErrorState(payload))
-                .setIn(errorPath, payload)
-            ;
+            state = pipeWith(
+                state,
+                setIn(requestStatePath, ErrorState(payload)),
+                setIn(errorPath, payload)
+            );
         }
 
 
