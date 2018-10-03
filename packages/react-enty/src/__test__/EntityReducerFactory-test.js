@@ -54,6 +54,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
     const exampleReceiveAction = {
         type: 'TEST_RECEIVE',
+        meta: {resultKey: 'TEST'},
         payload: examplePayload
     };
 
@@ -67,7 +68,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 describe('EntityReducer requestState', () => {
     test('_requestState.isFetching is true when action type ends with _FETCH', () => {
         const data = pipeWith(
-            EntityReducer(undefined, {type: 'TEST_FETCH'}),
+            EntityReducer(undefined, {type: 'TEST_FETCH', meta: {resultKey: 'TEST'}}),
             getIn(['_requestState', 'TEST'])
         );
         expect(data.isFetching).toBe(true);
@@ -75,7 +76,7 @@ describe('EntityReducer requestState', () => {
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
         return pipeWith (
-            EntityReducer(undefined, {type: 'nothing'}),
+            EntityReducer(undefined, {type: 'nothing', meta: {resultKey: 'nothing'}}),
             getIn(['_requestState', 'nothing']),
             value => expect(value).toBe(undefined)
         );
@@ -85,7 +86,11 @@ describe('EntityReducer requestState', () => {
     // The reducer should not infer result keys from the action type
     test('will be set to payload if the action matches  _ERROR', () => {
         return pipeWith (
-            EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'}),
+            EntityReducer(undefined, {
+                type: 'TEST_ERROR',
+                payload: 'errorPayload',
+                meta: {resultKey: 'TEST'}
+            }),
             getIn(['_requestState', 'TEST']),
             _ => _.value(),
             value => expect(value).toBe('errorPayload')
@@ -97,26 +102,27 @@ describe('EntityReducer requestState', () => {
 });
 
 describe('EntityReducer Config', () => {
+    const action = (type) => ({type, meta: {resultKey: type}});
     test('the supplied schema is not mutated when reducing', () => {
-        expect(EntityReducer(undefined, {type: 'nothing'})._baseSchema).toBe(schema);
+        expect(EntityReducer(undefined, action('nothing'))._baseSchema).toBe(schema);
     });
 
     test('result starts with an empty object', () => {
-        expect(EntityReducer(undefined, {type: 'nothing'})._result).toEqual({});
+        expect(EntityReducer(undefined, action('nothing'))._result).toEqual({});
     });
 
     test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {
         const state = {foo: 'bar'};
-        const reducedState = EntityReducer(state, {type: 'nothing'});
+        const reducedState = EntityReducer(state, action('nothing'));
         expect(reducedState).toBe(state);
 
-        expect(EntityReducer(INITIAL_STATE, {type: 'FOO'})).toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'})).toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO'))).toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH_BLAH'))).toBe(INITIAL_STATE);
 
         // check the reverse
-        expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH'})).not.toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, {type: 'FOO_ERROR'})).not.toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, {type: 'FOO_RECEIVE'})).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_ERROR'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_RECEIVE'))).not.toBe(INITIAL_STATE);
     });
 
 });
@@ -125,6 +131,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store normalized results on _result.resultKey', () => {
         const action = {
             type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -135,7 +142,7 @@ describe('EntityReducer Normalizing', () => {
 
         return pipeWith(
             EntityReducer(undefined, action),
-            getIn(['_result', 'TEST_RECEIVE', 'subreddit']),
+            getIn(['_result', 'TEST', 'subreddit']),
             key => expect(key).toBe('MK')
         );
     });
@@ -143,6 +150,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store normalized data on _entities.type.id', () => {
         const action = {
             type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -161,6 +169,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store deep entities', () => {
         const action = {
             type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -180,7 +189,13 @@ describe('EntityReducer Normalizing', () => {
     });
 
     test('it can merge two normalizations correctly', () => {
-        const action = (payload) => ({type: 'TEST_RECEIVE', payload});
+        const action = (payload) => ({
+            type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
+            payload
+        });
+
+
 
         const payloadA = {
             subreddit: {

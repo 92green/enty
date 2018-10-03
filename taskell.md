@@ -3,9 +3,9 @@
 - Add api level caching
 - Deprecate select by type and id
 - Remove Stampy Dependency
+- internalize hash function
 
 ## Current Release
-
 
 ## In Progress
 

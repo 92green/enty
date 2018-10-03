@@ -27,6 +27,7 @@ function constructState(): * {
             undefined,
             {
                 type: 'FOO_RECEIVE',
+                meta: {resultKey: 'FOO'},
                 payload: {
                     foo: {id: 'qux'},
                     fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux'}]
@@ -42,7 +43,7 @@ function constructState(): * {
 // selectEntityByResult()
 
 test('selectEntityByResult() should return a map for single items', () => {
-    const data = selectEntityByResult(constructState(), 'FOO_RECEIVE');
+    const data = selectEntityByResult(constructState(), 'FOO');
     expect(data && data.foo).toBeTruthy();
 });
 
@@ -52,6 +53,7 @@ test('selectEntityByResult() should return an array for indexed items', () => {
         undefined,
         {
             type: 'FOOLIST_RECEIVE',
+            meta: {resultKey: 'FOOLIST_RECEIVE'},
             payload: [{id: 'bar'}, {id: 'baz'}]
         }
     )};

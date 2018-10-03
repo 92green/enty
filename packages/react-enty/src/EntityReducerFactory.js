@@ -48,13 +48,8 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             }
         };
 
-        const {resultKey = type} = meta;
-
-
-        // @FIXME: resultKey should be defined before the reducer.
-        // The reducer should not have to infer any data.
-        var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
-        const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
+        const {resultKey} = meta;
+        const requestStatePath = ['_requestState', resultKey];
         const errorPath = ['_error', resultKey];
 
 
