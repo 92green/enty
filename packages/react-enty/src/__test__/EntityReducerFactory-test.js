@@ -98,12 +98,11 @@ describe('EntityReducer requestState', () => {
 
 describe('EntityReducer Config', () => {
     test('the supplied schema is not mutated when reducing', () => {
-        expect(EntityReducer(undefined, {type: 'nothing'}).get('_baseSchema'))
-            .toBe(schema);
+        expect(EntityReducer(undefined, {type: 'nothing'})._baseSchema).toBe(schema);
     });
 
     test('result starts with an empty object', () => {
-        expect(EntityReducer(undefined, {type: 'nothing'}).get('_result')).toEqual({});
+        expect(EntityReducer(undefined, {type: 'nothing'})._result).toEqual({});
     });
 
     test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {

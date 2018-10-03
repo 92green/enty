@@ -1,4 +1,6 @@
 // @flow
+import getIn from 'unmutable/lib/getIn';
+import pipeWith from 'unmutable/lib/util/pipeWith';
 import {EmptyState} from './RequestState';
 import Logger from './Logger';
 
@@ -17,6 +19,8 @@ export default function selectRequestState(state: Object, requestStateKey: strin
     const {stateKey = 'entity'} = options;
 
     Logger.silly('Selecting RequestState:', `${stateKey}._requestState.${requestStateKey}`, state);
-    return state[stateKey]
-        .getIn(['_requestState', requestStateKey], EmptyState());
+    return pipeWith(
+        state,
+        getIn([stateKey, '_requestState', requestStateKey], EmptyState())
+    );
 }
