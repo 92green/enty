@@ -57,7 +57,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
         payload: examplePayload
     };
 
-    const state = EntityReducer(INITIAL_STATE, exampleReceiveAction);
+    const state = EntityReducer(undefined, exampleReceiveAction);
 
     expect(getIn(['_entities', 'subreddit', 'MK', 'fullnameId'])(state))
         .toBe(examplePayload.subreddit.fullnameId);
@@ -263,7 +263,7 @@ describe('EntityReducer Normalizing', () => {
         };
 
         const mergeStateOne = EntityReducer(undefined, action(payloadA));
-        const mergeStateTwo = EntityReducer(undefined, action(payloadB));
+        const mergeStateTwo = EntityReducer(mergeStateOne, action(payloadB));
 
         expect(getIn(['_entities', 'subreddit', 'MK', 'name'])(mergeStateTwo)).toBe(payloadB.subreddit.name);
         expect(getIn(['_entities', 'subreddit', 'MK', 'tags'])(mergeStateTwo)).toEqual(payloadB.subreddit.tags);

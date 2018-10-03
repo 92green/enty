@@ -6,6 +6,7 @@ import {Map} from 'immutable';
 import updateIn from 'unmutable/lib/updateIn';
 import setIn from 'unmutable/lib/setIn';
 import set from 'unmutable/lib/set';
+import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 
@@ -36,26 +37,27 @@ import Logger from './Logger';
 export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
     const {schema} = config;
 
-    const initialState = Map({
-        _baseSchema: schema,
-        _schemas: Map(),
-        _result: Map(),
-        _error: Map(),
-        _requestState: Map(),
-        _entities: {},
-        _stats: Map({
-            normalizeCount: 0
-        })
-    });
 
     const defaultMeta = {
         resultResetOnFetch: false
     };
 
     // Return our constructed reducer
-    return function EntityReducer(state: Map<any, any> = initialState, {type, payload, meta}: Object): Map<any, any> {
+    return function EntityReducer(previousState: *, {type, payload, meta}: Object): Map<any, any> {
 
         Logger.info(`\n\nEntity reducer:`);
+
+        let state = previousState || Map({
+            _baseSchema: schema,
+            _schemas: Map(),
+            _result: Map(),
+            _error: Map(),
+            _requestState: Map(),
+            _entities: {},
+            _stats: Map({
+                normalizeCount: 0
+            })
+        });
 
 
         const {
@@ -112,7 +114,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             if(schema && payload) {
                 const {result, entities, schemas} = schema.normalize(
                     payload,
-                    get('_entities')(state)
+                    pipeWith(state, get('_entities'), clone())
                 );
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
