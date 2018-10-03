@@ -5,6 +5,7 @@ import type {Structure} from 'enty/lib/util/definitions';
 import {Map} from 'immutable';
 import updateIn from 'unmutable/lib/updateIn';
 import setIn from 'unmutable/lib/setIn';
+import getIn from 'unmutable/lib/getIn';
 import deleteIn from 'unmutable/lib/deleteIn';
 import set from 'unmutable/lib/set';
 import clone from 'unmutable/lib/clone';
@@ -35,7 +36,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             _schemas: {},
             _result: {},
             _error: {},
-            _requestState: Map(),
+            _requestState: {},
             _entities: {},
             _stats: Map({
                 normalizeCount: 0
@@ -62,11 +63,11 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
         //
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
-            if(state.getIn(requestStatePath)) {
+            if(getIn(requestStatePath)(state)) {
                 Logger.info(`Setting RefetchingState for "${requestStatePath.join('.')}"`);
-                state = state.setIn(requestStatePath, RefetchingState());
+                state = setIn(requestStatePath, RefetchingState())(state);
             } else {
-                state = state.setIn(requestStatePath, FetchingState());
+                state = setIn(requestStatePath, FetchingState())(state);
                 Logger.info(`Setting FetchingState for "${requestStatePath.join('.')}"`, state);
             }
         } else if(/_ERROR$/g.test(type)) {
@@ -92,7 +93,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
 
             // set success action before payload tests
             // to make sure the request state is still updated even if there is no payload
-            state = state.setIn(requestStatePath, SuccessState());
+            state = setIn(requestStatePath, SuccessState())(state);
 
             if(schema && payload) {
                 const {result, entities, schemas} = schema.normalize(

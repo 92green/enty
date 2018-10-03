@@ -66,9 +66,11 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
 describe('EntityReducer requestState', () => {
     test('_requestState.isFetching is true when action type ends with _FETCH', () => {
-        expect(
-            EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching
-        ).toBe(true);
+        const data = pipeWith(
+            EntityReducer(undefined, {type: 'TEST_FETCH'}),
+            getIn(['_requestState', 'TEST'])
+        );
+        expect(data.isFetching).toBe(true);
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
