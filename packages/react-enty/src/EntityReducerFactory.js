@@ -38,9 +38,9 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             _error: {},
             _requestState: {},
             _entities: {},
-            _stats: Map({
+            _stats: {
                 normalizeCount: 0
-            })
+            }
         });
 
 
