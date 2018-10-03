@@ -1,7 +1,7 @@
 //@flow
 import EntitySchema from 'enty/lib/EntitySchema';
-import MapSchema from 'enty/lib/MapSchema';
-import ListSchema from 'enty/lib/ListSchema';
+import ObjectSchema from 'enty/lib/ObjectSchema';
+import ArraySchema from 'enty/lib/ArraySchema';
 import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
@@ -9,29 +9,32 @@ import {
     selectEntityByType
 } from '../EntitySelector';
 
-function constructState(): * {
-    var foo = EntitySchema('foo').set(MapSchema());
-    var fooList = ListSchema(foo);
-    var schema = MapSchema({
-        fooList: ListSchema(foo),
-        foo,
-        single: MapSchema({foo})
-    });
-    var normalized = schema.normalize(
-        {
-            single: {foo: {id: 'qux'}},
-            fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux'}]
-        }
-    );
+import EntityReducerFactory from '../EntityReducerFactory';
 
+var foo = EntitySchema('foo').set(ObjectSchema());
+var fooList = ArraySchema(foo);
+
+var schema = ObjectSchema({
+    foo,
+    fooList: ArraySchema(foo)
+});
+
+const reducer = EntityReducerFactory({schema});
+
+function constructState(): * {
     return {
-        entity: fromJS({
-            ...normalized.entities,
-            _result: normalized.result,
-            _schemas: normalized.schemas,
-            _baseSchema: schema
-        })
-    };
+        entity: reducer(
+            undefined,
+            {
+                type: 'FOO_RECEIVE',
+                payload: {
+                    foo: {id: 'qux'},
+                    fooList: [{id: 'bar'}, {id: 'baz'}, {id: 'qux'}]
+                }
+            }
+        )
+    }
+
 }
 
 
@@ -39,13 +42,21 @@ function constructState(): * {
 // selectEntityByResult()
 
 test('selectEntityByResult() should return a map for single items', () => {
-    const data = selectEntityByResult(constructState(), 'single');
+    const data = selectEntityByResult(constructState(), 'FOO_RECEIVE');
     expect(data && data.foo).toBeTruthy();
 });
 
 test('selectEntityByResult() should return an array for indexed items', () => {
-    const data = selectEntityByResult(constructState(), 'fooList');
-    expect(data && data.length).toBe(3);
+    const reducer = EntityReducerFactory({schema: fooList});
+    const state = {entity: reducer(
+        undefined,
+        {
+            type: 'FOOLIST_RECEIVE',
+            payload: [{id: 'bar'}, {id: 'baz'}]
+        }
+    )};
+    const data = selectEntityByResult(state, 'FOOLIST_RECEIVE');
+    expect(data && data.length).toBe(2);
 });
 
 test('selectEntityByResult() should return nothing if the denormalize fails', () => {
@@ -58,7 +69,7 @@ test('selectEntityByResult() should return nothing if the denormalize fails', ()
 
 test('selectEntityById() should return an item from entity state by path', () => {
     // $FlowFixMe
-    expect(selectEntityById(constructState(), 'foo', 'bar').get('id')).toBe('bar');
+    expect(selectEntityById(constructState(), 'foo', 'bar').id).toBe('bar');
 });
 
 test('selectEntityById() will return undefined if there is no schema for type', () => {
@@ -71,8 +82,13 @@ test('selectEntityById() will return undefined if there is no schema for type', 
 //
 // selectEntityByType()
 
-test('selectEntityByType() should return an list of entities', () => {
-    expect(List.isList(selectEntityByType(constructState(), 'foo'))).toBe(true);
+test('selectEntityByType() should return an array of entities', () => {
+    const data = selectEntityByType(constructState(), 'foo');
+    expect(data).toEqual([
+        {id: 'qux'},
+        {id: 'bar'},
+        {id: 'baz'}
+    ]);
 });
 
 
