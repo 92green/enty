@@ -10,9 +10,9 @@ import EntityMutationHockFactory from './EntityMutationHockFactory';
 import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
 import EntityProviderFactory from './EntityProviderFactory';
-import {fromJS} from 'immutable';
 import {selectEntityByResult} from './EntitySelector';
 import RequestStateSelector from './RequestStateSelector';
+import Hash from './util/Hash';
 
 import reduce from 'unmutable/lib/reduce';
 import set from 'unmutable/lib/set';
@@ -149,7 +149,7 @@ function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOption
 
             const HockMeta = {
                 // @TODO: internalize the hashing algorithm
-                generateResultKey: (payload) => fromJS({payload, actionName}).hashCode().toString(),
+                generateResultKey: (payload) => Hash({payload, actionName}),
                 requestActionName: actionName,
                 schemaKey: hockOptions.schemaKey, // @TODO remove this when there is only a single schema per api
                 storeKey,
