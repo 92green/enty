@@ -6,12 +6,12 @@ import type {HockOptions} from './util/definitions';
 import type {Hock} from './util/definitions';
 
 import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
-import {fromJS} from 'immutable';
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './util/DistinctMemo';
 import Connect from './util/Connect';
 import Deprecated from './util/Deprecated';
+import Hash from './util/Hash';
 
 
 /**
@@ -67,7 +67,7 @@ function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptio
 
 
             function getHash(props: Object, options: HockOptions): string {
-                return (options.resultKey || fromJS({hash: queryCreator(props), requestActionName: options.requestActionName}).hashCode()) + '';
+                return options.resultKey || Hash({hash: queryCreator(props), requestActionName: options.requestActionName});
             }
 
             const withState = Connect((state: Object, props: Object): Object => {
