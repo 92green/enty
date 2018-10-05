@@ -1,0 +1,27 @@
+{
+  "name": "enty-immutable",
+  "version": "0.1.0-0",
+  "description": "Enty schemas for Immutable JS",
+  "main": "lib/index.js",
+  "license": "MIT",
+  "author": "Allan Hortle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/enty.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/blueflag/enty/issues"
+  },
+  "private": false,
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
+    "watch": "yarn build -w"
+  },
+  "dependencies": {
+    "immutable": "^3.8.1"
+  }
+}
