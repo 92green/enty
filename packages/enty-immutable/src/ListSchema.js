@@ -1,13 +1,12 @@
 // @flow
 import {List} from 'immutable';
-import {ArraySchema} from './ArraySchema';
-import type {StructureInput} from './util/definitions';
+import {ArraySchema} from 'enty';
+import type {StructureInput} from 'enty';
 
 /**
  * An array schema that casts the data to an immutable js List
  */
 export class ListSchema extends ArraySchema {
-
     constructor(definition: Object, options: StructureInput = {}) {
         super(definition, options);
         this.options = {
