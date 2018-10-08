@@ -1,6 +1,6 @@
 // @flow
 
-import {StateFunctorFactory} from 'fronads';
+import {StateFunctorFactoryFactory as StateFunctorFactory} from 'fronads/lib/StateFunctor';
 
 /**
  * Mapper description
