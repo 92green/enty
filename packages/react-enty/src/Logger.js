@@ -1,5 +1,5 @@
 // @flow
-import {List} from 'immutable';
+import findIndex from 'unmutable/lib/findIndex';
 
 type Logger = {
     logLevel: number,
@@ -7,7 +7,7 @@ type Logger = {
     [key: string]: Function
 };
 
-const logLevels = List([
+const logLevels = [
     {
         name: 'error',
         consoleMethod: 'error'
@@ -28,7 +28,7 @@ const logLevels = List([
         name: 'silly',
         consoleMethod: 'log'
     }
-]);
+];
 
 var logger: Logger = {
 
@@ -70,7 +70,7 @@ var logger: Logger = {
     getLevelIndex: function(level: number|string): number {
         // level can be a log level string like "error" or "silly", or a number corresponding to a log level
         return typeof level == "string"
-            ? logLevels.findIndex(ii => ii.name == level.toString())
+            ? findIndex(ii => ii.name == level.toString())(logLevels)
             : level;
     }
 };
