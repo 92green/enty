@@ -48,7 +48,7 @@ test('resultKey is derived either from the metaOverride or a hash of the queryCr
     };
 
     const sideEffectB = (aa: any, bb: any) => {
-        expect(bb.resultKey).toBe('431296113');
+        expect(bb.resultKey).toBe('3938');
     };
 
 

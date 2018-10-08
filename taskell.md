@@ -1,11 +1,11 @@
 ## Backlog
 
 - Add api level caching
-- Deprecate select by type and id
-- Remove Stampy Dependency
-- internalize hash function
 
 ## Current Release
+
+- Remove Stampy Dependency
+- Deprecate select by type and id
 
 ## In Progress
 
@@ -17,3 +17,4 @@
 - Move Entities to sub key
 - Remove immutable from reducer
 - Check and remove result reset on fetch
+- internalize hash function
