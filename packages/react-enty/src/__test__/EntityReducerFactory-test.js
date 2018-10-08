@@ -1,31 +1,30 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
 import EntitySchema from 'enty/lib/EntitySchema';
-import ListSchema from 'enty/lib/ListSchema';
-import MapSchema from 'enty/lib/MapSchema';
+import ArraySchema from 'enty/lib/ArraySchema';
+import ObjectSchema from 'enty/lib/ObjectSchema';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import {is, fromJS, Map} from 'immutable';
 
 //
 // Schemas
 //
 
 var author = EntitySchema('author', {idAtribute: get('fullnameId')})
-    .set(MapSchema({}))
+    .set(ObjectSchema({}));
 
 var topListings = EntitySchema('topListings', {
     idAttribute: get('fullnameId'),
-    definition: MapSchema({author})
+    definition: ObjectSchema({author})
 });
 
 var subreddit = EntitySchema('subreddit', {
     idAttribute: get('fullnameId'),
-    definition: MapSchema({topListings: ListSchema(topListings)})
+    definition: ObjectSchema({topListings: ArraySchema(topListings)})
 });
 
-const schema = MapSchema({
+const schema = ObjectSchema({
     subreddit
 });
 
@@ -34,11 +33,11 @@ const EntityReducer = EntityReducerFactory({schema});
 
 // Mock data
 
-const INITIAL_STATE = fromJS({
+const INITIAL_STATE = {
     thing: {
         abc: '123'
     }
-});
+};
 
 test('EntityReducerFactory normalizes a reuslt', () => {
     const examplePayload = {
@@ -162,7 +161,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['_entities', 'subreddit', 'MK']),
-            data => expect(data.toJS()).toEqual(action.payload.subreddit)
+            data => expect(data).toEqual(action.payload.subreddit)
         );
     });
 
@@ -184,7 +183,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['_entities', 'topListings', 'FOO']),
-            data => expect(data.toJS()).toEqual({fullnameId: 'FOO'})
+            data => expect(data).toEqual({fullnameId: 'FOO'})
         );
     });
 
@@ -247,9 +246,9 @@ describe('EntityReducer Normalizing', () => {
         expect(getIn(['_entities', 'subreddit', 'MK', 'name'])(mergeStateTwo)).toBe(payloadB.subreddit.name);
         expect(getIn(['_entities', 'subreddit', 'MK', 'tags'])(mergeStateTwo)).toEqual(payloadB.subreddit.tags);
         expect(getIn(['_entities', 'subreddit', 'MK', 'code'])(mergeStateTwo)).toBe(payloadA.subreddit.code);
-        expect(getIn(['_entities', 'topListings', 'NT'])(mergeStateTwo).toJS()).toEqual(payloadB.subreddit.topListings[0]);
-        expect(getIn(['_entities', 'topListings', 'CT'])(mergeStateTwo).toJS()).toEqual(payloadA.subreddit.topListings[0]);
-        expect(getIn(['_entities', 'topListings', 'GL'])(mergeStateTwo).toJS()).toEqual(payloadB.subreddit.topListings[1]);
+        expect(getIn(['_entities', 'topListings', 'NT'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[0]);
+        expect(getIn(['_entities', 'topListings', 'CT'])(mergeStateTwo)).toEqual(payloadA.subreddit.topListings[0]);
+        expect(getIn(['_entities', 'topListings', 'GL'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[1]);
 
     });
 });

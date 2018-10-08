@@ -2,8 +2,6 @@
 import type {HockMeta} from '../util/definitions';
 
 import React from 'react';
-import {fromJS} from 'immutable';
-import {Map} from 'immutable';
 import RequestHockFactory from '../RequestHockFactory';
 import RequestStateSelector from '../RequestStateSelector';
 import {FetchingState} from '../RequestState';
@@ -13,7 +11,6 @@ import {ErrorState} from '../RequestState';
 import {SuccessState} from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
-import MapSchema from 'enty/lib/MapSchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
 import identity from 'unmutable/lib/identity';
 
@@ -25,7 +22,7 @@ const STORE = {
     subscribe: () => {},
     dispatch: (aa) => aa,
     getState: () => ({
-        entity: fromJS({
+        entity: {
             _baseSchema: ObjectSchema({
                 entity: ObjectSchema({})
             }),
@@ -37,7 +34,7 @@ const STORE = {
             _requestState: {
                 foo: FetchingState()
             }
-        })
+        }
     })
 };
 

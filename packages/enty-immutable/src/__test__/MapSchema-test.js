@@ -1,5 +1,5 @@
 //@flow
-import EntitySchema from 'enty';
+import {EntitySchema} from 'enty';
 import MapSchema from '../MapSchema';
 import {fromJS, Map} from 'immutable';
 
