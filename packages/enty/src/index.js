@@ -34,4 +34,5 @@ export type {DenormalizeState} from './util/definitions';
 export type {KeyedDefinition} from './util/definitions';
 export type {ChildDefinition} from './util/definitions';
 export type {Structure} from './util/definitions';
+export type {StructureInput} from './util/definitions';
 export type {Entity} from './util/definitions';
