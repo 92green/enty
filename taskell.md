@@ -6,6 +6,7 @@
 
 - Remove Stampy Dependency
 - Deprecate select by type and id
+- Upgrade StateFunctor to Variant
 
 ## In Progress
 
