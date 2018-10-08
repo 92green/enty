@@ -22,6 +22,7 @@
     "watch": "yarn build -w"
   },
   "dependencies": {
+    "enty": "^0.49.0-0",
     "immutable": "^3.8.1"
   }
 }
