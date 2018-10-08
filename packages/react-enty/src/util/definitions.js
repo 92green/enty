@@ -10,7 +10,7 @@ export type HockOptions = {
     onMutateProp?: string,
     propChangeKeys: Array<string>,
     propUpdate: (Object) => Object,
-    requestActionName?: string,
+    requestActionName: string,
     updateResultKey: (string, Object) => string,
     resultKey?: string,
     schemaKey?: string,

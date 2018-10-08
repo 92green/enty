@@ -12,8 +12,7 @@ function hashCode(str: string, max?: number): number {
     return Math.abs(max ? hash % max : hash);
 }
 
-export default function Hash(data: *) {
+export default function Hash(data: *): string {
     return hashCode(JSON.stringify(data)) + '';
     //return fromJS(data).hashCode().toString();
 }
-
