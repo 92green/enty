@@ -6,7 +6,6 @@
 
 - Remove Stampy Dependency
 - Deprecate select by type and id
-- Upgrade StateFunctor to Variant
 
 ## In Progress
 
@@ -19,3 +18,4 @@
 - Remove immutable from reducer
 - Check and remove result reset on fetch
 - internalize hash function
+- Upgrade StateFunctor to Variant

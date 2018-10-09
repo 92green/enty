@@ -1,6 +1,6 @@
 // @flow
 
-import {StateFunctorFactoryFactory as StateFunctorFactory} from 'fronads/lib/StateFunctor';
+import {VariantFactory} from 'fronads/lib/Variant';
 
 /**
  * Mapper description
@@ -15,12 +15,6 @@ type RequestStateFlatMapper = (value: *) => RequestState;
 /**
  * RequestStateType description
  */
-
-// type EmptyState = RequestState;
-// type FetchingState = RequestState;
-// type RefetchingState = RequestState;
-// type ErrorState = RequestState;
-// type SuccessState = RequestState;
 
 export type RequestState = {
     emptyFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
@@ -48,32 +42,32 @@ export type RequestState = {
 
 
 
-const RequestStates = StateFunctorFactory(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);
+const RequestStates = VariantFactory(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);
 
 /**
  * EmptyState description
  */
-export const EmptyState: () => RequestState = RequestStates.EmptyState;
+export const EmptyState: () => RequestState = RequestStates.Empty;
 
 /**
  * FetchingState description
  */
-export const FetchingState: () => RequestState = RequestStates.FetchingState;
+export const FetchingState: () => RequestState = RequestStates.Fetching;
 
 /**
  * RefetchingState description
  */
-export const RefetchingState: () => RequestState = RequestStates.RefetchingState;
+export const RefetchingState: () => RequestState = RequestStates.Refetching;
 
 /**
  * ErrorState description
  */
-export const ErrorState: (*) => RequestState = RequestStates.ErrorState;
+export const ErrorState: (*) => RequestState = RequestStates.Error;
 
 /**
  * SuccessState description
  *
  */
-export const SuccessState: () => RequestState = RequestStates.SuccessState;
+export const SuccessState: () => RequestState = RequestStates.Success;
 
 

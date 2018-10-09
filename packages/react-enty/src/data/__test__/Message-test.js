@@ -25,7 +25,7 @@ test('will let you set resultKey, response, requestState, requestError, onReques
 
 
 test('will default requestState to Empty', () => {
-    expect(new Message().requestState.isEmpty).toBe(true);
+    expect(new Message().requestState.type).toBe('Empty');
 });
 
 describe('Message response methods', () => {
@@ -51,35 +51,35 @@ describe('Message Constructors', () => {
     test('EmptyMessage will create a empty message without a response', () => {
         const message = EmptyMessage({resultKey: 'bar'});
         expect(message.response).toBeUndefined();
-        expect(message.requestState.isEmpty).toBe(true);
+        expect(message.requestState.type).toBe('Empty');
         expect(message.resultKey).toBe('bar');
     });
 
     test('FetchingMessage will create a fetching message without a response', () => {
         const message = FetchingMessage({resultKey: 'bar'});
         expect(message.response).toBeUndefined();
-        expect(message.requestState.isFetching).toBe(true);
+        expect(message.requestState.type).toBe('Fetching');
         expect(message.resultKey).toBe('bar');
     });
 
     test('RefetchingMessage will create a refetching message with a response', () => {
         const message = RefetchingMessage('foo', {resultKey: 'bar'});
         expect(message.response).toBe('foo');
-        expect(message.requestState.isRefetching).toBe(true);
+        expect(message.requestState.type).toBe('Refetching');
         expect(message.resultKey).toBe('bar');
     });
 
     test('SuccessMessage will create a success message with a response', () => {
         const message = SuccessMessage('foo', {resultKey: 'bar'});
         expect(message.response).toBe('foo');
-        expect(message.requestState.isSuccess).toBe(true);
+        expect(message.requestState.type).toBe('Success');
         expect(message.resultKey).toBe('bar');
     });
 
     test('ErrorMessage will create a error message with requestError', () => {
         const message = ErrorMessage('foo', {resultKey: 'bar'});
         expect(message.requestError).toBe('foo');
-        expect(message.requestState.isError).toBe(true);
+        expect(message.requestState.type).toBe('Error');
         expect(message.resultKey).toBe('bar');
     });
 });

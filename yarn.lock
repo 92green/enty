@@ -5028,6 +5028,10 @@ fronads@^0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.17.0.tgz#f047d6e7fe902db60d507d7299b37654f9b916ae"
 
+fronads@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.18.0.tgz#0dd0b50933852c006060759748e5ff274f16fcef"
+
 front-matter@^2.1.0, front-matter@^2.1.2:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/front-matter/-/front-matter-2.3.0.tgz#7203af896ce357ee04e2aa45169ea91ed7f67504"

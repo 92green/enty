@@ -103,7 +103,7 @@ test('EntityMutationHockFactory will use the result key from `group` if provided
     const Child = (props: Object): React.Element<any> => {
         expect(props.resultKey).toBe('bar');
         expect(props.fooGroup.resultKey).toBe('foo');
-        expect(props.fooGroup.requestState.isFetching).toBe(true);
+        expect(props.fooGroup.requestState.type).toBe('Fetching');
         return <div></div>;
     };
 
