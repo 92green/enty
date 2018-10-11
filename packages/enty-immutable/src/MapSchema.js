@@ -18,6 +18,7 @@ import {ObjectSchema} from 'enty';
  * @param {Object} options
  *
  */
+// $FlowFixMe - cant handle the fact tha classes end up as functions
 export class MapSchema extends ObjectSchema {
     constructor(definition: KeyedDefinition, options: StructureInput = {}) {
         super(definition, options);
