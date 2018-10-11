@@ -12216,11 +12216,10 @@ stampy@^0.43.0:
     unmutable "^0.34.0"
     url-search-params "^0.9.0"
 
-stampy@^0.43.2:
-  version "0.43.2"
-  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.43.2.tgz#c1b84be196564a6d496a10fe46db06170fa966af"
+stampy@^0.43.3:
+  version "0.43.3"
+  resolved "https://registry.yarnpkg.com/stampy/-/stampy-0.43.3.tgz#62960ce37f80920649b7b6418fa99f6cd9457d4a"
   dependencies:
-    blueflag-test "^0.18.1"
     classnames "^2.2.5"
     element-resize-detector "^1.1.12"
     is-plain-object "^2.0.3"
