@@ -6,6 +6,7 @@ import type {StructureInput} from 'enty';
 /**
  * An array schema that casts the data to an immutable js List
  */
+// $FlowFixMe - cant handle the fact tha classes end up as functions
 export class ListSchema extends ArraySchema {
     constructor(definition: Object, options: StructureInput = {}) {
         super(definition, options);
