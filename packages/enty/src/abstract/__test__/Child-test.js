@@ -1,22 +1,22 @@
 //@flow
 import Child from '../Child';
-import MapSchema from '../../MapSchema';
+import ObjectSchema from '../../ObjectSchema';
 
 it('can set a definition through the constructor', () => {
-    const map = MapSchema();
+    const map = ObjectSchema();
     const child = new Child(map);
     expect(child.definition).toBe(map);
 });
 
 it('can access the definition through get', () => {
-    const map = MapSchema();
+    const map = ObjectSchema();
     const child = new Child(map);
     expect(child.get()).toBe(map);
 });
 
 it('can change the definition through set', () => {
-    const mapA = MapSchema();
-    const mapB = MapSchema();
+    const mapA = ObjectSchema();
+    const mapB = ObjectSchema();
     const child = new Child(mapA);
     expect(child.get()).toBe(mapA);
     expect(child.get()).not.toBe(mapB);
@@ -25,8 +25,8 @@ it('can change the definition through set', () => {
 });
 
 it('can update the definition through update', () => {
-    const mapA = MapSchema();
-    const mapB = MapSchema();
+    const mapA = ObjectSchema();
+    const mapB = ObjectSchema();
     const child = new Child(mapA);
 
     child.update(definition => {

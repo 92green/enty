@@ -1,11 +1,11 @@
 //@flow
 import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
-import MapSchema from '../MapSchema';
+import ObjectSchema from '../ObjectSchema';
 
-var course = EntitySchema('course').set(MapSchema());
-var dog = EntitySchema('dog').set(MapSchema());
-var participant = EntitySchema('participant').set(MapSchema());
+var course = EntitySchema('course').set(ObjectSchema());
+var dog = EntitySchema('dog').set(ObjectSchema());
+var participant = EntitySchema('participant').set(ObjectSchema());
 
 var courseParticipant = CompositeEntitySchema('courseParticipant', {
     definition: participant,
@@ -34,18 +34,18 @@ const derek = {
 
 
 test('denormalize is the inverse of normalize', () => {
-    expect(courseParticipant.denormalize(courseParticipant.normalize(derek)).toJS()).toEqual(derek);
+    expect(courseParticipant.denormalize(courseParticipant.normalize(derek))).toEqual(derek);
 });
 
 test('cannot be made up of structural types', () => {
     const badDefinition = CompositeEntitySchema('badDefinition', {
-        definition: MapSchema({course})
+        definition: ObjectSchema({course})
     });
 
     const badKeys = CompositeEntitySchema('badKeys', {
         definition: course,
         compositeKeys: {
-            deep: MapSchema({participant})
+            deep: ObjectSchema({participant})
         }
     });
 
@@ -107,12 +107,12 @@ test('can defer their definition', () => {
 
 test('compositeKeys will override defintion keys ', () => {
     const cat = EntitySchema('cat', {
-        definition: MapSchema({
+        definition: ObjectSchema({
             friend: dog
         })
     });
 
-    const owl = EntitySchema('owl').set(MapSchema());
+    const owl = EntitySchema('owl').set(ObjectSchema());
 
     var catOwl = CompositeEntitySchema('catOwl', {
         definition: cat,

@@ -1,10 +1,13 @@
 //@flow
-import {Iterable} from 'immutable';
 import ArraySchema from 'enty/lib/ArraySchema';
 import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
 import keyArray from 'unmutable/lib/keyArray';
+import toArray from 'unmutable/lib/toArray';
+import toObject from 'unmutable/lib/toObject';
 import pipeWith from 'unmutable/lib/util/pipeWith';
+import isIndexed from 'unmutable/lib/util/isIndexed';
+import doIf from 'unmutable/lib/doIf';
 import KeyedMemo from './util/KeyedMemo';
 
 /**
@@ -39,10 +42,10 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
         () => schema.denormalize({result, entities})
     );
 
-    if(Iterable.isIndexed(data)) {
-        return data.toArray ? data.toArray() : data;
-    }
-    return data.toObject ? data.toObject() : data;
+    return pipeWith(
+        data,
+        doIf(isIndexed, toArray(), toObject())
+    );
 }
 
 /**

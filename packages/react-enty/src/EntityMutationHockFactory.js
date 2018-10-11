@@ -6,9 +6,9 @@ import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './util/DistinctMemo';
 import Connect from './util/Connect';
-import {fromJS} from 'immutable';
 import React, {type Element} from 'react';
 import Deprecated from './util/Deprecated';
+import Hash from './util/Hash';
 
 /**
  * EntityMutationHockFactory
@@ -108,7 +108,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
                 updateMutation(props: Object) {
                     this.mutation = (data: Object) => {
                         const payload = payloadCreator(data);
-                        const resultKey = updateResultKey(options.resultKey || fromJS({hash: payload}).hashCode() + options.requestActionName, props);
+                        const resultKey = updateResultKey(options.resultKey || Hash({hash: payload}) + options.requestActionName, props);
                         this.setState({resultKey});
                         props.dispatch(actionCreator(payload, {...options, resultKey}));
                     };
