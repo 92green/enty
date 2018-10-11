@@ -1,6 +1,6 @@
 {
   "name": "enty",
-  "version": "0.48.1",
+  "version": "0.48.2",
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
   "license": "UNLICENSED",
