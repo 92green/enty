@@ -28,7 +28,7 @@
     "redux": "^4.0.0",
     "redux-actions": "^2.0.1",
     "redux-thunk": "^2.1.0",
-    "stampy": "^0.43.2",
+    "stampy": "^0.43.3",
     "unmutable": "^0.29.2"
   }
 }
