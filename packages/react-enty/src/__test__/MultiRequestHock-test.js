@@ -51,7 +51,7 @@ test('will request and response to resolved promises', () => {
         .onRequest()
         .then(() => {
             wrapper.update();
-            expect(wrapper.prop('foo').requestState.isSuccess).toBe(true);
+            expect(wrapper.prop('foo').requestState.type).toBe('Success');
             expect(wrapper.prop('foo').response).toBe('bar');
         });
 });
@@ -68,7 +68,7 @@ test('will request and response to rejected promises', () => {
         .onRequest()
         .then(() => {
             wrapper.update();
-            expect(wrapper.prop('foo').requestState.isError).toBe(true);
+            expect(wrapper.prop('foo').requestState.type).toBe('Error');
             expect(wrapper.prop('foo').requestError).toBe('bar');
         });
 });
@@ -92,5 +92,5 @@ test('will handle rerequests', done => {
     wrapper.update();
 
 
-    expect(wrapper.prop('foo').requestState.isRefetching).toBe(true);
+    expect(wrapper.prop('foo').requestState.type).toBe('Refetching');
 });
