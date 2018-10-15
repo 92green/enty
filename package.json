@@ -22,11 +22,11 @@
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.0",
+    "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^0.6.0",
     "blueflag-test": "^0.20.0",
     "gatsby": "^1.9.223",
     "lerna": "^2.9.0",
-    "proto-babel-plugin-extract-flow-types": "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.6",

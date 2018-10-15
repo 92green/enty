@@ -9,7 +9,7 @@
     "env": {
         "production": {
             "plugins": [
-                ["proto-babel-plugin-extract-flow-types", {"outDir": "lib"}]
+                ["babel-plugin-extract-flow-types", {"outDir": "lib"}]
             ]
         }
     }
