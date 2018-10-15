@@ -1065,6 +1065,12 @@ babel-plugin-espower@^2.3.2:
     espurify "^1.6.0"
     estraverse "^4.1.1"
 
+babel-plugin-extract-flow-types@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-extract-flow-types/-/babel-plugin-extract-flow-types-1.0.0.tgz#577ccf936583eeb1166c9115782865c927cb974d"
+  dependencies:
+    fs-extra "^4.0.1"
+
 babel-plugin-istanbul@^4.1.6:
   version "4.1.6"
   resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.6.tgz#36c59b2192efce81c5b378321b74175add1c9a45"
@@ -10295,12 +10301,6 @@ proper-lockfile@^1.1.2:
 property-information@^3.0.0, property-information@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/property-information/-/property-information-3.2.0.tgz#fd1483c8fbac61808f5fe359e7693a1f48a58331"
-
-"proto-babel-plugin-extract-flow-types@git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#v0.1.1":
-  version "0.1.1"
-  resolved "git+ssh://git@github.com/blueflag/proto-babel-plugin-extract-flow-types.git#3384cee89880d8bccd3c27bb734744629dfc342b"
-  dependencies:
-    fs-extra "^4.0.1"
 
 protocols@^1.1.0, protocols@^1.4.0:
   version "1.4.6"
