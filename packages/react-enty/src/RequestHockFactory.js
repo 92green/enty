@@ -125,14 +125,17 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                         },
 
                         // Merge State and dispatch
-                        (stateProps, dispatchProps, ownProps) => ({
-                            ...ownProps,
-                            ...(mapResponseToProps(stateProps[name].response)),
-                            [name]: new Message({
+                        (stateProps, dispatchProps, ownProps) => {
+                            const message = config.pipe(ownProps)(new Message({
                                 ...stateProps[name],
                                 onRequest: dispatchProps[name].onRequest
-                            })
-                        }),
+                            }));
+                            return {
+                                ...ownProps,
+                                ...(mapResponseToProps(stateProps[name].response)),
+                                [name]: message
+                            };
+                        },
                         hockMeta
                     ),
                     AutoHockFactory(config),
@@ -153,7 +156,8 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
 function prepareConfig(config: RequestHockConfigInput): RequestHockConfig {
     return pipeWith(
         config,
-        set('mapResponseToProps', mapResponseToProps(config))
+        set('mapResponseToProps', mapResponseToProps(config)),
+        set('pipe', config.pipe || (() => identity()))
     );
 }
 

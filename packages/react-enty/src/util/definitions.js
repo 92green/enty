@@ -1,5 +1,6 @@
 /* @flow */
 import type {ComponentType} from 'react';
+import type Message from '../data/Message';
 
 /**
  * HockOptions description
@@ -59,6 +60,8 @@ export type RequestHockConfigInput = {
 
     // function to map props to your api payload
     payloadCreator?: (props: *) => *,
+
+    pipe: (props: *) => (message: Message) => Message,
 
     // thunk to amend the result key based on props, used when you only have one instance of hock,
     // but it is invoked in various ways.
