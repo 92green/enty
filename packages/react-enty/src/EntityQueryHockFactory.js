@@ -5,7 +5,7 @@ import type {HockOptionsInput} from './util/definitions';
 import type {HockOptions} from './util/definitions';
 import type {Hock} from './util/definitions';
 
-import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+import PropChangeHoc from './util/PropChangeHoc';
 import RequestStateSelector from './RequestStateSelector';
 import {selectEntityByResult} from './EntitySelector';
 import DistinctMemo from './util/DistinctMemo';
@@ -85,7 +85,7 @@ function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptio
 
             }, options);
 
-            const withPropChange = PropChangeHock(() => ({
+            const withPropChange = PropChangeHoc(() => ({
                 paths: options.propChangeKeys,
                 onPropChange: (props: Object): any => {
                     options.resultKey = getHash(props, options);
