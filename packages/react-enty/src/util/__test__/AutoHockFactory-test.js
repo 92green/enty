@@ -1,8 +1,8 @@
 //@flow
-import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+import PropChangeHock from '../PropChangeHoc';
 import AutoHockFactory from '../AutoHockFactory';
 
-jest.mock('stampy/lib/hock/PropChangeHock');
+jest.mock('../PropChangeHoc');
 PropChangeHock.mockImplementation((_) => _);
 
 

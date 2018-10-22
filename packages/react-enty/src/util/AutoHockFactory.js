@@ -1,6 +1,6 @@
 //@flow
 import identity from 'unmutable/lib/identity';
-import PropChangeHock from 'stampy/lib/hock/PropChangeHock';
+import PropChangeHoc from './PropChangeHoc';
 import type {AutoHockConfig} from './definitions';
 
 export default function AutoHockFactory(config: AutoHockConfig & {name: string}): * {
@@ -10,7 +10,7 @@ export default function AutoHockFactory(config: AutoHockConfig & {name: string})
     const {auto} = config;
 
     if(auto) {
-        return PropChangeHock(() => ({
+        return PropChangeHoc(() => ({
             paths: typeof auto === 'boolean' ? [] : auto,
             onPropChange: (props: *): * => {
                 if(shouldComponentAutoRequest(props)) {
