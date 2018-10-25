@@ -10,14 +10,14 @@ export default function AutoHockFactory(config: AutoHockConfig & {name: string})
     const {auto} = config;
 
     if(auto) {
-        return PropChangeHoc(() => ({
+        return PropChangeHoc({
             paths: typeof auto === 'boolean' ? [] : auto,
             onPropChange: (props: *): * => {
                 if(shouldComponentAutoRequest(props)) {
                     props[name].onRequest(props);
                 }
             }
-        }));
+        });
     }
 
     return identity();
