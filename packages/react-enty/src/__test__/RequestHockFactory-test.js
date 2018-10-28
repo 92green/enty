@@ -199,6 +199,27 @@ test('config.mapResponseToProps will throw an error if the new props will collid
     }).toThrow();
 });
 
+test('config.pipe will give access to props and the message', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const RequestHock = RequestHockFactory(
+        resolve(),
+        {...hockMeta, generateResultKey: () => 'foo'}
+    );
+    const RequestHockApplier = RequestHock({
+        name: 'foo',
+        auto: true,
+        pipe: (props) => (message) => {
+            expect(props.parentProp).toBe('parent');
+            expect(message instanceof Message).toBe(true);
+            return message;
+        }
+    });
+    const Child = RequestHockApplier((props) => null);
+    const component = shallow(<Child parentProp="parent" store={STORE}/>)
+        .dive()
+});
+
 test('the response will not be mapped to props if config.mapResponseToProps is undefined', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());

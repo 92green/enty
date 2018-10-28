@@ -6,6 +6,7 @@ import {FetchingMessage} from '../Message';
 import {RefetchingMessage} from '../Message';
 import {SuccessMessage} from '../Message';
 import {ErrorMessage} from '../Message';
+import {ErrorState} from '../../RequestState';
 
 test('will let you set resultKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
@@ -29,7 +30,6 @@ test('will default requestState to Empty', () => {
 });
 
 describe('Message response methods', () => {
-
     const message = SuccessMessage({
         foo: 'bar',
         bar: {
@@ -43,6 +43,24 @@ describe('Message response methods', () => {
 
     test('Message.getIn will select a deep value from the response', () => {
         expect(message.getIn(['bar', 'baz'])).toBe('qux');
+    });
+
+});
+
+describe('Message requestState methods', () => {
+    const message = SuccessMessage({foo: 'foo'});
+
+    test('Message.updateRequestState can replace the requestState', () => {
+        const errorMessage = message.updateRequestState(ErrorState);
+        expect(errorMessage.requestState.type).toBe('Error');
+    });
+
+    test('Message.updateRequestState is given the current requestState', () => {
+        const errorMessage = message
+            .updateRequestState(requestState => requestState.successFlatMap(ErrorState));
+
+        expect(errorMessage.requestState.type).toBe('Error');
+        expect(errorMessage.requestState.type).not.toBe('Success');
     });
 
 });

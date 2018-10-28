@@ -75,6 +75,19 @@ export default class Message {
     getIn(path: string[], notFoundValue: *): * {
         return getIn(path, notFoundValue)(this.response);
     }
+
+    // @INTENT
+    // To allow the user to update the requestState via a function.
+    // To change a request state and pass the message on.
+    updateRequestState(updater: Function): Message {
+        return new Message({
+            resultKey: this.resultKey,
+            response: this.response,
+            requestState: updater(this.requestState),
+            requestError: this.requestError,
+            onRequest: this.onRequest
+        });
+    }
 }
 
 
