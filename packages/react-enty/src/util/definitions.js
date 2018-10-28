@@ -61,7 +61,9 @@ export type RequestHockConfigInput = {
     // function to map props to your api payload
     payloadCreator?: (props: *) => *,
 
-    pipe: (props: *) => (message: Message) => Message,
+    // Double-barrelled function to update the message before it is given
+    // to the child component
+    pipe?: (props: *) => (message: Message) => Message,
 
     // thunk to amend the result key based on props, used when you only have one instance of hock,
     // but it is invoked in various ways.
@@ -75,6 +77,7 @@ export type RequestHockConfigInput = {
     // Function to map response back and then spread it back onto props.
     // Useful for when you don't wish to fish the response out of the request message.
     mapResponseToProps?: boolean|Object => Object
+
 };
 
 /**
@@ -88,7 +91,8 @@ export type RequestHockConfig = {
     resultKey?: string,
     mapResponseToProps: Object => Object,
     auto?: boolean|Array<string>,
-    shouldComponentAutoRequest?: (props: *) => boolean
+    shouldComponentAutoRequest?: (props: *) => boolean,
+    pipe: (props: *) => (message: Message) => Message
 };
 
 /**
