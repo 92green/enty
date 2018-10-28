@@ -86,7 +86,7 @@ function EntityQueryHockFactory(actionCreator: Function, hockOptions?: HockOptio
             }, options);
 
             const withPropChange = PropChangeHoc({
-                paths: options.propChangeKeys,
+                auto: options.propChangeKeys,
                 onPropChange: (props: Object): any => {
                     options.resultKey = getHash(props, options);
                     return props.dispatch(actionCreator(queryCreator(props), {...options, resultKey: options.resultKey && options.updateResultKey(options.resultKey, props)}));

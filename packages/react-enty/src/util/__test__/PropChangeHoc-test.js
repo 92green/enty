@@ -6,8 +6,8 @@ import composeWith from 'unmutable/lib/util/composeWith';
 const nullComponent = () => null;
 
 test('PropChangeHock passes props straight through to children', () => {
-    const Wrapped= PropChangeHoc({
-        paths: ['aa'],
+    const Wrapped = PropChangeHoc({
+        auto: ['aa'],
         onPropChange: () => {}
     })(nullComponent);
 
@@ -18,7 +18,7 @@ test('PropChangeHock calls onPropChange function on componentDidMount', () => {
     const onPropChange = jest.fn();
     const Wrapped = composeWith(
         PropChangeHoc({
-            paths: ['aa'],
+            auto: ['aa'],
             onPropChange
         }),
         nullComponent
@@ -32,7 +32,7 @@ it('doesnt call onPropChange on componentWillReceiveProps if no paths have chang
     const onPropChange = jest.fn();
     const Wrapped = composeWith(
         PropChangeHoc({
-            paths: ['bats'],
+            auto: ['bats'],
             onPropChange
         }),
         nullComponent
@@ -45,7 +45,7 @@ it('calls onPropChange on componentWillReceiveProps when a path has changed', ()
     const onPropChange = jest.fn();
     const Wrapped = composeWith(
         PropChangeHoc({
-            paths: ['bats'],
+            auto: ['bats'],
             onPropChange
         }),
         nullComponent
@@ -58,7 +58,7 @@ it('doesnt call onPropChange on componentWillReceiveProps when no paths with dot
     const onPropChange = jest.fn();
     const Wrapped = composeWith(
         PropChangeHoc({
-            paths: ['bats.wings'],
+            auto: ['bats.wings'],
             onPropChange
         }),
         nullComponent
@@ -71,7 +71,7 @@ it('calls onPropChange on componentWillReceiveProps when a path with dots has ch
     const onPropChange = jest.fn();
     const Wrapped = composeWith(
         PropChangeHoc({
-            paths: ['bats.wings'],
+            auto: ['bats.wings'],
             onPropChange
         }),
         nullComponent
@@ -80,13 +80,46 @@ it('calls onPropChange on componentWillReceiveProps when a path with dots has ch
     expect(onPropChange).toHaveBeenCalledTimes(2);
 });
 
-//test('PropChangeHock: onPropChange will noop when not provided.', tt => {
-    //const WrappedComponent = PropChangeHock(() => ({paths: []}))(() => <div/>);
-    //tt.notThrows(() => shallow(<WrappedComponent bats={{wings: null}} />).instance().componentDidMount());
-//});
+describe('config.shouldComponentAutoRequest', () => {
 
-//test('PropChangeHock: will pass onPropChange to child if config.passOnPropChange is true', tt => {
-    //const onPropChange = () => {};
-    //const WrappedComponent = PropChangeHock(() => ({onPropChange, passOnPropChange: true}))(() => <div/>);
-    //tt.is(shallow(<WrappedComponent />).prop('onPropChange'), onPropChange);
-//});
+    it('will fire onPropChange if shouldComponentAutoRequest returns true', () => {
+        const onPropChange = jest.fn();
+        const Wrapped = composeWith(
+            PropChangeHoc({
+                auto: true,
+                onPropChange,
+                shouldComponentAutoRequest: () => true
+            }),
+            nullComponent
+        );
+        shallow(<Wrapped />);
+        expect(onPropChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('will not fire onPropChange if shouldComponentAutoRequest returns true', () => {
+        const onPropChange = jest.fn();
+        const Wrapped = composeWith(
+            PropChangeHoc({
+                auto: true,
+                onPropChange,
+                shouldComponentAutoRequest: () => false
+            }),
+            nullComponent
+        );
+        shallow(<Wrapped />);
+        expect(onPropChange).toHaveBeenCalledTimes(0);
+    });
+
+    it('will default to fire onPropChange if shouldComponentAutoRequest is not defined', () => {
+        const onPropChange = jest.fn();
+        const Wrapped = composeWith(
+            PropChangeHoc({
+                auto: true,
+                onPropChange
+            }),
+            nullComponent
+        );
+        shallow(<Wrapped />);
+        expect(onPropChange).toHaveBeenCalledTimes(1);
+    });
+});

@@ -4,34 +4,51 @@ import type {Node} from 'react';
 import React from 'react';
 import getIn from 'unmutable/lib/getIn';
 import equals from 'unmutable/lib/equals';
+import identity from 'unmutable/lib/identity';
 
 type Config = {
-    paths: Array<string>,
+    auto?: boolean|Array<string>,
+    shouldComponentAutoRequest?: (props: *) => boolean,
     onPropChange: Function
 };
 
-export default (config: Config) => (Component: *) => {
-    return class PropChangeHock extends React.Component<Object> {
-        onPropChange: Function;
-        componentDidMount() {
-            config.onPropChange(this.props);
-        }
-        componentWillReceiveProps(nextProps: Object) {
-            const propsHaveChanged = config.paths
-                .some((item: string): boolean => {
-                    const path = item.split('.');
-                    const previous = getIn(path)(this.props);
-                    const next = getIn(path)(nextProps);
-                    return !equals(previous)(next);
-                });
+export default (config: Config) => {
+    // eslint-disable-next-line
+    const {shouldComponentAutoRequest = (_) => true} = config;
+    const {auto = false} = config;
+    const paths = typeof auto === 'boolean' ? [] : auto;
 
-            if(propsHaveChanged) {
-                config.onPropChange(nextProps);
+    if(!auto) {
+        return identity();
+    }
+
+    return (Component: *) => {
+        return class PropChangeHock extends React.Component<Object> {
+            onPropChange(props: *) {
+                if(shouldComponentAutoRequest(props)) {
+                    config.onPropChange(props);
+                }
             }
-        }
-        render(): Node {
-            return <Component {...this.props} />;
-        }
+            componentDidMount() {
+                this.onPropChange(this.props);
+            }
+            componentWillReceiveProps(nextProps: Object) {
+                const propsHaveChanged = paths
+                    .some((item: string): boolean => {
+                        const path = item.split('.');
+                        const previous = getIn(path)(this.props);
+                        const next = getIn(path)(nextProps);
+                        return !equals(previous)(next);
+                    });
+
+                if(propsHaveChanged) {
+                    this.onPropChange(nextProps);
+                }
+            }
+            render(): Node {
+                return <Component {...this.props} />;
+            }
+        };
     };
 };
 

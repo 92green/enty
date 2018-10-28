@@ -12,7 +12,7 @@ import React from 'react';
 import RequestStateSelector from './RequestStateSelector';
 import ErrorSelector from './ErrorSelector';
 import {RequestHockNoNameError} from './util/Error';
-import AutoHockFactory from './util/AutoHockFactory';
+import PropChangeHoc from './util/PropChangeHoc';
 import {selectEntityByResult} from './EntitySelector';
 import Message from './data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
@@ -138,7 +138,10 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                         },
                         hockMeta
                     ),
-                    AutoHockFactory(config),
+                    PropChangeHoc({
+                        ...config,
+                        onPropChange: (props) => props[name].onRequest()
+                    }),
                     Component
                 );
 
