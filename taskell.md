@@ -4,7 +4,6 @@
 
 ## Current Release
 
-- Remove Stampy Dependency
 - Deprecate select by type and id
 
 ## In Progress
@@ -19,3 +18,4 @@
 - Check and remove result reset on fetch
 - internalize hash function
 - Upgrade StateFunctor to Variant
+- Remove Stampy Dependency
