@@ -14454,6 +14454,14 @@ unmutable@^0.34.1:
     is-plain-object "^2.0.4"
     lodash.range "^3.2.0"
 
+unmutable@^0.39.0:
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.39.0.tgz#8ccdfb237ba4c572cba793cbbbd7d503227ad576"
+  dependencies:
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
+
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"

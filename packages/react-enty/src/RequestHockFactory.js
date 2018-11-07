@@ -140,7 +140,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                     ),
                     PropChangeHoc({
                         ...config,
-                        onPropChange: (props) => props[name].onRequest()
+                        onPropChange: (props) => props[name].onRequest(props)
                     }),
                     Component
                 );

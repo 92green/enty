@@ -29,7 +29,7 @@ function visitActionMap(branch: *, visitor: Function, path: string[] = [], state
         branch,
         reduce(
             (reduction: *, item: *, key: string): * => {
-                if(isKeyed(item)) {
+                if(typeof item !== 'function' && isKeyed(item)) {
                     reduction[key] = visitActionMap(item, visitor, path.concat(key), reduction);
                 } else {
                     reduction[key] = visitor(item, path.concat(key));
