@@ -5,6 +5,7 @@
 ## Current Release
 
 - Deprecate select by type and id
+- Try to remove constructor from object and array schema
 
 ## In Progress
 
