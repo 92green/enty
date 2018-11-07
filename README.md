@@ -14,7 +14,6 @@ Enty is a framework for managing data requested from back-ends and APIs.  Instea
 
 ## Purpose
 
-<!-- ## models -->
 Any webapp that involves  both a back and a front end will create entities. Unique pieces of data that are known by an id.  The back end might call them models, the front end might call them application state, let's call them entities.
 
 <!-- ## too much handling of the data -->
