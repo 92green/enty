@@ -93,7 +93,7 @@ export default function MultiRequestHock(config: MultiRequestHockConfig): HockAp
             },
             PropChangeHoc({
                 ...config,
-                onPropChange: props => props[name].onRequest()
+                onPropChange: props => props[name].onRequest(props)
             }),
             Component
         );
