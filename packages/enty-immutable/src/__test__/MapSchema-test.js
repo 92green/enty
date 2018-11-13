@@ -27,7 +27,6 @@ describe('MapSchema.options', () => {
         const schema = EntitySchema('foo').set(MapSchema());
         const stateA = schema.normalize({id: 'a', first: 'foo'}, {});
         const stateB = schema.normalize({id: 'a', last: 'bar'}, stateA.entities);
-
         expect(stateB.entities.foo.a).toEqual(Map({id: 'a', first: 'foo', last: 'bar'}));
     });
 });
