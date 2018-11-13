@@ -76,9 +76,29 @@ test('ArraySchema will not mutate input objects', () => {
     expect(arrayTest).toEqual([{id: "1"}]);
 });
 
+test('ArraySchemas can construct custom objects', () => {
+    class Foo {
+        data: Array<string>;
+        constructor(data) {
+            this.data = data;
+        }
+        map(fn) {
+            this.data = this.data.map(fn);
+            return this;
+        }
+
+    }
+    const schema = ArraySchema(ObjectSchema({}), {
+        constructor: data => new Foo(data)
+    });
+    const state = schema.normalize([{foo:1}, {bar: 2}], schema);
+    expect(state.result).toBeInstanceOf(Foo);
+    expect(state.result.data[0]).toEqual({foo: 1});
+});
+
 
 //
-// Seters and Geters
+// Setters and Getters
 //
 
 test('set, get & update dont mutate the schema while still returning it', () => {

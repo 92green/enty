@@ -159,3 +159,23 @@ test('ObjectSchema.update will replace the whole definition via an updater funct
     schema.update(() => ({bar}));
     expect(schema.definition.bar).toBe(bar);
 });
+
+test('ObjectSchemas can construct objects', () => {
+    class Foo {
+        first: string;
+        last: string;
+        name: string;
+        constructor(data) {
+            this.first = data.first;
+            this.last = data.last;
+            this.name = `${data.first} ${data.last}`;
+        }
+    }
+    const schema = ObjectSchema({}, {
+        constructor: data => new Foo(data)
+    });
+    const state = schema.normalize({first: 'foo', last: 'bar'}, schema);
+    expect(state.result).toBeInstanceOf(Foo);
+    expect(state.result.name).toBe('foo bar');
+});
+
