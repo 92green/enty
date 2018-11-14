@@ -94,3 +94,12 @@ test('will handle rerequests', done => {
 
     expect(wrapper.prop('foo').requestState.type).toBe('Refetching');
 });
+
+test('will pass props to payload creator', () => {
+    const onRequest = jest.fn(() => Promise.resolve());
+    const hocApplier = MultiRequestHock({name: 'foo', onRequest, auto: true});
+    const Component = hocApplier(() => null);
+
+    shallow(<Component foo="bar!" />).dive();
+    expect(onRequest).toHaveBeenCalledWith({foo: 'bar!'});
+});
