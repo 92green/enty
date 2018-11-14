@@ -1,5 +1,6 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
+import {FetchingState} from '../RequestState';
 import EntitySchema from 'enty/lib/EntitySchema';
 import ArraySchema from 'enty/lib/ArraySchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
@@ -65,12 +66,23 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
 
 describe('EntityReducer requestState', () => {
-    test('_requestState.type is Fetching when action type ends with _FETCH', () => {
+    test('requestState is Fetching when action is _FETCH', () => {
         const data = pipeWith(
             EntityReducer(undefined, {type: 'TEST_FETCH', meta: {resultKey: 'TEST'}}),
             getIn(['_requestState', 'TEST'])
         );
         expect(data.type).toBe('Fetching');
+    });
+
+    test('requestState is Refetching when action is _FETCH and requestState already exists', () => {
+        const data = pipeWith(
+            EntityReducer(
+                {_requestState: {TEST: FetchingState()}},
+                {type: 'TEST_FETCH', meta: {resultKey: 'TEST'}}
+            ),
+            getIn(['_requestState', 'TEST'])
+        );
+        expect(data.type).toBe('Refetching');
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
@@ -122,6 +134,10 @@ describe('EntityReducer Config', () => {
         expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH'))).not.toBe(INITIAL_STATE);
         expect(EntityReducer(INITIAL_STATE, action('FOO_ERROR'))).not.toBe(INITIAL_STATE);
         expect(EntityReducer(INITIAL_STATE, action('FOO_RECEIVE'))).not.toBe(INITIAL_STATE);
+    });
+
+    test('does not have to be called with meta', () => {
+        expect(() => EntityReducer(undefined, {})).not.toThrow();
     });
 
 });
