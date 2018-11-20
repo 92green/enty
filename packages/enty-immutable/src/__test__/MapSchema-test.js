@@ -2,9 +2,37 @@
 import {EntitySchema} from 'enty';
 import MapSchema from '../MapSchema';
 import {fromJS, Map} from 'immutable';
+import {DELETED_ENTITY} from 'enty/lib/util/SchemaConstant';
 
 var foo = EntitySchema('foo').set(MapSchema());
 var bar = EntitySchema('bar').set(MapSchema());
+
+describe('MapSchema.options', () => {
+
+    test('constructor will return a map', () => {
+        const data = {first: 'foo', last: 'bar'}
+        const {result} = MapSchema({}).normalize(data);
+        expect(result).toBeInstanceOf(Map);
+        expect(result.equals(Map(data))).toBe(true);
+    });
+
+    test('denormalizeFilter will check for existance and a key of deleted', () => {
+        const schema = MapSchema({});
+        const deleted = schema.denormalize(schema.normalize({deleted: true}));
+        const data = schema.denormalize(schema.normalize(null));
+        expect(deleted).toBe(DELETED_ENTITY);
+    });
+
+    test('merge will merge two maps', () => {
+        const schema = EntitySchema('foo').set(MapSchema());
+        const stateA = schema.normalize({id: 'a', first: 'foo'}, {});
+        const stateB = schema.normalize({id: 'a', last: 'bar'}, stateA.entities);
+        expect(stateB.entities.foo.a).toEqual(Map({id: 'a', first: 'foo', last: 'bar'}));
+    });
+});
+
+
+// Copy from Object Schema tests. Probably redundant.
 
 test('MapSchema can normalize objects', () => {
     const schema = MapSchema({foo});

@@ -41,7 +41,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
     /**
      * EntitySchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: *, entities: Object = {}): NormalizeState {
         const {definition} = this;
         const {idAttribute, name} = this.options;
 
@@ -74,12 +74,10 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const previousEntity = entities[name][id];
 
         // recurse into the children
-        let {schemas = {}, result} = definition.normalize(data, entities);
+        let {schemas, result} = definition.normalize(data, entities);
 
         // list this schema as one that has been used
         schemas[name] = this;
-
-        result = definition.options.constructor(result);
 
         entities[name][id] = previousEntity
             ? definition.options.merge(previousEntity, result)

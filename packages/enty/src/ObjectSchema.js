@@ -1,4 +1,10 @@
 // @flow
+import type {NormalizeState} from './util/definitions';
+import type {DenormalizeState} from './util/definitions';
+import type {KeyedDefinition} from './util/definitions';
+import type {Schema} from './util/definitions';
+import type {Structure} from './util/definitions';
+
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
 import del from 'unmutable/lib/delete';
@@ -6,11 +12,6 @@ import set from 'unmutable/lib/set';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
 import Keyed from './abstract/Keyed';
-import type {NormalizeState} from './util/definitions';
-import type {DenormalizeState} from './util/definitions';
-import type {KeyedDefinition} from './util/definitions';
-import type {Schema} from './util/definitions';
-import type {Structure} from './util/definitions';
 
 /**
  * The ObjectSchema is a structural schema used to define relationships in objects.

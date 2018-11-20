@@ -2,6 +2,7 @@
 import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
 import ObjectSchema from '../ObjectSchema';
+import {NoDefinitionError} from '../util/Error';
 
 var course = EntitySchema('course').set(ObjectSchema());
 var dog = EntitySchema('dog').set(ObjectSchema());
@@ -63,9 +64,14 @@ test('cannot be made up of structural types', () => {
     expect(() => badDefinition.normalize(data)).toThrow();
 });
 
+test('options.idAttribute defaults to an empty function', () => {
+    const {idAttribute} = CompositeEntitySchema('foo').options;
+    expect(idAttribute()).toBe(undefined);
+});
+
 test('throw without a definition', () => {
-    const badDefinition = CompositeEntitySchema('badDefinition');
-    expect(() => badDefinition.normalize(derek)).toThrow();
+    expect(() => CompositeEntitySchema('foo').normalize(derek, {})).toThrow();
+    expect(() => CompositeEntitySchema('foo', {definition: null}).normalize(derek, {})).toThrow();
 });
 
 
@@ -141,6 +147,7 @@ test('will not try to denormalize null compositeKeys', () => {
     const data = {id: 'rad'};
     expect(() => courseParticipant.denormalize(courseParticipant.normalize(data))).not.toThrow();
 });
+
 
 
 
