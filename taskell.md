@@ -5,6 +5,7 @@
 ## Current Release
 
 - Deprecate select by type and id
+- write tests for passing context through structural schemas
 
 ## In Progress
 

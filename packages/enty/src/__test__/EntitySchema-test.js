@@ -77,6 +77,16 @@ describe('EntitySchema.normalize', () => {
             {id: 'a', name: 'second'}
         );
     });
+
+    test('context provided can be used in idAttributes', () => {
+        const schema = EntitySchema('foo', {
+            idAttribute: (data, context) => data.id + context.id
+        }).set(ObjectSchema());
+
+        const data = schema.normalize({id: 'a', name: 'second'}, {}, {id: 'foo'});
+        expect(data.entities.foo.afoo.id).toBe('a');
+
+    });
 });
 
 

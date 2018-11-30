@@ -85,7 +85,7 @@ export type EntitySchemaOptions = {
  *
  */
 export interface Schema<Options> {
-    normalize(data: *, entities: Object): NormalizeState,
+    normalize(data: *, entities: Object, context?: *): NormalizeState,
     denormalize(denormalizeState: DenormalizeState, path: Array<*>): any,
     options: Options,
     definition: *,

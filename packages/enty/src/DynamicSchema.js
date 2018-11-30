@@ -22,9 +22,9 @@ export class DynamicSchema extends Child implements Schema<*> {
     /**
      * DynamicSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities: Object = {}, context: * = {}): NormalizeState {
         const definitionSchema = this.options.definition(data);
-        const definitionResult = definitionSchema.normalize(data, entities);
+        const definitionResult = definitionSchema.normalize(data, entities, context);
 
         return {
             entities,

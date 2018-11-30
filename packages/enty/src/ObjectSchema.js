@@ -42,7 +42,7 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities: Object = {}, context: * = {}): NormalizeState {
         const {definition} = this;
         const dataMap = this.options.constructor(data);
         let schemas = {};
@@ -52,7 +52,7 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
                 const value = get(key)(dataMap);
                 const schema = get(key)(definition);
                 if(value) {
-                    const {result: childResult, schemas: childSchemas} = schema.normalize(value, entities);
+                    const {result: childResult, schemas: childSchemas} = schema.normalize(value, entities, context);
                     Object.assign(schemas, childSchemas);
                     result = set(key, childResult)(result);
                 }

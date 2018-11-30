@@ -22,9 +22,9 @@ export class ValueSchema extends Child implements Schema<Entity> {
     /**
      * ValueSchema.normalize
      */
-    normalize(data: *, entities: Object = {}): NormalizeState {
+    normalize(data: *, entities: Object = {}, context: * = {}): NormalizeState {
         const {constructor} = this.options;
-        const {result, schemas} = this.definition.normalize(constructor(data), entities);
+        const {result, schemas} = this.definition.normalize(constructor(data), entities, context);
 
         return {
             result,

@@ -51,7 +51,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
     /**
      * CompositeEntitySchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities: Object = {}, context: * = {}): NormalizeState {
         const {definition, compositeKeys} = this;
         const {name} = this.options;
 
@@ -80,7 +80,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
                     return rr;
                 }
 
-                const {result: compositeResult} = compositeKeys[key].normalize(adjustedData[key], entities);
+                const {result: compositeResult} = compositeKeys[key].normalize(adjustedData[key], entities, context);
 
                 rr[key] = compositeResult;
                 idList.push(compositeResult);
@@ -91,7 +91,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
 
 
         // recurse into the main definition
-        let {schemas, result: mainResult} = definition.normalize(adjustedData, entities);
+        let {schemas, result: mainResult} = definition.normalize(adjustedData, entities, context);
 
         const result = {
             [definition.options.name]: mainResult,

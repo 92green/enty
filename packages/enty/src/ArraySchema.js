@@ -27,7 +27,7 @@ export class ArraySchema extends Child implements Schema<Structure> {
     /**
      * ArraySchema.normalize
      */
-    normalize(data: Array<any>, entities: Object = {}): NormalizeState {
+    normalize(data: Array<any>, entities: Object = {}, context: * = {}): NormalizeState {
         const {definition} = this;
         const {constructor} = this.options;
         // const {denormalizeFilter} = this.options;
@@ -37,7 +37,7 @@ export class ArraySchema extends Child implements Schema<Structure> {
         let schemas = {};
         const result = constructor(data)
             .map((item: any): any => {
-                const {result, schemas: childSchemas} = definition.normalize(item, entities);
+                const {result, schemas: childSchemas} = definition.normalize(item, entities, context);
 
                 // add child schemas to the schema collection
                 Object.assign(schemas, childSchemas);

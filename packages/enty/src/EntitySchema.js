@@ -41,9 +41,10 @@ export class EntitySchema extends Child implements Schema<Entity> {
     /**
      * EntitySchema.normalize
      */
-    normalize(data: *, entities: Object = {}): NormalizeState {
+    normalize(data: *, entities: * = {}, context?: * = {}): NormalizeState {
         const {definition} = this;
         const {idAttribute, name} = this.options;
+        const contextCopy = {...context};
 
         // $FlowFixMe - flow cant tell that constructor exists
         if(definition == null || definition.constructor === NullSchema) {
@@ -62,7 +63,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
             };
         }
 
-        const id = PerhapsEither(idAttribute(data))
+        const id = PerhapsEither(idAttribute(data, contextCopy))
             .map(id => id.toString())
             .leftMap((value: *) => {
                 throw UndefinedIdError(name, value);
@@ -74,7 +75,7 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const previousEntity = entities[name][id];
 
         // recurse into the children
-        let {schemas, result} = definition.normalize(data, entities);
+        let {schemas, result} = definition.normalize(data, entities, context);
 
         // list this schema as one that has been used
         schemas[name] = this;
