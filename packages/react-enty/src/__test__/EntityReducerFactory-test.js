@@ -267,5 +267,18 @@ describe('EntityReducer Normalizing', () => {
         expect(getIn(['_entities', 'topListings', 'GL'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[1]);
 
     });
+
+    it('will pass meta.context to normalize function', () => {
+        jest.spyOn(schema, 'normalize');
+        EntityReducer(undefined, {
+            type: 'TEST_RECEIVE',
+            payload: {},
+            meta: {
+                context: 'foo'
+            }
+        });
+        expect(schema.normalize).toHaveBeenCalledWith({}, {}, 'foo');
+
+    });
 });
 

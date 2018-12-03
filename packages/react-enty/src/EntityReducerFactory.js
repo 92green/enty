@@ -49,6 +49,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
         };
 
         const {resultKey} = meta;
+        const {context} = meta;
         const requestStatePath = ['_requestState', resultKey];
         const errorPath = ['_error', resultKey];
 
@@ -87,7 +88,8 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             if(schema && payload) {
                 const {result, entities, schemas} = schema.normalize(
                     payload,
-                    pipeWith(state, get('_entities'), clone())
+                    pipeWith(state, get('_entities'), clone()),
+                    context
                 );
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
