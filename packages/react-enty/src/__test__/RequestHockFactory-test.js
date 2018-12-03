@@ -26,6 +26,10 @@ const STORE = {
         entity: {
             _baseSchema: ObjectSchema({
                 entity: ObjectSchema({}),
+                withContext: EntitySchema({
+                    definition: ObjectSchema({}),
+                    idAttribute: (_, context) => context.id
+                })
             }),
             _result: {
                 fizz: 123123,
@@ -366,5 +370,43 @@ test('will return existing results when refetching', () => {
     runTest(RefetchingState(), 'bar', {id: '456'});
     runTest(RefetchingState(), 'baz', {});
 
+});
+
+
+describe('context', () => {
+    test('contextCreator will be called with props', () => {
+        RequestStateSelector.mockReturnValue(EmptyState());
+        const contextCreator = jest.fn();
+        const RequestHockApplier = RequestHock({
+            name: 'foo',
+            auto: true,
+            contextCreator
+        });
+        const Child = RequestHockApplier((props) => null);
+        shallow(<Child contextId="foo" store={STORE}/>).dive().dive();
+
+
+        expect(contextCreator.mock.calls[0][0].contextId).toBe('foo');
+    });
+
+    test('the result of contextCreator will be passed through meta', () => {
+        RequestStateSelector.mockReturnValue(EmptyState());
+        const actionCreator = jest.fn();
+        const RequestHock = RequestHockFactory(actionCreator, hockMeta);
+        const RequestHockApplier = RequestHock({
+            name: 'foo',
+            auto: true,
+            payloadCreator: () => 'fooPayload',
+            contextCreator: ({contextId}) => ({contextId})
+        });
+        const Child = RequestHockApplier((props) => null);
+        shallow(<Child contextId="foo" store={STORE}/>).dive().dive();
+
+
+        expect(actionCreator).toHaveBeenCalledWith('fooPayload', {
+            context: {contextId: 'foo'},
+            resultKey: 'fooPayload-resultKey'
+        });
+    });
 });
 

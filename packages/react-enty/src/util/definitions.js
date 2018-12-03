@@ -61,6 +61,9 @@ export type RequestHockConfigInput = {
     // function to map props to your api payload
     payloadCreator?: (props: *) => *,
 
+    // function to map props to the context given to normalize
+    contextCreator?: (props: *) => *,
+
     // Double-barrelled function to update the message before it is given
     // to the child component
     pipe?: (props: *) => (message: Message) => Message,
@@ -87,6 +90,7 @@ export type RequestHockConfigInput = {
 export type RequestHockConfig = {
     name: string,
     payloadCreator?: (props: *) => *,
+    contextCreator?: (props: *) => *,
     updateResultKey?: (resultKey: string, props: *) => string,
     resultKey?: string,
     mapResponseToProps: Object => Object,

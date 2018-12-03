@@ -41,6 +41,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
             function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
                 const {payloadCreator = config.auto ? () => ({}) : identity()} = config;
+                const {contextCreator} = config;
                 const {updateResultKey = identity()} = config;
                 const {name} = config;
                 const {mapResponseToProps} = config;
@@ -67,7 +68,10 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                         nextResultKey,
                                         resultKey: this.state.nextResultKey || nextResultKey
                                     });
-                                    return actionCreator(payload, {resultKey: nextResultKey});
+                                    return actionCreator(payload, {
+                                        resultKey: nextResultKey,
+                                        context: contextCreator && contextCreator(props)
+                                    });
                                 }
                             );
                         }

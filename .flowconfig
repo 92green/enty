@@ -16,4 +16,5 @@ node_modules/blueflag-test/flow-typed-shims/jest-enzyme-6.0.x/
 .*/graphql/.*
 <PROJECT_ROOT>/.*/gatsby-node.js
 <PROJECT_ROOT>/packages/enty-docs/.*
+<PROJECT_ROOT>/packages/enty-docs-old/.*
 <PROJECT_ROOT>/node_modules/immutable
