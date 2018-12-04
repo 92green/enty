@@ -1,70 +1,55 @@
 //@flow
-import {Map} from 'immutable';
-import updateIn from 'unmutable/lib/updateIn';
-import pipeWith from 'unmutable/lib/util/pipeWith';
+import type {Schema} from 'enty/lib/util/definitions';
+import type {Structure} from 'enty/lib/util/definitions';
 
-import {
-    FetchingState,
-    RefetchingState,
-    ErrorState,
-    SuccessState
-} from './RequestState';
+import clone from 'unmutable/lib/clone';
+import get from 'unmutable/lib/get';
+import getIn from 'unmutable/lib/getIn';
+import merge from 'unmutable/lib/merge';
+import pipeWith from 'unmutable/lib/util/pipeWith';
+import set from 'unmutable/lib/set';
+import setIn from 'unmutable/lib/setIn';
+import updateIn from 'unmutable/lib/updateIn';
+
+import {FetchingState} from './RequestState';
+import {RefetchingState} from './RequestState';
+import {ErrorState} from './RequestState';
+import {SuccessState} from './RequestState';
 import Logger from './Logger';
 
+type State = {
+    _baseSchema: Schema<Structure>,
+    _schemas: {[key: string]: Schema<any>},
+    _result: {[key: string]: *},
+    _error: {[key: string]: *},
+    _requestState: {[key: string]: *},
+    _entities: {[key: string]: *},
+    _stats: {
+        normalizeCount: number
+    }
+};
 
+export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
+    const {schema} = config;
 
-
-/**
- *
- * @example
- * import {createEntityReducer} from 'enty';
- * import EntitySchema from 'myapp/EntitySchema';
- *
- * export default combineReducers({
- *     entity: EntityReducerFactory({
- *          schemaMap: {
- *              GRAPHQL_RECEIVE: EntitySchema,
- *              MY_CUSTOM_ACTION_RECEIVE: EntitySchema.myCustomActionSchema
- *          }
- *     })
- * });
- */
-export default function EntityReducerFactory(config: Object): Function {
-    const {
-        schemaMap
-    } = config;
-
-    const initialState = Map({
-        _baseSchema: Map(schemaMap),
-        _schemas: Map(),
-        _result: Map(),
-        _error: Map(),
-        _requestState: Map(),
-        _stats: Map({
-            normalizeCount: 0
-        })
-    });
-
-    const defaultMeta = {
-        resultResetOnFetch: false
-    };
-
-    // Return our constructed reducer
-    return function EntityReducer(state: Map<any, any> = initialState, {type, payload, meta}: Object): Map<any, any> {
-        // debugger;
+    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
 
         Logger.info(`\n\nEntity reducer:`);
 
+        let state = previousState || {
+            _baseSchema: schema,
+            _schemas: {},
+            _result: {},
+            _error: {},
+            _requestState: {},
+            _entities: {},
+            _stats: {
+                normalizeCount: 0
+            }
+        };
 
-        const {
-            schema = schemaMap[type],
-            resultKey = type,
-            resultResetOnFetch
-        } = Object.assign({}, defaultMeta, meta);
-
-        var [, actionTypePrefix] = resultKey.toString().match(/(.*)_(FETCH|ERROR|RECEIVE)$/) || [];
-
-        const requestStatePath = ['_requestState', actionTypePrefix || resultKey];
+        const {resultKey} = meta;
+        const requestStatePath = ['_requestState', resultKey];
         const errorPath = ['_error', resultKey];
 
 
@@ -74,28 +59,22 @@ export default function EntityReducerFactory(config: Object): Function {
         //
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
-            if(state.getIn(requestStatePath)) {
+            if(getIn(requestStatePath)(state)) {
                 Logger.info(`Setting RefetchingState for "${requestStatePath.join('.')}"`);
-                state = state.setIn(requestStatePath, RefetchingState());
+                state = setIn(requestStatePath, RefetchingState())(state);
             } else {
-                state = state.setIn(requestStatePath, FetchingState());
+                state = setIn(requestStatePath, FetchingState())(state);
                 Logger.info(`Setting FetchingState for "${requestStatePath.join('.')}"`, state);
             }
         } else if(/_ERROR$/g.test(type)) {
             Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
-            state = state
-                .setIn(requestStatePath, ErrorState(payload))
-                .setIn(errorPath, payload)
-            ;
+            state = pipeWith(
+                state,
+                setIn(requestStatePath, ErrorState(payload)),
+                setIn(errorPath, payload)
+            );
         }
 
-
-
-        // If the action is a FETCH and the user hasn't negated the resultResetOnFetch
-        if(resultResetOnFetch && /_FETCH$/g.test(type)) {
-            Logger.info(`Type is *_FETCH and resultResetOnFetch is true, returning state with deleted _result key`);
-            return state.deleteIn(['_result', resultKey]);
-        }
 
 
         if(/_RECEIVE$/g.test(type)) {
@@ -103,34 +82,26 @@ export default function EntityReducerFactory(config: Object): Function {
 
             // set success action before payload tests
             // to make sure the request state is still updated even if there is no payload
-            state = state.setIn(requestStatePath, SuccessState());
+            state = setIn(requestStatePath, SuccessState())(state);
 
             if(schema && payload) {
-                let previousEntities = state
-                    .map(ii => ii.toObject())
-                    .delete('_actionSchema')
-                    .delete('_result')
-                    .delete('_requestState')
-                    .toObject();
-
-                const {result, entities, schemas} = schema.normalize(payload, previousEntities);
+                const {result, entities, schemas} = schema.normalize(
+                    payload,
+                    pipeWith(state, get('_entities'), clone())
+                );
 
                 Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
                 Logger.info(`Merging any normalized entities and result into state`);
 
-                return state
-                    // set results
-                    .update(state => state.merge(Map(entities).map(ii => Map(ii))))
-                    .setIn(['_result', resultKey], result)
-                    .updateIn(['_schemas'], (previous) => Map(schemas).merge(previous))
-                    .update((state: *): * => {
-                        return pipeWith(
-                            state,
-                            updateIn(['_stats', 'normalizeCount'], count => count + 1),
-                            state => Logger.silly('state', state) || state
-                        );
-                    })
-                ;
+
+                return pipeWith(
+                    state,
+                    set('_entities', entities),
+                    setIn(['_result', resultKey], result),
+                    updateIn(['_schemas'], merge(schemas)),
+                    updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                    state => Logger.silly('state', state) || state
+                );
             }
 
 

@@ -7,11 +7,9 @@ import type {MultiRequestHockConfig} from './util/definitions';
 import React from 'react';
 
 import {RequestHockNoNameError} from './util/Error';
-import AutoHockFactory from './util/AutoHockFactory';
+import PropChangeHoc from './util/PropChangeHoc';
 import Message from './data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
-
-
 import {EmptyState} from './RequestState';
 import {RefetchingState} from './RequestState';
 import {FetchingState} from './RequestState';
@@ -93,7 +91,10 @@ export default function MultiRequestHock(config: MultiRequestHockConfig): HockAp
                     return <ComponentWithState {...props} />;
                 }
             },
-            AutoHockFactory(config),
+            PropChangeHoc({
+                ...config,
+                onPropChange: props => props[name].onRequest(props)
+            }),
             Component
         );
 

@@ -1,6 +1,7 @@
 // @flow
+import getIn from 'unmutable/lib/getIn';
+import pipeWith from 'unmutable/lib/util/pipeWith';
 import Logger from './Logger';
-
 
 /**
  * @module Selectors
@@ -16,6 +17,8 @@ export default function ErrorSelector(state: Object, resultKey: string, options?
     const {stateKey = 'entity'} = options;
 
     Logger.silly('Selecting Error:', `${stateKey}._error.${resultKey}`, state);
-    return state[stateKey]
-        .getIn(['_error', resultKey]);
+    return pipeWith(
+        state,
+        getIn([stateKey, '_error', resultKey])
+    );
 }

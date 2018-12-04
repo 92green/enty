@@ -12,7 +12,7 @@ import React from 'react';
 import RequestStateSelector from './RequestStateSelector';
 import ErrorSelector from './ErrorSelector';
 import {RequestHockNoNameError} from './util/Error';
-import AutoHockFactory from './util/AutoHockFactory';
+import PropChangeHoc from './util/PropChangeHoc';
 import {selectEntityByResult} from './EntitySelector';
 import Message from './data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
@@ -99,6 +99,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                 .successMap(() => nextResultKey)
                                 .value();
 
+
                             return {
                                 [name]: {
                                     // @TODO rename resultKey to responseKey
@@ -124,17 +125,23 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                         },
 
                         // Merge State and dispatch
-                        (stateProps, dispatchProps, ownProps) => ({
-                            ...ownProps,
-                            ...(mapResponseToProps(stateProps[name].response)),
-                            [name]: new Message({
+                        (stateProps, dispatchProps, ownProps) => {
+                            const message = config.pipe(ownProps)(new Message({
                                 ...stateProps[name],
                                 onRequest: dispatchProps[name].onRequest
-                            })
-                        }),
+                            }));
+                            return {
+                                ...ownProps,
+                                ...(mapResponseToProps(stateProps[name].response)),
+                                [name]: message
+                            };
+                        },
                         hockMeta
                     ),
-                    AutoHockFactory(config),
+                    PropChangeHoc({
+                        ...config,
+                        onPropChange: (props) => props[name].onRequest(props)
+                    }),
                     Component
                 );
 
@@ -152,7 +159,8 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
 function prepareConfig(config: RequestHockConfigInput): RequestHockConfig {
     return pipeWith(
         config,
-        set('mapResponseToProps', mapResponseToProps(config))
+        set('mapResponseToProps', mapResponseToProps(config)),
+        set('pipe', config.pipe || (() => identity()))
     );
 }
 

@@ -1,11 +1,12 @@
 //@flow
 import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
-import MapSchema from '../MapSchema';
+import ObjectSchema from '../ObjectSchema';
+import {NoDefinitionError} from '../util/Error';
 
-var course = EntitySchema('course').set(MapSchema());
-var dog = EntitySchema('dog').set(MapSchema());
-var participant = EntitySchema('participant').set(MapSchema());
+var course = EntitySchema('course').set(ObjectSchema());
+var dog = EntitySchema('dog').set(ObjectSchema());
+var participant = EntitySchema('participant').set(ObjectSchema());
 
 var courseParticipant = CompositeEntitySchema('courseParticipant', {
     definition: participant,
@@ -34,18 +35,18 @@ const derek = {
 
 
 test('denormalize is the inverse of normalize', () => {
-    expect(courseParticipant.denormalize(courseParticipant.normalize(derek)).toJS()).toEqual(derek);
+    expect(courseParticipant.denormalize(courseParticipant.normalize(derek))).toEqual(derek);
 });
 
 test('cannot be made up of structural types', () => {
     const badDefinition = CompositeEntitySchema('badDefinition', {
-        definition: MapSchema({course})
+        definition: ObjectSchema({course})
     });
 
     const badKeys = CompositeEntitySchema('badKeys', {
         definition: course,
         compositeKeys: {
-            deep: MapSchema({participant})
+            deep: ObjectSchema({participant})
         }
     });
 
@@ -63,9 +64,14 @@ test('cannot be made up of structural types', () => {
     expect(() => badDefinition.normalize(data)).toThrow();
 });
 
+test('options.idAttribute defaults to an empty function', () => {
+    const {idAttribute} = CompositeEntitySchema('foo').options;
+    expect(idAttribute()).toBe(undefined);
+});
+
 test('throw without a definition', () => {
-    const badDefinition = CompositeEntitySchema('badDefinition');
-    expect(() => badDefinition.normalize(derek)).toThrow();
+    expect(() => CompositeEntitySchema('foo').normalize(derek, {})).toThrow();
+    expect(() => CompositeEntitySchema('foo', {definition: null}).normalize(derek, {})).toThrow();
 });
 
 
@@ -107,12 +113,12 @@ test('can defer their definition', () => {
 
 test('compositeKeys will override defintion keys ', () => {
     const cat = EntitySchema('cat', {
-        definition: MapSchema({
+        definition: ObjectSchema({
             friend: dog
         })
     });
 
-    const owl = EntitySchema('owl').set(MapSchema());
+    const owl = EntitySchema('owl').set(ObjectSchema());
 
     var catOwl = CompositeEntitySchema('catOwl', {
         definition: cat,
@@ -141,6 +147,7 @@ test('will not try to denormalize null compositeKeys', () => {
     const data = {id: 'rad'};
     expect(() => courseParticipant.denormalize(courseParticipant.normalize(data))).not.toThrow();
 });
+
 
 
 

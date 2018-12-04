@@ -1,9 +1,9 @@
 // @flow
-import type {StructureInput} from './util/definitions';
-import type {KeyedDefinition} from './util/definitions';
+import type {StructureInput} from 'enty';
+import type {KeyedDefinition} from 'enty';
 
 import {Map} from 'immutable';
-import {ObjectSchema} from './ObjectSchema';
+import {ObjectSchema} from 'enty';
 
 /**
  * The MapSchema is a structural schema used to define relationships in objects.
@@ -18,6 +18,7 @@ import {ObjectSchema} from './ObjectSchema';
  * @param {Object} options
  *
  */
+// $FlowFixMe - cant handle the fact tha classes end up as functions
 export class MapSchema extends ObjectSchema {
     constructor(definition: KeyedDefinition, options: StructureInput = {}) {
         super(definition, options);

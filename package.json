@@ -26,7 +26,7 @@
     "babel-preset-blueflag": "^0.6.0",
     "blueflag-test": "^0.20.0",
     "gatsby": "^1.9.223",
-    "lerna": "^2.9.0",
+    "lerna": "^3.4.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "^5.0.6",

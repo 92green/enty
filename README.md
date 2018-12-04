@@ -14,7 +14,6 @@ Enty is a framework for managing data requested from back-ends and APIs.  Instea
 
 ## Purpose
 
-<!-- ## models -->
 Any webapp that involves  both a back and a front end will create entities. Unique pieces of data that are known by an id.  The back end might call them models, the front end might call them application state, let's call them entities.
 
 <!-- ## too much handling of the data -->
@@ -129,7 +128,7 @@ export default withData(User);
 1. **Props Change / OnMutate Triggered**  
 The Enty data flow begins when either a QueryHocked components props change or a MutationHocked component fires its onMutate callback. When this happens the corresponding promise creator in the API is fired. 
 
-2. **Data Request / Recieve**  
+2. **Data Request / Receive**  
 The data request actions is triggered and the corresponding queryRequestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
 If the promise resolves the receive action is triggered, the requestState becomes a SuccessState. 
 

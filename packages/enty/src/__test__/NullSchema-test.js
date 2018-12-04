@@ -1,9 +1,5 @@
 //@flow
 import NullSchema from '../NullSchema';
-import MapSchema from '../MapSchema';
-import {DELETED_ENTITY} from '../util/SchemaConstant';
-import {fromJS} from 'immutable';
-import {NoDefinitionError} from '../util/Error';
 
 var foo = new NullSchema();
 const denormalizeState = {entities: {}, result: {}};

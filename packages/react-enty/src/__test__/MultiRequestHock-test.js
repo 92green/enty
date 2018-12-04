@@ -51,7 +51,7 @@ test('will request and response to resolved promises', () => {
         .onRequest()
         .then(() => {
             wrapper.update();
-            expect(wrapper.prop('foo').requestState.isSuccess).toBe(true);
+            expect(wrapper.prop('foo').requestState.type).toBe('Success');
             expect(wrapper.prop('foo').response).toBe('bar');
         });
 });
@@ -68,7 +68,7 @@ test('will request and response to rejected promises', () => {
         .onRequest()
         .then(() => {
             wrapper.update();
-            expect(wrapper.prop('foo').requestState.isError).toBe(true);
+            expect(wrapper.prop('foo').requestState.type).toBe('Error');
             expect(wrapper.prop('foo').requestError).toBe('bar');
         });
 });
@@ -92,5 +92,14 @@ test('will handle rerequests', done => {
     wrapper.update();
 
 
-    expect(wrapper.prop('foo').requestState.isRefetching).toBe(true);
+    expect(wrapper.prop('foo').requestState.type).toBe('Refetching');
+});
+
+test('will pass props to payload creator', () => {
+    const onRequest = jest.fn(() => Promise.resolve());
+    const hocApplier = MultiRequestHock({name: 'foo', onRequest, auto: true});
+    const Component = hocApplier(() => null);
+
+    shallow(<Component foo="bar!" />).dive();
+    expect(onRequest).toHaveBeenCalledWith({foo: 'bar!'});
 });

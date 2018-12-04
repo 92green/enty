@@ -2,8 +2,6 @@
 import type {HockMeta} from '../util/definitions';
 
 import React from 'react';
-import {fromJS} from 'immutable';
-import {Map} from 'immutable';
 import RequestHockFactory from '../RequestHockFactory';
 import RequestStateSelector from '../RequestStateSelector';
 import {FetchingState} from '../RequestState';
@@ -13,8 +11,8 @@ import {ErrorState} from '../RequestState';
 import {SuccessState} from '../RequestState';
 import Message from '../data/Message';
 import {RequestHockNoNameError} from '../util/Error';
-import MapSchema from 'enty/lib/MapSchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
+import EntitySchema from 'enty/lib/EntitySchema';
 import identity from 'unmutable/lib/identity';
 
 jest.mock('../RequestStateSelector');
@@ -25,13 +23,12 @@ const STORE = {
     subscribe: () => {},
     dispatch: (aa) => aa,
     getState: () => ({
-        entity: fromJS({
-            _baseSchema: Map({
-                SCHEMA_KEY: ObjectSchema({
-                    entity: ObjectSchema({})
-                })
+        entity: {
+            _baseSchema: ObjectSchema({
+                entity: ObjectSchema({}),
             }),
             _result: {
+                fizz: 123123,
                 foo: {
                     entity: {bar: 123}
                 }
@@ -39,14 +36,13 @@ const STORE = {
             _requestState: {
                 foo: FetchingState()
             }
-        })
+        }
     })
 };
 
 const hockMeta: HockMeta = {
     generateResultKey: props => `${props}-resultKey`,
-    requestActionName: 'FooAction',
-    schemaKey: 'SCHEMA_KEY'
+    requestActionName: 'FooAction'
 };
 
 const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
@@ -205,6 +201,27 @@ test('config.mapResponseToProps will throw an error if the new props will collid
     }).toThrow();
 });
 
+test('config.pipe will give access to props and the message', () => {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(EmptyState());
+    const RequestHock = RequestHockFactory(
+        resolve(),
+        {...hockMeta, generateResultKey: () => 'foo'}
+    );
+    const RequestHockApplier = RequestHock({
+        name: 'foo',
+        auto: true,
+        pipe: (props) => (message) => {
+            expect(props.parentProp).toBe('parent');
+            expect(message instanceof Message).toBe(true);
+            return message;
+        }
+    });
+    const Child = RequestHockApplier((props) => null);
+    const component = shallow(<Child parentProp="parent" store={STORE}/>)
+        .dive()
+});
+
 test('the response will not be mapped to props if config.mapResponseToProps is undefined', () => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReturnValue(EmptyState());
@@ -299,4 +316,55 @@ test('will strip errors out of requestStates', () => {
     shallow(<Child store={STORE}/>).dive().dive();
 });
 
+
+test('will return existing results when refetching', () => {
+    const runTest = (state, resultKey, payload) => {
+        const STORE = {
+            subscribe: () => {},
+            dispatch: (aa) => aa,
+            getState: () => ({
+                entity: {
+                    _baseSchema: ObjectSchema({
+                        //foo: ObjectSchema({})
+                    }),
+                    _result: {
+                        foo: {id: '123'},
+                        bar: {id: '456'}
+
+                    },
+                    _requestState: {
+                        foo: state
+                    }
+                }
+            })
+        }
+        // $FlowFixMe - flow cant tell that this has been mocked
+        RequestStateSelector.mockReturnValue(state);
+        const responseKeyMock = jest.fn();
+        const RequestHock = RequestHockFactory(resolve(null), hockMeta);
+        const RequestHockApplier = RequestHock({name: 'foo', resultKey});
+        const Child = RequestHockApplier((props) => {
+            responseKeyMock(props.foo.response);
+            return null;
+        });
+        shallow(<Child store={STORE}/>)
+            .setState({resultKey})
+            .dive()
+            .dive();
+
+
+        expect(responseKeyMock).toHaveBeenCalledWith(payload);
+    };
+
+    runTest(EmptyState(), 'foo', {id: '123'});
+    runTest(EmptyState(), 'bar', {id: '456'});
+    runTest(EmptyState(), 'baz', {});
+    runTest(FetchingState(), 'foo', {id: '123'});
+    runTest(FetchingState(), 'bar', {id: '456'});
+    runTest(FetchingState(), 'baz', {});
+    runTest(RefetchingState(), 'foo', {id: '123'});
+    runTest(RefetchingState(), 'bar', {id: '456'});
+    runTest(RefetchingState(), 'baz', {});
+
+});
 

@@ -1,14 +1,13 @@
 //@flow
-import { Map } from 'immutable';
 import EntitySchema from '../EntitySchema';
-import MapSchema from '../MapSchema';
+import ObjectSchema from '../ObjectSchema';
 import ValueSchema from '../ValueSchema';
 
 const foo = EntitySchema('foo', {
-    definition: MapSchema({})
-});
+    definition: ObjectSchema({})
+})
 
-const fooValues = MapSchema({
+const fooValues = ObjectSchema({
     foo: ValueSchema(foo)
 });
 
@@ -16,31 +15,29 @@ const fooValues = MapSchema({
 
 test('denormalize is almost the inverse of normalize', () => {
     const data = {foo: '1'};
-    expect(data.foo).toEqual(fooValues.denormalize(fooValues.normalize(data)).toJS().foo.id);
+    expect(data.foo).toEqual(fooValues.denormalize(fooValues.normalize(data)).foo.id);
 });
 
 test('normalize', () => {
-    const data = Map({id: '1'});
+    const data = {id: '1'};
     const entities = {
         foo: {
             "1": data
         }
     };
-    expect(data.equals(ValueSchema(foo).normalize('1', entities).entities.foo['1'])).toBe(true);
-    expect(data.equals(ValueSchema(foo).normalize('1', undefined).entities.foo['1'])).toBe(true);
+    expect(data).toEqual(ValueSchema(foo).normalize('1', entities).entities.foo['1']);
+    expect(data).toEqual(ValueSchema(foo).normalize('1', undefined).entities.foo['1']);
 });
 
 test('denormalize', () => {
-    const data = Map({id: '1'});
+    const data = {id: '1'};
     const entities = {
         foo: {
             "1": data
         }
     };
-    expect(data.equals(ValueSchema(foo).denormalize({result: '1', entities}))).toBe(true);
-    expect(
-        data.equals(ValueSchema(foo).denormalize({result: '1', entities}, undefined))
-    ).toBe(true);
+    expect(data).toEqual(ValueSchema(foo).denormalize({result: '1', entities}));
+    expect(data).toEqual(ValueSchema(foo).denormalize({result: '1', entities}, undefined));
 });
 
 

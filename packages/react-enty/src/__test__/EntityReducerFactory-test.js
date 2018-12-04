@@ -1,50 +1,44 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
+import {FetchingState} from '../RequestState';
 import EntitySchema from 'enty/lib/EntitySchema';
-import ListSchema from 'enty/lib/ListSchema';
-import MapSchema from 'enty/lib/MapSchema';
+import ArraySchema from 'enty/lib/ArraySchema';
+import ObjectSchema from 'enty/lib/ObjectSchema';
 import get from 'unmutable/lib/get';
-import {is, fromJS, Map} from 'immutable';
+import getIn from 'unmutable/lib/getIn';
+import pipeWith from 'unmutable/lib/util/pipeWith';
 
 //
 // Schemas
 //
 
 var author = EntitySchema('author', {idAtribute: get('fullnameId')})
-    .set(MapSchema({}))
+    .set(ObjectSchema({}));
 
 var topListings = EntitySchema('topListings', {
     idAttribute: get('fullnameId'),
-    definition: MapSchema({author})
+    definition: ObjectSchema({author})
 });
 
 var subreddit = EntitySchema('subreddit', {
     idAttribute: get('fullnameId'),
-    definition: MapSchema({topListings: ListSchema(topListings)})
+    definition: ObjectSchema({topListings: ArraySchema(topListings)})
 });
 
-const schema = MapSchema({
+const schema = ObjectSchema({
     subreddit
 });
 
-const schemaMap = {
-    ENTITY_RECEIVE: schema,
-    TEST_RECEIVE: schema
-};
-
-const EntityReducer = EntityReducerFactory({
-    schemaMap,
-    afterNormalize: value => value
-});
+const EntityReducer = EntityReducerFactory({schema});
 
 
 // Mock data
 
-const INITIAL_STATE = fromJS({
+const INITIAL_STATE = {
     thing: {
         abc: '123'
     }
-});
+};
 
 test('EntityReducerFactory normalizes a reuslt', () => {
     const examplePayload = {
@@ -60,212 +54,218 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
     const exampleReceiveAction = {
         type: 'TEST_RECEIVE',
+        meta: {resultKey: 'TEST'},
         payload: examplePayload
     };
 
-    const state = EntityReducer(INITIAL_STATE, exampleReceiveAction);
+    const state = EntityReducer(undefined, exampleReceiveAction);
 
-    expect(state.getIn(['subreddit', 'MK', 'fullnameId']))
+    expect(getIn(['_entities', 'subreddit', 'MK', 'fullnameId'])(state))
         .toBe(examplePayload.subreddit.fullnameId);
 });
 
-test('EntityReducerFactory _requestState.isFetching is true when action type ends with _FETCH', () => {
-    expect(
-        EntityReducer(undefined, {type: 'TEST_FETCH'}).getIn(['_requestState', 'TEST']).isFetching
-    ).toBe(true);
-});
 
-test('EntityReducerFactory', () => {
-
-
-    const exampleAction = {
-        type: "myType"
-    };
-
-    expect(is(
-        EntityReducer(undefined, exampleAction).get('_baseSchema'),
-        Map(schemaMap)
-    )).toBe(true);
-
-    expect(is(
-        EntityReducer(undefined, exampleAction).get('_result'),
-        Map()
-    )).toBe(true);
-
-
-
-    expect(EntityReducer(undefined, exampleAction)
-        .getIn(['_requestState', 'myType'])).toBe(undefined);
-
-    expect(EntityReducer(undefined, {type: 'TEST_ERROR', payload: 'errorPayload'})
-        .getIn(['_requestState', 'TEST'])
-        .errorFlatMap(ii => ii)).toBe('errorPayload');
-
-    const exampleState = fromJS({
-        thing: {
-            abc: '123'
-        }
+describe('EntityReducer requestState', () => {
+    test('requestState is Fetching when action is _FETCH', () => {
+        const data = pipeWith(
+            EntityReducer(undefined, {type: 'TEST_FETCH', meta: {resultKey: 'TEST'}}),
+            getIn(['_requestState', 'TEST'])
+        );
+        expect(data.type).toBe('Fetching');
     });
 
-    expect(is(
-        EntityReducer(exampleState, exampleAction).get('thing'),
-        fromJS({abc: '123'})
-    )).toBe(true);
-
-    const exampleStateWithResults = fromJS({
-        thing: {
-            abc: '123'
-        },
-        _result: {
-            TEST_FETCH: [
-                'xyz'
-            ],
-            TEST_OTHER_FETCH: [
-                'xyz'
-            ]
-        }
+    test('requestState is Refetching when action is _FETCH and requestState already exists', () => {
+        const data = pipeWith(
+            EntityReducer(
+                {_requestState: {TEST: FetchingState()}},
+                {type: 'TEST_FETCH', meta: {resultKey: 'TEST'}}
+            ),
+            getIn(['_requestState', 'TEST'])
+        );
+        expect(data.type).toBe('Refetching');
     });
 
-    expect(is(
-        EntityReducer(exampleStateWithResults, exampleAction).get('_result'),
-        exampleStateWithResults.get('_result')
-    )).toBe(true);
+    test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
+        return pipeWith (
+            EntityReducer(undefined, {type: 'nothing', meta: {resultKey: 'nothing'}}),
+            getIn(['_requestState', 'nothing']),
+            value => expect(value).toBe(undefined)
+        );
+    });
 
-    const exampleActionNoResultReset = {
-        type: 'TEST_FETCH',
-        meta: {
-            resultResetOnFetch: true
-        }
-    };
+    // @FIXME: this is testing silly behaviour in the reducer.
+    // The reducer should not infer result keys from the action type
+    test('will be set to payload if the action matches  _ERROR', () => {
+        return pipeWith (
+            EntityReducer(undefined, {
+                type: 'TEST_ERROR',
+                payload: 'errorPayload',
+                meta: {resultKey: 'TEST'}
+            }),
+            getIn(['_requestState', 'TEST']),
+            _ => _.value(),
+            value => expect(value).toBe('errorPayload')
+        );
+    });
 
-    expect(is(
-        EntityReducer(exampleStateWithResults, exampleActionNoResultReset).get('_result'),
-        exampleStateWithResults.get('_result').delete('TEST_FETCH')
-    )).toBe(true);
 
-
-    expect(is(
-        EntityReducer(exampleStateWithResults, {type: 'TEST_FETCH'}).get('_result'),
-        exampleStateWithResults.get('_result')
-    )).toBe(true);
-
-    const examplePayload = {
-        subreddit: {
-            name: "MechanicalKeyboards",
-            fullnameId: "MK",
-            topListings: [
-                {
-                    "fullnameId": "CT",
-                    "title": "Cool title"
-                },
-                {
-                    "fullnameId": "NT",
-                    "title": "Nice title"
-                }
-            ]
-        }
-    };
-
-    const exampleReceiveAction = {
-        type: 'TEST_RECEIVE',
-        payload: examplePayload
-    };
-
-    expect(
-        EntityReducer(exampleState, exampleReceiveAction).getIn(['_result', 'TEST_RECEIVE', 'subreddit'])
-    ).toBe('MK');
-
-    expect(is(
-        EntityReducer(exampleState, exampleReceiveAction)
-            .getIn(['subreddit', 'MK'])
-            .delete('topListings'),
-        fromJS(examplePayload.subreddit).delete('topListings')
-    )).toBe(true);
-
-    expect(is(
-        EntityReducer(exampleState, exampleReceiveAction).getIn(['topListings', 'NT']),
-        fromJS(examplePayload.subreddit.topListings[1])
-    )).toBe(true);
-
-    const mergeExamplePayloadOne = {
-        subreddit: {
-            name: "MechanicalKeyboards",
-            code: "123",
-            fullnameId: "MK",
-            topListings: [
-                {
-                    "fullnameId": "CT",
-                    "title": "Cool title"
-                },
-                {
-                    "fullnameId": "NT",
-                    "title": "Nice title"
-                }
-            ],
-            tags: [
-                "A",
-                "B"
-            ]
-        }
-    };
-
-    const mergeExampleReceiveActionOne = {
-        type: 'TEST_RECEIVE',
-        payload: mergeExamplePayloadOne
-    };
-
-    const mergeExamplePayloadTwo = {
-        subreddit: {
-            name: "MechanicalKeyboards!",
-            fullnameId: "MK",
-            topListings: [
-                {
-                    "fullnameId": "NT",
-                    "title": "Nice title!"
-                },
-                {
-                    "fullnameId": "GL",
-                    "title": "Good luck"
-                }
-            ],
-            tags: [
-                "C",
-                "D"
-            ]
-        }
-    };
-
-    const mergeExampleReceiveActionTwo = {
-        type: 'TEST_RECEIVE',
-        payload: mergeExamplePayloadTwo
-    };
-
-    const mergeStateOne = EntityReducer(exampleState, mergeExampleReceiveActionOne);
-    const mergeStateTwo = EntityReducer(mergeStateOne, mergeExampleReceiveActionTwo);
-
-    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'name'])).toBe(mergeExamplePayloadTwo.subreddit.name);
-    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'tags'])).toEqual(mergeExamplePayloadTwo.subreddit.tags);
-    expect(mergeStateTwo.getIn(['subreddit', 'MK', 'code'])).toBe(mergeExamplePayloadOne.subreddit.code);
-    expect(mergeStateTwo.getIn(['topListings', 'NT']).toJS()).toEqual(mergeExamplePayloadTwo.subreddit.topListings[0]);
-    expect(mergeStateTwo.getIn(['topListings', 'CT']).toJS()).toEqual(mergeExamplePayloadOne.subreddit.topListings[0]);
-    expect(mergeStateTwo.getIn(['topListings', 'GL']).toJS()).toEqual(mergeExamplePayloadTwo.subreddit.topListings[1]);
 
 });
 
-//
-// Don't update state for other actions.
+describe('EntityReducer Config', () => {
+    const action = (type) => ({type, meta: {resultKey: type}});
+    test('the supplied schema is not mutated when reducing', () => {
+        expect(EntityReducer(undefined, action('nothing'))._baseSchema).toBe(schema);
+    });
 
-test("foreign actions will preserve state.entity's strict object equality", () => {
-    // check bad keys
-    expect(EntityReducer(INITIAL_STATE, {type: 'FOO'})).toBe(INITIAL_STATE);
-    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH_ASDAS'})).toBe(INITIAL_STATE);
+    test('result starts with an empty object', () => {
+        expect(EntityReducer(undefined, action('nothing'))._result).toEqual({});
+    });
 
-    // check the reverse
-    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_FETCH'})).not.toBe(INITIAL_STATE);
-    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_ERROR'})).not.toBe(INITIAL_STATE);
-    expect(EntityReducer(INITIAL_STATE, {type: 'FOO_RECEIVE'})).not.toBe(INITIAL_STATE);
+    test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {
+        const state = {foo: 'bar'};
+        const reducedState = EntityReducer(state, action('nothing'));
+        expect(reducedState).toBe(state);
+
+        expect(EntityReducer(INITIAL_STATE, action('FOO'))).toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH_BLAH'))).toBe(INITIAL_STATE);
+
+        // check the reverse
+        expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_ERROR'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE, action('FOO_RECEIVE'))).not.toBe(INITIAL_STATE);
+    });
+
+    test('does not have to be called with meta', () => {
+        expect(() => EntityReducer(undefined, {})).not.toThrow();
+    });
+
 });
 
+describe('EntityReducer Normalizing', () => {
+    test('it will store normalized results on _result.resultKey', () => {
+        const action = {
+            type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
+            payload: {
+                subreddit: {
+                    fullnameId: 'MK',
+                    other: 'foo'
+                }
+            }
+        };
+
+        return pipeWith(
+            EntityReducer(undefined, action),
+            getIn(['_result', 'TEST', 'subreddit']),
+            key => expect(key).toBe('MK')
+        );
+    });
+
+    test('it will store normalized data on _entities.type.id', () => {
+        const action = {
+            type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
+            payload: {
+                subreddit: {
+                    fullnameId: 'MK',
+                    other: 'foo'
+                }
+            }
+        };
+
+        return pipeWith(
+            EntityReducer(undefined, action),
+            getIn(['_entities', 'subreddit', 'MK']),
+            data => expect(data).toEqual(action.payload.subreddit)
+        );
+    });
+
+    test('it will store deep entities', () => {
+        const action = {
+            type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
+            payload: {
+                subreddit: {
+                    fullnameId: 'MK',
+                    topListings: [
+                        {fullnameId: 'FOO'},
+                        {fullnameId: 'BAR'}
+                    ]
+                }
+            }
+        };
+
+        return pipeWith(
+            EntityReducer(undefined, action),
+            getIn(['_entities', 'topListings', 'FOO']),
+            data => expect(data).toEqual({fullnameId: 'FOO'})
+        );
+    });
+
+    test('it can merge two normalizations correctly', () => {
+        const action = (payload) => ({
+            type: 'TEST_RECEIVE',
+            meta: {resultKey: 'TEST'},
+            payload
+        });
 
 
+
+        const payloadA = {
+            subreddit: {
+                name: "MechanicalKeyboards",
+                code: "123",
+                fullnameId: "MK",
+                topListings: [
+                    {
+                        "fullnameId": "CT",
+                        "title": "Cool title"
+                    },
+                    {
+                        "fullnameId": "NT",
+                        "title": "Nice title"
+                    }
+                ],
+                tags: [
+                    "A",
+                    "B"
+                ]
+            }
+        };
+
+
+        const payloadB = {
+            subreddit: {
+                name: "MechanicalKeyboards!",
+                fullnameId: "MK",
+                topListings: [
+                    {
+                        "fullnameId": "NT",
+                        "title": "Nice title!"
+                    },
+                    {
+                        "fullnameId": "GL",
+                        "title": "Good luck"
+                    }
+                ],
+                tags: [
+                    "C",
+                    "D"
+                ]
+            }
+        };
+
+        const mergeStateOne = EntityReducer(undefined, action(payloadA));
+        const mergeStateTwo = EntityReducer(mergeStateOne, action(payloadB));
+
+        expect(getIn(['_entities', 'subreddit', 'MK', 'name'])(mergeStateTwo)).toBe(payloadB.subreddit.name);
+        expect(getIn(['_entities', 'subreddit', 'MK', 'tags'])(mergeStateTwo)).toEqual(payloadB.subreddit.tags);
+        expect(getIn(['_entities', 'subreddit', 'MK', 'code'])(mergeStateTwo)).toBe(payloadA.subreddit.code);
+        expect(getIn(['_entities', 'topListings', 'NT'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[0]);
+        expect(getIn(['_entities', 'topListings', 'CT'])(mergeStateTwo)).toEqual(payloadA.subreddit.topListings[0]);
+        expect(getIn(['_entities', 'topListings', 'GL'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[1]);
+
+    });
+});
 
