@@ -1,14 +1,17 @@
 {
-  "docs": {
+  "tutorial": {
     "Enty": [
       "introduction",
       "getting-started",
       "schemas",
       "api",
       "entity-flow",
-      "faq"
-    ],
-    "Schemas": [
+      "faq",
+      "glossary"
+    ]
+  },
+  "api": {
+    "Enty": [
       "schemas/entity-schema",
       "schemas/object-schema",
       "schemas/array-schema",
@@ -16,12 +19,17 @@
       "schemas/list-schema",
       "schemas/dynamic-schema",
       "schemas/value-schema",
-      "schemas/composite-entity-schema"
+      "schemas/composite-entity-schema",
+      "schemas/all-schemas"
     ],
     "React Enty": [
-      "EntityApi",
-      "RequestHock",
-      "Message"
+      "data/EntityApi",
+      "data/RequestHoc",
+      "data/Message"
+    ],
+    "Developing": [
+      "developing/CustomSchema",
+      "developing/OtherUses"
     ]
   }
 }

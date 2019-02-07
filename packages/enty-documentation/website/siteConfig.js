@@ -14,10 +14,11 @@ const siteConfig = {
   url: 'https://enty.blueflag.codes',
   baseUrl: '/',
   projectName: '',
+  docsSideNavCollapsible: true,
   organizationName: 'Blue Flag',
   headerLinks: [
     {doc: 'introduction', label: 'Tutorial'},
-    {doc: 'api', label: 'API'},
+    {doc: 'schemas/entity-schema', label: 'API'},
     {search: true}
   ],
   users,

@@ -1,6 +1,5 @@
 ---
-path: /examples
-date: 2018-09-06
+id: examples
 title: Examples
 ---
 
