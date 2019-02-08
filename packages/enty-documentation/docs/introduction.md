@@ -39,3 +39,9 @@ In reality the front end doesn't care where the data came from or how it is stor
 <!-- ## Enty -->
 Enty lets you describe the relationships of your entities through schemas. It is then able to store them in a normalized state. This means that they are not stored by request but by the unique id that they were given by the back-end.
 
+
+## Core Principals
+
+1. Be declarative.
+2. Don't replicate business logic.
+3. Always be up to date.
