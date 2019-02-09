@@ -128,5 +128,3 @@ Overloaded function that lets you user an updater function on either the whole d
 schema at a key.
 
 
-
-## Examples

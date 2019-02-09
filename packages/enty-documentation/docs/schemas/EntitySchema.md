@@ -83,6 +83,4 @@ See [set].
 See [update](./all-schemas#update).
 
 
-## Examples
-
 [set]: ./all-schemas#set
