@@ -15,3 +15,6 @@ A schema that describes a keyed data type. Each
 ## Normalize
 ## Schema
 ## Structural Schema
+
+## Tainted Entity
+An entity that can't be normalized becuase it has been mixed with specific data from another entity.

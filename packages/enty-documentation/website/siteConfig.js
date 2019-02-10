@@ -19,6 +19,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'introduction', label: 'Tutorial'},
     {doc: 'schemas/entity-schema', label: 'API'},
+    {doc: 'glossary', label: 'Glossary'},
     {search: true}
   ],
   users,
