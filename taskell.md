@@ -1,12 +1,14 @@
 ## Backlog
 
 - Add api level caching
+- Add ObjectValues Schema (extend array schema)
 
 ## Current Release
 
 - Deprecate select by type and id
 
 ## In Progress
+
 
 
 ## Done
