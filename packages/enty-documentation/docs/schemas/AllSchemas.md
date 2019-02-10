@@ -6,7 +6,7 @@ title: All Schemas
 All schemas share some common methods.
 
 
-### .normalize()
+## .normalize()
 **type:** `(data: *, entities: Object = {}) => NormalizeState`
 
 Use the schemas relationships to normalize for storage.
@@ -38,7 +38,7 @@ people.normalize([
 * The input shape must match the shape of the definition schema.
 
 
-### .denormalize()
+## .denormalize()
 **type:** `(state: {result: *, entities: *}) => *`
 
 Denormalize is the reverse of normalize. When given a normalized result and a set of entities
@@ -73,7 +73,7 @@ people.denormalize({
 ```
 
 
-### .set()
+## .set()
 **type:** `(definition: Schema) => Schema`
 
 Replace the definition schema. Used most often to defer the definition of recursive schemas.
@@ -89,13 +89,13 @@ cat.set(ObjectSchema({
 ```
 
 
-### .get()
+## .get()
 **type:** `() => Schema`
 
 Return the definition schema
 
 
-### .update()
+## .update()
 **type:** `(updater: (Schema) => Schema) => Schema`
 
 Replace the definition schema via an updater function
