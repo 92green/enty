@@ -23,7 +23,8 @@
     "React Enty": [
       "data/EntityApi",
       "data/RequestHoc",
-      "data/Message"
+      "data/Message",
+      "data/RequestState"
     ],
     "Enty Immutable": [
       "schemas/map-schema",
