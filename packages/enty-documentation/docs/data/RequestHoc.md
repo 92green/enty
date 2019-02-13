@@ -10,23 +10,15 @@ the necessary tools to request data and render something when it comes back. The
 normalizing and denormalizing of the data so that you only need to worry about what data you want 
 and when you want to ask for it.
 
-```
+```flow
 RequestHock({
     name: string
-
     auto?: boolean|Array<string>,
-
     shouldComponentAutoRequest?: (props: *) => boolean,
-
     payloadCreator?: (props: *) => *,
-
     pipe?: (props: *) => (message: Message) => Message,
-
     updateResultKey?: (resultKey: string, props: *) => string,
-
-    // custom hardcoded resultKey
     resultKey?: string,
-
     mapResponseToProps?: boolean|(response) => newProps
 })(Component);
 ```
