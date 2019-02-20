@@ -2,6 +2,10 @@
 id: schemas
 title: Schemas
 ---
+
+_This is an introductory description of what schemas are and how they work. For specific details of
+their types and methods check the [Api](/docs/schemas/entity-schema)._
+
 Schemas are a way to describe to Enty the shape of your api responses and the 
 relationships between your data. With this information Enty is able to normalize any response so that
 each entity is only ever stored in memory once. This means that when ever your refer to one of your 
@@ -12,6 +16,8 @@ There are two main types of schema: structural schemas and entity schemas.
 ## Structure
 Structural schemas describe the shape of your responses and let Enty traverse your data looking for entities.
 They also provide hooks to let you construct and merge data shapes.
+
+Examples: [ObjectSchema], [ArraySchema].
 
 ### Relationships
 Take the following naive data structure. 
@@ -83,14 +89,11 @@ you to define a single consructor for each structural schema and let enty do the
 This lets you define your models but never worry about constructing them. As new data comes in it 
 is automatically constructed for you.
 
-We can extend the previous example by adding a constructor to our people structural schema
+We can extend the previous example by adding a constructor to our people structural schema.
 
 ```js
 person.set(ObjectSchema(
-    {
-        mother: person,
-        father: person
-    }
+    {mother: person, father: person},
     {constructor: data => new Person(data)}
 ));
 
@@ -104,9 +107,8 @@ correctly contruct or merge it._
 
 ### Merging
 Because an entity could be of any shape, when Enty is finds an entity that already exists in state 
-it simply calls the merge function on the entities definition. This lets enty be smart about how to merge things.
+it simply calls the merge function on its definition. This lets enty be smart about how to merge things.
 An object schema performs a shallow merge, while the array schema just replaces the old with the new.
-
 
 
 ## Entities
@@ -124,15 +126,15 @@ user.set(ObjectSchema({
 }));
 ```
 In this example we have first defined a user as a type of entity, giving it the unique name of `user`.
-Next we define a fiendList that is made up of users.
+Next we define a friendList that is made up of users.
 Next we define the shape of our friend as an object. 
 Finally we declare the relationship that users can have friendList's that are arrays of users.
 
 TODO: FriendList normalizing example.
 
 ### Changing the idAttribute
-By default the EntitySchema looks to the user.id property to uniquly idetify each user.
-This can be conigured to match your own data structure.
+By default the EntitySchema looks to the user.id property to uniquely identify each user.
+This can be configured to match your own data structure.
 
 ```
 const user = EntitySchema('user', {
@@ -141,20 +143,12 @@ const user = EntitySchema('user', {
 ```
 
 ### Why does an entity require a structure?
-Entitites are really nothing more than a category and an id; they are closer to a variable than a real data structure. 
+Entities are really nothing more than a category and an id; they are closer to a variable than a real data structure. 
 Because of this they need some other information to describe their shape. Enty chooses to use structural schemas
 to describe this information as it lets you construct entities of any shape. You can use the common Object schema 
 define models. Or the ArraySchema to create list of notifications bound to the viewer of the app. You can
-even define your own schema that has unqique logic for normalizing and denormalizing. 
-
-### Unorthodox Entities
+even define your own schema that has unique logic for normalizing and denormalizing. 
 
 
-
-## Unique Data Structures
-
-### Dynamic Schemas
-### Orphans
-### Composite Entities (Tainting)
-### Values
-### Rest API's 
+[ObjectSchema]: /docs/data/ObjectSchema
+[ArraySchema]: /docs/data/ArraySchema

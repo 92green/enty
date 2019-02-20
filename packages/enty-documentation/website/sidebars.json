@@ -5,6 +5,7 @@
       "getting-started",
       "schemas",
       "api",
+      "RequestHoc",
       "entity-flow",
       "faq",
       "glossary"

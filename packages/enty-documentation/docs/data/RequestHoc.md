@@ -40,8 +40,16 @@ const withUser = UserGetHoc({name: 'userMessage'});
 **type:** `boolean|Array<string>`  
 
 Automatically request data on component mount or if a prop changes.
-If true, request data on the first render if array of strings, request on the first render and each 
-time one of these props change.
+
+If `config.auto` is set to true the api function will be called immediately whenever the component mounts.
+This is useful for upfront fetching of a pages data.
+
+If `config.auto` is set to an array of strings that match to prop names the api function will be called 
+immediately on component mount, and everytime one of those props changes.
+This is useful for fetching data in a component that changes often.
+
+If `config.auto` is not declared nothing will happen until the `onRequest` callback is fired.
+This is useful for mutations triggered by user interaction like save, update or delete.
 
 ```js
 // Request the user on component mount
@@ -53,7 +61,7 @@ UserGetHoc({
 // Request the user on component mount and when the userId prop changes
 UserGetHoc({
     name: 'userMessage',
-    auth: ['userId']
+    auto: ['userId']
 });
 ```
 
@@ -125,4 +133,6 @@ UserGetHoc({
 ## Examples
 
 
+
+[Message]: /docs/data/Message
 

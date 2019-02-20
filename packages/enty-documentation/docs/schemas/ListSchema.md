@@ -62,4 +62,5 @@ See [update](./all-schemas#update).
 
 
 [set]: ./all-schemas#set
+[ArraySchema]: /docs/schemas/array-schema
 
