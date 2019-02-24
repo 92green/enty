@@ -10,25 +10,24 @@ const users = [
 
 const siteConfig = {
   title: 'Enty',
-  tagline: `Normalized Entity Management`,
+  tagline: `Normalized State Management`,
   url: 'https://enty.blueflag.codes',
   baseUrl: '/',
   projectName: '',
-  docsSideNavCollapsible: true,
+  //docsSideNavCollapsible: true,
   organizationName: 'Blue Flag',
   headerLinks: [
     {doc: 'introduction', label: 'Tutorial'},
     {doc: 'schemas/entity-schema', label: 'API'},
-    {doc: 'glossary', label: 'Glossary'},
+    //{doc: 'glossary', label: 'Glossary'},
     {search: true}
   ],
   users,
-  //headerIcon: 'img/docusaurus.svg',
-  //footerIcon: 'img/docusaurus.svg',
-  favicon: 'img/favicon.png',
+  headerIcon: 'img/icon/logo.svg',
+  favicon: 'favicon.ico',
   colors: {
-    primaryColor: '#2f1e2e',
-    secondaryColor: '#522e52'
+    primaryColor: '#2d2b57',
+    secondaryColor: '#534e94'
   },
 
   /* Custom fonts for website */
@@ -49,7 +48,9 @@ const siteConfig = {
   copyright: `Copyright © ${new Date().getFullYear()} Blue Flag`,
 
   highlight: {
-    theme: 'paraiso-dark',
+    defaultLang: 'javascript',
+    version: '9.14.2',
+    theme: 'shades-of-purple',
   },
 
   // Add custom scripts here that would be placed in <script> tags.
@@ -69,7 +70,7 @@ const siteConfig = {
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-  //   repoUrl: 'https://github.com/facebook/test-site',
+  repoUrl: 'https://github.com/blueflag/enty',
 };
 
 module.exports = siteConfig;

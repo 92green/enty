@@ -63,11 +63,11 @@ class HomeSplash extends React.Component {
         {/*<Logo img_src={`${baseUrl}img/docusaurus.svg`} />*/}
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
+          <div className="Tagline">Enty is a framework for managing data requested from APIs. Instead of you manually storing data, Enty uses schemas to describe relationships and stores the data as normalized entities.</div>
           <PromoSection>
-            <Button href={docUrl('moose/introduction')}>Moose</Button>
-            <Button href={docUrl('goose/introduction')}>Goose</Button>
-            <Button href={docUrl('bruce/introduction')}>Bruce</Button>
-            <Button href={docUrl('spruce/introduction')}>Spruce</Button>
+            <Button href={docUrl('getting-started')}>Getting Started</Button>
+            <Button href={siteConfig.repoUrl}>Github</Button>
+            <Button href={docUrl('schemas/entity-schema')}>API</Button>
           </PromoSection>
         </div>
       </SplashContainer>
@@ -146,28 +146,28 @@ class Index extends React.Component {
       <Block background="light" layout="fourColumn">
         {[
           {
-            content: 'A conceptual framework for structuring user interfaces.',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: 'Describe relationships between your entitites, dont code them.',
+            image: `${baseUrl}img/icon/declarative.svg`,
             imageAlign: 'top',
-            title: 'Moose',
+            title: 'Declarative',
           },
           {
-            content: 'A standard affordance specification.',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: `Don't waste time making sure relationships are kept up to date.`,
+            image: `${baseUrl}img/icon/uptodate.svg`,
             imageAlign: 'top',
-            title: 'Goose',
+            title: 'Always up to date',
           },
           {
-            content: 'An affordance naming methodology.',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: 'Zero reducers, actions, action-creators, or selectors.',
+            image: `${baseUrl}img/icon/boilerplate.svg`,
             imageAlign: 'top',
-            title: 'Spruce',
+            title: 'Low boilerplate',
           },
           {
-            content: 'A Sass helper library.',
-            image: `${baseUrl}img/docusaurus.svg`,
+            content: `Be confident your app is always rendering the correct state.`,
+            image: `${baseUrl}img/icon/predictable.svg`,
             imageAlign: 'top',
-            title: 'Bruce',
+            title: 'Predictable',
           },
         ]}
       </Block>

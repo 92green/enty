@@ -3,9 +3,9 @@ id: introduction
 title: Introduction
 ---
 
-Enty is a framework for managing data requested from APIs. Instead of you manually 
-storing requested data, Enty uses schemas to describe relationships and stores the data as 
-normalized entities. This has some nice benefits:
+Enty is a framework for managing data requested from APIs. Instead of you manually storing data, 
+Enty uses schemas to describe relationships and stores the data as normalized entities. This has 
+some nice benefits:
 
 * Data given to views is always up to date.
 * There is practically no data handling code.
@@ -39,9 +39,3 @@ Enty lets you describe the relationships of your entities through schemas. It is
 them in a normalized state. This means that they are not stored by request but by the unique id that
 they were given by the back-end.
 
-
-## Core Principals
-
-1. Be declarative.
-2. Don't replicate business logic.
-3. Always be up to date.

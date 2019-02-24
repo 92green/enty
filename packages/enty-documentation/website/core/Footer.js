@@ -36,15 +36,8 @@ class Footer extends React.Component {
             )}
           </a>
           <div>
-            <h5>Docs</h5>
-            <a href={this.docUrl('moose/introduction', this.props.language)}>Moose</a>
-            <a href={this.docUrl('goose/introduction', this.props.language)}>Goose</a>
-            <a href={this.docUrl('spruce/introduction', this.props.language)}>Spruce</a>
-            <a href={this.docUrl('bruce/introduction', this.props.language)}>Bruce</a>
-          </div>
-          <div>
-            <h5>More</h5>
-            <a href="https://github.com/blueflag/oose">GitHub</a>
+            <a href={this.docUrl('schemas/entity-schema', this.props.language)}>API</a>
+            <a href={this.props.config.repoUrl}>Github</a>
           </div>
         </section>
 

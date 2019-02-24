@@ -1,11 +1,13 @@
 {
   "tutorial": {
-    "Enty": [
+    "Tutorials": [
       "introduction",
       "getting-started",
       "schemas",
       "api",
-      "RequestHoc",
+      "RequestHoc"
+    ],
+    "Resources": [
       "entity-flow",
       "faq",
       "glossary"
