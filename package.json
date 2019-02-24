@@ -24,7 +24,7 @@
     "babel-core": "^6.23.0",
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^0.6.0",
-    "blueflag-test": "file:.yalc/blueflag-test",
+    "blueflag-test": "^0.22.0",
     "gatsby": "^1.9.223",
     "lerna": "^3.4.3",
     "react": "^16.4.1",
