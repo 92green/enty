@@ -3,7 +3,6 @@ import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {Schema} from './util/definitions';
-// import type {Structure} from './util/definitions';
 
 
 /**

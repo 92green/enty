@@ -1,0 +1,38 @@
+/* your custom css */
+a {
+    color: #5349cc;
+}
+
+a:hover {
+    color: #7469f9;
+}
+
+.logo {
+    height: 24px !important;
+}
+
+
+.Tagline {
+    max-width: 45rem;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
+.hljs-comment {
+    color: #7875a7;
+}
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+}
+
+@media only screen and (min-width: 1024px) {
+}
+
+@media only screen and (max-width: 1023px) {
+}
+
+@media only screen and (min-width: 1400px) {
+}
+
+@media only screen and (min-width: 1500px) {
+}
