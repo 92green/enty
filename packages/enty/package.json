@@ -1,6 +1,6 @@
 {
   "name": "enty",
-  "version": "0.49.0",
+  "version": "0.49.1",
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
   "license": "UNLICENSED",
@@ -23,6 +23,6 @@
   },
   "dependencies": {
     "fronads": "^0.17.0",
-    "stampy": "^0.43.3"
+    "unmutable": "^0.39.0"
   }
 }
