@@ -3,7 +3,7 @@ import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
 
 import EntityQueryHockFactory from './EntityQueryHockFactory';
-import {createAllRequestAction} from './EntityApi';
+import createAllRequestAction from './api/createAllRequestAction';
 import Deprecated from './util/Deprecated';
 
 /**

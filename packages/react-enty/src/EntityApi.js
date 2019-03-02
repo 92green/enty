@@ -3,96 +3,18 @@ import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
-import {createAction} from 'redux-actions';
 import EntityQueryHockFactory from './EntityQueryHockFactory';
 import RequestHockFactory from './RequestHockFactory';
 import EntityMutationHockFactory from './EntityMutationHockFactory';
 import EntityReducerFactory from './EntityReducerFactory';
 import EntityStoreFactory from './EntityStoreFactory';
 import EntityProviderFactory from './EntityProviderFactory';
-import {selectEntityByResult} from './EntitySelector';
-import RequestStateSelector from './RequestStateSelector';
 import Hash from './util/Hash';
+import visitActionMap from './api/visitActionMap';
+import createRequestAction from './api/createRequestAction';
 
-import reduce from 'unmutable/lib/reduce';
 import set from 'unmutable/lib/set';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import isKeyed from 'unmutable/lib/util/isKeyed';
-
-
-//
-// Recurse through deep objects and apply the visitor to
-// anything that isnt another object.
-//
-function visitActionMap(branch: *, visitor: Function, path: string[] = [], state: * = {}): * {
-    return pipeWith(
-        branch,
-        reduce(
-            (reduction: *, item: *, key: string): * => {
-                if(typeof item !== 'function' && isKeyed(item)) {
-                    reduction[key] = visitActionMap(item, visitor, path.concat(key), reduction);
-                } else {
-                    reduction[key] = visitor(item, path.concat(key));
-                }
-                return reduction;
-            },
-            state
-        ),
-    );
-}
-
-//
-// Creates the redux-thunk promise action.
-// Insetead of returning the dispatch function though. This uses the getState method
-// to select the next denormalized state and return that to the promise chain.
-// This means request functions can be chained, yet still contain the latests state.
-//
-export function createRequestAction(fetchAction: string, receiveAction: string, errorAction: string, sideEffect: SideEffect): Function {
-    function action(aa: string): Function {
-        return createAction(aa, (payload) => payload, (payload, meta) => meta);
-    }
-    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*> => {
-        var sideEffectMeta = {
-            ...meta,
-            dispatch,
-            getState
-        };
-
-        var actionMeta = (resultKey) => ({
-            ...meta,
-            resultKey: meta.resultKey || resultKey
-        });
-
-        dispatch(action(fetchAction)(null, actionMeta(fetchAction)));
-        return sideEffect(requestPayload, sideEffectMeta).then(
-            (data: any): * => {
-                dispatch(action(receiveAction)(data, actionMeta(receiveAction)));
-                return selectEntityByResult(getState(), actionMeta(receiveAction).resultKey);
-            },
-            (error: any): * => {
-                dispatch(action(errorAction)(error, actionMeta(errorAction)));
-                return Promise.reject(RequestStateSelector(getState(), actionMeta(errorAction).resultKey).value());
-            }
-        );
-    };
-}
-
-
-// @DEPRECATED
-// This is only used by the mutation and query hocks
-// RequestHoc has more powerful composition and so the actions dont need to be chained
-export function createAllRequestAction(fetchAction: string, receiveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
-    function sideEffect(requestPayload: *, meta: Object): Promise<*> {
-        return Promise
-            // call all sideeffects
-            .all(sideEffectList.map(effect => effect(requestPayload, meta)))
-            // merge them back to one object
-            .then(payloads => payloads.reduce((out, payload) => Object.assign(out, payload), {}))
-        ;
-    }
-    return createRequestAction(fetchAction, receiveAction, errorAction, sideEffect);
-}
-
 
 /**
  * The Entity Api is the main access point for your data. It allows you to define the link between your views
