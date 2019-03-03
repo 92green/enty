@@ -133,7 +133,12 @@ export type HockApplier = (Component: ComponentType<any>) => ComponentType<any>;
  */
 export type Hock = (...args: *) => HockApplier;
 
+export type Observable = {
+    subscribe: Function,
+    lift: Function
+};
+
 /**
  * SideEffect description
  */
-export type SideEffect = (*, Object) => Promise<*>;
+export type SideEffect = (*, Object) => Promise<*>|Observable;

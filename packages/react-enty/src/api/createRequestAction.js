@@ -1,8 +1,10 @@
 // @flow
 import type {SideEffect} from '../util/definitions';
+import type {Observable} from '../util/definitions';
 
 import {selectEntityByResult} from '../EntitySelector';
 import RequestStateSelector from '../RequestStateSelector';
+import isObservable from '../util/isObservable';
 
 //
 // Creates the redux-thunk promise action.
@@ -12,7 +14,7 @@ import RequestStateSelector from '../RequestStateSelector';
 //
 
 export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
-    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*> => {
+    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*>|Observable => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
@@ -30,8 +32,17 @@ export default function createRequestAction(actionType: string, sideEffect: Side
         const receiveAction = makeAction(`${actionType}_RECEIVE`);
         const errorAction = makeAction(`${actionType}_ERROR`);
 
+        const pending = sideEffect(requestPayload, sideEffectMeta);
         fetchAction(null);
-        return sideEffect(requestPayload, sideEffectMeta).then(
+        if(isObservable(pending)) {
+            pending.subscribe({
+                next: (data) => receiveAction(data),
+                complete: () => selectEntityByResult(getState(), meta.resultKey),
+                error: (error) => errorAction(error)
+            });
+            return pending;
+        }
+        return pending.then(
             (data: any): * => {
                 receiveAction(data);
                 return selectEntityByResult(getState(), meta.resultKey);
