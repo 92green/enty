@@ -11,13 +11,13 @@ import RequestStateSelector from '../RequestStateSelector';
 // This means request functions can be chained, yet still contain the latests state.
 //
 
-export default function createRequestAction(fetchType: string, receiveType: string, errorType: string, sideEffect: SideEffect): Function {
+export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
     return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*> => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
             payload,
-            meta: {...meta, resultKey: meta.resultKey || type}
+            meta
         });
 
         var sideEffectMeta = {
@@ -26,19 +26,19 @@ export default function createRequestAction(fetchType: string, receiveType: stri
             getState
         };
 
-        const fetchAction = makeAction(fetchType);
-        const receiveAction = makeAction(receiveType);
-        const errorAction = makeAction(errorType);
+        const fetchAction = makeAction(`${actionType}_FETCH`);
+        const receiveAction = makeAction(`${actionType}_RECEIVE`);
+        const errorAction = makeAction(`${actionType}_ERROR`);
 
         fetchAction(null);
         return sideEffect(requestPayload, sideEffectMeta).then(
             (data: any): * => {
                 receiveAction(data);
-                return selectEntityByResult(getState(), meta.resultKey || receiveType);
+                return selectEntityByResult(getState(), meta.resultKey);
             },
             (error: any): * => {
                 errorAction(error);
-                return Promise.reject(RequestStateSelector(getState(), meta.resultKey || errorType).value());
+                return Promise.reject(RequestStateSelector(getState(), meta.resultKey).value());
             }
         );
     };

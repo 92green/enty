@@ -63,16 +63,13 @@ function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOption
     return pipeWith(
         actionMap,
         actionMap => visitActionMap(actionMap, (sideEffect, path) => {
-            const actionName = path.join('_').toUpperCase();
-            const FETCH = `${actionName}_FETCH`;
-            const RECEIVE = `${actionName}_RECEIVE`;
-            const ERROR = `${actionName}_ERROR`;
-            const requestAction = createRequestAction(FETCH, RECEIVE, ERROR, sideEffect);
+            const actionType = path.join('_').toUpperCase();
+            const requestAction = createRequestAction(actionType, sideEffect);
 
             const HockMeta = {
                 // @TODO: internalize the hashing algorithm
-                generateResultKey: (payload) => Hash({payload, actionName}),
-                requestActionName: actionName,
+                generateResultKey: (payload) => Hash({payload, actionType}),
+                requestActionName: actionType,
                 schemaKey: hockOptions.schemaKey, // @TODO remove this when there is only a single schema per api
                 storeKey,
                 stateKey: hockOptions.stateKey
@@ -80,8 +77,8 @@ function EntityApi(schema: Schema<*>, actionMap: Object, hockOptions: HockOption
 
             return {
                 _deprecated: {
-                    query: EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName: actionName}),
-                    mutation: EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName: actionName})
+                    query: EntityQueryHockFactory(requestAction, {...hockOptions, requestActionName: actionType}),
+                    mutation: EntityMutationHockFactory(requestAction, {...hockOptions, requestActionName: actionType})
                 },
                 request: RequestHockFactory(requestAction, HockMeta)
             };

@@ -4,7 +4,7 @@ import createRequestAction from './createRequestAction';
 // @DEPRECATED
 // This is only used by the mutation and query hocks
 // RequestHoc has more powerful composition and so the actions dont need to be chained
-export default function createAllRequestAction(fetchAction: string, receiveAction: string, errorAction: string, sideEffectList: Array<SideEffect>): Function {
+export default function createAllRequestAction(actionType: string, sideEffectList: Array<SideEffect>): Function {
     function sideEffect(requestPayload: *, meta: Object): Promise<*> {
         return Promise
             // call all sideeffects
@@ -13,5 +13,5 @@ export default function createAllRequestAction(fetchAction: string, receiveActio
             .then(payloads => payloads.reduce((out, payload) => Object.assign(out, payload), {}))
         ;
     }
-    return createRequestAction(fetchAction, receiveAction, errorAction, sideEffect);
+    return createRequestAction(actionType, sideEffect);
 }
