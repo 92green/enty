@@ -1,10 +1,12 @@
 // @flow
 import type {SideEffect} from '../util/definitions';
-import type {Observable} from '../util/definitions';
+import type {AsyncType} from '../util/definitions';
 
 import {selectEntityByResult} from '../EntitySelector';
 import RequestStateSelector from '../RequestStateSelector';
 import isObservable from '../util/isObservable';
+
+
 
 //
 // Creates the redux-thunk promise action.
@@ -14,7 +16,7 @@ import isObservable from '../util/isObservable';
 //
 
 export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
-    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): Promise<*>|Observable => {
+    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): AsyncType => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
@@ -35,6 +37,7 @@ export default function createRequestAction(actionType: string, sideEffect: Side
         const pending = sideEffect(requestPayload, sideEffectMeta);
         fetchAction(null);
         if(isObservable(pending)) {
+            // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
                 next: (data) => receiveAction(data),
                 complete: () => selectEntityByResult(getState(), meta.resultKey),
@@ -42,6 +45,8 @@ export default function createRequestAction(actionType: string, sideEffect: Side
             });
             return pending;
         }
+
+        // $FlowFixMe - see above
         return pending.then(
             (data: any): * => {
                 receiveAction(data);

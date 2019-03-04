@@ -1,4 +1,6 @@
 // @flow
+import type {SideEffect} from '../util/definitions';
+
 import createRequestAction from './createRequestAction';
 
 // @DEPRECATED
