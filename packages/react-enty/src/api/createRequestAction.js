@@ -16,7 +16,7 @@ import isObservable from '../util/isObservable';
 //
 
 export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
-    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): AsyncType => {
+    return (requestPayload: {}, meta: {}) => (dispatch: Function, getState: Function): AsyncType => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
