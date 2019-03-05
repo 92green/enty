@@ -10,6 +10,9 @@
     "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
+  "engines": {
+    "yarn": "1.9.4"
+  },
   "workspaces": {
     "packages": [
       "packages/*"
