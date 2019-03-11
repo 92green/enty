@@ -1,0 +1,27 @@
+{
+  "name": "enty",
+  "version": "0.0.0",
+  "description": "The core functions for handling Enty's internal state",
+  "license": "MIT",
+  "author": "Allan Hortle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/enty.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/blueflag/enty/issues"
+  },
+  "private": false,
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
+    "watch": "yarn build -w"
+  },
+  "dependencies": {
+    "fronads": "^0.17.0",
+    "unmutable": "^0.39.0"
+  }
+}
