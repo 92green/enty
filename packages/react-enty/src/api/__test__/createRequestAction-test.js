@@ -12,7 +12,6 @@ const meta = 'META';
 
 describe('observable support', () => {
     const observable = (fn) => ({
-        lift: () => null,
         subscribe: fn
     });
     const payload = 'PAYLOAD';
