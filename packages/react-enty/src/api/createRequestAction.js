@@ -7,6 +7,9 @@ import RequestStateSelector from '../RequestStateSelector';
 import isObservable from '../util/isObservable';
 
 
+type Meta = {
+    resultKey: string
+};
 
 //
 // Creates the redux-thunk promise action.
@@ -16,7 +19,7 @@ import isObservable from '../util/isObservable';
 //
 
 export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
-    return (requestPayload, meta = {}) => (dispatch: Function, getState: Function): AsyncType => {
+    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function): AsyncType => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
