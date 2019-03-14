@@ -2,18 +2,20 @@
 import type {HockMeta} from '../util/definitions';
 
 import React from 'react';
-import RequestHockFactory from '../RequestHockFactory';
-import RequestStateSelector from '../RequestStateSelector';
-import {FetchingState} from '../RequestState';
-import {EmptyState} from '../RequestState';
-import {RefetchingState} from '../RequestState';
-import {ErrorState} from '../RequestState';
-import {SuccessState} from '../RequestState';
-import Message from '../data/Message';
-import {RequestHockNoNameError} from '../util/Error';
+import identity from 'unmutable/lib/identity';
+
+import RequestStateSelector from 'enty-state/lib/RequestStateSelector';
+import {FetchingState} from 'enty-state/lib/data/RequestState';
+import {EmptyState} from 'enty-state/lib/data/RequestState';
+import {RefetchingState} from 'enty-state/lib/data/RequestState';
+import {ErrorState} from 'enty-state/lib/data/RequestState';
+import {SuccessState} from 'enty-state/lib/data/RequestState';
+import Message from 'enty-state/lib/data/Message';
 import ObjectSchema from 'enty/lib/ObjectSchema';
 import EntitySchema from 'enty/lib/EntitySchema';
-import identity from 'unmutable/lib/identity';
+
+import {RequestHockNoNameError} from '../util/Error';
+import RequestHockFactory from '../RequestHockFactory';
 
 jest.mock('../RequestStateSelector');
 

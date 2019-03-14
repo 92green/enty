@@ -1,5 +1,5 @@
 {
-  "name": "enty",
+  "name": "enty-state",
   "version": "0.0.0",
   "description": "The core functions for handling Enty's internal state",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "watch": "yarn build -w"
   },
   "dependencies": {
-    "fronads": "^0.17.0",
+    "fronads": "^0.18.0",
     "unmutable": "^0.39.0"
   }
 }

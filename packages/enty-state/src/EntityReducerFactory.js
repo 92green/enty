@@ -11,11 +11,11 @@ import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import updateIn from 'unmutable/lib/updateIn';
 
-import {FetchingState} from './RequestState';
-import {RefetchingState} from './RequestState';
-import {ErrorState} from './RequestState';
-import {SuccessState} from './RequestState';
-import Logger from './Logger';
+import {FetchingState} from './data/RequestState';
+import {RefetchingState} from './data/RequestState';
+import {ErrorState} from './data/RequestState';
+import {SuccessState} from './data/RequestState';
+import Logger from './util/Logger';
 
 type State = {
     _baseSchema: Schema<Structure>,

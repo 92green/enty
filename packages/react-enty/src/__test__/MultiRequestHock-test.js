@@ -5,12 +5,12 @@ import MultiRequestHock from '../MultiRequestHock';
 import {fake} from 'sinon';
 import {spy} from 'sinon';
 
-import {FetchingState} from '../RequestState';
-import {EmptyState} from '../RequestState';
-import {RefetchingState} from '../RequestState';
-import {ErrorState} from '../RequestState';
-import {SuccessState} from '../RequestState';
-import Message from '../data/Message';
+import {FetchingState} from 'enty-state/lib/data/RequestState';
+import {EmptyState} from 'enty-state/lib/data/RequestState';
+import {RefetchingState} from 'enty-state/lib/data/RequestState';
+import {ErrorState} from 'enty-state/lib/data/RequestState';
+import {SuccessState} from 'enty-state/lib/data/RequestState';
+import Message from 'enty-state/lib/data/Message';
 import {RequestHockNoNameError} from '../util/Error';
 
 const multiRequestHock = MultiRequestHock({

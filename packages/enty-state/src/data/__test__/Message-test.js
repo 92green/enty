@@ -6,7 +6,7 @@ import {FetchingMessage} from '../Message';
 import {RefetchingMessage} from '../Message';
 import {SuccessMessage} from '../Message';
 import {ErrorMessage} from '../Message';
-import {ErrorState} from '../../RequestState';
+import {ErrorState} from '../../data/RequestState';
 
 test('will let you set resultKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({

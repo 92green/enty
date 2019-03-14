@@ -3,7 +3,7 @@ import type {HockOptionsInput} from './util/definitions';
 import type {SideEffect} from './util/definitions';
 
 import EntityMutationHockFactory from './EntityMutationHockFactory';
-import createAllRequestAction from './api/createAllRequestAction';
+import createAllRequestAction from 'enty-state/lib/api/createAllRequestAction';
 import Deprecated from './util/Deprecated';
 
 /**
