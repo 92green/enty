@@ -2,7 +2,7 @@ import React from 'react';
 import {spy} from 'sinon';
 import {fromJS} from 'immutable';
 import EntityMutationHockFactory from '../EntityMutationHockFactory';
-import {FetchingState} from '../data/RequestState';
+import {FetchingState} from 'enty-state/lib/data/RequestState';
 
 global.console.warn = jest.fn();
 

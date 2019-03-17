@@ -2,13 +2,13 @@
 import type {HockOptions} from './util/definitions';
 import type {HockOptionsInput} from './util/definitions';
 
-import RequestStateSelector from './RequestStateSelector';
-import {selectEntityByResult} from './EntitySelector';
-import DistinctMemo from './util/DistinctMemo';
+import RequestStateSelector from 'enty-state/lib/RequestStateSelector';
+import {selectEntityByResult} from 'enty-state/lib/EntitySelector';
+import DistinctMemo from 'enty-state/lib/util/DistinctMemo';
 import Connect from './util/Connect';
 import React, {type Element} from 'react';
 import Deprecated from './util/Deprecated';
-import Hash from './util/Hash';
+import Hash from 'enty-state/lib/util/Hash';
 
 /**
  * EntityMutationHockFactory

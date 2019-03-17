@@ -17,7 +17,7 @@ import EntitySchema from 'enty/lib/EntitySchema';
 import {RequestHockNoNameError} from '../util/Error';
 import RequestHockFactory from '../RequestHockFactory';
 
-jest.mock('../RequestStateSelector');
+jest.mock('enty-state/lib/RequestStateSelector');
 
 const resolve = (x) => () => Promise.resolve(x);
 
