@@ -1,18 +1,12 @@
 // @flow
-//import {fromJS} from 'immutable';
 
-function hashCode(str: string, max?: number): number {
-    var hash = 0;
-    if (!str.length) return hash;
-    for (var i = 0; i < str.length; i++) {
-        let char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+export default function Hash(data: any): string {
+    let str = JSON.stringify(data);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        let charCode = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + charCode ;
         hash = hash & hash; // Convert to 32bit integer
     }
-    return Math.abs(max ? hash % max : hash);
-}
-
-export default function Hash(data: *): string {
-    return hashCode(JSON.stringify(data)) + '';
-    //return fromJS(data).hashCode().toString();
+    return Math.abs(hash) + '';
 }
