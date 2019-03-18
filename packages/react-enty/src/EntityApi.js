@@ -1,6 +1,6 @@
 //@flow
 import type {HockOptionsInput} from './util/definitions';
-import type {SideEffect} from './util/definitions';
+import type {SideEffect} from 'enty-state/lib/util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
 import set from 'unmutable/lib/set';

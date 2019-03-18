@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "enty": "^0.50.0-alpha.0",
+    "enty-state": "^0.0.0",
     "fronads": "^0.18.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",

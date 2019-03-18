@@ -1,6 +1,6 @@
 /* @flow */
 import type {ComponentType} from 'react';
-import type Message from '../data/Message';
+import type Message from 'enty-state/lib/data/Message';
 
 /**
  * HockOptions description
@@ -133,13 +133,3 @@ export type HockApplier = (Component: ComponentType<any>) => ComponentType<any>;
  */
 export type Hock = (...args: *) => HockApplier;
 
-export type Observable = {
-    subscribe: Function
-};
-
-/**
- * SideEffect description
- */
-
-export type AsyncType = Promise<*> | Observable;
-export type SideEffect = (*, Object) => AsyncType;
