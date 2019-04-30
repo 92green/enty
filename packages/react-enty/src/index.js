@@ -15,17 +15,17 @@ export {default as EntityApi} from './EntityApi';
 
 
 // Selectors
-export {selectEntityByResult} from './EntitySelector';
-export {selectEntityById} from './EntitySelector';
-export {selectEntityByType} from './EntitySelector';
-export {default as selectRequestState} from './RequestStateSelector';
+export {selectEntityByResult} from 'enty-state/lib/EntitySelector';
+export {selectEntityById} from 'enty-state/lib/EntitySelector';
+export {selectEntityByType} from 'enty-state/lib/EntitySelector';
+export {default as selectRequestState} from 'enty-state/lib/RequestStateSelector';
 
 
 // Misc
-export {EmptyState} from './RequestState';
-export {FetchingState} from './RequestState';
-export {RefetchingState} from './RequestState';
-export {ErrorState} from './RequestState';
-export {SuccessState} from './RequestState';
+export {EmptyState} from 'enty-state/lib/data/RequestState';
+export {FetchingState} from 'enty-state/lib/data/RequestState';
+export {RefetchingState} from 'enty-state/lib/data/RequestState';
+export {ErrorState} from 'enty-state/lib/data/RequestState';
+export {SuccessState} from 'enty-state/lib/data/RequestState';
 
-export type {RequestState} from './RequestState';
+export type {RequestState} from 'enty-state/lib/data/RequestState';

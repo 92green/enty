@@ -1,7 +1,7 @@
 // @flow
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import Logger from './Logger';
+import Logger from './util/Logger';
 
 /**
  * @module Selectors

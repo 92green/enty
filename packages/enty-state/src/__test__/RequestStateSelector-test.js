@@ -1,6 +1,6 @@
 import selectRequestState from '../RequestStateSelector';
 import {fromJS} from 'immutable';
-import {EmptyState} from '../RequestState';
+import {EmptyState} from '../data/RequestState';
 
 test('RequestStateSelector', () => {
 

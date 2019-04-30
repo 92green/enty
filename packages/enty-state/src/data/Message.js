@@ -1,10 +1,10 @@
 // @flow
-import type {RequestState} from '../RequestState';
-import {EmptyState} from '../RequestState';
-import {FetchingState} from '../RequestState';
-import {RefetchingState} from '../RequestState';
-import {SuccessState} from '../RequestState';
-import {ErrorState} from '../RequestState';
+import type {RequestState} from '../data/RequestState';
+import {EmptyState} from '../data/RequestState';
+import {FetchingState} from '../data/RequestState';
+import {RefetchingState} from '../data/RequestState';
+import {SuccessState} from '../data/RequestState';
+import {ErrorState} from '../data/RequestState';
 
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';

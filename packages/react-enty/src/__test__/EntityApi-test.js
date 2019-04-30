@@ -3,8 +3,6 @@ import sinon from 'sinon';
 import {Map} from 'immutable';
 import EntityApi from '../EntityApi';
 import ObjectSchema from 'enty/lib/ObjectSchema';
-import createAllRequestAction from '../api/createAllRequestAction';
-import createRequestAction from '../api/createRequestAction';
 
 const RESOLVE = (aa) => Promise.resolve(aa);
 const REJECT = (aa) => Promise.reject(aa);

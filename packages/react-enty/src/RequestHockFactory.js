@@ -9,12 +9,12 @@ import type {Hock} from './util/definitions';
 
 import {ConnectFull} from './util/Connect';
 import React from 'react';
-import RequestStateSelector from './RequestStateSelector';
-import ErrorSelector from './ErrorSelector';
+import RequestStateSelector from 'enty-state/lib/RequestStateSelector';
+import ErrorSelector from 'enty-state/lib/ErrorSelector';
 import {RequestHockNoNameError} from './util/Error';
 import PropChangeHoc from './util/PropChangeHoc';
-import {selectEntityByResult} from './EntitySelector';
-import Message from './data/Message';
+import {selectEntityByResult} from 'enty-state/lib/EntitySelector';
+import Message from 'enty-state/lib/data/Message';
 import composeWith from 'unmutable/lib/util/composeWith';
 import identity from 'unmutable/lib/identity';
 import pipe from 'unmutable/lib/util/pipe';

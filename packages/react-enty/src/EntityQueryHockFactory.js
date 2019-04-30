@@ -6,12 +6,12 @@ import type {HockOptions} from './util/definitions';
 import type {Hock} from './util/definitions';
 
 import PropChangeHoc from './util/PropChangeHoc';
-import RequestStateSelector from './RequestStateSelector';
-import {selectEntityByResult} from './EntitySelector';
-import DistinctMemo from './util/DistinctMemo';
+import RequestStateSelector from 'enty-state/lib/RequestStateSelector';
+import {selectEntityByResult} from 'enty-state/lib/EntitySelector';
+import DistinctMemo from 'enty-state/lib/util/DistinctMemo';
 import Connect from './util/Connect';
 import Deprecated from './util/Deprecated';
-import Hash from './util/Hash';
+import Hash from 'enty-state/lib/util/Hash';
 
 
 /**

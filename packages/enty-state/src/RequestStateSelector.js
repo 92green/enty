@@ -1,8 +1,8 @@
 // @flow
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import {EmptyState} from './RequestState';
-import Logger from './Logger';
+import {EmptyState} from './data/RequestState';
+import Logger from './util/Logger';
 
 
 /**
