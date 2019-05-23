@@ -23,12 +23,14 @@
   },
   "dependencies": {
     "enty": "^0.50.0-alpha.0",
-    "enty-state": "^0.0.0",
+    "enty-state": "0.0.0",
     "fronads": "^0.18.0",
+    "lru-memoize": "^1.1.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-actions": "^2.0.1",
     "redux-thunk": "^2.1.0",
     "unmutable": "^0.39.0"
-  }
+  },
+  "devDependencies": {}
 }

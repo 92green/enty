@@ -33,6 +33,9 @@ const STORE = {
                 fizz: 123123,
                 foo: {
                     entity: {bar: 123}
+                },
+                DEFAULT_RESULT_KEY: {
+                    entity: {bar: 123}
                 }
             },
             _requestState: {
@@ -50,323 +53,260 @@ const hockMeta: HockMeta = {
 const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
 const RequestHockApplier = RequestHock({name: 'foo'});
 
+function runTest({
+    config = {},
+    render = jest.fn(),
+    actionCreator = jest.fn(),
+    store = STORE,
+    requestState = EmptyState(),
+    hockMeta = {
+        generateResultKey: props => `DEFAULT_RESULT_KEY`,
+        requestActionName: 'FooAction'
+    },
+    props = {}
+}: Object) {
+    // $FlowFixMe - flow cant tell that this has been mocked
+    RequestStateSelector.mockReturnValue(requestState);
+    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
+    const RequestHockApplier = RequestHock(config);
+    const Child = RequestHockApplier((props) => {
+        render(props);
+        return null;
+    });
+    return shallow(<Child store={store} {...props} />).dive().dive().dive();
+}
+
+
 beforeEach(() => {
     // $FlowFixMe - flow cant tell that this has been mocked
     RequestStateSelector.mockReset();
 });
 
-test('will return a function', () => {
-    expect(typeof RequestHock).toBe('function');
-});
 
-test('hockApplier should be a function', () => {
-    expect(typeof RequestHockApplier).toBe('function');
-});
 
-test('will throw an error is config.name is not supplied', () => {
-    expect(() => RequestHock({})(() => null))
-        .toThrow(RequestHockNoNameError('FooAction'));
-});
+describe('hocking', () => {
 
-test('config.payloadCreator will default to an identity if config.auto is falsy', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-
-    const actionCreator = jest.fn();
-    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
-    const RequestHockApplier = RequestHock({name: 'foo'});
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest('bar');
-        return null;
+    test('will return a function', () => {
+        expect(typeof RequestHock).toBe('function');
     });
-    shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'bar-resultKey'});
-});
 
-test('config.payloadCreator will by default return an empty object if config.auto is truthy', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-
-    const actionCreator = jest.fn();
-    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
-    const RequestHockApplier = RequestHock({name: 'foo', auto: true});
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest();
-        return null;
+    test('hockApplier should be a function', () => {
+        expect(typeof RequestHockApplier).toBe('function');
     });
-    shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: '[object Object]-resultKey'});
+
 });
 
-test('config.payloadCreator will create the payload', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const actionCreator = jest.fn();
-    const RequestHock = RequestHockFactory(actionCreator, hockMeta);
-    const RequestHockApplier = RequestHock({name: 'foo', payloadCreator: () => 'bar'});
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest();
-        return null;
+
+describe('config.name and message', () => {
+
+    test('will throw an error is config.name is not supplied', () => {
+        expect(() => RequestHock({})(() => null))
+            .toThrow(RequestHockNoNameError('FooAction'));
     });
-    shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'bar-resultKey'});
-});
 
-test('config.updateResultKey will by default be an identity function', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const actionCreator = jest.fn();
-    const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
-    const RequestHockApplier = RequestHock({name: 'foo'});
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest({});
-        return null;
+    it('will memoise the creation of the message based on requestState and response', () => {
     });
-    shallow(<Child store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'fooResultKey'});
-});
 
-test('config.updateResultKey will update the resultKey', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const actionCreator = jest.fn();
-    const RequestHock = RequestHockFactory(actionCreator, {...hockMeta, generateResultKey: () => 'fooResultKey'});
-    const RequestHockApplier = RequestHock({
-        name: 'foo',
-        updateResultKey: (resultKey) => `${resultKey}-bar`
+    it('will throw an error is config.name is not supplied', () => {
+        expect(() => RequestHock({})(() => null))
+            .toThrow(RequestHockNoNameError('FooAction'));
     });
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest({});
-        return null;
-    });
-    shallow(<Child resultKey="foo" store={STORE}/>).dive().dive();
-    expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'fooResultKey-bar'});
-    expect(actionCreator).not.toHaveBeenCalledWith({}, {resultKey: 'fooResultKey'});
-});
 
-test('config.updateResultKey is called with the resultKey and props', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const updateResultKey = jest.fn();
-    const RequestHock = RequestHockFactory(jest.fn(), {...hockMeta, generateResultKey: () => 'fooResultKey'});
-    const RequestHockApplier = RequestHock({
-        name: 'foo',
-        updateResultKey
-    });
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest();
-        return null;
-    });
-    shallow(<Child store={STORE} extraProp="bar" />).dive().dive();
-    expect(updateResultKey).toHaveBeenCalledWith('fooResultKey', {store: STORE, extraProp: 'bar'});
-});
-
-test('config.mapResponseToProps will spread the response onto the hocked components props', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
-    const RequestHockApplier = RequestHock({name: 'foo', mapResponseToProps: identity()});
-    const Child = RequestHockApplier((props) => null);
-    const component = shallow(<Child store={STORE}/>)
-        .dive()
-        .setProps({foo: {resultKey: 'foo'}});
-
-    expect(component.prop('entity')).toBe(component.prop('foo').response.entity);
-});
-
-test('config.mapResponseToProps will be an identity function if given a value of "true"', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
-    const RequestHockApplier = RequestHock({name: 'foo', mapResponseToProps: true});
-    const Child = RequestHockApplier((props) => null);
-    const component = shallow(<Child store={STORE}/>)
-        .dive()
-        .setProps({foo: {resultKey: 'foo'}});
-
-    expect(component.prop('entity')).toBe(component.prop('foo').response.entity);
-});
-
-test('config.mapResponseToProps will throw an error if the new props will collide with the message prop', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    expect(function () {
-        const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
-        const RequestHockApplier = RequestHock({
-            name: 'foo',
-            mapResponseToProps: response => ({foo: response.entity})
+    test('hocked component will be given and Message to props.[name]', () => {
+        runTest({
+            config: {name: 'foo'},
+            render: (props) => expect(props.foo).toBeInstanceOf(Message)
         });
-        const Child = RequestHockApplier((props) => null);
-        const component = shallow(<Child store={STORE}/>)
-            .dive()
-            .setProps({foo: {resultKey: 'foo'}})
-    }).toThrow();
-});
-
-test('config.pipe will give access to props and the message', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const RequestHock = RequestHockFactory(
-        resolve(),
-        {...hockMeta, generateResultKey: () => 'foo'}
-    );
-    const RequestHockApplier = RequestHock({
-        name: 'foo',
-        auto: true,
-        pipe: (props) => (message) => {
-            expect(props.parentProp).toBe('parent');
-            expect(message instanceof Message).toBe(true);
-            return message;
-        }
-    });
-    const Child = RequestHockApplier((props) => null);
-    const component = shallow(<Child parentProp="parent" store={STORE}/>)
-        .dive()
-});
-
-test('the response will not be mapped to props if config.mapResponseToProps is undefined', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const RequestHock = RequestHockFactory(resolve(), {...hockMeta, generateResultKey: () => 'foo'});
-    const RequestHockApplier = RequestHock({name: 'foo'});
-    const Child = RequestHockApplier((props) => null);
-    const component = shallow(<Child store={STORE}/>)
-        .dive()
-        .setProps({foo: {resultKey: 'foo'}})
-
-    expect(component.prop('entity')).toBe(undefined);
-});
-
-
-test('hocked component will be given and Message to props.[name]', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-    const Child = RequestHockApplier((props) => {
-        expect(props.foo).toBeInstanceOf(Message);
-        return null;
     });
 
-    shallow(<Child store={STORE}/>).dive().dive();
-});
-
-
-test('Message.onRequest will dispatch an action', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(EmptyState());
-
-    const dispatch = jest.fn();
-    const store = {
-        subscribe: () => {},
-        getState: STORE.getState,
-        dispatch
-    };
-
-    const Child = RequestHockApplier((props) => {
-        props.foo.onRequest()
-        return null;
-    });
-
-    shallow(<Child store={store}/>).dive().dive();
-    expect(dispatch).toHaveBeenCalled();
-});
-
-
-test('will only use a new response key once a request as returned', () => {
-    const runTest = (state, key) => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-        RequestStateSelector.mockReturnValue(state);
-        const responseKeyMock = jest.fn();
-        const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
-        const RequestHockApplier = RequestHock({name: 'foo', resultKey: 'bar'});
-        const Child = RequestHockApplier((props) => {
-            responseKeyMock(props.foo.resultKey);
-            return null;
+    test('Message.onRequest will dispatch an action', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo'},
+            render: (props) => props.foo.onRequest()
         });
-        shallow(<Child store={STORE}/>).dive()
-            .setProps({
-                foo: {
-                    request: jest.fn(),
-                    resultKey: 'foo',
-                    nextResultKey: 'bar'
+        expect(actionCreator).toHaveBeenCalled();
+    });
+
+    test('will strip errors out of requestStates', () => {
+        expect.assertions(1);
+        runTest({
+            requestState: ErrorState({message: 'error!'}),
+            config: {name: 'foo'},
+            render: (props) => props.foo.requestState.errorMap(data => {
+                expect(data).toBe(null);
+            })
+        });
+    });
+
+});
+
+
+describe('config.auto', () => {
+});
+
+
+describe('config.shouldComponentAutoRequest', () => {
+});
+
+
+describe('config.payloadCreator', () => {
+
+    test('config.payloadCreator will default to an identity if config.auto is falsy', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo'},
+            render: props => props.foo.onRequest('bar')
+        })
+        expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'DEFAULT_RESULT_KEY'});
+    });
+
+    test('config.payloadCreator will by default return an empty object if config.auto is truthy', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {auto: true, name: 'foo'},
+        })
+        expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'DEFAULT_RESULT_KEY'});
+    });
+
+    test('config.payloadCreator will create the payload', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {auto: true, name: 'foo', payloadCreator: () => 'bar'},
+        })
+        expect(actionCreator).toHaveBeenCalledWith('bar', {resultKey: 'DEFAULT_RESULT_KEY'});
+    });
+
+});
+
+
+describe('config.updateResultKey', () => {
+
+    test('config.updateResultKey will by default be an identity function', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo', auto: true}
+        });
+        expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'DEFAULT_RESULT_KEY'});
+    });
+
+    test('config.updateResultKey will update the resultKey', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo', updateResultKey: resultKey => `${resultKey}-bar`, auto: true}
+        });
+
+        expect(actionCreator).toHaveBeenCalledWith({}, {resultKey: 'DEFAULT_RESULT_KEY-bar'});
+        expect(actionCreator).not.toHaveBeenCalledWith({}, {resultKey: 'DEFAULT_RESULT_KEY'});
+    });
+
+    test('config.updateResultKey is called with the resultKey and props', () => {
+        const updateResultKey = jest.fn();
+        runTest({
+            config: {name: 'foo', updateResultKey, auto: true},
+            props: {extraProp: 'bar'}
+        });
+        expect(updateResultKey).toHaveBeenCalledWith('DEFAULT_RESULT_KEY', {extraProp: 'bar'});
+    });
+
+});
+
+
+describe('config.resultKey', () => {
+
+});
+
+
+describe('config.mapResponseToProps', () => {
+
+    test('config.mapResponseToProps will spread the response onto the hocked components props', () => {
+        expect.assertions(2);
+        runTest({
+            config: {name: 'foo', mapResponseToProps: true, auto: true},
+            render: props => {
+                expect(props.entity).toEqual(props.foo.response.entity);
+                expect(props.entity).toEqual({bar: 123});
+            }
+        });
+    });
+
+    test('config.mapResponseToProps can be used to set the response on prop', () => {
+        expect.assertions(2);
+        runTest({
+            config: {
+                name: 'foo',
+                mapResponseToProps: (response) => ({fizz: response}),
+                auto: true
+            },
+            render: props => {
+                expect(props.fizz.entity).toEqual(props.foo.response.entity);
+                expect(props.fizz.entity).toEqual({bar: 123});
+            }
+        });
+    });
+
+    test('config.mapResponseToProps will throw an error if the new props will collide with the message prop', () => {
+        expect(function () {
+            runTest({
+                config: {
+                    name: 'foo',
+                    mapResponseToProps: (response) => ({foo: response}),
+                    auto: true
                 }
             })
-            .dive();
-
-        expect(responseKeyMock).toHaveBeenLastCalledWith(key);
-    };
-
-    runTest(EmptyState(), 'foo');
-    runTest(FetchingState(), 'foo');
-    runTest(RefetchingState(), 'foo');
-    runTest(ErrorState(), 'bar');
-    runTest(SuccessState(), 'bar');
-});
-
-
-test('will strip errors out of requestStates', () => {
-    // $FlowFixMe - flow cant tell that this has been mocked
-    RequestStateSelector.mockReturnValue(ErrorState({message: 'error!'}));
-
-    const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
-    const RequestHockApplier = RequestHock({name: 'foo'});
-    const Child = RequestHockApplier((props) => {
-        props.foo.requestState.errorMap(data => {
-            expect(data).toBe(null);
-        });
-        return null;
+        }).toThrow();
     });
-    shallow(<Child store={STORE}/>).dive().dive();
+
+    test('the response will not be mapped to props if config.mapResponseToProps is undefined', () => {
+        expect.assertions(1);
+        runTest({
+            config: {name: 'foo', auto: true},
+            render: props => {
+                expect(props.entity).toBe(undefined);
+            }
+        });
+    });
+
 });
 
 
-test('will return existing results when refetching', () => {
-    const runTest = (state, resultKey, payload) => {
-        const STORE = {
-            subscribe: () => {},
-            dispatch: (aa) => aa,
-            getState: () => ({
-                entity: {
-                    _baseSchema: ObjectSchema({
-                        //foo: ObjectSchema({})
-                    }),
-                    _result: {
-                        foo: {id: '123'},
-                        bar: {id: '456'}
+describe('config.optimistic', () => {
 
-                    },
-                    _requestState: {
-                        foo: state
+    it('will return existing results when empty or (re)fetching', () => {
+        const run = (requestState, resultKey, match) => runTest({
+            config: {name: 'foo', resultKey},
+            requestState,
+            render: props => expect(props.foo.response).toEqual(match),
+            store: {
+                subscribe: () => {},
+                dispatch: (aa) => aa,
+                getState: () => ({
+                    entity: {
+                        _baseSchema: ObjectSchema({}),
+                        _result: {
+                            foo: {id: '123'}
+                        }
                     }
-                }
-            })
-        }
-        // $FlowFixMe - flow cant tell that this has been mocked
-        RequestStateSelector.mockReturnValue(state);
-        const responseKeyMock = jest.fn();
-        const RequestHock = RequestHockFactory(resolve(null), hockMeta);
-        const RequestHockApplier = RequestHock({name: 'foo', resultKey});
-        const Child = RequestHockApplier((props) => {
-            responseKeyMock(props.foo.response);
-            return null;
+                })
+            }
         });
-        shallow(<Child store={STORE}/>)
-            .setState({resultKey})
-            .dive()
-            .dive();
 
+        run(EmptyState(), 'foo', {id: '123'});
+        run(EmptyState(), 'bar', {});
+        run(FetchingState(), 'foo', {id: '123'});
+        run(FetchingState(), 'bar', {});
+        run(RefetchingState(), 'foo', {id: '123'});
+        run(RefetchingState(), 'bar', {});
 
-        expect(responseKeyMock).toHaveBeenCalledWith(payload);
-    };
+    });
 
-    runTest(EmptyState(), 'foo', {id: '123'});
-    runTest(EmptyState(), 'bar', {id: '456'});
-    runTest(EmptyState(), 'baz', {});
-    runTest(FetchingState(), 'foo', {id: '123'});
-    runTest(FetchingState(), 'bar', {id: '456'});
-    runTest(FetchingState(), 'baz', {});
-    runTest(RefetchingState(), 'foo', {id: '123'});
-    runTest(RefetchingState(), 'bar', {id: '456'});
-    runTest(RefetchingState(), 'baz', {});
 
 });
+
 
