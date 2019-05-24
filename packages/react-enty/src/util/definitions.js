@@ -76,7 +76,12 @@ export type RequestHockConfigInput = {
 
     // Function to map response back and then spread it back onto props.
     // Useful for when you don't wish to fish the response out of the request message.
-    mapResponseToProps?: boolean|Object => Object
+    mapResponseToProps?: boolean|Object => Object,
+
+
+    // Dictates whether on request if  the request hock should use the new response key to
+    // denormalize data, or to use the old until the data has returned
+    optimistic?: boolean
 
 };
 
@@ -85,14 +90,15 @@ export type RequestHockConfigInput = {
  * allowing for it to always be spread
  */
 export type RequestHockConfig = {
-    name: string,
-    payloadCreator?: (props: *) => *,
-    updateResultKey?: (resultKey: string, props: *) => string,
-    resultKey?: string,
-    mapResponseToProps: Object => Object,
     auto?: boolean|Array<string>,
+    mapResponseToProps: Object => Object,
+    name: string,
+    optimistic?: boolean,
+    payloadCreator?: (props: *) => *,
+    pipe: (props: *) => (message: Message) => Message,
+    resultKey?: string,
     shouldComponentAutoRequest?: (props: *) => boolean,
-    pipe: (props: *) => (message: Message) => Message
+    updateResultKey?: (resultKey: string, props: *) => string
 };
 
 /**

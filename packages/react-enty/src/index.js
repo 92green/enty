@@ -29,3 +29,4 @@ export {ErrorState} from 'enty-state/lib/data/RequestState';
 export {SuccessState} from 'enty-state/lib/data/RequestState';
 
 export type {RequestState} from 'enty-state/lib/data/RequestState';
+export type {default as Message} from 'enty-state/lib/data/Message';
