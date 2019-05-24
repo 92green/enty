@@ -54,6 +54,7 @@ const RequestHock = RequestHockFactory(resolve('foo'), hockMeta);
 const RequestHockApplier = RequestHock({name: 'foo'});
 
 function runTest({
+    dive = true,
     config = {},
     render = jest.fn(),
     actionCreator = jest.fn(),
@@ -73,7 +74,13 @@ function runTest({
         render(props);
         return null;
     });
-    return shallow(<Child store={store} {...props} />).dive().dive().dive();
+    let component = shallow(<Child store={store} {...props} />);
+
+    if(dive) {
+        component = component.dive().dive().dive();
+    }
+
+    return component;
 }
 
 
@@ -144,10 +151,54 @@ describe('config.name and message', () => {
 
 
 describe('config.auto', () => {
+
+    it('will dispatch if auto is truthy', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo', auto: true}
+        });
+        expect(actionCreator).toHaveBeenCalled();
+    });
+
+    it('will redispatch if an auto path changes', () => {
+        const actionCreator = jest.fn();
+        let component = runTest({
+            dive: false,
+            actionCreator,
+            config: {name: 'foo', auto: ['bar']}
+        });
+        component = component.dive();
+        expect(actionCreator).toHaveBeenCalledTimes(1);
+        component.setProps({bar: 1});
+        expect(actionCreator).toHaveBeenCalledTimes(2);
+    });
+
 });
 
 
 describe('config.shouldComponentAutoRequest', () => {
+
+    it('will not request if shouldComponentAutoRequest returns false', () => {
+        const actionCreator = jest.fn();
+        runTest({
+            actionCreator,
+            config: {name: 'foo', auto: true, shouldComponentAutoRequest: () => false},
+        });
+
+        expect(actionCreator).not.toHaveBeenCalled();
+    });
+
+    it('will call shouldComponentAutoRequest with props', () => {
+        const shouldComponentAutoRequest = jest.fn();
+        runTest({
+            config: {name: 'foo', auto: true, shouldComponentAutoRequest},
+            props: {extra: 'PROP!'}
+        });
+
+        expect(shouldComponentAutoRequest.mock.calls[0][0].extra).toBe('PROP!');
+    });
+
 });
 
 
