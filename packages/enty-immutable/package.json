@@ -1,6 +1,6 @@
 {
   "name": "enty-immutable",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.0-alpha.1",
   "description": "Enty schemas for Immutable JS",
   "main": "lib/index.js",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "watch": "yarn build -w"
   },
   "dependencies": {
-    "enty": "^0.50.0-alpha.0",
+    "enty": "^0.50.0-alpha.1",
     "immutable": "^3.8.1"
   }
 }
