@@ -103,7 +103,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                 });
 
                             if(auto) {
-                                if(propsHaveChanged && shouldComponentAutoRequest(props) || !state.previousProps) {
+                                if((propsHaveChanged || !state.previousProp) && shouldComponentAutoRequest(props)) {
                                     resultKeys = RequestHock.request(pollutedProps.dispatch, props, payloadCreator(props), state.nextResultKey);
                                 }
                             }
