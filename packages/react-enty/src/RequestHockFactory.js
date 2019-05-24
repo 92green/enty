@@ -28,6 +28,8 @@ import equals from 'unmutable/lib/equals';
 // filter out redux props.
 // eslint-disable-next-line no-unused-vars
 const filterReduxProps = ({store, dispatch, storeSubscription, ...props}) => props;
+const returnObject: (payload?: mixed) => Object = () => ({});
+const returnTrue: (payload?: mixed) => boolean = () => true;
 
 /**
  * RequestHockFactory
@@ -52,14 +54,14 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
              */
             function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
-                const {payloadCreator = () => ({})} = config;
+                const {payloadCreator = returnObject} = config;
                 const {updateResultKey = identity()} = config;
                 const {name} = config;
                 const {optimistic = true} = config;
                 const {mapResponseToProps} = config;
 
                 // Auto Props
-                const {shouldComponentAutoRequest = () => true} = config;
+                const {shouldComponentAutoRequest = returnTrue} = config;
                 const {auto = false} = config;
                 const paths = typeof auto === 'boolean' ? [] : auto;
 
@@ -88,7 +90,6 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                         }
 
                         static getDerivedStateFromProps(pollutedProps, state) {
-                            //if(config.log) console.log('getDerivedStateFromProps', state);
                             let resultKeys;
                             const props = filterReduxProps(pollutedProps);
                             const getPath = (path) => getIn(path.split('.'));
@@ -101,10 +102,8 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                     return !equals(previous)(next);
                                 });
 
-                            //!
                             if(auto) {
                                 if(propsHaveChanged && shouldComponentAutoRequest(props) || !state.previousProps) {
-                                    //if(config.log) console.log('propChange', paths);
                                     resultKeys = RequestHock.request(pollutedProps.dispatch, props, payloadCreator(props), state.nextResultKey);
                                 }
                             }
@@ -114,7 +113,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                     return setPath(path, getPath(path)(props))(rr);
                                 }, {}),
                                 ...resultKeys
-                            }
+                            };
 
                         }
 
@@ -125,14 +124,13 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                     props
                                 ),
                                 resultKey: existingResultKey
-                            }
+                            };
                         }
 
                         static request(dispatch: Function, props, payload, existingResultKey?: any) {
                             return pipeWith(
                                 RequestHock.deriveResponseKey(props, payload, existingResultKey),
                                 nextState => {
-                                    //if(config.log) console.log('request', nextState);
                                     dispatch(actionCreator(payload, {
                                         resultKey: nextState.nextResultKey
                                     }));
@@ -219,7 +217,6 @@ function mapResponseToProps({name, ...config}: RequestHockConfigInput): (Object 
         );
     }
 
-    // eslint-disable-next-line no-unused-vars
-    return (response) => ({});
+    return returnObject;
 }
 
