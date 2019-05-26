@@ -112,6 +112,25 @@ describe('config.name and message', () => {
     });
 
     it('will memoise the creation of the message based on requestState and response', () => {
+        let message;
+        let component = runTest({
+            dive: false,
+            config: {name: 'foo', auto: true}
+        }).dive()
+
+        const first = component.dive().prop('foo');
+        component.setState({nextResultKey: 'DEFAULT_RESULT_KEY'}).update();
+        const second = component.dive().prop('foo');
+        expect(first).toBe(second); // result key stayed the same
+        component.setState({nextResultKey: 'bar'}).update();
+        const third = component.dive().prop('foo');
+        expect(second).not.toBe(third); // result key changed
+
+        // $FlowFixMe
+        RequestStateSelector.mockReturnValue(FetchingState());
+        const fourth = component.dive().prop('foo');
+        expect(third).not.toBe(fourth); // request state changed
+
     });
 
     it('will throw an error is config.name is not supplied', () => {
@@ -271,6 +290,14 @@ describe('config.updateResultKey', () => {
 
 describe('config.resultKey', () => {
 
+    it('will override resultKey from config', () => {
+        expect.assertions(1);
+        runTest({
+            config: {name: 'foo', resultKey: 'FOO', auto: true},
+            render: (props) => expect(props.foo.resultKey).toBe('FOO')
+        });
+    });
+
 });
 
 
@@ -354,6 +381,33 @@ describe('config.optimistic', () => {
         run(FetchingState(), 'bar', {});
         run(RefetchingState(), 'foo', {id: '123'});
         run(RefetchingState(), 'bar', {});
+
+    });
+
+    it('will select the next resultKey for empty/fetching/refetching if optimistic is true', () => {
+        // set up is a bit hacky here.
+        // we have to manually set the state as there is no other
+        // entry point into the cycle
+        expect.assertions(10);
+        const actionCreator = jest.fn();
+        const run = (optimistic, requestState, resultKey) => runTest({
+            dive: false,
+            requestState,
+            config: {name: 'foo', optimistic, auto: true},
+            render: (props) => expect(props.foo.resultKey).toBe(resultKey)
+        }).dive().setState({resultKey: 'foo', nextResultKey: 'bar'}).dive().dive()
+
+        run(false, EmptyState(), 'foo');
+        run(false, FetchingState(), 'foo');
+        run(false, RefetchingState(), 'foo');
+        run(false, SuccessState(), 'bar');
+        run(false, ErrorState(), 'bar');
+
+        run(true, EmptyState(), 'bar');
+        run(true, FetchingState(), 'bar');
+        run(true, RefetchingState(), 'bar');
+        run(true, SuccessState(), 'bar');
+        run(true, ErrorState(), 'bar');
 
     });
 

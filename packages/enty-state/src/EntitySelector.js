@@ -9,6 +9,7 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 import isIndexed from 'unmutable/lib/util/isIndexed';
 import doIf from 'unmutable/lib/doIf';
 import KeyedMemo from './util/KeyedMemo';
+import memoize from 'lru-memoize';
 
 /**
  * @module Selectors
@@ -36,9 +37,10 @@ export function selectEntityByResult(state: Object, resultKey: string, options: 
         : schema.options.constructor()
     ;
 
-    var data = DenormalizeCache.value(
-        resultKey,
-        normalizeCount,
+
+    const data = DenormalizeCache.value(
+        resultKey + normalizeCount,
+        resultKey + normalizeCount,
         () => schema.denormalize({result, entities})
     );
 

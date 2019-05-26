@@ -42,27 +42,59 @@ function constructState(): * {
 //
 // selectEntityByResult()
 
-test('selectEntityByResult() should return a map for single items', () => {
-    const data = selectEntityByResult(constructState(), 'FOO');
-    expect(data && data.foo).toBeTruthy();
-});
+describe('selectEntityByResult', () => {
 
-test('selectEntityByResult() should return an array for indexed items', () => {
-    const reducer = EntityReducerFactory({schema: fooList});
-    const state = {entity: reducer(
-        undefined,
-        {
-            type: 'FOOLIST_RECEIVE',
-            meta: {resultKey: 'FOOLIST_RECEIVE'},
-            payload: [{id: 'bar'}, {id: 'baz'}]
-        }
-    )};
-    const data = selectEntityByResult(state, 'FOOLIST_RECEIVE');
-    expect(data && data.length).toBe(2);
-});
+    it('should return a map for single items', () => {
+        const data = selectEntityByResult(constructState(), 'FOO');
+        expect(data && data.foo).toBeTruthy();
+    });
 
-test('selectEntityByResult() should return nothing if the denormalize fails', () => {
-    expect(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE')).toBe(undefined);
+    it('should return an array for indexed items', () => {
+        const reducer = EntityReducerFactory({schema: fooList});
+        const state = {entity: reducer(
+            undefined,
+            {
+                type: 'FOOLIST_RECEIVE',
+                meta: {resultKey: 'FOOLIST_RECEIVE'},
+                payload: [{id: 'bar'}, {id: 'baz'}]
+            }
+        )};
+        const data = selectEntityByResult(state, 'FOOLIST_RECEIVE');
+        expect(data && data.length).toBe(2);
+    });
+
+    it('should return nothing if the denormalize fails', () => {
+        expect(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE')).toBe(undefined);
+    });
+
+    it('will memoize the response based on resultKey and normalizeCount', () => {
+        let state = {
+            entity: {
+                _baseSchema: EntitySchema('foo').set(ObjectSchema()),
+                _entities: {
+                    foo: { abc: {id: 'abc'}}
+                },
+                _result: {
+                    bar: 'abc',
+                    baz: 'abc'
+                },
+                _stats: {normalizeCount: 0}
+            }
+        };
+        const first = selectEntityByResult(state, 'bar');
+        const second = selectEntityByResult(state, 'bar');
+        expect(first).toBe(second);
+
+        state.entity._stats.normalizeCount = 1;
+        const third = selectEntityByResult(state, 'bar');
+        const fourth = selectEntityByResult(state, 'baz');
+        const fifth = selectEntityByResult(state, 'baz');
+        expect(second).not.toBe(third);
+        expect(third).not.toBe(fourth);
+        expect(fourth).toBe(fifth);
+
+    });
+
 });
 
 
