@@ -1,6 +1,6 @@
 {
   "name": "enty-state",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "The core functions for handling Enty's internal state",
   "license": "MIT",
   "author": "Allan Hortle",
