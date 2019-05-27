@@ -184,7 +184,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                             const response = selectEntityByResult(state, responseKey, hockMeta);
 
                             const memoedProps = generateMemoedProps(requestState, response);
-                            memoedProps[name].responseKey = responseKey;
+                            memoedProps[name].resultKey = responseKey;
                             memoedProps[name].onRequest = onRequest;
                             memoedProps[name].requestError = ErrorSelector(state, nextResultKey, hockMeta);
 
