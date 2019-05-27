@@ -14,12 +14,11 @@ and when you want to ask for it.
 RequestHock({
     name: string
     auto?: boolean|Array<string>,
-    shouldComponentAutoRequest?: (props: *) => boolean,
+    mapResponseToProps?: boolean|(response) => newProps,
+    optimistic?: boolean,
     payloadCreator?: (props: *) => *,
-    pipe?: (props: *) => (message: Message) => Message,
-    updateResultKey?: (resultKey: string, props: *) => string,
-    resultKey?: string,
-    mapResponseToProps?: boolean|(response) => newProps
+    shouldComponentAutoRequest?: (props: *) => boolean,
+    updateResultKey?: (resultKey: string, props: *) => string
 })(Component);
 ```
 
@@ -65,13 +64,25 @@ UserGetHoc({
 });
 ```
 
+### config.mapResponseToProps
+**type:** `boolean|(response) => newProps`  
+
+Function to map response back and then spread it back onto props.
+Useful for when you don't wish to fish the response out of the request message.
+
+
+### config.optimistic
+**type:** `boolean`
+**default:** `true`
+
+If true the request hoc will return any existing data it has for the current request
+during the empty, fetching and refetching states.
 
 
 ### config.payloadCreator
 **type:** `(props|payload) => *`  
 
-Map your props to the api function payload. If auto is truthy props will be given to the 
-function, otherwise it will be given what is passed to `message.onRequest()`.
+Map your props to the api function payload when `config.auto` is truthy.
 
 ```js
 // Auto request the user from react router params
@@ -82,34 +93,13 @@ UserGetHoc({
         id: props.match.params.id
     })
 });
-
-// Create a save user message that accepts a user object
-UserGetHoc({
-    name: 'saveUserMessage', 
-    payloadCreator: (user: User) => ({
-        id: user.id
-    })
-});
 ```
+
 
 ### config.shouldComponentAutoRequest
 **type:** `(props) => boolean`  
 
 If auto requesting is enabled, this hook lets you cancel the request based on props.
-
-
-### config.mapResponseToProps
-**type:** `boolean|(response) => newProps`  
-
-Function to map response back and then spread it back onto props.
-Useful for when you don't wish to fish the response out of the request message.
-
-
-### config.pipe
-**type:** `(props: *) => (message: Message) => Message`  
-
-Double-barrelled function to update the message before it is given
-to the child component
 
 
 ### config.updateResultKey
@@ -119,6 +109,12 @@ Thunk to amend the result key based on props, used when you only have one instan
 but it is invoked in various ways.
 
 ```js
+// Update based on an id
+UserGetHoc({
+    name: 'userMessage',
+    updateResultKey: (resultKey, props) => `${resultKey}-${props.id}`
+});
+
 // Create a fixed resuly key.
 UserGetHoc({
     name: 'userMessage',
