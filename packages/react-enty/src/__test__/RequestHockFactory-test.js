@@ -353,12 +353,45 @@ describe('config.mapResponseToProps', () => {
 
 });
 
+describe('config.mapResponseToProps', () => {
+
+    it('will call mapResponseToProps for auto requests', () => {
+        const mapPropsToPayload = jest.fn(x => x.id);
+        const payloadCreator = jest.fn();
+
+        runTest({
+            config: {name: 'foo', auto: true, mapPropsToPayload, payloadCreator},
+            props: {id: '123'},
+        });
+
+        expect(mapPropsToPayload).toHaveBeenCalledWith({id: '123'});
+        expect(payloadCreator).toHaveBeenCalledWith('123');
+    });
+
+    it('will not call mapResponseToProps for message.onRequest', () => {
+        const mapPropsToPayload = jest.fn(x => x.id);
+        const payloadCreator = jest.fn();
+
+        runTest({
+            config: {name: 'foo', mapPropsToPayload, payloadCreator},
+            props: {id: '123'},
+            render: (props) => {
+                props.foo.onRequest('Payload!');
+            }
+        });
+
+        expect(mapPropsToPayload).not.toHaveBeenCalledWith({id: '123'});
+        expect(payloadCreator).toHaveBeenCalledWith('Payload!');
+    });
+
+});
+
 
 describe('config.optimistic', () => {
 
-    it('will return existing results when empty or (re)fetching', () => {
+    it('will return existing results when empty or (re)fetching auto requests', () => {
         const run = (requestState, resultKey, match) => runTest({
-            config: {name: 'foo', resultKey},
+            config: {name: 'foo', resultKey, auto: true},
             requestState,
             render: props => expect(props.foo.response).toEqual(match),
             store: {
@@ -382,6 +415,29 @@ describe('config.optimistic', () => {
         run(RefetchingState(), 'foo', {id: '123'});
         run(RefetchingState(), 'bar', {});
 
+    });
+
+    it('will not return existing results when empty or (re)fetching auto requests', () => {
+        const run = (requestState, resultKey, match) => runTest({
+            config: {name: 'foo', resultKey},
+            requestState,
+            render: props => expect(props.foo.response).toEqual(match),
+            store: {
+                subscribe: () => {},
+                dispatch: (aa) => aa,
+                getState: () => ({
+                    entity: {
+                        _baseSchema: ObjectSchema({}),
+                        _result: {
+                            foo: {id: '123'}
+                        }
+                    }
+                })
+            }
+        });
+
+        run(EmptyState(), 'foo', {entity: undefined});
+        run(EmptyState(), 'bar', {});
     });
 
     it('will select the next resultKey for empty/fetching/refetching if optimistic is true', () => {
