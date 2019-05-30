@@ -64,6 +64,31 @@ UserGetHoc({
 });
 ```
 
+### config.mapPropsToPayload
+**type:** `(props: Object) => Object`
+
+If `config.auto` is truthy `mapResponseToProps` is called on props before they are passed to the 
+payload creator. This is useful in situations where you are both automatically requesting data 
+and triggering the `onRequest` callback as the payload creator does not need to mimic the props 
+object.
+
+```jsx
+// Request the user on component mount based on props.userId
+UserGetHoc({
+    name: 'userMessage',
+    auto: ['userId'],
+    mapPropsToPayload: (props) => props.userId,
+    payloadCreator: (id) => ({query: {user: id}}
+})
+
+// in another component request the user based on props.id and props.userMessage
+function RefreshUserButton(props) {
+    const {id, userMessage} = props;
+    return <button onClick={() => userMessage.onRequest(id)}>Refresh</button>;
+}
+```
+
+
 ### config.mapResponseToProps
 **type:** `boolean|(response) => newProps`  
 
