@@ -353,9 +353,9 @@ describe('config.mapResponseToProps', () => {
 
 });
 
-describe('config.mapResponseToProps', () => {
+describe('config.mapPropsToPayload', () => {
 
-    it('will call mapResponseToProps for auto requests', () => {
+    it('will call mapPropsToPayload for auto requests', () => {
         const mapPropsToPayload = jest.fn(x => x.id);
         const payloadCreator = jest.fn();
 
@@ -368,7 +368,7 @@ describe('config.mapResponseToProps', () => {
         expect(payloadCreator).toHaveBeenCalledWith('123');
     });
 
-    it('will not call mapResponseToProps for message.onRequest', () => {
+    it('will not call mapPropsToPayload for message.onRequest', () => {
         const mapPropsToPayload = jest.fn(x => x.id);
         const payloadCreator = jest.fn();
 
