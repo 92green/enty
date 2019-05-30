@@ -74,6 +74,9 @@ export type RequestHockConfigInput = {
     // custom hardcoded resultKey
     resultKey?: string,
 
+    // called on props before they are passed to payloadCreator
+    mapPropsToPayload?: Function,
+
     // Function to map response back and then spread it back onto props.
     // Useful for when you don't wish to fish the response out of the request message.
     mapResponseToProps?: boolean|Object => Object,
@@ -91,6 +94,7 @@ export type RequestHockConfigInput = {
  */
 export type RequestHockConfig = {
     auto?: boolean|Array<string>,
+    mapPropsToPayload?: Function,
     mapResponseToProps: Object => Object,
     name: string,
     optimistic?: boolean,

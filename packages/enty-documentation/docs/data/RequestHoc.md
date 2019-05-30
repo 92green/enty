@@ -64,6 +64,54 @@ UserGetHoc({
 });
 ```
 
+
+### config.payloadCreator
+**type:** `(props|payload) => *`  
+
+The payload creator is used to generate a unique key to keep track of your requests. The result is 
+hashed and stored in Enty state. This means a single RequestHoc can query different types of the 
+same data and Enty is able to cache the results.
+
+* If `auto` is truthy props are passed through `mapPropsToPayload` and then into `payloadCreator`.
+* Calls to `message.onRequest` are passed directly to `payloadCreator`.
+
+
+```js
+// Auto request different users from react router params
+UserGetHoc({
+    name: 'userMessage', 
+    auto: ['match.params.id'],
+    payloadCreator: (props) => ({
+        id: props.match.params.id
+    })
+});
+```
+
+### config.mapPropsToPayload
+**type:** `(props: Object) => Object`
+
+If `config.auto` is truthy `mapPropsToPayload` is called on props before they are passed to the 
+payload creator. This is useful in situations where you are both automatically requesting data 
+and triggering the `onRequest` callback as the payload creator does not need to mimic the props 
+object.
+
+```jsx
+// Request the user on component mount based on props.userId
+UserGetHoc({
+    name: 'userMessage',
+    auto: ['userId'],
+    mapPropsToPayload: (props) => props.userId,
+    payloadCreator: (id) => ({query: {user: id}}
+})
+
+// in another component request the user based on props.id and props.userMessage
+function RefreshUserButton(props) {
+    const {id, userMessage} = props;
+    return <button onClick={() => userMessage.onRequest(id)}>Refresh</button>;
+}
+```
+
+
 ### config.mapResponseToProps
 **type:** `boolean|(response) => newProps`  
 
@@ -77,23 +125,6 @@ Useful for when you don't wish to fish the response out of the request message.
 
 If true the request hoc will return any existing data it has for the current request
 during the empty, fetching and refetching states.
-
-
-### config.payloadCreator
-**type:** `(props|payload) => *`  
-
-Map your props to the api function payload when `config.auto` is truthy.
-
-```js
-// Auto request the user from react router params
-UserGetHoc({
-    name: 'userMessage', 
-    auto: ['props.match.params.id'],
-    payloadCreator: (props) => ({
-        id: props.match.params.id
-    })
-});
-```
 
 
 ### config.shouldComponentAutoRequest

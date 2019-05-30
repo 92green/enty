@@ -60,8 +60,8 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
              */
             function RequestHockApplier(Component: ComponentType<*>): ComponentType<*> {
 
-                const {payloadCreator = returnObject} = config;
                 const {updateResultKey = identity()} = config;
+                const {mapPropsToPayload = identity()} = config;
                 const {name} = config;
                 const {optimistic = true} = config;
                 const {mapResponseToProps} = config;
@@ -70,6 +70,7 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                 const {shouldComponentAutoRequest = returnTrue} = config;
                 const {auto = false} = config;
                 const paths = typeof auto === 'boolean' ? [] : auto;
+                const {payloadCreator = auto ? returnObject : identity()} = config;
 
                 if(!name) {
                     throw RequestHockNoNameError(hockMeta.requestActionName);
@@ -89,14 +90,14 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                     // and calculate the current and next responseKey
                     (ComponentWithState) => class RequestHock extends React.Component<Object, State> {
 
-                        constructor(pollutedProps) {
-                            super(pollutedProps);
-                            const props = filterReduxProps(pollutedProps);
-                            this.state = RequestHock.deriveResponseKey(props, payloadCreator(props));
+                        constructor(props) {
+                            super(props);
+                            this.state = {resultKey: null, nextResultKey: null};
                         }
 
                         static getDerivedStateFromProps(pollutedProps, state: State) {
-                            let resultKeys;
+                            let resultKeys = {};
+                            const {dispatch} = pollutedProps;
                             const props = filterReduxProps(pollutedProps);
                             const getPath = (path) => getIn(path.split('.'));
                             const setPath = (path, value) => setIn(path.split('.'), value);
@@ -110,7 +111,9 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
 
                             if(auto) {
                                 if((propsHaveChanged || !state.previousProps) && shouldComponentAutoRequest(props)) {
-                                    resultKeys = RequestHock.request(pollutedProps.dispatch, props, payloadCreator(props), state.nextResultKey);
+                                    const payload = payloadCreator(mapPropsToPayload(props));
+                                    resultKeys = RequestHock.deriveResponseKey(props, payload, state.nextResultKey);
+                                    RequestHock.request(dispatch, payload, resultKeys.nextResultKey);
                                 }
                             }
 
@@ -133,16 +136,8 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                             };
                         }
 
-                        static request(dispatch: Function, props, payload, existingResultKey?: any) {
-                            return pipeWith(
-                                RequestHock.deriveResponseKey(props, payload, existingResultKey),
-                                nextState => {
-                                    dispatch(actionCreator(payload, {
-                                        resultKey: nextState.nextResultKey
-                                    }));
-                                    return nextState;
-                                }
-                            );
+                        static request(dispatch: Function, payload, resultKey: any) {
+                            return dispatch(actionCreator(payload, {resultKey}));
                         }
 
                         render(): Element<any> {
@@ -150,12 +145,14 @@ export default function RequestHockFactory(actionCreator: Function, hockMeta: Ho
                                 ...this.props,
                                 [name]: {
                                     ...this.state,
-                                    onRequest: (payload) => this.setState(RequestHock.request(
-                                        this.props.dispatch,
-                                        filterReduxProps(this.props),
-                                        payload,
-                                        this.state.resultKey
-                                    ))
+                                    onRequest: (data) => {
+                                        const payload = payloadCreator(data);
+                                        const props = filterReduxProps(this.props);
+                                        const {dispatch} = this.props;
+                                        const resultKeys = RequestHock.deriveResponseKey(props, payload, this.state.nextResultKey);
+                                        this.setState(resultKeys);
+                                        return RequestHock.request(dispatch, payload, resultKeys.nextResultKey);
+                                    }
                                 }
                             };
                             return <ComponentWithState {...newProps} />;
