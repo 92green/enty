@@ -64,6 +64,29 @@ UserGetHoc({
 });
 ```
 
+
+### config.payloadCreator
+**type:** `(props|payload) => *`  
+
+The payload creator is used to generate a unique key to keep track of your requests. The result is 
+hashed and stored in Enty state. This means a single RequestHoc can query different types of the 
+same data and Enty is able to cache the results.
+
+* If `auto` is truthy props are passed through `mapResponseToProps` and then into `payloadCreator`.
+* Calls to `message.onRequest` are passed directly to `payloadCreator`.
+
+
+```js
+// Auto request different usess from react router params
+UserGetHoc({
+    name: 'userMessage', 
+    auto: ['match.params.id'],
+    payloadCreator: (props) => ({
+        id: props.match.params.id
+    })
+});
+```
+
 ### config.mapPropsToPayload
 **type:** `(props: Object) => Object`
 
@@ -102,23 +125,6 @@ Useful for when you don't wish to fish the response out of the request message.
 
 If true the request hoc will return any existing data it has for the current request
 during the empty, fetching and refetching states.
-
-
-### config.payloadCreator
-**type:** `(props|payload) => *`  
-
-Map your props to the api function payload when `config.auto` is truthy.
-
-```js
-// Auto request the user from react router params
-UserGetHoc({
-    name: 'userMessage', 
-    auto: ['props.match.params.id'],
-    payloadCreator: (props) => ({
-        id: props.match.params.id
-    })
-});
-```
 
 
 ### config.shouldComponentAutoRequest
