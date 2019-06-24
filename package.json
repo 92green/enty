@@ -1,4 +1,7 @@
 {
+  "release": {
+    "name": "WorthwhileDinosaur"
+  },
   "private": true,
   "scripts": {
     "build": "lerna run build --parallel --",
