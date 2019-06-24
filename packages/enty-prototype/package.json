@@ -1,0 +1,16 @@
+{
+  "name": "enty-prototype",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "poi --prod",
+    "dev": "poi --serve"
+  },
+  "devDependencies": {
+    "poi": "^12.4.2",
+    "react-enty-hooks": "0.0.0"
+  },
+  "dependencies": {
+    "faker": "^4.1.0"
+  }
+}
