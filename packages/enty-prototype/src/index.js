@@ -14,7 +14,7 @@ const user = EntitySchema('user', {
 const userList = ArraySchema(user);
 
 function getUser(id) {
-    faker.seed(+Hash(id));
+    faker.seed(+Hash({id}));
     return Promise.resolve()
         .then(() => new Promise(resolve => setTimeout(resolve, Math.random() * 3000)))
         .then(() => ({
@@ -71,7 +71,7 @@ function OnPropChange() {
     return <div>
         <button onClick={() => setId('foo')}>foo</button>
         <button onClick={() => setId('bar')}>bar</button>
-        <OnPropChangeRender id={id} />
+        <Hocked id={id} />
     </div>
 }
 function OnPropChangeRender({id}) {
@@ -138,31 +138,21 @@ function Parallel() {
 }
 
 
+const withUser = userItem.requestHoc({
+    name: 'user',
+    auto: ['id'],
+    payloadCreator: (props) => props.id
+});
+
+const Hocked = withUser((props) => {
+    return <User message={props.user} />;
+});
 
 
 
 function App() {
     return <Provider>
-        <h1>Series</h1>
-        <Series />
-
-
-        <h1>Parallel</h1>
-        <Parallel />
-
-        <h1>On Load</h1>
-        <OnLoad />
-
-        <h1>On Prop Change</h1>
-        <OnPropChange />
-
-        <h1>On Callback</h1>
-        <OnCallback />
-
-        <h1>List</h1>
-        <List />
-
-
+        <OnPropChange id="foo"/>
     </Provider>;
 }
 

@@ -12201,6 +12201,16 @@ unmutable@^0.39.0:
     is-plain-object "^2.0.4"
     lodash.range "^3.2.0"
 
+unmutable@^0.45.1:
+  version "0.45.1"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.45.1.tgz#182ded785db16a2947758518b0eebd4d3cf6566f"
+  integrity sha512-ILJkNKXrWXsS/WbqxChOo5n561CNkSj8JWFyaKKTCzyF5hz1ErOM71cClU+19N3Qj550naCivOzg7grBpGpAKQ==
+  dependencies:
+    "@babel/runtime" "^7.1.5"
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
+
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unpipe/-/unpipe-1.0.0.tgz#b2bf4ee8514aae6165b4817829d21b2ef49904ec"

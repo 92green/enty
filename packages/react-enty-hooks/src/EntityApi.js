@@ -12,15 +12,8 @@ type ActionMap = {
     [key: string]: *
 };
 
-type HookConfig = {
-    actionType: string,
-    requestAction: Function,
-    generateResultKey: Function,
-    context: *
-};
 
 export default function EntityApi(schema: Schema<*>, actionMap: ActionMap): Object {
-    const initialState = {};
 
     const {Provider, ProviderHoc, Context} = ProviderFactory({
         reducer: EntityReducerFactory({schema})
@@ -28,15 +21,18 @@ export default function EntityApi(schema: Schema<*>, actionMap: ActionMap): Obje
 
     let api = EntityApiFactory(
         actionMap,
-        (actionConfig) => ({
-            useRequest: RequestHook(Context, actionConfig),
-            requestHoc: RequestHoc(Context, actionConfig)
-        })
+        (actionConfig) => {
+            const useRequest = RequestHook(Context, actionConfig);
+            return {
+                useRequest,
+                requestHoc: RequestHoc({useRequest})
+            };
+        }
     );
 
     api.Provider = Provider;
     api.ProviderHoc = ProviderHoc;
 
     return api;
-};
+}
 
