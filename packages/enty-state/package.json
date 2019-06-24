@@ -1,8 +1,7 @@
 {
-  "name": "enty-immutable",
-  "version": "0.2.0-alpha.2",
-  "description": "Enty schemas for Immutable JS",
-  "main": "lib/index.js",
+  "name": "enty-state",
+  "version": "0.1.0-alpha.3",
+  "description": "The core functions for handling Enty's internal state",
   "license": "MIT",
   "author": "Allan Hortle",
   "repository": {
@@ -22,7 +21,7 @@
     "watch": "yarn build -w"
   },
   "dependencies": {
-    "enty": "^0.50.0-alpha.2",
-    "immutable": "^3.8.1"
+    "fronads": "^0.18.0",
+    "unmutable": "^0.39.0"
   }
 }

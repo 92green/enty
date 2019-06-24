@@ -5,7 +5,7 @@ module.exports = {
         "packages/**/*.{js,jsx}",
         "!**/lib/**",
         "!**/node_modules/**",
-        "!packages/enty-docs/**"
+        "!packages/enty-documentation/**"
     ],
     testMatch: ["**/__test__/**/*.js?(x)"]
 };

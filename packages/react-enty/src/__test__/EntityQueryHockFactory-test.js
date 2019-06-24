@@ -3,7 +3,7 @@ import React from 'react';
 import type {Element} from 'react';
 import {fromJS} from 'immutable';
 import EntityQueryHockFactory from '../EntityQueryHockFactory';
-import {FetchingState} from '../RequestState';
+import {FetchingState} from 'enty-state/lib/data/RequestState';
 
 
 var NOOP = () => {};

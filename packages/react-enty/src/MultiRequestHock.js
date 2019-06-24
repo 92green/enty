@@ -5,16 +5,16 @@ import type {HockApplier} from './util/definitions';
 import type {MultiRequestHockConfig} from './util/definitions';
 
 import React from 'react';
+import composeWith from 'unmutable/lib/util/composeWith';
 
 import {RequestHockNoNameError} from './util/Error';
 import PropChangeHoc from './util/PropChangeHoc';
-import Message from './data/Message';
-import composeWith from 'unmutable/lib/util/composeWith';
-import {EmptyState} from './RequestState';
-import {RefetchingState} from './RequestState';
-import {FetchingState} from './RequestState';
-import {SuccessState} from './RequestState';
-import {ErrorState} from './RequestState';
+import Message from 'enty-state/lib/data/Message';
+import {EmptyState} from 'enty-state/lib/data/RequestState';
+import {RefetchingState} from 'enty-state/lib/data/RequestState';
+import {FetchingState} from 'enty-state/lib/data/RequestState';
+import {SuccessState} from 'enty-state/lib/data/RequestState';
+import {ErrorState} from 'enty-state/lib/data/RequestState';
 
 
 type State = {

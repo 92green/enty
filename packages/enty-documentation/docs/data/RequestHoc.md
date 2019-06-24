@@ -14,12 +14,11 @@ and when you want to ask for it.
 RequestHock({
     name: string
     auto?: boolean|Array<string>,
-    shouldComponentAutoRequest?: (props: *) => boolean,
+    mapResponseToProps?: boolean|(response) => newProps,
+    optimistic?: boolean,
     payloadCreator?: (props: *) => *,
-    pipe?: (props: *) => (message: Message) => Message,
-    updateResultKey?: (resultKey: string, props: *) => string,
-    resultKey?: string,
-    mapResponseToProps?: boolean|(response) => newProps
+    shouldComponentAutoRequest?: (props: *) => boolean,
+    updateResultKey?: (resultKey: string, props: *) => string
 })(Component);
 ```
 
@@ -66,36 +65,51 @@ UserGetHoc({
 ```
 
 
-
 ### config.payloadCreator
 **type:** `(props|payload) => *`  
 
-Map your props to the api function payload. If auto is truthy props will be given to the 
-function, otherwise it will be given what is passed to `message.onRequest()`.
+The payload creator is used to generate a unique key to keep track of your requests. The result is 
+hashed and stored in Enty state. This means a single RequestHoc can query different types of the 
+same data and Enty is able to cache the results.
+
+* If `auto` is truthy props are passed through `mapPropsToPayload` and then into `payloadCreator`.
+* Calls to `message.onRequest` are passed directly to `payloadCreator`.
+
 
 ```js
-// Auto request the user from react router params
+// Auto request different users from react router params
 UserGetHoc({
     name: 'userMessage', 
-    auto: ['props.match.params.id'],
+    auto: ['match.params.id'],
     payloadCreator: (props) => ({
         id: props.match.params.id
     })
 });
-
-// Create a save user message that accepts a user object
-UserGetHoc({
-    name: 'saveUserMessage', 
-    payloadCreator: (user: User) => ({
-        id: user.id
-    })
-});
 ```
 
-### config.shouldComponentAutoRequest
-**type:** `(props) => boolean`  
+### config.mapPropsToPayload
+**type:** `(props: Object) => Object`
 
-If auto requesting is enabled, this hook lets you cancel the request based on props.
+If `config.auto` is truthy `mapPropsToPayload` is called on props before they are passed to the 
+payload creator. This is useful in situations where you are both automatically requesting data 
+and triggering the `onRequest` callback as the payload creator does not need to mimic the props 
+object.
+
+```jsx
+// Request the user on component mount based on props.userId
+UserGetHoc({
+    name: 'userMessage',
+    auto: ['userId'],
+    mapPropsToPayload: (props) => props.userId,
+    payloadCreator: (id) => ({query: {user: id}}
+})
+
+// in another component request the user based on props.id and props.userMessage
+function RefreshUserButton(props) {
+    const {id, userMessage} = props;
+    return <button onClick={() => userMessage.onRequest(id)}>Refresh</button>;
+}
+```
 
 
 ### config.mapResponseToProps
@@ -105,11 +119,18 @@ Function to map response back and then spread it back onto props.
 Useful for when you don't wish to fish the response out of the request message.
 
 
-### config.pipe
-**type:** `(props: *) => (message: Message) => Message`  
+### config.optimistic
+**type:** `boolean`
+**default:** `true`
 
-Double-barrelled function to update the message before it is given
-to the child component
+If true the request hoc will return any existing data it has for the current request
+during the empty, fetching and refetching states.
+
+
+### config.shouldComponentAutoRequest
+**type:** `(props) => boolean`  
+
+If auto requesting is enabled, this hook lets you cancel the request based on props.
 
 
 ### config.updateResultKey
@@ -119,6 +140,12 @@ Thunk to amend the result key based on props, used when you only have one instan
 but it is invoked in various ways.
 
 ```js
+// Update based on an id
+UserGetHoc({
+    name: 'userMessage',
+    updateResultKey: (resultKey, props) => `${resultKey}-${props.id}`
+});
+
 // Create a fixed resuly key.
 UserGetHoc({
     name: 'userMessage',

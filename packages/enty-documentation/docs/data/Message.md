@@ -8,22 +8,27 @@ It holds all the information that you would need to both make requests and rende
 when they come back. _Most often you shouldn't need to worry about creating messages. They are constructed for you
 by the RequestHock._
 
+_Tip: Messages only change when Enty does so are safe to compare with ===. This is great for render
+performance._
+
+
+
 ```js
 class Message<RequestState> {
-    response: *,
+    response: mixed,
     requestState: RequestState,
-    requestError: *,
-    onRequest(response: *) => Promise<*>
-    get()
-    getIn()
-    updateRequestState()
+    requestError: mixed,
+    onRequest(payload: mixed) => Promise<mixed>,
+    get(key: string, notFoundValue?: mixed) => mixed,
+    getIn(keyPath: Array<string>, notFoundValue?: mixed) => mixed,
+    updateRequestState(updater: RequestState => RequestState) => Message
 }
 ```
 
 ## Properties
 
 ### .response
-**type:** `*`  
+**type:** `mixed`  
 
 Once a request has returned the data can be found in response. _Note: you can also use
 [get()](#get) and [getIn()](#getin) for easy access to the response object._
@@ -42,13 +47,13 @@ function UserAvatar(props) {
         .fetchingMap(() => <Loader/>)
         .refetchingMap(() => <Loader/>)
         .successMap(() => <img src={userMessage.get('avatar')} />)
-        .errorMap={() => <span>user not found :(</span>}
+        .errorMap(() => <span>user not found :(</span>)
         .value();
 }
 ```
 
 ### .requestError
-**type:** `*`  
+**type:** `mixed`  
 
 If the request promise rejects Enty will rerender the view with the caught error in 
 `requestError`. _The requestState will also be in an error state._
@@ -58,7 +63,7 @@ function UserAvatar(props) {
     const {userMessage} = props;
     return userMessage.requestState
         .successMap(() => <img src={userMessage.get('avatar')} />)
-        .errorMap={() => <span>{userMessage.requestError.message}</span>}
+        .errorMap(() => <span>{userMessage.requestError.message}</span>)
         .value();
 }
 ```
@@ -67,10 +72,12 @@ function UserAvatar(props) {
 ## Methods
 
 ### .onRequest()
-**type:** `(payload) => Promise<*>`  
+**type:** `(payload) => Promise<mixed>`  
 
-A promise returning function that will dispatch the corresponding api function. _This ismost often 
+A promise returning function that will dispatch the corresponding api function. _This is most often 
 used to trigger user initiated requests like save or remove._
+
+_Note: The payload given to onRquest is not passed through `config.payloadCreator`_
 
 ```jsx
 function Button({message}) {
@@ -82,7 +89,7 @@ const SaveUserButton = SaveUserHoc({name: 'message'})(Button);
 
 
 ### .get()
-**type:** `(key: string, defaultValue?: *) => *`  
+**type:** `(key: string, notFoundValue?: mixed) => mixed`  
 
 Returns the value from `message.response.${key}`. If nothing is found it will return `defaultValue`
 if provided.
@@ -92,7 +99,7 @@ const score = message.get('score', 0);
 ```
 
 ### .getIn()
-**type:** `(keyPath: Array<string>, defaultValue?: *) => *`  
+**type:** `(keyPath: Array<string>, notFoundValue?: mixed) => mixed`  
 
 Returns the value at the provided key pathm or defaultValue if nothing is found.
 
@@ -127,18 +134,18 @@ Create a Message in an Empty state.
 Create a message in a Fetching state
 
 ### RefetchingMessage()
-**type:** `(response: *, rest?: MessageProps = {}) => Message<RefetchingState>`
+**type:** `(response: mixed, rest?: MessageProps = {}) => Message<RefetchingState>`
 
 Create a message in a Refetching state
 
 ### SuccessMessage()
-**type:** `(response: *, rest?: MessageProps = {}) => Message<SuccessState>`
+**type:** `(response: mixed, rest?: MessageProps = {}) => Message<SuccessState>`
 
 Create a message in a Success state
 
 
 ### ErrorMessage()
-**type:** `(requestError: *, rest?: MessageProps = {}) => Message<ErrorState>`
+**type:** `(requestError: mixed, rest?: MessageProps = {}) => Message<ErrorState>`
 
 Create a message in an Error state.
 

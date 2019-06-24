@@ -1,6 +1,6 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
-import {FetchingState} from '../RequestState';
+import {FetchingState} from '../data/RequestState';
 import EntitySchema from 'enty/lib/EntitySchema';
 import ArraySchema from 'enty/lib/ArraySchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
