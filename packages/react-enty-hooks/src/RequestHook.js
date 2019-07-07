@@ -14,7 +14,9 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
 
     return () => {
         const [resultKey, setResultKey] = useState();
-        const [state, dispatch] = useContext(context);
+        const store = useContext(context);
+        if(!store) throw 'useRequest must be called in a provider';
+        const [state, dispatch] = store;
         const responseRef = useRef();
 
         let requestState = state._requestState[resultKey] || EmptyState();

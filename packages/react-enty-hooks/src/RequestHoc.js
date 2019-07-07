@@ -18,7 +18,7 @@ type HockConfig = {
 };
 
 const returnTrue: (payload?: mixed) => boolean = () => true;
-const returnObject: (payload?: mixed) => boolean = () => true;
+const returnObject: (payload?: mixed) => mixed = () => {};
 
 export default function RequestHocFactory({useRequest}: Config) {
     return (hockConfig: HockConfig) => {
@@ -27,6 +27,10 @@ export default function RequestHocFactory({useRequest}: Config) {
         const {payloadCreator = auto ? returnObject : identity()} = hockConfig;
         const {shouldComponentAutoRequest = returnTrue} = hockConfig;
         const {mapResponseToProps} = hockConfig;
+
+        if(!name) {
+            throw 'requestHoc must be given a name';
+        }
 
         return (Component: *) => (props: *) => {
             const message = useRequest();
