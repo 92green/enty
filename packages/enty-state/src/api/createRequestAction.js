@@ -41,6 +41,7 @@ export default function createRequestAction(actionType: string, sideEffect: Side
             // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
                 next: (data) => receiveAction(data),
+                complete: (data) => receiveAction(data),
                 error: (error) => errorAction(error)
             });
             return pending;

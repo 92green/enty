@@ -36,7 +36,7 @@ describe('observable support', () => {
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'FOO_FETCH'});
     });
 
-    it('can trigger multiple succes actions via next', () => {
+    it('can trigger multiple success actions via next', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction('FOO', () => observable((sub) => {
@@ -60,15 +60,16 @@ describe('observable support', () => {
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: 'ERROR', type: 'FOO_ERROR'});
     });
 
-    it('will return normalized response state via complete', () => {
+    it('will trigger receive action via complete', () => {
         const dispatch = jest.fn();
         const request = createRequestAction('FOO', () => observable((sub) => {
-            sub.complete();
+            sub.complete('1');
         }));
 
-        request(payload, {resultKey: 'foo'})(dispatch, () => 'STATE');
-        expect(selectEntityByResult).toHaveBeenCalledWith('STATE', 'foo');
+        request(payload, meta)(dispatch, jest.fn());
+        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '1', type: 'FOO_RECEIVE'});
     });
+
 });
 
 describe('promise support', () => {
