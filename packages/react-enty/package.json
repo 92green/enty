@@ -1,9 +1,9 @@
 {
-  "name": "react-enty-hooks",
+  "name": "react-enty",
   "version": "0.0.0",
-  "description": "React Hook bindings for Enty schemas",
+  "description": "React bindings for Enty",
   "main": "lib/index.js",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Allan Hortle",
   "repository": {
     "type": "git",
