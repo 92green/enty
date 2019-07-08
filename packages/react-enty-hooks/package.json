@@ -25,7 +25,8 @@
     "react": "^16.8.3"
   },
   "devDependencies": {
-    "react": "^16.8.3"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "dependencies": {
     "enty": "^0.50.0-alpha.2",

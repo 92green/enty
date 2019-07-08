@@ -6,7 +6,7 @@
   "scripts": {
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
-    "flow": "blueflag-test flow",
+    "flow": "flow check",
     "flow-coverage": "blueflag-test flow-coverage -M",
     "lint": "blueflag-test lint",
     "test": "yarn jest",
@@ -27,6 +27,7 @@
     "blueflag-test": "0.21.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
+    "flow-bin": "^0.102.0",
     "jest-enzyme": "^7.0.2",
     "lerna": "^3.4.3",
     "react": "^16.8.6",

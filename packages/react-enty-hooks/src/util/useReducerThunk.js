@@ -14,7 +14,7 @@ export default function useThunkReducer(reducer: Function, initialState: mixed):
 
     // Reducer and augmented dispatcher.
     const reduce = (action) => reducer(getState(), action);
-    const dispatch = (action: mixed) => typeof action === 'function'
+    const dispatch = (action) => typeof action === 'function'
         ? action(dispatch, getState)
         : setState(reduce(action))
     ;
