@@ -1,6 +1,11 @@
 {
-  "lerna": "2.9.0",
   "npmClient": "yarn",
-  "useWorkspaces": true,
-  "version": "independent"
+  "version": "0.0.0",
+  "packages": [
+      "packages/enty-documentation/*",
+      "packages/enty-immutable/*",
+      "packages/enty-state/*",
+      "packages/enty/*",
+      "packages/react-enty/*"
+  ]
 }
