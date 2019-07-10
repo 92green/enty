@@ -129,10 +129,10 @@ describe('EntitySchema.denormalize', () => {
         // $FlowFixMe - deliberate misuse of types for testing
         const NullDefinitionEnitity = EntitySchema('bar').set(null);
 
-        const nullSchemaError = expect(() => NullSchemaEnitity.normalize({}, {}))
+        expect(() => NullSchemaEnitity.normalize({}, {}))
             .toThrow(NoDefinitionError('foo'));
 
-        const nullDefinitionError = expect(() => NullDefinitionEnitity.normalize({}, {}))
+        expect(() => NullDefinitionEnitity.normalize({}, {}))
             .toThrow(NoDefinitionError('bar'));
 
     });

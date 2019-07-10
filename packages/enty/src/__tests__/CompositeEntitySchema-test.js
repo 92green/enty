@@ -2,25 +2,22 @@
 import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
 import ObjectSchema from '../ObjectSchema';
-import {NoDefinitionError} from '../util/Error';
 
 var course = EntitySchema('course').set(ObjectSchema());
 var dog = EntitySchema('dog').set(ObjectSchema());
 var participant = EntitySchema('participant').set(ObjectSchema());
 
 var courseParticipant = CompositeEntitySchema('courseParticipant', {
-    definition: participant,
     compositeKeys: {
         course
     }
-});
+}).set(participant);
 
 var dogCourseParticipant = CompositeEntitySchema('dogCourseParticipant', {
-    definition: dog,
     compositeKeys: {
         courseParticipant
     }
-});
+}).set(dog);
 
 const derek = {
     id: '123',
@@ -112,20 +109,17 @@ test('can defer their definition', () => {
 
 
 test('compositeKeys will override defintion keys ', () => {
-    const cat = EntitySchema('cat', {
-        definition: ObjectSchema({
-            friend: dog
-        })
-    });
+    const cat = EntitySchema('cat').set(ObjectSchema({
+        friend: dog
+    }));
 
     const owl = EntitySchema('owl').set(ObjectSchema());
 
     var catOwl = CompositeEntitySchema('catOwl', {
-        definition: cat,
         compositeKeys: {
             friend: owl
         }
-    });
+    }).set(cat);
 
     const {entities} = catOwl.normalize({
         id: 'sparky',
@@ -162,7 +156,7 @@ test('set, get & update dont mutate the schema while still returning it', () => 
 });
 
 test('set will replace the definition at a key', () => {
-    const schema = courseParticipant
+    const schema = courseParticipant;
     schema.set(dog);
     expect(schema.definition).toBe(dog);
 });

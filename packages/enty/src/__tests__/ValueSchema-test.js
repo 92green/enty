@@ -3,9 +3,7 @@ import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
 import ValueSchema from '../ValueSchema';
 
-const foo = EntitySchema('foo', {
-    definition: ObjectSchema({})
-})
+const foo = EntitySchema('foo').set(ObjectSchema());
 
 const fooValues = ObjectSchema({
     foo: ValueSchema(foo)
@@ -30,14 +28,16 @@ test('normalize', () => {
 });
 
 test('denormalize', () => {
+    const foo = EntitySchema('foo').set(ObjectSchema());
+    const fooValue = ValueSchema(foo);
     const data = {id: '1'};
     const entities = {
         foo: {
             "1": data
         }
     };
-    expect(data).toEqual(ValueSchema(foo).denormalize({result: '1', entities}));
-    expect(data).toEqual(ValueSchema(foo).denormalize({result: '1', entities}, undefined));
+    expect(data).toEqual(fooValue.denormalize({result: '1', entities}));
+    expect(data).toEqual(fooValue.denormalize({result: '1', entities}, undefined));
 });
 
 

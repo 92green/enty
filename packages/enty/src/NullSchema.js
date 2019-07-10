@@ -14,7 +14,7 @@ export default class NullSchema implements Schema<*> {
     /**
      * NullSchema.normalize
      */
-    normalize(data: *, entities: Object): NormalizeState  {
+    normalize(data: *, entities?: Object = {}): NormalizeState  {
         return {
             entities,
             result: null,
@@ -26,7 +26,7 @@ export default class NullSchema implements Schema<*> {
      * NullSchema.denormalize
      */
     // eslint-disable-next-line
-    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): * {
+    denormalize(denormalizeState: DenormalizeState, path?: Array<*> = []): * {
         return null;
     }
 }
