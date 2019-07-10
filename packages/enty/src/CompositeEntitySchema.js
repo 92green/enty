@@ -93,6 +93,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
         // recurse into the main definition
         let {schemas, result: mainResult} = definition.normalize(adjustedData, entities);
 
+        // $FlowFixMe - Error is so obtuse its not googlable: string [1] is not an object.
         const result = {
             [definition.options.name]: mainResult,
             ...compositeResults

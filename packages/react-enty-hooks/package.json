@@ -1,0 +1,37 @@
+{
+  "name": "react-enty-hooks",
+  "version": "0.0.0",
+  "description": "React Hook bindings for Enty schemas",
+  "main": "lib/index.js",
+  "license": "UNLICENSED",
+  "author": "Allan Hortle",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueflag/enty.git"
+  },
+  "files": [
+    "lib"
+  ],
+  "bugs": {
+    "url": "https://github.com/blueflag/enty/issues"
+  },
+  "private": false,
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
+    "watch": "yarn build -w"
+  },
+  "peerDependencies": {
+    "react": "^16.8.3"
+  },
+  "devDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "dependencies": {
+    "enty": "^0.50.0-alpha.2",
+    "enty-state": "^0.1.0-alpha.3",
+    "lru-memoize": "^1.1.0",
+    "unmutable": "^0.45.1"
+  }
+}

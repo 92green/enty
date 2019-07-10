@@ -2,8 +2,6 @@
 import type {SideEffect} from '../util/definitions';
 import type {AsyncType} from '../util/definitions';
 
-import {selectEntityByResult} from '../EntitySelector';
-import RequestStateSelector from '../RequestStateSelector';
 import isObservable from '../util/isObservable';
 
 
@@ -43,7 +41,7 @@ export default function createRequestAction(actionType: string, sideEffect: Side
             // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
                 next: (data) => receiveAction(data),
-                complete: () => selectEntityByResult(getState(), meta.resultKey),
+                complete: (data) => receiveAction(data),
                 error: (error) => errorAction(error)
             });
             return pending;
@@ -53,11 +51,11 @@ export default function createRequestAction(actionType: string, sideEffect: Side
         return pending.then(
             (data: any): * => {
                 receiveAction(data);
-                return selectEntityByResult(getState(), meta.resultKey);
+                return data;
             },
             (error: any): * => {
                 errorAction(error);
-                return Promise.reject(RequestStateSelector(getState(), meta.resultKey).value());
+                return Promise.reject(error);
             }
         );
     };
