@@ -1,35 +1,58 @@
-//@flow
-import sinon from 'sinon';
-import {Map} from 'immutable';
+// @flow
+import React from 'react';
 import EntityApi from '../EntityApi';
-import ObjectSchema from 'enty/lib/ObjectSchema';
+import {ObjectSchema} from 'enty';
 
-const RESOLVE = (aa) => Promise.resolve(aa);
-const REJECT = (aa) => Promise.reject(aa);
+describe('exports', () => {
 
-
-describe('api construction', () => {
-    var api = EntityApi(ObjectSchema({}), {
-        resolve: RESOLVE,
-        reject: REJECT,
-        foo: {
-            bar: RESOLVE
+    const api = EntityApi(ObjectSchema({}), {
+        foo: () => Promise.resolve(),
+        bar: {
+            baz: () => Promise.resolve()
         }
     });
 
-    it('will maintain the same shape as provided', () => {
-        expect(typeof api.foo.bar.request).toBe('function');
-        expect(typeof api.resolve.request).toBe('function');
-        expect(typeof api.reject.request).toBe('function');
+    it('will export the api shape', () => {
+        const requestHoc = expect.any(Function);
+        const useRequest = expect.any(Function);
+        const Provider = expect.any(Function);
+        const ProviderHoc = expect.any(Function);
+
+        expect(api).toMatchObject({
+            Provider,
+            ProviderHoc,
+            foo: {
+                requestHoc,
+                useRequest
+            },
+            bar: {
+                baz: {
+                    requestHoc,
+                    useRequest
+                }
+            }
+        });
     });
 
-    it('will add an EntityProvider', () => {
-        expect(typeof api.EntityProvider).toBe('function');
+});
+
+describe('Provider', () => {
+
+    it('will transparently stack providers', () => {
+        const A = EntityApi(ObjectSchema({}), {
+            foo: () => Promise.resolve(),
+        });
+        const B = EntityApi(ObjectSchema({}), {
+            foo: () => Promise.resolve(),
+        });
+        const Child = () => null;
+
+        expect(() => mount(<A.Provider>
+            <B.Provider>
+                <Child/>
+            </B.Provider>
+        </A.Provider>)).not.toThrow();
     });
 
-    it('will set the reducer and store on an _enty key', () => {
-        expect(typeof api._enty.store).toBe('object');
-        expect(typeof api._enty.reducer).toBe('function');
-    });
 });
 
