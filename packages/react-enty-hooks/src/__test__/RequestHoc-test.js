@@ -28,9 +28,6 @@ describe('config', () => {
             expect(() => foo.requestHoc({})).toThrow('requestHoc must be given a name');
         });
 
-        it('will memoise the creation of the message based on requestState and response', () => {
-        });
-
         it('will give a Message to props.[name]', () => {
             expect.assertions(1);
             mountWithProvider(() => composeWith(

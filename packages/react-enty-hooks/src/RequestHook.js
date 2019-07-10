@@ -45,6 +45,6 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             response,
             requestError: state._error[resultKey],
             onRequest
-        }), [requestState, response]);
+        }), [requestState, response, resultKey]);
     };
 }

@@ -1,4 +1,5 @@
 // @flow
+import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
 
@@ -38,19 +39,20 @@ describe('exports', () => {
 describe('Provider', () => {
 
     it('will transparently stack providers', () => {
-    });
+        const A = EntityApi(ObjectSchema({}), {
+            foo: () => Promise.resolve(),
+        });
+        const B = EntityApi(ObjectSchema({}), {
+            foo: () => Promise.resolve(),
+        });
+        const Child = () => null;
 
-    it('will pass props.initialState to the reducer', () => {
+        expect(() => mount(<A.Provider>
+            <B.Provider>
+                <Child/>
+            </B.Provider>
+        </A.Provider>)).not.toThrow();
     });
 
 });
 
-describe('ProviderHoc', () => {
-
-    it('will pass props.initialState to the reducer', () => {
-    });
-
-    it('will remove props.initialState from children', () => {
-    });
-
-});
