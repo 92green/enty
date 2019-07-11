@@ -10,7 +10,7 @@ var bar = EntitySchema('bar').set(MapSchema());
 describe('MapSchema.options', () => {
 
     test('constructor will return a map', () => {
-        const data = {first: 'foo', last: 'bar'}
+        const data = {first: 'foo', last: 'bar'};
         const {result} = MapSchema({}).normalize(data);
         expect(result).toBeInstanceOf(Map);
         expect(result.equals(Map(data))).toBe(true);
@@ -19,7 +19,7 @@ describe('MapSchema.options', () => {
     test('denormalizeFilter will check for existance and a key of deleted', () => {
         const schema = MapSchema({});
         const deleted = schema.denormalize(schema.normalize({deleted: true}));
-        const data = schema.denormalize(schema.normalize(null));
+        schema.denormalize(schema.normalize(null));
         expect(deleted).toBe(DELETED_ENTITY);
     });
 
