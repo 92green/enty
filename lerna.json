@@ -2,10 +2,6 @@
   "npmClient": "yarn",
   "version": "0.0.0",
   "packages": [
-      "packages/enty-documentation/*",
-      "packages/enty-immutable/*",
-      "packages/enty-state/*",
-      "packages/enty/*",
-      "packages/react-enty/*"
+      "packages/*"
   ]
 }
