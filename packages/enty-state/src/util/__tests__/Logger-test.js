@@ -1,4 +1,4 @@
-import sinon from 'sinon';
+// @flow
 import Logger from '../Logger';
 
 test('Logger: uses global console by default', () => {
@@ -7,11 +7,11 @@ test('Logger: uses global console by default', () => {
 
 test('Logger: can use custom console with setConsole', () => {
     var fakeConsole = {
-        error: sinon.spy()
+        error: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("...");
-    expect(fakeConsole.error.calledOnce).toBe(true);
+    expect(fakeConsole.error).toHaveBeenCalledWith('...');
 });
 
 test('Logger: getLevelIndex returns a number when given a number', () => {
@@ -85,9 +85,9 @@ test('Logger: willLog will log correct stuff when log level is 4 (silly)', () =>
 test('Logger: setLogLevel will create correct log methods on itself when log level is 0 (error)', () => {
     Logger.setLogLevel("error");
     var fakeConsole = {
-        error: sinon.spy(),
-        warn: sinon.spy(),
-        log: sinon.spy()
+        error: jest.fn(),
+        warn: jest.fn(),
+        log: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("error");
@@ -96,19 +96,19 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    expect(
-        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
-    ).toBe(true);
-    expect(fakeConsole.warn.called).toBe(false);
-    expect(fakeConsole.log.called).toBe(false);
+    expect(fakeConsole.error).toHaveBeenCalledWith('error');
+    expect(fakeConsole.warn).not.toHaveBeenCalledWith('warn');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('info');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('verbose');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('silly');
 });
 
 test('Logger: setLogLevel will create correct log methods on itself when log level is 1 (warn)', () => {
     Logger.setLogLevel("warn");
     var fakeConsole = {
-        error: sinon.spy(),
-        warn: sinon.spy(),
-        log: sinon.spy()
+        error: jest.fn(),
+        warn: jest.fn(),
+        log: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("error");
@@ -117,21 +117,19 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    expect(
-        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
-    ).toBe(true);
-    expect(
-        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
-    ).toBe(true);
-    expect(fakeConsole.log.called).toBe(false);
+    expect(fakeConsole.error).toHaveBeenCalledWith('error');
+    expect(fakeConsole.warn).toHaveBeenCalledWith('warn');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('info');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('verbose');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('silly');
 });
 
 test('Logger: setLogLevel will create correct log methods on itself when log level is 2 (info)', () => {
     Logger.setLogLevel("info");
     var fakeConsole = {
-        error: sinon.spy(),
-        warn: sinon.spy(),
-        log: sinon.spy()
+        error: jest.fn(),
+        warn: jest.fn(),
+        log: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("error");
@@ -140,22 +138,20 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    expect(
-        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
-    ).toBe(true);
-    expect(
-        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
-    ).toBe(true);
-    expect(fakeConsole.log.calledOnce && fakeConsole.log.firstCall.args[0] == "info").toBe(true);
+    expect(fakeConsole.error).toHaveBeenCalledWith('error');
+    expect(fakeConsole.warn).toHaveBeenCalledWith('warn');
+    expect(fakeConsole.log).toHaveBeenCalledWith('info');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('verbose');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('silly');
 });
 
 
 test('Logger: setLogLevel will create correct log methods on itself when log level is 3 (verbose)', () => {
     Logger.setLogLevel("verbose");
     var fakeConsole = {
-        error: sinon.spy(),
-        warn: sinon.spy(),
-        log: sinon.spy()
+        error: jest.fn(),
+        warn: jest.fn(),
+        log: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("error");
@@ -164,24 +160,19 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    expect(
-        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
-    ).toBe(true);
-    expect(
-        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
-    ).toBe(true);
-    expect(fakeConsole.log.calledTwice && fakeConsole.log.firstCall.args[0] == "info").toBe(true);
-    expect(
-        fakeConsole.log.calledTwice && fakeConsole.log.secondCall.args[0] == "verbose"
-    ).toBe(true);
+    expect(fakeConsole.error).toHaveBeenCalledWith('error');
+    expect(fakeConsole.warn).toHaveBeenCalledWith('warn');
+    expect(fakeConsole.log).toHaveBeenCalledWith('info');
+    expect(fakeConsole.log).toHaveBeenCalledWith('verbose');
+    expect(fakeConsole.log).not.toHaveBeenCalledWith('silly');
 });
 
 test('Logger: setLogLevel will create correct log methods on itself when log level is 4 (silly)', () => {
     Logger.setLogLevel("silly");
     var fakeConsole = {
-        error: sinon.spy(),
-        warn: sinon.spy(),
-        log: sinon.spy()
+        error: jest.fn(),
+        warn: jest.fn(),
+        log: jest.fn()
     };
     Logger.setConsole(fakeConsole);
     Logger.error("error");
@@ -190,21 +181,11 @@ test('Logger: setLogLevel will create correct log methods on itself when log lev
     Logger.verbose("verbose");
     Logger.silly("silly");
 
-    expect(
-        fakeConsole.error.calledOnce && fakeConsole.error.firstCall.args[0] == "error"
-    ).toBe(true);
-    expect(
-        fakeConsole.warn.calledOnce && fakeConsole.warn.firstCall.args[0] == "warn"
-    ).toBe(true);
-    expect(
-        fakeConsole.log.calledThrice && fakeConsole.log.firstCall.args[0] == "info"
-    ).toBe(true);
-    expect(
-        fakeConsole.log.calledThrice && fakeConsole.log.secondCall.args[0] == "verbose"
-    ).toBe(true);
-    expect(
-        fakeConsole.log.calledThrice && fakeConsole.log.thirdCall.args[0] == "silly"
-    ).toBe(true);
+    expect(fakeConsole.error).toHaveBeenCalledWith('error');
+    expect(fakeConsole.warn).toHaveBeenCalledWith('warn');
+    expect(fakeConsole.log).toHaveBeenCalledWith('info');
+    expect(fakeConsole.log).toHaveBeenCalledWith('verbose');
+    expect(fakeConsole.log).toHaveBeenCalledWith('silly');
 });
 
 

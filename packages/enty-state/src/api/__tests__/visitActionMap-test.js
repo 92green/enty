@@ -11,7 +11,7 @@ it('will recurse through deep object trees', () => {
             qux: 2
         }
     };
-    const output = visitActionMap(data, visitor);
+    visitActionMap(data, visitor);
     expect(visitor).toHaveBeenCalledTimes(2);
 });
 
@@ -22,10 +22,10 @@ it('will visit functions & record their path', () => {
         foo: {
             bar: {
                 baz: func
-            },
+            }
         }
     };
-    const output = visitActionMap(data, visitor);
+    visitActionMap(data, visitor);
     expect(visitor).toHaveBeenCalledWith(func, ['foo', 'bar', 'baz']);
 
 });

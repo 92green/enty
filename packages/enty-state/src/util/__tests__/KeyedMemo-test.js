@@ -1,4 +1,4 @@
-import {spy} from 'sinon';
+//@flow
 import KeyedMemo from '../KeyedMemo';
 
 

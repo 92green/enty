@@ -1,5 +1,4 @@
-//@flow
-//
+// @flow
 import Message from '../Message';
 import {EmptyMessage} from '../Message';
 import {FetchingMessage} from '../Message';
@@ -14,7 +13,7 @@ test('will let you set resultKey, response, requestState, requestError, onReques
         response: 'bar',
         requestState: 'baz',
         requestError: 'qux',
-        onRequest: 'quux',
+        onRequest: 'quux'
     });
 
     expect(message.resultKey).toBe('foo');

@@ -1,3 +1,4 @@
+// @flow
 import {EmptyState} from '../RequestState';
 import {FetchingState} from '../RequestState';
 import {RefetchingState} from '../RequestState';
@@ -24,7 +25,7 @@ describe('RequestState', () => {
     });
 
     test('variant apis', () => {
-        function test(state) {
+        function runTest(state) {
             expect(state).toHaveProperty('map');
             expect(state).toHaveProperty('flatMap');
             expect(state).toHaveProperty('val');
@@ -47,11 +48,11 @@ describe('RequestState', () => {
             expect(state).toHaveProperty('successUnit');
         }
 
-        test(EmptyState());
-        test(FetchingState());
-        test(RefetchingState());
-        test(ErrorState());
-        test(SuccessState());
+        runTest(EmptyState());
+        runTest(FetchingState());
+        runTest(RefetchingState());
+        runTest(ErrorState());
+        runTest(SuccessState());
     });
 
 });

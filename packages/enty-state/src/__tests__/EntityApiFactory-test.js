@@ -1,13 +1,6 @@
 //@flow
 import EntityApiFactory from '../EntityApiFactory';
-import {FetchingState} from '../data/RequestState';
 import Hash from '../util/Hash';
-import EntitySchema from 'enty/lib/EntitySchema';
-import ArraySchema from 'enty/lib/ArraySchema';
-import ObjectSchema from 'enty/lib/ObjectSchema';
-import get from 'unmutable/lib/get';
-import getIn from 'unmutable/lib/getIn';
-import pipeWith from 'unmutable/lib/util/pipeWith';
 
 jest.mock('../api/createRequestAction', () => () => 'REQUEST');
 
@@ -46,7 +39,7 @@ describe('EntityApiFactory', () => {
         EntityApiFactory(data, visitor);
         const {generateResultKey} = visitor.mock.calls[0][0];
         expect(generateResultKey('foo')).toBe(Hash({payload: 'foo', actionType: 'FOO_BAR'}));
-   });
+    });
 
     it('creates requestAction with the sideEffect and action name', () => {
         const visitor = jest.fn();

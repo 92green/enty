@@ -1,0 +1,7 @@
+[options]
+module.file_ext=.js
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+
+[ignore]
+<PROJECT_ROOT>/coverage/.*
+

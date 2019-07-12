@@ -1,6 +1,5 @@
 // @flow
 import createRequestAction from '../createRequestAction';
-import {selectEntityByResult} from '../../EntitySelector';
 
 jest.mock('../../RequestStateSelector', () => () => ({
     value: jest.fn()
@@ -85,7 +84,7 @@ describe('promise support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction('FOO', () => Promise.resolve('DATA'));
-        await request(payload, meta)(dispatch, getState)
+        await request(payload, meta)(dispatch, getState);
         expect(dispatch).toHaveBeenLastCalledWith({meta: 'META', payload: 'DATA', type: 'FOO_RECEIVE'});
     });
 
@@ -107,9 +106,6 @@ describe('promise support', () => {
 describe('general', () => {
 
     it('returns a function accepts payload/meta that returns a redux thunk', () => {
-        const dispatch = jest.fn();
-        const getState = jest.fn();
-
         const payloadFunction = createRequestAction('FOO', () => Promise.resolve());
         const thunk = payloadFunction('bar', {resultKey: '123'});
 

@@ -1,15 +1,14 @@
 // @flow
-import { fromJS } from 'immutable';
 import ErrorSelector from '../ErrorSelector';
 
 test('will select errors out of state', () => {
 
     var state = {
-        entity: fromJS({
+        entity: {
             _error: {
                 foo: 'error'
             }
-        })
+        }
     };
 
     expect(ErrorSelector(state, 'foo')).toBe('error');
@@ -18,11 +17,11 @@ test('will select errors out of state', () => {
 test('can override stateKey', () => {
 
     var state = {
-        bar: fromJS({
+        bar: {
             _error: {
                 foo: 'error'
             }
-        })
+        }
     };
 
     expect(ErrorSelector(state, 'foo', {stateKey: 'bar'})).toBe('error');

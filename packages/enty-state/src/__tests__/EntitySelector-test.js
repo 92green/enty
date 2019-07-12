@@ -2,7 +2,6 @@
 import EntitySchema from 'enty/lib/EntitySchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
 import ArraySchema from 'enty/lib/ArraySchema';
-import {fromJS, List, Map} from 'immutable';
 import {
     selectEntityByResult,
     selectEntityById,
@@ -34,8 +33,7 @@ function constructState(): * {
                 }
             }
         )
-    }
-
+    };
 }
 
 
@@ -64,7 +62,7 @@ describe('selectEntityByResult', () => {
     });
 
     it('should return nothing if the denormalize fails', () => {
-        expect(selectEntityByResult({entity: fromJS({})}, 'ENTITY_RECEIVE')).toBe(undefined);
+        expect(selectEntityByResult({entity: {}}, 'ENTITY_RECEIVE')).toBe(undefined);
     });
 
     it('will memoize the response based on resultKey and normalizeCount', () => {
@@ -72,7 +70,7 @@ describe('selectEntityByResult', () => {
             entity: {
                 _baseSchema: EntitySchema('foo').set(ObjectSchema()),
                 _entities: {
-                    foo: { abc: {id: 'abc'}}
+                    foo: {abc: {id: 'abc'}}
                 },
                 _result: {
                     bar: 'abc',

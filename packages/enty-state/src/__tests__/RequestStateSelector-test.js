@@ -1,15 +1,15 @@
+// @flow
 import selectRequestState from '../RequestStateSelector';
-import {fromJS} from 'immutable';
 import {EmptyState} from '../data/RequestState';
 
 test('RequestStateSelector', () => {
 
     var state = {
-        entity: fromJS({
+        entity: {
             _requestState: {
                 ACTION: 'awesome'
             }
-        })
+        }
     };
 
     expect(selectRequestState(state, 'ACTION')).toBe('awesome');

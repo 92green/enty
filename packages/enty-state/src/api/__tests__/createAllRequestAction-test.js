@@ -1,11 +1,7 @@
 // @flow
 import createAllRequestAction from '../createAllRequestAction';
-import {selectEntityByResult} from '../../EntitySelector';
 
 jest.mock('../../EntitySelector');
-
-const payload = 'PAYLOAD';
-const meta = 'META';
 
 test('createAllRequestAction will call all sideffects', () => {
     var aa = jest.fn();

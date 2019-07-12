@@ -15,15 +15,13 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 var author = EntitySchema('author', {idAtribute: get('fullnameId')})
     .set(ObjectSchema({}));
 
-var topListings = EntitySchema('topListings', {
-    idAttribute: get('fullnameId'),
-    definition: ObjectSchema({author})
-});
+var topListings = EntitySchema('topListings', {idAttribute: get('fullnameId')})
+    .set(ObjectSchema({author}));
 
-var subreddit = EntitySchema('subreddit', {
-    idAttribute: get('fullnameId'),
-    definition: ObjectSchema({topListings: ArraySchema(topListings)})
-});
+var subreddit = EntitySchema('subreddit', {idAttribute: get('fullnameId')})
+    .set(ObjectSchema({
+        topListings: ArraySchema(topListings)
+    }));
 
 const schema = ObjectSchema({
     subreddit

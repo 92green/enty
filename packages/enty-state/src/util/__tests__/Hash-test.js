@@ -1,7 +1,6 @@
-import {spy} from 'sinon';
+// @flow
 import Hash from '../Hash';
 
-const OLD = {a: 2};
 
 describe('Hash', () => {
 
