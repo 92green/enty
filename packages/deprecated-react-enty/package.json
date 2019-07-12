@@ -16,11 +16,6 @@
     "url": "https://github.com/blueflag/enty/issues"
   },
   "private": true,
-  "scripts": {
-    "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
-    "watch": "yarn build -w"
-  },
   "dependencies": {
     "enty": "^0.50.0",
     "enty-state": "^0.1.0",

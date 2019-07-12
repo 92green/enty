@@ -23,7 +23,7 @@
     "flow": "flow check",
     "flow-coverage": "blueflag-test flow-coverage -M",
     "lint": "blueflag-test lint",
-    "test": "yarn jest",
+    "test": "yarn jest --maxWorkers=1",
     "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage"
   },
   "peerDependencies": {

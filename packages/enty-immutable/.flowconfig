@@ -1,6 +1,7 @@
 [options]
 module.file_ext=.js
 suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+server.max_workers=1
 
 [libs]
 node_modules/blueflag-test/flow-typed-shims/immutable-3.8.x/
