@@ -1,3 +1,4 @@
+// @flow
 import useReducerThunk from '../useReducerThunk';
 import {act, renderHook} from '@testing-library/react-hooks';
 
@@ -6,7 +7,6 @@ describe('useReducerThunk', () => {
 
     it('will dispatch synchronously if an action returns an object', () => {
         const {result} = renderHook(() => useReducerThunk((aa, bb) => aa + bb, 'foo'));
-        const [dispatch] = result.current;
         expect(result.current[0]).toBe('foo');
 
         act(() => result.current[1]('bar'));

@@ -10,7 +10,10 @@ type ProviderConfig = {
 };
 
 type ProviderFactoryReturn = {
-    Context: {},
+    Context: {
+        Provider: ComponentType<*>,
+        Consumer: ComponentType<*>
+    },
     Provider: ComponentType<any>,
     ProviderHoc: Function
 };
@@ -34,7 +37,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
         />;
     }
 
-    const ProviderHoc = () => (Component) => ({initialState, ...rest}) => <Provider initialState={initialState}>
+    const ProviderHoc = () => (Component) => ({initialState, ...rest}: ProviderProps) => <Provider initialState={initialState}>
         <Component {...rest} />
     </Provider>;
 

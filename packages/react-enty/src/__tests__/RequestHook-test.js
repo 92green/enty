@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import {useEffect} from 'react';
 import Message from 'enty-state/lib/data/Message';
@@ -27,7 +28,7 @@ describe('config', () => {
 
     it('will throw if not in a provider', () => {
         const Child = () => {
-            const message = foo.useRequest();
+            foo.useRequest();
             return null;
         };
 
@@ -74,7 +75,7 @@ describe('usage', () => {
     });
 
     it('can fetch if props change', async () => {
-        return fetchOnPropChange((ExpectsMessage) => (props) => {
+        return fetchOnPropChange((ExpectsMessage) => (props: {id: string}) => {
             const message = foo.useRequest();
             useEffect(() => {
                 message.onRequest(props.id);
@@ -84,7 +85,7 @@ describe('usage', () => {
     });
 
     it('can fetch from a callback', async () => {
-        return fetchOnCallback((ExpectsMessage) => (props) => {
+        return fetchOnCallback((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });

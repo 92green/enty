@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import composeWith from'unmutable/composeWith';
 import Message from 'enty-state/lib/data/Message';
@@ -36,7 +37,7 @@ describe('config', () => {
                     expect(props.bar).toBeInstanceOf(Message);
                     return null;
                 }
-            ))
+            ));
         });
 
     });
@@ -53,19 +54,19 @@ describe('config', () => {
 
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
-			expect(wrapper).toBeSuccess({data: '!!!'});
+            expect(wrapper).toBeSuccess({data: '!!!'});
 
             // props.foo
             wrapper.setProps({foo: '!'}).update();
             expect(wrapper).toBeRefetching({data: '!!!'});
             await asyncUpdate(wrapper);
-			expect(wrapper).toBeSuccess({data: '!!!'});
+            expect(wrapper).toBeSuccess({data: '!!!'});
 
             // props.bar.baz
             wrapper.setProps({bar: {baz: '!'}}).update();
             expect(wrapper).toBeRefetching({data: '!!!'});
             await asyncUpdate(wrapper);
-			expect(wrapper).toBeSuccess({data: '!!!'});
+            expect(wrapper).toBeSuccess({data: '!!!'});
         });
 
     });
@@ -85,7 +86,7 @@ describe('config', () => {
 
         it('will call shouldComponentAutoRequest with props', () => {
             let shouldComponentAutoRequest = jest.fn();
-            let wrapper = mountWithProvider(foo.requestHoc({
+            mountWithProvider(foo.requestHoc({
                 name: 'message',
                 auto: true,
                 shouldComponentAutoRequest
@@ -100,13 +101,13 @@ describe('config', () => {
 
         test('config.payloadCreator will default to an identity if config.auto is falsy', async () => {
             let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
+                name: 'message'
             }), {payload: '!!!'});
 
             wrapper.find('.onRequest').simulate('click');
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
-			expect(wrapper).toBeSuccess({data: '!!!'});
+            expect(wrapper).toBeSuccess({data: '!!!'});
         });
 
         test('config.payloadCreator will by default return an empty object if config.auto is truthy', async () => {
@@ -116,7 +117,7 @@ describe('config', () => {
             }));
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
-			expect(wrapper).toBeSuccess({data: 'foo'});
+            expect(wrapper).toBeSuccess({data: 'foo'});
         });
 
         test('config.payloadCreator will create the payload', async () => {
@@ -146,12 +147,13 @@ describe('config', () => {
             });
 
             // mount with assertions
-            let wrapper = mountWithProvider((ExpectsMessage) => withRequest(
+            let wrapper = mountWithProvider(() => withRequest(
                 (props) => {
                     props.message.requestState
                         .emptyMap(() => expect(props.data).toBeUndefined())
                         .fetchingMap(() => expect(props.data).toBeUndefined())
                         .successMap(() => expect(props.data).toBe('mapResponseToProps!'))
+                    ;
                     return null;
                 }
             ));
@@ -172,7 +174,7 @@ describe('config', () => {
             });
 
             // mount with assertions
-            let wrapper = mountWithProvider((ExpectsMessage) => withRequest(
+            let wrapper = mountWithProvider(() => withRequest(
                 (props) => {
                     props.message.requestState
                         .emptyMap(() => expect(props.foo).toBeUndefined())
@@ -193,11 +195,11 @@ describe('config', () => {
             let withRequest = foo.requestHoc({
                 auto: true,
                 name: 'message',
-                payloadCreator: () => 'mapResponseToProps!',
+                payloadCreator: () => 'mapResponseToProps!'
             });
 
             // mount with assertions
-            let wrapper = mountWithProvider((ExpectsMessage) => withRequest(
+            let wrapper = mountWithProvider(() => withRequest(
                 (props) => {
                     props.message.requestState
                         .emptyMap(() => expect(props.data).toBeUndefined())
@@ -265,7 +267,7 @@ describe('usage', () => {
             return composeWith(
                 foo.requestHoc({name: 'aa'}),
                 foo.requestHoc({name: 'bb'}),
-                class Test extends React.Component {
+                class Test extends React.Component<{aa: Message, bb: Message}> {
                     componentDidMount() {
                         const {aa, bb} = this.props;
                         aa.onRequest('first').then(() => bb.onRequest('second'));

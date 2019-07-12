@@ -1,0 +1,11 @@
+[options]
+module.file_ext=.js
+module.file_ext=.jsx
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+
+[ignore]
+<PROJECT_ROOT>/coverage/.*
+
+[libs]
+node_modules/blueflag-test/flow-typed-shims/jest-enzyme-6.0.x/
+

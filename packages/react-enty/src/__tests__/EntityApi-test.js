@@ -40,10 +40,10 @@ describe('Provider', () => {
 
     it('will transparently stack providers', () => {
         const A = EntityApi(ObjectSchema({}), {
-            foo: () => Promise.resolve(),
+            foo: () => Promise.resolve()
         });
         const B = EntityApi(ObjectSchema({}), {
-            foo: () => Promise.resolve(),
+            foo: () => Promise.resolve()
         });
         const Child = () => null;
 

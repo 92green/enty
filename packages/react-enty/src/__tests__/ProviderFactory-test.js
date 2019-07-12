@@ -1,3 +1,5 @@
+// @flow
+import React from 'react';
 import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
 
@@ -7,7 +9,7 @@ const expectContext = (testFn) => {
 
     return expect(mount(<Component />).find('ExpectsContext').prop('context'));
 
-}
+};
 
 describe('Factory', () => {
 
@@ -55,7 +57,7 @@ describe('Hoc', () => {
             () => {
                 return <Context.Consumer
                     children={(context) => <Child context={context}/>}
-                />
+                />;
             }
         )).toEqual([
             'hoc:ENTY_INIT',
