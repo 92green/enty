@@ -51,7 +51,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
     /**
      * CompositeEntitySchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities?: Object = {}): NormalizeState {
         const {definition, compositeKeys} = this;
         const {name} = this.options;
 
@@ -121,7 +121,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
     /**
      * CompositeEntitySchema.denormalize
      */
-    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
+    denormalize(denormalizeState: DenormalizeState, path?: Array<*> = []): any {
         const {definition, compositeKeys} = this;
         const {name} = this.options;
         const {result, entities} = denormalizeState;

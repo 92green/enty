@@ -1,6 +1,0 @@
-# .prettierrc
-bracketSpacing: false
-parser: flow
-printWidth: 100
-quotes: true
-tabWidth: 4

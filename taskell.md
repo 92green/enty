@@ -1,14 +1,12 @@
 ## Backlog
 
-- Add api level caching
 - Add ObjectValues Schema (extend array schema)
 
 ## Current Release
 
-- Deprecate select by type and id
+- Add api level caching
 
 ## In Progress
-
 
 
 ## Done
@@ -22,3 +20,4 @@
 - Upgrade StateFunctor to Variant
 - Remove Stampy Dependency
 - Try to remove constructor from object and array schema
+- Deprecate select by type and id

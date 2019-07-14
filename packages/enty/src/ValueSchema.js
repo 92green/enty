@@ -37,7 +37,8 @@ export class ValueSchema extends Child implements Schema<Entity> {
      * ValueSchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        return this.definition.denormalize(denormalizeState, path);
+        const {definition} = this;
+        return definition.denormalize(denormalizeState, path);
     }
 }
 
