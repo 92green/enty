@@ -1,10 +1,6 @@
 // @flow
 import createRequestAction from '../createRequestAction';
 
-jest.mock('../../RequestStateSelector', () => () => ({
-    value: jest.fn()
-}));
-jest.mock('../../EntitySelector');
 
 const payload = 'PAYLOAD';
 const meta = 'META';
@@ -111,7 +107,6 @@ describe('general', () => {
 
         expect(typeof payloadFunction).toBe('function');
         expect(typeof thunk).toBe('function');
-
     });
 
 
