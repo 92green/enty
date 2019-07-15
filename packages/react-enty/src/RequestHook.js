@@ -30,7 +30,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             }
             return result;
 
-        }, [requestState, resultKey, state.normalizeCount]);
+        }, [requestState, resultKey, state.responseCount]);
 
         responseRef.current = response;
 

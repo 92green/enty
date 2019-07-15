@@ -25,7 +25,7 @@ type State = {
     requestState: {[key: string]: *},
     entities: {[key: string]: *},
     stats: {
-        normalizeCount: number
+        responseCount: number
     }
 };
 
@@ -44,7 +44,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
             requestState: {},
             entities: {},
             stats: {
-                normalizeCount: 0
+                responseCount: 0
             }
         };
 
@@ -101,7 +101,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                         set('entities', entities),
                         setIn(resultPath, result),
                         updateIn(['schemas'], merge(schemas)),
-                        updateIn(['stats', 'normalizeCount'], count => count + 1),
+                        updateIn(['stats', 'responseCount'], count => count + 1),
                         state => Logger.silly('state', state) || state
                     );
                 } else {
@@ -109,7 +109,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                     return pipeWith(
                         state,
                         setIn(resultPath, payload),
-                        updateIn(['stats', 'normalizeCount'], count => count + 1),
+                        updateIn(['stats', 'responseCount'], count => count + 1),
                     );
                 }
             }

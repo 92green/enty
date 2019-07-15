@@ -277,12 +277,12 @@ describe('no schema reducer', () => {
         expect(stateA.entities).toEqual({});
         expect(stateA.result['123']).toBe('FOO');
         expect(stateA.result['456']).toBeUndefined();
-        expect(stateA.stats.normalizeCount).toBe(1);
+        expect(stateA.stats.responseCount).toBe(1);
 
         const stateB = reducer(stateA, {type: 'TEST_RECEIVE', payload: 'BAR', meta: {resultKey: '456'}});
         expect(stateB.result['123']).toBe('FOO');
         expect(stateB.result['456']).toBe('BAR');
-        expect(stateB.stats.normalizeCount).toBe(2);
+        expect(stateB.stats.responseCount).toBe(2);
 
     });
 
