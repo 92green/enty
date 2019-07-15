@@ -19,12 +19,12 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         const [state, dispatch] = store;
         const responseRef = useRef();
 
-        let requestState = state._requestState[resultKey] || EmptyState();
+        let requestState = state.requestState[resultKey] || EmptyState();
 
         let response = useMemo(() => {
-            const schema = state._baseSchema;
-            const result = state._result[resultKey];
-            const entities = state._entities;
+            const schema = state.baseSchema;
+            const result = state.result[resultKey];
+            const entities = state.entities;
             if(schema) {
                 return schema.denormalize({entities, result});
             }
@@ -47,7 +47,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             resultKey,
             requestState,
             response,
-            requestError: state._error[resultKey],
+            requestError: state.error[resultKey],
             onRequest
         }), [requestState, response, resultKey]);
     };

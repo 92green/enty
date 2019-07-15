@@ -18,13 +18,13 @@ import {SuccessState} from './data/RequestState';
 import Logger from './util/Logger';
 
 type State = {
-    _baseSchema: Schema<Structure>,
-    _schemas: {[key: string]: Schema<any>},
-    _result: {[key: string]: *},
-    _error: {[key: string]: *},
-    _requestState: {[key: string]: *},
-    _entities: {[key: string]: *},
-    _stats: {
+    baseSchema: Schema<Structure>,
+    schemas: {[key: string]: Schema<any>},
+    result: {[key: string]: *},
+    error: {[key: string]: *},
+    requestState: {[key: string]: *},
+    entities: {[key: string]: *},
+    stats: {
         normalizeCount: number
     }
 };
@@ -37,21 +37,21 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
         Logger.info(`\n\nEntity reducer:`);
 
         let state = previousState || {
-            _baseSchema: schema,
-            _schemas: {},
-            _result: {},
-            _error: {},
-            _requestState: {},
-            _entities: {},
-            _stats: {
+            baseSchema: schema,
+            schemas: {},
+            result: {},
+            error: {},
+            requestState: {},
+            entities: {},
+            stats: {
                 normalizeCount: 0
             }
         };
 
         const {resultKey} = meta;
-        const requestStatePath = ['_requestState', resultKey];
-        const resultPath = ['_result', resultKey];
-        const errorPath = ['_error', resultKey];
+        const requestStatePath = ['requestState', resultKey];
+        const resultPath = ['result', resultKey];
+        const errorPath = ['error', resultKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -89,7 +89,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                 if(schema) {
                     const {result, entities, schemas} = schema.normalize(
                         payload,
-                        pipeWith(state, get('_entities'), clone())
+                        pipeWith(state, get('entities'), clone())
                     );
 
                     Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
@@ -98,10 +98,10 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
 
                     return pipeWith(
                         state,
-                        set('_entities', entities),
+                        set('entities', entities),
                         setIn(resultPath, result),
-                        updateIn(['_schemas'], merge(schemas)),
-                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                        updateIn(['schemas'], merge(schemas)),
+                        updateIn(['stats', 'normalizeCount'], count => count + 1),
                         state => Logger.silly('state', state) || state
                     );
                 } else {
@@ -109,7 +109,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                     return pipeWith(
                         state,
                         setIn(resultPath, payload),
-                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                        updateIn(['stats', 'normalizeCount'], count => count + 1),
                     );
                 }
             }

@@ -99,5 +99,13 @@ describe('Message Constructors', () => {
         expect(message.requestState.type).toBe('Error');
         expect(message.resultKey).toBe('bar');
     });
+
+    it('will not break if nothing is passed to each constructor', () => {
+        expect(EmptyMessage).not.toThrow();
+        expect(FetchingMessage).not.toThrow();
+        expect(RefetchingMessage).not.toThrow();
+        expect(SuccessMessage).not.toThrow();
+        expect(ErrorMessage).not.toThrow();
+    });
 });
 
