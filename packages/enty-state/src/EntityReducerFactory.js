@@ -29,7 +29,7 @@ type State = {
     }
 };
 
-export default function EntityReducerFactory(config: {schema: Schema<Structure>}): Function {
+export default function EntityReducerFactory(config: {schema?: Schema<Structure>}): Function {
     const {schema} = config;
 
     return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
@@ -50,6 +50,7 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
 
         const {resultKey} = meta;
         const requestStatePath = ['_requestState', resultKey];
+        const resultPath = ['_result', resultKey];
         const errorPath = ['_error', resultKey];
 
 
@@ -84,29 +85,36 @@ export default function EntityReducerFactory(config: {schema: Schema<Structure>}
             // to make sure the request state is still updated even if there is no payload
             state = setIn(requestStatePath, SuccessState())(state);
 
-            if(schema && payload) {
-                const {result, entities, schemas} = schema.normalize(
-                    payload,
-                    pipeWith(state, get('_entities'), clone())
-                );
+            if(payload) {
+                if(schema) {
+                    const {result, entities, schemas} = schema.normalize(
+                        payload,
+                        pipeWith(state, get('_entities'), clone())
+                    );
 
-                Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
-                Logger.info(`Merging any normalized entities and result into state`);
+                    Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
+                    Logger.info(`Merging any normalized entities and result into state`);
 
 
-                return pipeWith(
-                    state,
-                    set('_entities', entities),
-                    setIn(['_result', resultKey], result),
-                    updateIn(['_schemas'], merge(schemas)),
-                    updateIn(['_stats', 'normalizeCount'], count => count + 1),
-                    state => Logger.silly('state', state) || state
-                );
+                    return pipeWith(
+                        state,
+                        set('_entities', entities),
+                        setIn(resultPath, result),
+                        updateIn(['_schemas'], merge(schemas)),
+                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                        state => Logger.silly('state', state) || state
+                    );
+                } else {
+                    Logger.info(`No schema, merging result without normalizing`);
+                    return pipeWith(
+                        state,
+                        setIn(resultPath, payload),
+                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                    );
+                }
             }
 
 
-            Logger.infoIf(!schema, `Schema is not defined, no entity data has been changed`, state);
-            Logger.infoIf(!payload, `Payload is not defined, no entity data has been changed`, state);
         }
 
         Logger.info(`Type is not *_RECEIVE, no entity data has been changed`, state);

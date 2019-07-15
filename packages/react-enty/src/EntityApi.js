@@ -13,7 +13,7 @@ type ActionMap = {
 };
 
 
-export default function EntityApi(schema: Schema<*>, actionMap: ActionMap): Object {
+export default function EntityApi(actionMap: ActionMap, schema?: Schema<*>): Object {
 
     const {Provider, ProviderHoc, Context} = ProviderFactory({
         reducer: EntityReducerFactory({schema})

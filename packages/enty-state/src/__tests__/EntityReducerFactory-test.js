@@ -267,3 +267,23 @@ describe('EntityReducer Normalizing', () => {
     });
 });
 
+
+describe('no schema reducer', () => {
+
+    it('will not normalize if a schema is not provided', () => {
+        const reducer = EntityReducerFactory({});
+        const stateA = reducer(undefined, {type: 'TEST_RECEIVE', payload: 'FOO', meta: {resultKey: '123'}});
+
+        expect(stateA._entities).toEqual({});
+        expect(stateA._result['123']).toBe('FOO');
+        expect(stateA._result['456']).toBeUndefined();
+        expect(stateA._stats.normalizeCount).toBe(1);
+
+        const stateB = reducer(stateA, {type: 'TEST_RECEIVE', payload: 'BAR', meta: {resultKey: '456'}});
+        expect(stateB._result['123']).toBe('FOO');
+        expect(stateB._result['456']).toBe('BAR');
+        expect(stateB._stats.normalizeCount).toBe(2);
+
+    });
+
+});

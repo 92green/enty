@@ -11,11 +11,11 @@ import equals from 'unmutable/equals';
 //
 
 function setupTests() {
-    const {Provider, foo, fooError, bar} = EntityApi(ObjectSchema({}), {
+    const {Provider, foo, fooError, bar} = EntityApi({
         foo: (data = 'foo') => Promise.resolve({data}),
         fooError: () => Promise.reject('ouch!'),
         bar: (data = 'bar') => Promise.resolve({data})
-    });
+    }, ObjectSchema({}));
 
     function ExpectsMessage(props: Object) {
         const {onRequest} = props.message;

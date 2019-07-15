@@ -22,10 +22,14 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         let requestState = state._requestState[resultKey] || EmptyState();
 
         let response = useMemo(() => {
-            return state._baseSchema.denormalize({
-                entities: state._entities,
-                result: state._result[resultKey]
-            });
+            const schema = state._baseSchema;
+            const result = state._result[resultKey];
+            const entities = state._entities;
+            if(schema) {
+                return schema.denormalize({entities, result});
+            }
+            return result;
+
         }, [requestState, resultKey, state.normalizeCount]);
 
         responseRef.current = response;
