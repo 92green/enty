@@ -13,42 +13,42 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
     const {requestAction, generateResultKey} = config;
 
     return () => {
-        const [resultKey, setResultKey] = useState();
+        const [reponseKey, setResultKey] = useState();
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
         const responseRef = useRef();
 
-        let requestState = state._requestState[resultKey] || EmptyState();
+        let requestState = state.requestState[reponseKey] || EmptyState();
 
         let response = useMemo(() => {
-            const schema = state._baseSchema;
-            const result = state._result[resultKey];
-            const entities = state._entities;
+            const schema = state.baseSchema;
+            const result = state.response[reponseKey];
+            const entities = state.entities;
             if(schema) {
                 return schema.denormalize({entities, result});
             }
             return result;
 
-        }, [requestState, resultKey, state.normalizeCount]);
+        }, [requestState, reponseKey, state.responseCount]);
 
         responseRef.current = response;
 
         let onRequest = useCallback((payload) => {
-            const resultKey = generateResultKey(payload);
-            setResultKey(resultKey);
-            return dispatch(requestAction(payload, {resultKey}))
+            const reponseKey = generateResultKey(payload);
+            setResultKey(reponseKey);
+            return dispatch(requestAction(payload, {reponseKey}))
                 .then(() => responseRef.current)
                 .catch(() => {});
         });
 
 
         return useMemo(() => new Message({
-            resultKey,
+            reponseKey,
             requestState,
             response,
-            requestError: state._error[resultKey],
+            requestError: state.error[reponseKey],
             onRequest
-        }), [requestState, response, resultKey]);
+        }), [requestState, response, reponseKey]);
     };
 }

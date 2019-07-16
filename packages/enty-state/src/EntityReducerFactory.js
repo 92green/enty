@@ -18,14 +18,14 @@ import {SuccessState} from './data/RequestState';
 import Logger from './util/Logger';
 
 type State = {
-    _baseSchema: Schema<Structure>,
-    _schemas: {[key: string]: Schema<any>},
-    _result: {[key: string]: *},
-    _error: {[key: string]: *},
-    _requestState: {[key: string]: *},
-    _entities: {[key: string]: *},
-    _stats: {
-        normalizeCount: number
+    baseSchema: Schema<Structure>,
+    schemas: {[key: string]: Schema<any>},
+    response: {[key: string]: *},
+    error: {[key: string]: *},
+    requestState: {[key: string]: *},
+    entities: {[key: string]: *},
+    stats: {
+        responseCount: number
     }
 };
 
@@ -37,21 +37,21 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
         Logger.info(`\n\nEntity reducer:`);
 
         let state = previousState || {
-            _baseSchema: schema,
-            _schemas: {},
-            _result: {},
-            _error: {},
-            _requestState: {},
-            _entities: {},
-            _stats: {
-                normalizeCount: 0
+            baseSchema: schema,
+            schemas: {},
+            response: {},
+            error: {},
+            requestState: {},
+            entities: {},
+            stats: {
+                responseCount: 0
             }
         };
 
-        const {resultKey} = meta;
-        const requestStatePath = ['_requestState', resultKey];
-        const resultPath = ['_result', resultKey];
-        const errorPath = ['_error', resultKey];
+        const {reponseKey} = meta;
+        const requestStatePath = ['requestState', reponseKey];
+        const responsePath = ['response', reponseKey];
+        const errorPath = ['error', reponseKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -89,27 +89,27 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                 if(schema) {
                     const {result, entities, schemas} = schema.normalize(
                         payload,
-                        pipeWith(state, get('_entities'), clone())
+                        pipeWith(state, get('entities'), clone())
                     );
 
                     Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
-                    Logger.info(`Merging any normalized entities and result into state`);
+                    Logger.info(`Merging any normalized entities and response into state`);
 
 
                     return pipeWith(
                         state,
-                        set('_entities', entities),
-                        setIn(resultPath, result),
-                        updateIn(['_schemas'], merge(schemas)),
-                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                        set('entities', entities),
+                        setIn(responsePath, result),
+                        updateIn(['schemas'], merge(schemas)),
+                        updateIn(['stats', 'responseCount'], count => count + 1),
                         state => Logger.silly('state', state) || state
                     );
                 } else {
-                    Logger.info(`No schema, merging result without normalizing`);
+                    Logger.info(`No schema, merging response without normalizing`);
                     return pipeWith(
                         state,
-                        setIn(resultPath, payload),
-                        updateIn(['_stats', 'normalizeCount'], count => count + 1),
+                        setIn(responsePath, payload),
+                        updateIn(['stats', 'responseCount'], count => count + 1),
                     );
                 }
             }

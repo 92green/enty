@@ -13,7 +13,6 @@ type HockConfig = {
     auto?: boolean|Array<string>,
     shouldComponentAutoRequest?: (props: *) => boolean,
     payloadCreator?: (props: *) => *,
-    updateResultKey?: (resultKey: string, props: *) => string,
     mapResponseToProps?: boolean|Function
 };
 
