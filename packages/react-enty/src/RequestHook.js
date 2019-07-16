@@ -13,42 +13,42 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
     const {requestAction, generateResultKey} = config;
 
     return () => {
-        const [resultKey, setResultKey] = useState();
+        const [reponseKey, setResultKey] = useState();
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
         const responseRef = useRef();
 
-        let requestState = state.requestState[resultKey] || EmptyState();
+        let requestState = state.requestState[reponseKey] || EmptyState();
 
         let response = useMemo(() => {
             const schema = state.baseSchema;
-            const result = state.result[resultKey];
+            const result = state.response[reponseKey];
             const entities = state.entities;
             if(schema) {
                 return schema.denormalize({entities, result});
             }
             return result;
 
-        }, [requestState, resultKey, state.responseCount]);
+        }, [requestState, reponseKey, state.responseCount]);
 
         responseRef.current = response;
 
         let onRequest = useCallback((payload) => {
-            const resultKey = generateResultKey(payload);
-            setResultKey(resultKey);
-            return dispatch(requestAction(payload, {resultKey}))
+            const reponseKey = generateResultKey(payload);
+            setResultKey(reponseKey);
+            return dispatch(requestAction(payload, {reponseKey}))
                 .then(() => responseRef.current)
                 .catch(() => {});
         });
 
 
         return useMemo(() => new Message({
-            resultKey,
+            reponseKey,
             requestState,
             response,
-            requestError: state.error[resultKey],
+            requestError: state.error[reponseKey],
             onRequest
-        }), [requestState, response, resultKey]);
+        }), [requestState, response, reponseKey]);
     };
 }

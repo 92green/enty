@@ -88,7 +88,7 @@ describe('promise support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction('FOO', () => Promise.reject('BORKD'));
-        const meta = {resultKey: '123'};
+        const meta = {reponseKey: '123'};
         return request(payload, meta)(dispatch, getState)
             .catch(() => {
                 expect(dispatch).toHaveBeenLastCalledWith({meta, payload: 'BORKD', type: 'FOO_ERROR'});
@@ -103,7 +103,7 @@ describe('general', () => {
 
     it('returns a function accepts payload/meta that returns a redux thunk', () => {
         const payloadFunction = createRequestAction('FOO', () => Promise.resolve());
-        const thunk = payloadFunction('bar', {resultKey: '123'});
+        const thunk = payloadFunction('bar', {reponseKey: '123'});
 
         expect(typeof payloadFunction).toBe('function');
         expect(typeof thunk).toBe('function');

@@ -20,7 +20,7 @@ import Logger from './util/Logger';
 type State = {
     baseSchema: Schema<Structure>,
     schemas: {[key: string]: Schema<any>},
-    result: {[key: string]: *},
+    response: {[key: string]: *},
     error: {[key: string]: *},
     requestState: {[key: string]: *},
     entities: {[key: string]: *},
@@ -39,7 +39,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
         let state = previousState || {
             baseSchema: schema,
             schemas: {},
-            result: {},
+            response: {},
             error: {},
             requestState: {},
             entities: {},
@@ -48,10 +48,10 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
             }
         };
 
-        const {resultKey} = meta;
-        const requestStatePath = ['requestState', resultKey];
-        const resultPath = ['result', resultKey];
-        const errorPath = ['error', resultKey];
+        const {reponseKey} = meta;
+        const requestStatePath = ['requestState', reponseKey];
+        const responsePath = ['response', reponseKey];
+        const errorPath = ['error', reponseKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -93,22 +93,22 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
                     );
 
                     Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
-                    Logger.info(`Merging any normalized entities and result into state`);
+                    Logger.info(`Merging any normalized entities and response into state`);
 
 
                     return pipeWith(
                         state,
                         set('entities', entities),
-                        setIn(resultPath, result),
+                        setIn(responsePath, result),
                         updateIn(['schemas'], merge(schemas)),
                         updateIn(['stats', 'responseCount'], count => count + 1),
                         state => Logger.silly('state', state) || state
                     );
                 } else {
-                    Logger.info(`No schema, merging result without normalizing`);
+                    Logger.info(`No schema, merging response without normalizing`);
                     return pipeWith(
                         state,
-                        setIn(resultPath, payload),
+                        setIn(responsePath, payload),
                         updateIn(['stats', 'responseCount'], count => count + 1),
                     );
                 }

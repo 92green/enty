@@ -7,16 +7,16 @@ import {SuccessMessage} from '../Message';
 import {ErrorMessage} from '../Message';
 import {ErrorState} from '../../data/RequestState';
 
-test('will let you set resultKey, response, requestState, requestError, onRequest', () => {
+test('will let you set reponseKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
-        resultKey: 'foo',
+        reponseKey: 'foo',
         response: 'bar',
         requestState: 'baz',
         requestError: 'qux',
         onRequest: 'quux'
     });
 
-    expect(message.resultKey).toBe('foo');
+    expect(message.reponseKey).toBe('foo');
     expect(message.response).toBe('bar');
     expect(message.requestState).toBe('baz');
     expect(message.requestError).toBe('qux');
@@ -66,38 +66,38 @@ describe('Message requestState methods', () => {
 
 describe('Message Constructors', () => {
     test('EmptyMessage will create a empty message without a response', () => {
-        const message = EmptyMessage({resultKey: 'bar'});
+        const message = EmptyMessage({reponseKey: 'bar'});
         expect(message.response).toBeUndefined();
         expect(message.requestState.type).toBe('Empty');
-        expect(message.resultKey).toBe('bar');
+        expect(message.reponseKey).toBe('bar');
     });
 
     test('FetchingMessage will create a fetching message without a response', () => {
-        const message = FetchingMessage({resultKey: 'bar'});
+        const message = FetchingMessage({reponseKey: 'bar'});
         expect(message.response).toBeUndefined();
         expect(message.requestState.type).toBe('Fetching');
-        expect(message.resultKey).toBe('bar');
+        expect(message.reponseKey).toBe('bar');
     });
 
     test('RefetchingMessage will create a refetching message with a response', () => {
-        const message = RefetchingMessage('foo', {resultKey: 'bar'});
+        const message = RefetchingMessage('foo', {reponseKey: 'bar'});
         expect(message.response).toBe('foo');
         expect(message.requestState.type).toBe('Refetching');
-        expect(message.resultKey).toBe('bar');
+        expect(message.reponseKey).toBe('bar');
     });
 
     test('SuccessMessage will create a success message with a response', () => {
-        const message = SuccessMessage('foo', {resultKey: 'bar'});
+        const message = SuccessMessage('foo', {reponseKey: 'bar'});
         expect(message.response).toBe('foo');
         expect(message.requestState.type).toBe('Success');
-        expect(message.resultKey).toBe('bar');
+        expect(message.reponseKey).toBe('bar');
     });
 
     test('ErrorMessage will create a error message with requestError', () => {
-        const message = ErrorMessage('foo', {resultKey: 'bar'});
+        const message = ErrorMessage('foo', {reponseKey: 'bar'});
         expect(message.requestError).toBe('foo');
         expect(message.requestState.type).toBe('Error');
-        expect(message.resultKey).toBe('bar');
+        expect(message.reponseKey).toBe('bar');
     });
 
     it('will not break if nothing is passed to each constructor', () => {
