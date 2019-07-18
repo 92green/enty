@@ -10,7 +10,7 @@ import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
 type MessageProps = {
-    reponseKey?: ?string,
+    responseKey?: ?string,
     response?: any,
     requestState?: RequestState,
     requestError?: any,
@@ -59,9 +59,9 @@ export default class Message {
     /**
      * The unique key that binds the request, the normalized data and the requestState together
      */
-    reponseKey: string;
+    responseKey: string;
     constructor(props: * = {}) {
-        this.reponseKey = props.reponseKey;
+        this.responseKey = props.responseKey;
         this.response = props.response;
         this.requestState = props.requestState || EmptyState();
         this.requestError = props.requestError;
@@ -81,7 +81,7 @@ export default class Message {
     // To change a request state and pass the message on.
     updateRequestState(updater: Function): Message {
         return new Message({
-            reponseKey: this.reponseKey,
+            responseKey: this.responseKey,
             response: this.response,
             requestState: updater(this.requestState),
             requestError: this.requestError,

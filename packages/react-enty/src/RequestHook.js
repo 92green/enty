@@ -13,42 +13,42 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
     const {requestAction, generateResultKey} = config;
 
     return () => {
-        const [reponseKey, setResultKey] = useState();
+        const [responseKey, setResultKey] = useState();
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
         const responseRef = useRef();
 
-        let requestState = state.requestState[reponseKey] || EmptyState();
+        let requestState = state.requestState[responseKey] || EmptyState();
 
         let response = useMemo(() => {
             const schema = state.baseSchema;
-            const result = state.response[reponseKey];
+            const result = state.response[responseKey];
             const entities = state.entities;
             if(schema) {
                 return schema.denormalize({entities, result});
             }
             return result;
 
-        }, [requestState, reponseKey, state.responseCount]);
+        }, [requestState, responseKey, state.responseCount]);
 
         responseRef.current = response;
 
         let onRequest = useCallback((payload) => {
-            const reponseKey = generateResultKey(payload);
-            setResultKey(reponseKey);
-            return dispatch(requestAction(payload, {reponseKey}))
+            const responseKey = generateResultKey(payload);
+            setResultKey(responseKey);
+            return dispatch(requestAction(payload, {responseKey}))
                 .then(() => responseRef.current)
                 .catch(() => {});
         });
 
 
         return useMemo(() => new Message({
-            reponseKey,
+            responseKey,
             requestState,
             response,
-            requestError: state.error[reponseKey],
+            requestError: state.error[responseKey],
             onRequest
-        }), [requestState, response, reponseKey]);
+        }), [requestState, response, responseKey]);
     };
 }

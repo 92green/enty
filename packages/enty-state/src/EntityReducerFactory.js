@@ -48,10 +48,10 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
             }
         };
 
-        const {reponseKey} = meta;
-        const requestStatePath = ['requestState', reponseKey];
-        const responsePath = ['response', reponseKey];
-        const errorPath = ['error', reponseKey];
+        const {responseKey} = meta;
+        const requestStatePath = ['requestState', responseKey];
+        const responsePath = ['response', responseKey];
+        const errorPath = ['error', responseKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
