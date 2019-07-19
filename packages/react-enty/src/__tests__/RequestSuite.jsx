@@ -3,6 +3,8 @@ import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
 import equals from 'unmutable/equals';
+import pipeWith from 'unmutable/pipeWith';
+import find from 'unmutable/find';
 
 
 
@@ -49,28 +51,29 @@ export function asyncUpdate(wrapper: Object) {
 
 
 expect.extend([
-    'Empty',
-    'Fetching',
-    'Refetching',
-    'Success',
-    'Error'
-].reduce((rr, expectedType) => {
-    let name = `toBe${expectedType}`;
+    ['Empty', 'isEmpty'],
+    ['Fetching', 'isFetching'],
+    ['Refetching', 'isRefetching'],
+    ['Success', 'isSuccess'],
+    ['Error', 'isError']
+].reduce((rr, [expectedName, expectedState], index, input) => {
+    let name = `toBe${expectedName}`;
     rr[name] = function(wrapper, expectedResponse) {
         let {printReceived, printExpected} = this.utils;
         let message = wrapper.find('ExpectsMessage').prop('message');
-        let type = message.requestState.type;
-        let response = type === ('Error') ? message.requestError : message.response;
+        let {requestState} = message;
+        let response = requestState.isError ? message.requestError : message.response;
 
-        let passType = type === expectedType;
+        let passType = requestState[expectedState];
         let passResponse = equals(response)(expectedResponse);
         let pass = passType && passResponse;
+        let type = input.find(([_, state]) => requestState[state]) || [];
         return pass
             ? {pass: true, message: () => `expect(wrapper).not.${name}()\n\n` +
-                `Received: ${printReceived(type)}`}
+                `Received: ${printReceived(expectedName)}`}
             : {pass: false, message: () => `expect(wrapper).${name}()\n\n` +
-                `Expected: ${printExpected(expectedType)}: ${printExpected(expectedResponse)}\n` +
-                `Received: ${printReceived(type)}: ${printReceived(response)}`}
+                `Expected: ${printExpected(expectedName)}: ${printExpected(expectedResponse)}\n` +
+                `Received: ${printReceived(type[0])}: ${printReceived(response)}`}
         ;
     };
     return rr;

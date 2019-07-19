@@ -1,73 +1,109 @@
 // @flow
 
-import {VariantFactory} from 'fronads/lib/Variant';
-
-/**
- * Mapper description
- */
-type RequestStateMapper = (value: *) => *;
-
-/**
- * RequestStateFlatMapper description
- */
-type RequestStateFlatMapper = (value: *) => RequestState;
-
-/**
- * RequestStateType description
- */
-
-export type RequestState = {
-    emptyFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
-    emptyMap: (mapper: RequestStateMapper) => RequestState,
-    emptyUnit: (value: *) => RequestState,
-    errorFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
-    errorMap: (mapper: RequestStateMapper) => RequestState,
-    errorUnit: (value: *) => RequestState,
-    fetchingFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
-    fetchingMap: (mapper: RequestStateMapper) => RequestState,
-    fetchingUnit: (value: *) => RequestState,
-    refetchingFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
-    refetchingMap: (mapper: RequestStateMapper) => RequestState,
-    refetchingUnit: (value: *) => RequestState,
-    successFlatMap: (mapper: RequestStateFlatMapper) => RequestState,
-    successMap: (mapper: RequestStateMapper) => RequestState,
-    successUnit: (value: *) => RequestState,
-    toEmpty: () => RequestState,
-    toError: () => RequestState,
-    toFetching: () => RequestState,
-    toRefetching: () => RequestState,
-    toSuccess: () => RequestState,
-    value: (defaultValue: *) => *
+type RequestStateProps = {
+    isEmpty?: boolean;
+    isFetching?: boolean;
+    isRefetching?: boolean;
+    isSuccess?: boolean;
+    isError?: boolean;
 };
 
+export class RequestState<A> {
+    val: A;
+    isEmpty: ?boolean;
+    isFetching: ?boolean;
+    isRefetching: ?boolean;
+    isSuccess: ?boolean;
+    isError: ?boolean;
+
+    constructor(value: A, props: RequestStateProps) {
+        this.isEmpty = props.isEmpty;
+        this.isFetching = props.isFetching;
+        this.isRefetching = props.isRefetching;
+        this.isSuccess = props.isSuccess;
+        this.isError = props.isError;
+        this.val = value;
+    }
+
+    value(defaultValue: any = null): mixed {
+        return this.val == null ? defaultValue : this.val;
+    }
 
 
-const RequestStates = VariantFactory(['Empty', 'Fetching', 'Refetching', 'Error', 'Success']);
+    //
+    // Empty
 
-/**
- * EmptyState description
- */
-export const EmptyState: () => RequestState = RequestStates.Empty;
+    static empty<B>(value: B): RequestState<B> {
+        return new RequestState(value, {isEmpty: true});
+    }
+    emptyFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+        return this.isEmpty ? fn(this.val) : this;
+    }
+    emptyMap<B>(fn: (A) => B): RequestState<B> {
+        return this.isEmpty ? RequestState.empty(fn(this.val)) : this;
+    }
 
-/**
- * FetchingState description
- */
-export const FetchingState: () => RequestState = RequestStates.Fetching;
 
-/**
- * RefetchingState description
- */
-export const RefetchingState: () => RequestState = RequestStates.Refetching;
+    //
+    // Fetching
 
-/**
- * ErrorState description
- */
-export const ErrorState: (*) => RequestState = RequestStates.Error;
+    static fetching<B>(value: B): RequestState<B> {
+        return new RequestState(value, {isFetching: true});
+    }
+    fetchingFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+        return this.isFetching ? fn(this.val) : this;
+    }
+    fetchingMap<B>(fn: (A) => B): RequestState<B> {
+        return this.isFetching ? RequestState.fetching(fn(this.val)) : this;
+    }
 
-/**
- * SuccessState description
- *
- */
-export const SuccessState: () => RequestState = RequestStates.Success;
 
+    //
+    // Refetching
+
+    static refetching<B>(value: B): RequestState<B> {
+        return new RequestState(value, {isRefetching: true});
+    }
+    refetchingFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+        return this.isRefetching ? fn(this.val) : this;
+    }
+    refetchingMap<B>(fn: (A) => B): RequestState<B> {
+        return this.isRefetching ? RequestState.refetching(fn(this.val)) : this;
+    }
+
+
+    //
+    // Success
+
+    static success<B>(value: B): RequestState<B> {
+        return new RequestState(value, {isSuccess: true});
+    }
+    successFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+        return this.isSuccess ? fn(this.val) : this;
+    }
+    successMap<B>(fn: (A) => B): RequestState<B> {
+        return this.isSuccess ? RequestState.success(fn(this.val)) : this;
+    }
+
+
+    //
+    // Error
+
+    static error<B>(value: B): RequestState<B> {
+        return new RequestState(value, {isError: true});
+    }
+    errorFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+        return this.isError ? fn(this.val) : this;
+    }
+    errorMap<B>(fn: (A) => B): RequestState<B> {
+        return this.isError ? RequestState.error(fn(this.val)) : this;
+    }
+
+}
+
+export const EmptyState = RequestState.empty;
+export const FetchingState = RequestState.fetching;
+export const RefetchingState = RequestState.refetching;
+export const SuccessState = RequestState.success;
+export const ErrorState = RequestState.error;
 
