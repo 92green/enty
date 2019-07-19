@@ -2,6 +2,8 @@
 
 // Api
 export {default as EntityApi} from './EntityApi';
+export {default as LoadingBoundary} from './LoadingBoundary';
+export {default as LoadingBoundaryHoc} from './LoadingBoundaryHoc';
 
 // Schemas
 export {default as ArraySchema} from 'enty/lib/ArraySchema';
