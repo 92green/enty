@@ -1,6 +1,6 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
-import {FetchingState} from '../data/RequestState';
+import RequestState from '../data/RequestState';
 import EntitySchema from 'enty/lib/EntitySchema';
 import ArraySchema from 'enty/lib/ArraySchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
@@ -69,18 +69,18 @@ describe('EntityReducer requestState', () => {
             EntityReducer(undefined, {type: 'TEST_FETCH', meta: {responseKey: 'TEST'}}),
             getIn(['requestState', 'TEST'])
         );
-        expect(data.type).toBe('Fetching');
+        expect(data.isFetching).toBe(true);
     });
 
     test('requestState is Refetching when action is _FETCH and requestState already exists', () => {
         const data = pipeWith(
             EntityReducer(
-                {requestState: {TEST: FetchingState()}},
+                {requestState: {TEST: RequestState.fetching()}},
                 {type: 'TEST_FETCH', meta: {responseKey: 'TEST'}}
             ),
             getIn(['requestState', 'TEST'])
         );
-        expect(data.type).toBe('Refetching');
+        expect(data.isRefetching).toBe(true);
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {

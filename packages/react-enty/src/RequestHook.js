@@ -1,6 +1,6 @@
 // @flow
 import Message from 'enty-state/lib/data/Message';
-import {EmptyState} from 'enty-state/lib/data/RequestState';
+import RequestState from 'enty-state/lib/data/RequestState';
 import {useState, useContext, useCallback, useMemo, useRef} from 'react';
 
 type RequestHookConfig = {
@@ -19,7 +19,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         const [state, dispatch] = store;
         const responseRef = useRef();
 
-        let requestState = state.requestState[responseKey] || EmptyState();
+        let requestState = state.requestState[responseKey] || RequestState.empty();
 
         let response = useMemo(() => {
             const schema = state.baseSchema;

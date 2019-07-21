@@ -1,22 +1,22 @@
 // @flow
 
 type RequestStateProps = {
-    isEmpty?: boolean;
-    isFetching?: boolean;
-    isRefetching?: boolean;
-    isSuccess?: boolean;
-    isError?: boolean;
+    isEmpty?: boolean,
+    isFetching?: boolean,
+    isRefetching?: boolean,
+    isSuccess?: boolean,
+    isError?: boolean
 };
 
-export class RequestState<A> {
-    val: A;
+export default class RequestState {
+    val: any;
     isEmpty: ?boolean;
     isFetching: ?boolean;
     isRefetching: ?boolean;
     isSuccess: ?boolean;
     isError: ?boolean;
 
-    constructor(value: A, props: RequestStateProps) {
+    constructor(value: any, props: RequestStateProps) {
         this.isEmpty = props.isEmpty;
         this.isFetching = props.isFetching;
         this.isRefetching = props.isRefetching;
@@ -25,7 +25,7 @@ export class RequestState<A> {
         this.val = value;
     }
 
-    value(defaultValue: any = null): mixed {
+    value(defaultValue: any = null) {
         return this.val == null ? defaultValue : this.val;
     }
 
@@ -33,13 +33,13 @@ export class RequestState<A> {
     //
     // Empty
 
-    static empty<B>(value: B): RequestState<B> {
+    static empty(value: any): RequestState {
         return new RequestState(value, {isEmpty: true});
     }
-    emptyFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+    emptyFlatMap(fn: (any) => RequestState): RequestState {
         return this.isEmpty ? fn(this.val) : this;
     }
-    emptyMap<B>(fn: (A) => B): RequestState<B> {
+    emptyMap(fn: (any) => any): RequestState {
         return this.isEmpty ? RequestState.empty(fn(this.val)) : this;
     }
 
@@ -47,13 +47,13 @@ export class RequestState<A> {
     //
     // Fetching
 
-    static fetching<B>(value: B): RequestState<B> {
+    static fetching(value: any): RequestState {
         return new RequestState(value, {isFetching: true});
     }
-    fetchingFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+    fetchingFlatMap(fn: (any) => RequestState): RequestState {
         return this.isFetching ? fn(this.val) : this;
     }
-    fetchingMap<B>(fn: (A) => B): RequestState<B> {
+    fetchingMap(fn: (any) => any): RequestState {
         return this.isFetching ? RequestState.fetching(fn(this.val)) : this;
     }
 
@@ -61,13 +61,13 @@ export class RequestState<A> {
     //
     // Refetching
 
-    static refetching<B>(value: B): RequestState<B> {
+    static refetching(value: any): RequestState {
         return new RequestState(value, {isRefetching: true});
     }
-    refetchingFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+    refetchingFlatMap(fn: (any) => RequestState): RequestState {
         return this.isRefetching ? fn(this.val) : this;
     }
-    refetchingMap<B>(fn: (A) => B): RequestState<B> {
+    refetchingMap(fn: (any) => any): RequestState {
         return this.isRefetching ? RequestState.refetching(fn(this.val)) : this;
     }
 
@@ -75,13 +75,13 @@ export class RequestState<A> {
     //
     // Success
 
-    static success<B>(value: B): RequestState<B> {
+    static success(value: any): RequestState {
         return new RequestState(value, {isSuccess: true});
     }
-    successFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+    successFlatMap(fn: (any) => RequestState): RequestState {
         return this.isSuccess ? fn(this.val) : this;
     }
-    successMap<B>(fn: (A) => B): RequestState<B> {
+    successMap(fn: (any) => any): RequestState {
         return this.isSuccess ? RequestState.success(fn(this.val)) : this;
     }
 
@@ -89,21 +89,15 @@ export class RequestState<A> {
     //
     // Error
 
-    static error<B>(value: B): RequestState<B> {
+    static error(value: any): RequestState {
         return new RequestState(value, {isError: true});
     }
-    errorFlatMap<B>(fn: (A) => RequestState<B>): RequestState<B> {
+    errorFlatMap(fn: (any) => RequestState): RequestState {
         return this.isError ? fn(this.val) : this;
     }
-    errorMap<B>(fn: (A) => B): RequestState<B> {
+    errorMap(fn: (any) => any): RequestState {
         return this.isError ? RequestState.error(fn(this.val)) : this;
     }
 
 }
-
-export const EmptyState = RequestState.empty;
-export const FetchingState = RequestState.fetching;
-export const RefetchingState = RequestState.refetching;
-export const SuccessState = RequestState.success;
-export const ErrorState = RequestState.error;
 

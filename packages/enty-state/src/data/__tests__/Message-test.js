@@ -5,22 +5,22 @@ import {FetchingMessage} from '../Message';
 import {RefetchingMessage} from '../Message';
 import {SuccessMessage} from '../Message';
 import {ErrorMessage} from '../Message';
-import {ErrorState} from '../../data/RequestState';
+import RequestState from '../../data/RequestState';
 
 test('will let you set responseKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
         responseKey: 'foo',
         response: 'bar',
-        requestState: 'baz',
+        requestState: RequestState.success('baz'),
         requestError: 'qux',
-        onRequest: 'quux'
+        onRequest: () => Promise.resolve('quux')
     });
 
     expect(message.responseKey).toBe('foo');
     expect(message.response).toBe('bar');
-    expect(message.requestState).toBe('baz');
+    expect(message.requestState.value()).toBe('baz');
     expect(message.requestError).toBe('qux');
-    expect(message.onRequest).toBe('quux');
+    expect(message.onRequest()).resolves.toBe('quux');
 });
 
 
@@ -50,13 +50,13 @@ describe('Message requestState methods', () => {
     const message = SuccessMessage({foo: 'foo'});
 
     test('Message.updateRequestState can replace the requestState', () => {
-        const errorMessage = message.updateRequestState(ErrorState);
+        const errorMessage = message.updateRequestState(RequestState.error);
         expect(errorMessage.requestState.isError).toBe(true);
     });
 
     test('Message.updateRequestState is given the current requestState', () => {
         const errorMessage = message
-            .updateRequestState(requestState => requestState.successFlatMap(ErrorState));
+            .updateRequestState(requestState => requestState.successFlatMap(RequestState.error));
 
         expect(errorMessage.requestState.isError).toBe(true);
         expect(errorMessage.requestState.isSuccess).not.toBe(true);

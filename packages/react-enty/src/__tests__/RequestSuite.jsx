@@ -3,8 +3,6 @@ import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
 import equals from 'unmutable/equals';
-import pipeWith from 'unmutable/pipeWith';
-import find from 'unmutable/find';
 
 
 
@@ -67,7 +65,7 @@ expect.extend([
         let passType = requestState[expectedState];
         let passResponse = equals(response)(expectedResponse);
         let pass = passType && passResponse;
-        let type = input.find(([_, state]) => requestState[state]) || [];
+        let type = input.find(([, state]) => requestState[state]) || [];
         return pass
             ? {pass: true, message: () => `expect(wrapper).not.${name}()\n\n` +
                 `Received: ${printReceived(expectedName)}`}

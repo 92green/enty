@@ -1,11 +1,6 @@
 // @flow
-import type {RequestState} from '../data/RequestState';
 
-import {EmptyState} from '../data/RequestState';
-import {FetchingState} from '../data/RequestState';
-import {RefetchingState} from '../data/RequestState';
-import {SuccessState} from '../data/RequestState';
-import {ErrorState} from '../data/RequestState';
+import RequestState from '../data/RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
@@ -15,12 +10,12 @@ type MessageProps = {
     response?: any,
     requestState?: RequestState,
     requestError?: any,
-    onRequest?: ?(response: mixed) => Promise<mixed>
+    onRequest?: (response: mixed) => Promise<mixed>
 };
 
 export default class Message {
 
-    onRequest: ?(response: mixed) => Promise<mixed>;
+    onRequest: (response: mixed) => Promise<mixed>;
     requestState: RequestState;
     response: mixed;
     requestError: mixed;
@@ -29,9 +24,9 @@ export default class Message {
     constructor(props: MessageProps = {}) {
         this.responseKey = props.responseKey;
         this.response = props.response;
-        this.requestState = props.requestState || EmptyState();
+        this.requestState = props.requestState || RequestState.empty();
         this.requestError = props.requestError;
-        this.onRequest = props.onRequest;
+        this.onRequest = props.onRequest || Promise.resolve;
     }
 
 
@@ -90,29 +85,29 @@ export default class Message {
 
 export const EmptyMessage = (messageProps?: MessageProps = {}) => new Message({
     ...messageProps,
-    requestState: EmptyState()
+    requestState: RequestState.empty()
 });
 
 export const FetchingMessage = (messageProps?: MessageProps = {}) => new Message({
     ...messageProps,
-    requestState: FetchingState()
+    requestState: RequestState.fetching()
 });
 
 export const RefetchingMessage = (response: mixed, messageProps?: MessageProps = {}) => new Message({
     ...messageProps,
     response,
-    requestState: RefetchingState()
+    requestState: RequestState.refetching()
 });
 
 export const SuccessMessage = (response: mixed, messageProps?: MessageProps = {}) => new Message({
     ...messageProps,
     response,
-    requestState: SuccessState()
+    requestState: RequestState.success()
 });
 
 export const ErrorMessage = (requestError: mixed, messageProps?: MessageProps = {}) => new Message({
     ...messageProps,
     requestError,
-    requestState: ErrorState()
+    requestState: RequestState.error()
 });
 

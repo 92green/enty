@@ -89,9 +89,9 @@ replace the state from a different source._
 ```jsx
 function validateData(data) {
     if(data.hasErrors) {
-        return ErrorState();
+        return RequestState.error();
     }
-    return SuccessState();
+    return RequestState.success();
 }
 
 return requestState
