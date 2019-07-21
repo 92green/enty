@@ -1,10 +1,5 @@
 // @flow
 import Message from '../Message';
-import {EmptyMessage} from '../Message';
-import {FetchingMessage} from '../Message';
-import {RefetchingMessage} from '../Message';
-import {SuccessMessage} from '../Message';
-import {ErrorMessage} from '../Message';
 import RequestState from '../../data/RequestState';
 
 test('will let you set responseKey, response, requestState, requestError, onRequest', () => {
@@ -29,7 +24,7 @@ test('will default requestState to Empty', () => {
 });
 
 describe('Message response methods', () => {
-    const message = SuccessMessage({
+    const message = Message.success({
         foo: 'bar',
         bar: {
             baz: 'qux'
@@ -47,7 +42,7 @@ describe('Message response methods', () => {
 });
 
 describe('Message requestState methods', () => {
-    const message = SuccessMessage({foo: 'foo'});
+    const message = Message.success({foo: 'foo'});
 
     test('Message.updateRequestState can replace the requestState', () => {
         const errorMessage = message.updateRequestState(RequestState.error);
@@ -65,47 +60,47 @@ describe('Message requestState methods', () => {
 });
 
 describe('Message Constructors', () => {
-    test('EmptyMessage will create a empty message without a response', () => {
-        const message = EmptyMessage({responseKey: 'bar'});
+    test('Message.empty will create a empty message without a response', () => {
+        const message = Message.empty({responseKey: 'bar'});
         expect(message.response).toBeUndefined();
         expect(message.requestState.isEmpty).toBe(true);
         expect(message.responseKey).toBe('bar');
     });
 
-    test('FetchingMessage will create a fetching message without a response', () => {
-        const message = FetchingMessage({responseKey: 'bar'});
+    test('Message.fetching will create a fetching message without a response', () => {
+        const message = Message.fetching({responseKey: 'bar'});
         expect(message.response).toBeUndefined();
         expect(message.requestState.isFetching).toBe(true);
         expect(message.responseKey).toBe('bar');
     });
 
-    test('RefetchingMessage will create a refetching message with a response', () => {
-        const message = RefetchingMessage('foo', {responseKey: 'bar'});
+    test('Message.refetching will create a refetching message with a response', () => {
+        const message = Message.refetching('foo', {responseKey: 'bar'});
         expect(message.response).toBe('foo');
         expect(message.requestState.isRefetching).toBe(true);
         expect(message.responseKey).toBe('bar');
     });
 
-    test('SuccessMessage will create a success message with a response', () => {
-        const message = SuccessMessage('foo', {responseKey: 'bar'});
+    test('Message.success will create a success message with a response', () => {
+        const message = Message.success('foo', {responseKey: 'bar'});
         expect(message.response).toBe('foo');
         expect(message.requestState.isSuccess).toBe(true);
         expect(message.responseKey).toBe('bar');
     });
 
-    test('ErrorMessage will create a error message with requestError', () => {
-        const message = ErrorMessage('foo', {responseKey: 'bar'});
+    test('Message.error will create a error message with requestError', () => {
+        const message = Message.error('foo', {responseKey: 'bar'});
         expect(message.requestError).toBe('foo');
         expect(message.requestState.isError).toBe(true);
         expect(message.responseKey).toBe('bar');
     });
 
     it('will not break if nothing is passed to each constructor', () => {
-        expect(EmptyMessage).not.toThrow();
-        expect(FetchingMessage).not.toThrow();
-        expect(RefetchingMessage).not.toThrow();
-        expect(SuccessMessage).not.toThrow();
-        expect(ErrorMessage).not.toThrow();
+        expect(Message.empty).not.toThrow();
+        expect(Message.fetching).not.toThrow();
+        expect(Message.refetching).not.toThrow();
+        expect(Message.success).not.toThrow();
+        expect(Message.error).not.toThrow();
     });
 });
 

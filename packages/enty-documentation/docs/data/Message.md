@@ -123,28 +123,28 @@ message.updateRequestState(requestState => requestState.toError());
 Enty provides a series of helper functions to let you construct messages
 in various request states. These are mostly used for providing default states.
 
-### EmptyMessage()
+### Message.empty()
 **type:** `(MessageProps = {}) => Message<EmptyState>`
 
 Create a Message in an Empty state.
 
-### FetchingMessage()
+### Message.fetching()
 **type:** `(MessageProps = {}) => Message<FetchingState>`
 
 Create a message in a Fetching state
 
-### RefetchingMessage()
+### Message.refetching()
 **type:** `(response: mixed, rest?: MessageProps = {}) => Message<RefetchingState>`
 
 Create a message in a Refetching state
 
-### SuccessMessage()
+### Message.success()
 **type:** `(response: mixed, rest?: MessageProps = {}) => Message<SuccessState>`
 
 Create a message in a Success state
 
 
-### ErrorMessage()
+### Message.error()
 **type:** `(requestError: mixed, rest?: MessageProps = {}) => Message<ErrorState>`
 
 Create a message in an Error state.

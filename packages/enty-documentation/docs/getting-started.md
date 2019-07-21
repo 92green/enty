@@ -107,7 +107,7 @@ function User(props) {
     return requestState
         .fetchingMap(() => <Loader/>)
         .refetchingMap(() => <Loader/>)
-        .errorMap(() => <ErrorMessage error={requestError} />)
+        .errorMap(() => <Message.error error={requestError} />)
         .successMap(() => <img src={response.user.avatar} />)
         .value();
 }

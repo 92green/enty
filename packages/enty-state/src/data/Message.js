@@ -57,57 +57,77 @@ export default class Message {
         });
     }
 
+
+    //
+    // empty
+
+    static empty(messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestState: RequestState.empty()
+        });
+    }
     toEmpty(): Message {
         return this.updateRequestState(_ => _.toEmpty());
     }
 
+
+    //
+    // fetching
+
+    static fetching(messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestState: RequestState.fetching()
+        });
+    }
     toFetching(): Message {
         return this.updateRequestState(_ => _.toFetching());
     }
 
+
+    //
+    // refetching
+
+    static refetching(response: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            response,
+            requestState: RequestState.refetching()
+        });
+    }
     toRefetching(response?: mixed): Message {
         return this.updateRequestState(_ => _.toRefetching(), {response});
     }
 
+
+    //
+    // success
+
+    static success(response: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            response,
+            requestState: RequestState.success()
+        });
+    }
     toSuccess(response?: mixed): Message {
         return this.updateRequestState(_ => _.toSuccess(), {response});
     }
 
+
+    //
+    // Error
+
+    static error(requestError: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestError,
+            requestState: RequestState.error()
+        });
+    }
     toError(requestError?: mixed): Message {
         return this.updateRequestState(_ => _.toError(), {requestError});
     }
 }
-
-
-
-//
-// Constructors
-
-export const EmptyMessage = (messageProps?: MessageProps = {}) => new Message({
-    ...messageProps,
-    requestState: RequestState.empty()
-});
-
-export const FetchingMessage = (messageProps?: MessageProps = {}) => new Message({
-    ...messageProps,
-    requestState: RequestState.fetching()
-});
-
-export const RefetchingMessage = (response: mixed, messageProps?: MessageProps = {}) => new Message({
-    ...messageProps,
-    response,
-    requestState: RequestState.refetching()
-});
-
-export const SuccessMessage = (response: mixed, messageProps?: MessageProps = {}) => new Message({
-    ...messageProps,
-    response,
-    requestState: RequestState.success()
-});
-
-export const ErrorMessage = (requestError: mixed, messageProps?: MessageProps = {}) => new Message({
-    ...messageProps,
-    requestError,
-    requestState: RequestState.error()
-});
 
