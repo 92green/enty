@@ -4,6 +4,8 @@
 export {default as EntityApi} from './EntityApi';
 export {default as LoadingBoundary} from './LoadingBoundary';
 export {default as LoadingBoundaryHoc} from './LoadingBoundaryHoc';
+export {default as RequestState} from 'enty-state/lib/data/RequestState';
+export {default as Message} from 'enty-state/lib/data/Message';
 
 // Schemas
 export {default as ArraySchema} from 'enty/lib/ArraySchema';
@@ -15,12 +17,3 @@ export {default as ValueSchema} from 'enty/lib/ValueSchema';
 export {default as NullSchema} from 'enty/lib/NullSchema';
 
 
-// Misc
-export {EmptyState} from 'enty-state/lib/data/RequestState';
-export {FetchingState} from 'enty-state/lib/data/RequestState';
-export {RefetchingState} from 'enty-state/lib/data/RequestState';
-export {ErrorState} from 'enty-state/lib/data/RequestState';
-export {SuccessState} from 'enty-state/lib/data/RequestState';
-
-export type {RequestState} from 'enty-state/lib/data/RequestState';
-export type {default as Message} from 'enty-state/lib/data/Message';

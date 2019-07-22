@@ -1,124 +1,133 @@
 // @flow
-import type {RequestState} from '../data/RequestState';
-import {EmptyState} from '../data/RequestState';
-import {FetchingState} from '../data/RequestState';
-import {RefetchingState} from '../data/RequestState';
-import {SuccessState} from '../data/RequestState';
-import {ErrorState} from '../data/RequestState';
 
+import RequestState from '../data/RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
+
 type MessageProps = {
-    reponseKey?: ?string,
+    responseKey?: ?string,
     response?: any,
     requestState?: RequestState,
     requestError?: any,
-    onRequest?: ?(response: *) => Promise<*>
+    onRequest?: (response: mixed) => Promise<mixed>
 };
 
-/**
- * A Message bundles up all of the information surrounding a request and response from the api.
- * It holds all the information that you would need to both make requests and render their responses
- * when they come back. You shouldn't need to worry about creating messages. They are constructed for you
- * by the RequestHock.
- */
 export default class Message {
 
-    /**
-     * onRequest is a callback that will trigger your EntityRequester and start the normalizing flow.
-     */
-    onRequest: (response: *) => Promise<*>;
+    onRequest: (response: mixed) => Promise<mixed>;
+    requestState: RequestState;
+    response: mixed;
+    requestError: mixed;
+    responseKey: ?string;
 
-    /**
-     * The request state is a variant that exists in one of either empty, fetching, refetching, error or success states.
-     * Similar to a promise it accepts functions to call at each of these states. This lets you be confident to only
-     * render component when your request has successfully returned.
-     *
-     * @example
-     * user.requestState
-     *      .fetchingMap(() => <Loader />)
-     *      .refetchingMap(() => <Loader />)
-     *      .errorMap(() => <Error errorData={user.requestError} />)
-     *      .successMap(() => <User user={user.response}>)
-     *      .value();
-     */
-    requestState: *;
-
-    /**
-     * Response containse the denormalized version of the data that was requested by this message's
-     * onRequest callback
-     */
-    response: *;
-
-    /**
-     * If the onRequest callback returns a rejected promise the error will be found in requestError.
-     */
-    requestError: *;
-
-    /**
-     * The unique key that binds the request, the normalized data and the requestState together
-     */
-    reponseKey: string;
-    constructor(props: * = {}) {
-        this.reponseKey = props.reponseKey;
+    constructor(props: MessageProps = {}) {
+        this.responseKey = props.responseKey;
         this.response = props.response;
-        this.requestState = props.requestState || EmptyState();
+        this.requestState = props.requestState || RequestState.empty();
         this.requestError = props.requestError;
-        this.onRequest = props.onRequest;
+        this.onRequest = props.onRequest || Promise.resolve;
     }
 
-    get(key: string, notFoundValue: *): * {
+
+    //
+    // Response Getters
+
+    get(key: string, notFoundValue: mixed): mixed {
         return get(key, notFoundValue)(this.response);
     }
 
-    getIn(path: string[], notFoundValue: *): * {
+    getIn(path: string[], notFoundValue: mixed): mixed {
         return getIn(path, notFoundValue)(this.response);
     }
 
-    // @INTENT
-    // To allow the user to update the requestState via a function.
-    // To change a request state and pass the message on.
-    updateRequestState(updater: Function): Message {
+
+    //
+    // Updating Methods
+
+    update(updater: Function): Message {
+        return new Message(updater(this));
+    }
+
+    updateRequestState(updater: Function, messageProps?: MessageProps = {}): Message {
         return new Message({
-            reponseKey: this.reponseKey,
-            response: this.response,
-            requestState: updater(this.requestState),
-            requestError: this.requestError,
-            onRequest: this.onRequest
+            ...this,
+            ...messageProps,
+            requestState: updater(this.requestState)
         });
     }
+
+
+    //
+    // empty
+
+    static empty(messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestState: RequestState.empty()
+        });
+    }
+    toEmpty(): Message {
+        return this.updateRequestState(_ => _.toEmpty());
+    }
+
+
+    //
+    // fetching
+
+    static fetching(messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestState: RequestState.fetching()
+        });
+    }
+    toFetching(): Message {
+        return this.updateRequestState(_ => _.toFetching());
+    }
+
+
+    //
+    // refetching
+
+    static refetching(response: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            response,
+            requestState: RequestState.refetching()
+        });
+    }
+    toRefetching(response?: mixed): Message {
+        return this.updateRequestState(_ => _.toRefetching(), {response});
+    }
+
+
+    //
+    // success
+
+    static success(response: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            response,
+            requestState: RequestState.success()
+        });
+    }
+    toSuccess(response?: mixed): Message {
+        return this.updateRequestState(_ => _.toSuccess(), {response});
+    }
+
+
+    //
+    // Error
+
+    static error(requestError: mixed, messageProps?: MessageProps = {}): Message {
+        return new Message({
+            ...messageProps,
+            requestError,
+            requestState: RequestState.error()
+        });
+    }
+    toError(requestError?: mixed): Message {
+        return this.updateRequestState(_ => _.toError(), {requestError});
+    }
 }
-
-
-//
-// Constructors
-//
-
-export const EmptyMessage = (rest?: MessageProps = {}) => new Message(
-    rest
-);
-
-export const FetchingMessage = (rest?: MessageProps = {}) => new Message({
-    requestState: FetchingState(),
-    ...rest
-});
-
-export const SuccessMessage = (response: *, rest?: MessageProps = {}) => new Message({
-    response,
-    requestState: SuccessState(),
-    ...rest
-});
-
-export const RefetchingMessage = (response: *, rest?: MessageProps = {}) => new Message({
-    response,
-    requestState: RefetchingState(),
-    ...rest
-});
-
-export const ErrorMessage = (requestError: *, rest?: MessageProps = {}) => new Message({
-    requestError,
-    requestState: ErrorState(),
-    ...rest
-});
 

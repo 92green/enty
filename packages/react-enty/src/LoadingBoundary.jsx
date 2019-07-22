@@ -30,7 +30,7 @@ export default function LoadingBoundary(props: Props): Node {
     const errorState = () => <Error error={message.requestError} />;
     const fallbackState = () => <Fallback />;
     const renderState = () => children(message.response, {
-        refetching: message.requestState.type === 'Refetching'
+        refetching: message.requestState.isRefetching === true
     });
 
     // Render

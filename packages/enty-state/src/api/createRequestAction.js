@@ -6,7 +6,7 @@ import isObservable from '../util/isObservable';
 
 
 type Meta = {
-    reponseKey: string
+    responseKey: string
 };
 
 //

@@ -1,6 +1,6 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
-import {FetchingState} from '../data/RequestState';
+import RequestState from '../data/RequestState';
 import EntitySchema from 'enty/lib/EntitySchema';
 import ArraySchema from 'enty/lib/ArraySchema';
 import ObjectSchema from 'enty/lib/ObjectSchema';
@@ -52,7 +52,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
     const exampleReceiveAction = {
         type: 'TEST_RECEIVE',
-        meta: {reponseKey: 'TEST'},
+        meta: {responseKey: 'TEST'},
         payload: examplePayload
     };
 
@@ -66,26 +66,26 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 describe('EntityReducer requestState', () => {
     test('requestState is Fetching when action is _FETCH', () => {
         const data = pipeWith(
-            EntityReducer(undefined, {type: 'TEST_FETCH', meta: {reponseKey: 'TEST'}}),
+            EntityReducer(undefined, {type: 'TEST_FETCH', meta: {responseKey: 'TEST'}}),
             getIn(['requestState', 'TEST'])
         );
-        expect(data.type).toBe('Fetching');
+        expect(data.isFetching).toBe(true);
     });
 
     test('requestState is Refetching when action is _FETCH and requestState already exists', () => {
         const data = pipeWith(
             EntityReducer(
-                {requestState: {TEST: FetchingState()}},
-                {type: 'TEST_FETCH', meta: {reponseKey: 'TEST'}}
+                {requestState: {TEST: RequestState.fetching()}},
+                {type: 'TEST_FETCH', meta: {responseKey: 'TEST'}}
             ),
             getIn(['requestState', 'TEST'])
         );
-        expect(data.type).toBe('Refetching');
+        expect(data.isRefetching).toBe(true);
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
         return pipeWith (
-            EntityReducer(undefined, {type: 'nothing', meta: {reponseKey: 'nothing'}}),
+            EntityReducer(undefined, {type: 'nothing', meta: {responseKey: 'nothing'}}),
             getIn(['requestState', 'nothing']),
             value => expect(value).toBe(undefined)
         );
@@ -98,7 +98,7 @@ describe('EntityReducer requestState', () => {
             EntityReducer(undefined, {
                 type: 'TEST_ERROR',
                 payload: 'errorPayload',
-                meta: {reponseKey: 'TEST'}
+                meta: {responseKey: 'TEST'}
             }),
             getIn(['requestState', 'TEST']),
             _ => _.value(),
@@ -111,7 +111,7 @@ describe('EntityReducer requestState', () => {
 });
 
 describe('EntityReducer Config', () => {
-    const action = (type) => ({type, meta: {reponseKey: type}});
+    const action = (type) => ({type, meta: {responseKey: type}});
     test('the supplied schema is not mutated when reducing', () => {
         expect(EntityReducer(undefined, action('nothing')).baseSchema).toBe(schema);
     });
@@ -141,10 +141,10 @@ describe('EntityReducer Config', () => {
 });
 
 describe('EntityReducer Normalizing', () => {
-    test('it will store normalized results on _result.reponseKey', () => {
+    test('it will store normalized results on _result.responseKey', () => {
         const action = {
             type: 'TEST_RECEIVE',
-            meta: {reponseKey: 'TEST'},
+            meta: {responseKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -163,7 +163,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store normalized data on _entities.type.id', () => {
         const action = {
             type: 'TEST_RECEIVE',
-            meta: {reponseKey: 'TEST'},
+            meta: {responseKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -182,7 +182,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store deep entities', () => {
         const action = {
             type: 'TEST_RECEIVE',
-            meta: {reponseKey: 'TEST'},
+            meta: {responseKey: 'TEST'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -204,7 +204,7 @@ describe('EntityReducer Normalizing', () => {
     test('it can merge two normalizations correctly', () => {
         const action = (payload) => ({
             type: 'TEST_RECEIVE',
-            meta: {reponseKey: 'TEST'},
+            meta: {responseKey: 'TEST'},
             payload
         });
 
@@ -272,14 +272,14 @@ describe('no schema reducer', () => {
 
     it('will not normalize if a schema is not provided', () => {
         const reducer = EntityReducerFactory({});
-        const stateA = reducer(undefined, {type: 'TEST_RECEIVE', payload: 'FOO', meta: {reponseKey: '123'}});
+        const stateA = reducer(undefined, {type: 'TEST_RECEIVE', payload: 'FOO', meta: {responseKey: '123'}});
 
         expect(stateA.entities).toEqual({});
         expect(stateA.response['123']).toBe('FOO');
         expect(stateA.response['456']).toBeUndefined();
         expect(stateA.stats.responseCount).toBe(1);
 
-        const stateB = reducer(stateA, {type: 'TEST_RECEIVE', payload: 'BAR', meta: {reponseKey: '456'}});
+        const stateB = reducer(stateA, {type: 'TEST_RECEIVE', payload: 'BAR', meta: {responseKey: '456'}});
         expect(stateB.response['123']).toBe('FOO');
         expect(stateB.response['456']).toBe('BAR');
         expect(stateB.stats.responseCount).toBe(2);

@@ -11,10 +11,7 @@ import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import updateIn from 'unmutable/lib/updateIn';
 
-import {FetchingState} from './data/RequestState';
-import {RefetchingState} from './data/RequestState';
-import {ErrorState} from './data/RequestState';
-import {SuccessState} from './data/RequestState';
+import RequestState from './data/RequestState';
 import Logger from './util/Logger';
 
 type State = {
@@ -48,10 +45,10 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
             }
         };
 
-        const {reponseKey} = meta;
-        const requestStatePath = ['requestState', reponseKey];
-        const responsePath = ['response', reponseKey];
-        const errorPath = ['error', reponseKey];
+        const {responseKey} = meta;
+        const requestStatePath = ['requestState', responseKey];
+        const responsePath = ['response', responseKey];
+        const errorPath = ['error', responseKey];
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -61,17 +58,17 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
         // Set Request States for BLANK/FETCH/ERROR
         if(/_FETCH$/g.test(type)) {
             if(getIn(requestStatePath)(state)) {
-                Logger.info(`Setting RefetchingState for "${requestStatePath.join('.')}"`);
-                state = setIn(requestStatePath, RefetchingState())(state);
+                Logger.info(`Setting RequestState.refetching for "${requestStatePath.join('.')}"`);
+                state = setIn(requestStatePath, RequestState.refetching())(state);
             } else {
-                state = setIn(requestStatePath, FetchingState())(state);
-                Logger.info(`Setting FetchingState for "${requestStatePath.join('.')}"`, state);
+                state = setIn(requestStatePath, RequestState.fetching())(state);
+                Logger.info(`Setting RequestState.fetching for "${requestStatePath.join('.')}"`, state);
             }
         } else if(/_ERROR$/g.test(type)) {
             Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
             state = pipeWith(
                 state,
-                setIn(requestStatePath, ErrorState(payload)),
+                setIn(requestStatePath, RequestState.error(payload)),
                 setIn(errorPath, payload)
             );
         }
@@ -83,7 +80,7 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
 
             // set success action before payload tests
             // to make sure the request state is still updated even if there is no payload
-            state = setIn(requestStatePath, SuccessState())(state);
+            state = setIn(requestStatePath, RequestState.success())(state);
 
             if(payload) {
                 if(schema) {

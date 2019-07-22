@@ -1,9 +1,5 @@
 // @flow
-import {EmptyState} from '../RequestState';
-import {FetchingState} from '../RequestState';
-import {RefetchingState} from '../RequestState';
-import {ErrorState} from '../RequestState';
-import {SuccessState} from '../RequestState';
+import RequestState from '../RequestState';
 
 describe('RequestState', () => {
 
@@ -17,42 +13,47 @@ describe('RequestState', () => {
                 .successMap(() => 'success')
                 .value();
         }
-        expect(value(EmptyState())).toBe('empty');
-        expect(value(FetchingState())).toBe('fetching');
-        expect(value(RefetchingState())).toBe('refetching');
-        expect(value(ErrorState())).toBe('error');
-        expect(value(SuccessState())).toBe('success');
+        expect(value(RequestState.empty())).toBe('empty');
+        expect(value(RequestState.fetching())).toBe('fetching');
+        expect(value(RequestState.refetching())).toBe('refetching');
+        expect(value(RequestState.error())).toBe('error');
+        expect(value(RequestState.success())).toBe('success');
     });
 
     test('variant apis', () => {
-        function runTest(state) {
-            expect(state).toHaveProperty('map');
-            expect(state).toHaveProperty('flatMap');
-            expect(state).toHaveProperty('val');
+
+        function instance(state) {
             expect(state).toHaveProperty('value');
-            expect(state).toHaveProperty('type');
+            expect(state).toHaveProperty('isEmpty');
+            expect(state).toHaveProperty('isFetching');
+            expect(state).toHaveProperty('isRefetching');
+            expect(state).toHaveProperty('isSuccess');
+            expect(state).toHaveProperty('isError');
             expect(state).toHaveProperty('emptyMap');
             expect(state).toHaveProperty('emptyFlatMap');
-            expect(state).toHaveProperty('emptyUnit');
             expect(state).toHaveProperty('fetchingMap');
             expect(state).toHaveProperty('fetchingFlatMap');
-            expect(state).toHaveProperty('fetchingUnit');
             expect(state).toHaveProperty('refetchingMap');
             expect(state).toHaveProperty('refetchingFlatMap');
-            expect(state).toHaveProperty('refetchingUnit');
             expect(state).toHaveProperty('errorMap');
             expect(state).toHaveProperty('errorFlatMap');
-            expect(state).toHaveProperty('errorUnit');
             expect(state).toHaveProperty('successMap');
             expect(state).toHaveProperty('successFlatMap');
-            expect(state).toHaveProperty('successUnit');
         }
 
-        runTest(EmptyState());
-        runTest(FetchingState());
-        runTest(RefetchingState());
-        runTest(ErrorState());
-        runTest(SuccessState());
+        // Instance
+        instance(RequestState.empty());
+        instance(RequestState.fetching());
+        instance(RequestState.refetching());
+        instance(RequestState.error());
+        instance(RequestState.success());
+
+        // Static
+        expect(RequestState).toHaveProperty('empty');
+        expect(RequestState).toHaveProperty('fetching');
+        expect(RequestState).toHaveProperty('refetching');
+        expect(RequestState).toHaveProperty('error');
+        expect(RequestState).toHaveProperty('success');
     });
 
 });

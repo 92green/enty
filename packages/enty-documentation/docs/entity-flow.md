@@ -8,7 +8,7 @@ The Enty data flow begins when a RequestHoc's onRequest is called. This either h
 based on `config.auto` or as the result of user interaction.
 
 2. **Data Request**  
-The result of the payloadCreator is hashed to create a reponseKey. This key is what identifies this
+The result of the payloadCreator is hashed to create a responseKey. This key is what identifies this
 particular request in state. The API function is called and the view is re rendered with a Fetching 
 or Refetching requestState in the `Message`.
 

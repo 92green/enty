@@ -1,35 +1,30 @@
 // @flow
 import Message from '../Message';
-import {EmptyMessage} from '../Message';
-import {FetchingMessage} from '../Message';
-import {RefetchingMessage} from '../Message';
-import {SuccessMessage} from '../Message';
-import {ErrorMessage} from '../Message';
-import {ErrorState} from '../../data/RequestState';
+import RequestState from '../../data/RequestState';
 
-test('will let you set reponseKey, response, requestState, requestError, onRequest', () => {
+test('will let you set responseKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
-        reponseKey: 'foo',
+        responseKey: 'foo',
         response: 'bar',
-        requestState: 'baz',
+        requestState: RequestState.success('baz'),
         requestError: 'qux',
-        onRequest: 'quux'
+        onRequest: () => Promise.resolve('quux')
     });
 
-    expect(message.reponseKey).toBe('foo');
+    expect(message.responseKey).toBe('foo');
     expect(message.response).toBe('bar');
-    expect(message.requestState).toBe('baz');
+    expect(message.requestState.value()).toBe('baz');
     expect(message.requestError).toBe('qux');
-    expect(message.onRequest).toBe('quux');
+    expect(message.onRequest()).resolves.toBe('quux');
 });
 
 
 test('will default requestState to Empty', () => {
-    expect(new Message().requestState.type).toBe('Empty');
+    expect(new Message().requestState.isEmpty).toBe(true);
 });
 
 describe('Message response methods', () => {
-    const message = SuccessMessage({
+    const message = Message.success({
         foo: 'bar',
         bar: {
             baz: 'qux'
@@ -47,65 +42,65 @@ describe('Message response methods', () => {
 });
 
 describe('Message requestState methods', () => {
-    const message = SuccessMessage({foo: 'foo'});
+    const message = Message.success({foo: 'foo'});
 
     test('Message.updateRequestState can replace the requestState', () => {
-        const errorMessage = message.updateRequestState(ErrorState);
-        expect(errorMessage.requestState.type).toBe('Error');
+        const errorMessage = message.updateRequestState(RequestState.error);
+        expect(errorMessage.requestState.isError).toBe(true);
     });
 
     test('Message.updateRequestState is given the current requestState', () => {
         const errorMessage = message
-            .updateRequestState(requestState => requestState.successFlatMap(ErrorState));
+            .updateRequestState(requestState => requestState.successFlatMap(RequestState.error));
 
-        expect(errorMessage.requestState.type).toBe('Error');
-        expect(errorMessage.requestState.type).not.toBe('Success');
+        expect(errorMessage.requestState.isError).toBe(true);
+        expect(errorMessage.requestState.isSuccess).not.toBe(true);
     });
 
 });
 
 describe('Message Constructors', () => {
-    test('EmptyMessage will create a empty message without a response', () => {
-        const message = EmptyMessage({reponseKey: 'bar'});
+    test('Message.empty will create a empty message without a response', () => {
+        const message = Message.empty({responseKey: 'bar'});
         expect(message.response).toBeUndefined();
-        expect(message.requestState.type).toBe('Empty');
-        expect(message.reponseKey).toBe('bar');
+        expect(message.requestState.isEmpty).toBe(true);
+        expect(message.responseKey).toBe('bar');
     });
 
-    test('FetchingMessage will create a fetching message without a response', () => {
-        const message = FetchingMessage({reponseKey: 'bar'});
+    test('Message.fetching will create a fetching message without a response', () => {
+        const message = Message.fetching({responseKey: 'bar'});
         expect(message.response).toBeUndefined();
-        expect(message.requestState.type).toBe('Fetching');
-        expect(message.reponseKey).toBe('bar');
+        expect(message.requestState.isFetching).toBe(true);
+        expect(message.responseKey).toBe('bar');
     });
 
-    test('RefetchingMessage will create a refetching message with a response', () => {
-        const message = RefetchingMessage('foo', {reponseKey: 'bar'});
+    test('Message.refetching will create a refetching message with a response', () => {
+        const message = Message.refetching('foo', {responseKey: 'bar'});
         expect(message.response).toBe('foo');
-        expect(message.requestState.type).toBe('Refetching');
-        expect(message.reponseKey).toBe('bar');
+        expect(message.requestState.isRefetching).toBe(true);
+        expect(message.responseKey).toBe('bar');
     });
 
-    test('SuccessMessage will create a success message with a response', () => {
-        const message = SuccessMessage('foo', {reponseKey: 'bar'});
+    test('Message.success will create a success message with a response', () => {
+        const message = Message.success('foo', {responseKey: 'bar'});
         expect(message.response).toBe('foo');
-        expect(message.requestState.type).toBe('Success');
-        expect(message.reponseKey).toBe('bar');
+        expect(message.requestState.isSuccess).toBe(true);
+        expect(message.responseKey).toBe('bar');
     });
 
-    test('ErrorMessage will create a error message with requestError', () => {
-        const message = ErrorMessage('foo', {reponseKey: 'bar'});
+    test('Message.error will create a error message with requestError', () => {
+        const message = Message.error('foo', {responseKey: 'bar'});
         expect(message.requestError).toBe('foo');
-        expect(message.requestState.type).toBe('Error');
-        expect(message.reponseKey).toBe('bar');
+        expect(message.requestState.isError).toBe(true);
+        expect(message.responseKey).toBe('bar');
     });
 
     it('will not break if nothing is passed to each constructor', () => {
-        expect(EmptyMessage).not.toThrow();
-        expect(FetchingMessage).not.toThrow();
-        expect(RefetchingMessage).not.toThrow();
-        expect(SuccessMessage).not.toThrow();
-        expect(ErrorMessage).not.toThrow();
+        expect(Message.empty).not.toThrow();
+        expect(Message.fetching).not.toThrow();
+        expect(Message.refetching).not.toThrow();
+        expect(Message.success).not.toThrow();
+        expect(Message.error).not.toThrow();
     });
 });
 
