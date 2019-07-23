@@ -1,53 +1,38 @@
 // @flow
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
-import type {Structure} from './util/definitions';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {EntitySchemaOptions} from './util/definitions';
+import type {EntitySchemaInterface} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
+import type {IdAttribute} from './util/definitions';
 
 import {PerhapsEither} from 'fronads/lib/Either';
-import {NoDefinitionError} from './util/Error';
+import {NoShapeError} from './util/Error';
 import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
-import Child from './abstract/Child';
 import NullSchema from './NullSchema';
+import {DELETED_ENTITY} from './util/SchemaConstant';
 
 
-/**
- *  Entity Schemas define
- *  @param name - A name for the type of entity
- */
-export class EntitySchema extends Child implements Schema<Entity> {
-    type: string;
-    options: Entity;
-    definition: Schema<Structure>;
 
-    constructor(
-        name: string,
-        options?: EntitySchemaOptions = {definition: new NullSchema()}
-    ) {
-        const {definition, ...optionsRest} = options;
-        super(definition);
-        this.options = {
-            name,
-            idAttribute: item => item && get('id')(item),
-            ...optionsRest
-        };
-        this.type = 'entity';
+
+export default class EntitySchema implements EntitySchemaInterface {
+    name: string;
+    shape: ?StructuralSchemaInterface;
+    idAttribute: IdAttribute;
+
+    constructor(name: string, options: EntitySchemaOptions = {}) {
+        this.name = name;
+        this.shape = options.shape;
+        this.idAttribute = options.idAttribute || get('id');
     }
 
-    /**
-     * EntitySchema.normalize
-     */
     normalize(data: *, entities: Object = {}): NormalizeState {
-        const {definition} = this;
-        const {idAttribute, name} = this.options;
+        const {shape, idAttribute, name} = this;
 
-        // $FlowFixMe - flow cant tell that constructor exists
-        if(definition == null || definition.constructor === NullSchema) {
-            throw NoDefinitionError(name);
+        if(shape == null || shape.constructor === NullSchema) {
+            throw NoShapeError(name);
         }
 
         // It is important to check that our data is not already in a normalized state
@@ -74,13 +59,13 @@ export class EntitySchema extends Child implements Schema<Entity> {
         const previousEntity = entities[name][id];
 
         // recurse into the children
-        let {schemas, result} = definition.normalize(data, entities);
+        let {schemas, result} = shape.normalize(data, entities);
 
         // list this schema as one that has been used
         schemas[name] = this;
 
         entities[name][id] = previousEntity
-            ? definition.options.merge(previousEntity, result)
+            ? shape.merge(previousEntity, result)
             : result
         ;
 
@@ -91,23 +76,16 @@ export class EntitySchema extends Child implements Schema<Entity> {
         };
     }
 
-    /**
-     * EntitySchema.denormalize
-     */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
-        const {definition} = this;
-        const {name} = this.options;
+        const {shape, name} = this;
         const entity = getIn([name, result])(entities);
 
-        if(entity == null) {
+        if(entity == null || entity === DELETED_ENTITY) {
             return entity;
         }
 
-        return definition.denormalize({result: entity, entities}, path);
+        return shape.denormalize({result: entity, entities}, path);
     }
 }
 
-export default function EntitySchemaFactory(...args: any[]): EntitySchema {
-    return new EntitySchema(...args);
-}

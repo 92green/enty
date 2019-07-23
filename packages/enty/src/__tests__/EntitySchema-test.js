@@ -1,26 +1,25 @@
 //@flow
 import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
-import {DELETED_ENTITY} from '../util/SchemaConstant';
-import {NoDefinitionError} from '../util/Error';
+import {NoShapeError} from '../util/Error';
 import {UndefinedIdError} from '../util/Error';
 
-var foo = EntitySchema('foo');
-var bar = EntitySchema('bar');
-var baz = EntitySchema('baz');
+var foo = new EntitySchema('foo');
+var bar = new EntitySchema('bar');
+var baz = new EntitySchema('baz');
 
-foo.set(ObjectSchema({}));
-baz.set(ObjectSchema({bar}));
-bar.set(ObjectSchema({foo}));
+foo.shape = new ObjectSchema({});
+baz.shape = new ObjectSchema({bar});
+bar.shape = new ObjectSchema({foo});
 
 
 describe('EntitySchema.constructor', () => {
 
-    test('EntitySchema can set definition through the `set` method', () => {
-        var schema = EntitySchema('foo');
-        const definition = ObjectSchema({bar: "1"});
-        schema.set(definition);
-        expect(schema.definition).toBe(definition);
+    test('EntitySchema can mutate shape', () => {
+        var schema = new EntitySchema('foo');
+        const shape = new ObjectSchema({bar: "1"});
+        schema.shape = shape;
+        expect(schema.shape).toBe(shape);
     });
 
 });
@@ -46,7 +45,7 @@ describe('EntitySchema.normalize', () => {
     });
 
     test('will not try to normalize numbers or strings', () => {
-        const schema = EntitySchema('foo').set(ObjectSchema({}));
+        const schema = new EntitySchema('foo', {shape: new ObjectSchema({})});
         expect(schema.normalize('1', {})).toEqual({
             entities: {},
             schemas: {},
@@ -60,16 +59,16 @@ describe('EntitySchema.normalize', () => {
     });
 
     test('will throw an error if an entity doesnt have and id', () => {
-        const schema = EntitySchema('foo').set(ObjectSchema({}));
+        const schema = new EntitySchema('foo', {shape: new ObjectSchema({})});
         expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo'));
     });
 
     test('will call merge on definition when an entity already exists', () => {
         const merge = jest.fn();
         const entities = {foo: {a: {id: 'a', name: 'first'}}};
-        const schema = EntitySchema('foo').set(ObjectSchema({}, {
+        const schema = new EntitySchema('foo', {shape: new ObjectSchema({}, {
             merge
-        }));
+        })});
 
         schema.normalize({id: 'a', name: 'second'}, entities);
         expect(merge).toHaveBeenCalledWith(
@@ -93,11 +92,11 @@ describe('EntitySchema.denormalize', () => {
     });
 
     test('will not cause an infinite recursion', () => {
-        const foo = EntitySchema('foo');
-        const bar = EntitySchema('bar');
+        const foo = new EntitySchema('foo');
+        const bar = new EntitySchema('bar');
 
-        foo.set(ObjectSchema({bar}));
-        bar.set(ObjectSchema({foo}));
+        foo.shape = new ObjectSchema({bar});
+        bar.shape = new ObjectSchema({foo});
 
         const entities = {
             bar: {"1": {id: "1", foo: "1"}},
@@ -125,28 +124,17 @@ describe('EntitySchema.denormalize', () => {
     });
 
     test('will not denormalize null definitions', () => {
-        const NullSchemaEnitity = EntitySchema('foo');
-        // $FlowFixMe - deliberate misuse of types for testing
-        const NullDefinitionEnitity = EntitySchema('bar').set(null);
+        const NullSchemaEnitity = new EntitySchema('foo');
+        const NullDefinitionEnitity = new EntitySchema('bar', {shape: null});
 
         expect(() => NullSchemaEnitity.normalize({}, {}))
-            .toThrow(NoDefinitionError('foo'));
+            .toThrow(NoShapeError('foo'));
 
         expect(() => NullDefinitionEnitity.normalize({}, {}))
-            .toThrow(NoDefinitionError('bar'));
+            .toThrow(NoShapeError('bar'));
 
     });
 
-
-    test('will return DELETED_ENTITY placeholder if denormalizeFilter fails', () => {
-        const entities = {
-            foo: {
-                "1": {id: "1", deleted: true}
-            }
-        };
-
-        expect(foo.denormalize({result: "1", entities})).toEqual(DELETED_ENTITY);
-    });
 
 });
 

@@ -1,12 +1,12 @@
 //@flow
-import {NoDefinitionError} from '../Error';
+import {NoShapeError} from '../Error';
 import {CompositeKeysMustBeEntitiesError} from '../Error';
-import {CompositeDefinitionMustBeEntityError} from '../Error';
+import {CompositeShapeMustBeEntityError} from '../Error';
 import {UndefinedIdError} from '../Error';
 
-test('NoDefinitionError', () => {
+test('NoShapeError', () => {
     expect(() => {
-        throw NoDefinitionError('foo');
+        throw NoShapeError('foo');
     }).toThrow(/foo/);
 });
 
@@ -18,9 +18,9 @@ test('CompositeKeysMustBeEntitiesError', () => {
 });
 
 
-test('CompositeDefinitionMustBeEntityError', () => {
+test('CompositeShapeMustBeEntityError', () => {
     expect(() => {
-        throw CompositeDefinitionMustBeEntityError('foo', 'bar');
+        throw CompositeShapeMustBeEntityError('foo', 'bar');
     }).toThrow(/foo.*bar/);
 });
 
