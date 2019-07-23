@@ -1,50 +1,34 @@
 // @flow
-import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {Schema} from './util/definitions';
+import type {DynamicShape} from './util/definitions';
 
 
-/**
- * DynamicSchema
- */
-export class DynamicSchema extends Child implements Schema<*> {
-    options: Object;
-    constructor(definition: Function, options: Object = {}) {
-        super(definition);
-        this.options = {
-            definition,
-            ...options
-        };
+
+export default class DynamicSchema {
+    shape: DynamicShape;
+    constructor(shape: DynamicShape) {
+        this.shape = shape;
     }
 
-    /**
-     * DynamicSchema.normalize
-     */
     normalize(data: Object, entities: Object = {}): NormalizeState {
-        const definitionSchema = this.options.definition(data);
-        const definitionResult = definitionSchema.normalize(data, entities);
+        const schema = this.shape(data);
+        const result = schema.normalize(data, entities);
 
         return {
             entities,
-            schemas: definitionResult.schemas,
+            schemas: result.schemas,
             result: {
                 resultType: 'dynamicSchemaResult',
-                definitionResult,
-                definitionSchema
+                result,
+                schema
             }
         };
     }
 
-    /**
-     * DynamicSchema.denormalize
-     */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        const {definitionResult, definitionSchema} = denormalizeState.result;
-        return definitionSchema.denormalize(definitionResult, path);
+        const {schema, result} = denormalizeState.result;
+        return schema.denormalize(result, path);
     }
 }
 
-export default function DynamicSchemaFactory(...args: any[]): DynamicSchema {
-    return new DynamicSchema(...args);
-}

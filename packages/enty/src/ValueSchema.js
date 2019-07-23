@@ -1,47 +1,31 @@
 // @flow
-import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
+import type {EntitySchemaInterface} from './util/definitions';
+import type {Create} from './util/definitions';
 
 /**
  * ValueSchema
  */
-export class ValueSchema extends Child implements Schema<Entity> {
-    options: Entity;
+export default class ValueSchema {
+    shape: EntitySchemaInterface;
+    create: Create;
 
-    constructor(definition: Schema<Entity>, options: Object = {}) {
-        super(definition);
-        this.options = {
-            constructor: item => ({id: item}),
-            ...options
-        };
+    constructor(
+        shape: EntitySchemaInterface,
+        options: {create?: Create} = {}
+    ) {
+        this.shape = shape;
+        this.create = options.create || (id => ({id}));
     }
 
-    /**
-     * ValueSchema.normalize
-     */
     normalize(data: *, entities: Object = {}): NormalizeState {
-        const {constructor} = this.options;
-        const {result, schemas} = this.definition.normalize(constructor(data), entities);
-
-        return {
-            result,
-            schemas,
-            entities
-        };
+        const {result, schemas} = this.shape.normalize(this.create(data), entities);
+        return {result, schemas, entities};
     }
 
-    /**
-     * ValueSchema.denormalize
-     */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        const {definition} = this;
-        return definition.denormalize(denormalizeState, path);
+        return this.shape.denormalize(denormalizeState, path);
     }
 }
 
-export default function ValueSchemaFactory(...args: any[]): ValueSchema {
-    return new ValueSchema(...args);
-}

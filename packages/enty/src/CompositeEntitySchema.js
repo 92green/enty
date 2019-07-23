@@ -1,76 +1,57 @@
 // @flow
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {EntitySchemaOptions} from './util/definitions';
+import type {EntitySchemaInterface} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
+import type {IdAttribute} from './util/definitions';
+import type {KeyedShape} from './util/definitions';
 
 import getIn from 'unmutable/lib/getIn';
-import {CompositeDefinitionMustBeEntityError} from './util/Error';
+import {CompositeShapeMustBeEntityError} from './util/Error';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
-import {NoDefinitionError} from './util/Error';
-import Child from './abstract/Child';
-import NullSchema from './NullSchema';
+import {NoShapeError} from './util/Error';
+import EntitySchema from './EntitySchema';
+
+function isEntitySchema(schema) {
+    return schema instanceof EntitySchema || schema instanceof CompositeEntitySchema;
+}
 
 
-/**
- * CompositeEntitySchemaOptions
- */
-type CompositeInput = {
-    definition: Object,
-    compositeKeys: *
-};
-
-/**
- * CompositeEntitySchema
- */
-export class CompositeEntitySchema extends Child implements Schema<Entity> {
-    type: string;
-    options: Entity;
+export default class CompositeEntitySchema implements EntitySchemaInterface {
+    name: string;
     compositeKeys: Object;
-    definition: Schema<Entity>;
+    shape: ?StructuralSchemaInterface;
+    idAttribute: IdAttribute;
 
     constructor(
         name: string,
-        {
-            definition = new NullSchema(),
-            compositeKeys = {},
-            ...options
-        }: CompositeInput = {}
+        options: EntitySchemaOptions & {compositeKeys: KeyedShape} = {}
     ) {
-        super(definition);
-        this.type = 'entity';
-        this.compositeKeys = compositeKeys;
-
-        this.options = {
-            name,
-            idAttribute: () => {},
-            ...options
-        };
+        this.name = name;
+        this.shape = options.shape;
+        this.compositeKeys = options.compositeKeys;
+        this.idAttribute = options.idAttribute || (() => {});
     }
 
-    /**
-     * CompositeEntitySchema.normalize
-     */
     normalize(data: Object, entities?: Object = {}): NormalizeState {
-        const {definition, compositeKeys} = this;
-        const {name} = this.options;
-
+        const {shape, compositeKeys, name} = this;
         const adjustedData = Object.assign({}, data);
 
         let idList = [];
 
-        if(!definition) {
-            throw NoDefinitionError(name);
+        if(!shape) {
+            throw NoShapeError(name);
         }
 
-        if(definition.type !== 'entity') {
-            throw CompositeDefinitionMustBeEntityError(name, definition.constructor.name);
+        if(!isEntitySchema(shape)) {
+            throw CompositeShapeMustBeEntityError(name, shape.constructor.name);
         }
 
         const compositeResults = Object.keys(this.compositeKeys)
             .reduce((rr: Object, key: string): Object => {
-                if(compositeKeys[key].type !== 'entity') {
-                    throw CompositeKeysMustBeEntitiesError(`${name}.${key}`, compositeKeys[key].type);
+                if(!isEntitySchema(compositeKeys[key])) {
+                    throw CompositeKeysMustBeEntitiesError(`${name}.${key}`, compositeKeys[key].constructor.name);
                 }
 
                 // Check that there is data before be continue
@@ -90,12 +71,12 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
 
 
 
-        // recurse into the main definition
-        let {schemas, result: mainResult} = definition.normalize(adjustedData, entities);
+        // recurse into the main shape
+        let {schemas, result: mainResult} = shape.normalize(adjustedData, entities);
 
         // $FlowFixMe - Error is so obtuse its not googlable: string [1] is not an object.
         const result = {
-            [definition.options.name]: mainResult,
+            [shape.name]: mainResult,
             ...compositeResults
         };
 
@@ -122,13 +103,12 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
      * CompositeEntitySchema.denormalize
      */
     denormalize(denormalizeState: DenormalizeState, path?: Array<*> = []): any {
-        const {definition, compositeKeys} = this;
-        const {name} = this.options;
+        const {shape, compositeKeys, name} = this;
         const {result, entities} = denormalizeState;
 
         const entity = getIn([name, result])(entities);
 
-        const mainDenormalizedState = definition.denormalize({result: entity[definition.options.name], entities}, path);
+        const mainDenormalizedState = shape.denormalize({result: entity[shape.name], entities}, path);
 
 
 
@@ -144,10 +124,7 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
                 return rr;
             }, Object.assign({}, this.compositeKeys));
 
-        return definition.definition.options.merge(mainDenormalizedState, compositeDenormalizedState);
+        return shape.shape.merge(mainDenormalizedState, compositeDenormalizedState);
     }
 }
 
-export default function CompositeEntitySchemaFactory(...args: any[]): CompositeEntitySchema {
-    return new CompositeEntitySchema(...args);
-}

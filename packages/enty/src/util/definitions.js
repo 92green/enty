@@ -25,6 +25,11 @@ export type KeyedShape = {
     [key: string]: StructuralSchemaInterface|EntitySchemaInterface
 };
 
+export type DynamicShape = <A>(data: <A>) => EntitySchemaInterface|StructuralSchemaInterface;
+
+//
+// Options
+
 export type Normalize = (data: mixed, entities: Object) => NormalizeState;
 export type Denormalize = (denormalizeState: DenormalizeState, path: Array<mixed>) => any;
 export type Create = <A, B>(a: A) => B;
