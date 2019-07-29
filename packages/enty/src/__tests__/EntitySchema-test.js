@@ -1,7 +1,6 @@
 //@flow
 import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
-import {NoShapeError} from '../util/Error';
 import {UndefinedIdError} from '../util/Error';
 
 var foo = new EntitySchema('foo');
@@ -17,7 +16,7 @@ describe('EntitySchema.constructor', () => {
 
     test('EntitySchema can mutate shape', () => {
         var schema = new EntitySchema('foo');
-        const shape = new ObjectSchema({bar: "1"});
+        const shape = new ObjectSchema({});
         schema.shape = shape;
         expect(schema.shape).toBe(shape);
     });
@@ -76,6 +75,11 @@ describe('EntitySchema.normalize', () => {
             {id: 'a', name: 'second'}
         );
     });
+
+    test('will not normalize null definitions', () => {
+        const NullSchemaEntity = new EntitySchema('foo');
+        expect(() => NullSchemaEntity.normalize({id: 'foo'}, {})).toThrow(/normalize.*foo/);
+    });
 });
 
 
@@ -123,17 +127,6 @@ describe('EntitySchema.denormalize', () => {
         expect(bar.denormalize({result: "2", entities})).toEqual(undefined);
     });
 
-    test('will not denormalize null definitions', () => {
-        const NullSchemaEnitity = new EntitySchema('foo');
-        const NullDefinitionEnitity = new EntitySchema('bar', {shape: null});
-
-        expect(() => NullSchemaEnitity.normalize({}, {}))
-            .toThrow(NoShapeError('foo'));
-
-        expect(() => NullDefinitionEnitity.normalize({}, {}))
-            .toThrow(NoShapeError('bar'));
-
-    });
 
 
 });

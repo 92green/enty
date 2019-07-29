@@ -6,6 +6,7 @@ import type {StructuralSchemaInterface} from './util/definitions';
 import type {EntitySchemaInterface} from './util/definitions';
 import type {Merge} from './util/definitions';
 import type {StructuralSchemaOptions} from './util/definitions';
+import type {SchemaInterface} from './util/definitions';
 
 import {DELETED_ENTITY} from './util/SchemaConstant';
 
@@ -15,7 +16,7 @@ import {DELETED_ENTITY} from './util/SchemaConstant';
  *
  */
 export default class ArraySchema implements StructuralSchemaInterface {
-    shape: StructuralSchemaInterface | EntitySchemaInterface;
+    shape: SchemaInterface;
     create: Create;
     merge: Merge;
 
@@ -28,7 +29,7 @@ export default class ArraySchema implements StructuralSchemaInterface {
         this.create = options.create || (aa => aa);
     }
 
-    normalize(data: Array<any>, entities: Object = {}): NormalizeState {
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         let schemas = {};
         const result = this.create(data)
             .map((item: any): any => {

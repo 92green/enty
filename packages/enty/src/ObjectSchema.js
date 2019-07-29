@@ -18,7 +18,7 @@ import {DELETED_ENTITY} from './util/SchemaConstant';
 export default class ObjectSchema implements StructuralSchemaInterface {
     create: Create;
     merge: Merge;
-    shape: StructuralSchemaInterface|EntitySchemaInterface;
+    shape: KeyedShape;
 
     constructor(shape: KeyedShape, options?: StructuralSchemaOptions = {}) {
         this.shape = shape;
@@ -77,7 +77,7 @@ export default class ObjectSchema implements StructuralSchemaInterface {
                     .reduce((newItem: Object, key: string): Object => {
                         const schema = get(key)(shape);
                         const result = get(key)(newItem);
-                        const value = schema.denormalize({result, entities}, path.concat(this));
+                        const value = schema.denormalize({result, entities}, [...path, this]);
 
                         if(value !== DELETED_ENTITY) {
                             newItem = set(key, value)(newItem);

@@ -2,16 +2,21 @@
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {DynamicShape} from './util/definitions';
+import type {Merge} from './util/definitions';
+import type {Create} from './util/definitions';
 
 
 
 export default class DynamicSchema {
     shape: DynamicShape;
+    create: Create;
+    merge: Merge;
+
     constructor(shape: DynamicShape) {
         this.shape = shape;
     }
 
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         const schema = this.shape(data);
         const result = schema.normalize(data, entities);
 

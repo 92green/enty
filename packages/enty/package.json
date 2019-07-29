@@ -31,10 +31,10 @@
     "@babel/core": "^7.5.4",
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^1.0.1",
-    "blueflag-test": "^0.22.0"
+    "blueflag-test": "^0.22.0",
+    "flow-bin": "^0.104.0"
   },
   "dependencies": {
-    "fronads": "^0.18.0",
     "unmutable": "^0.39.0"
   }
 }

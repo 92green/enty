@@ -118,7 +118,7 @@ test('ObjectSchemas can create objects', () => {
         first: string;
         last: string;
         name: string;
-        constructor(data: {}) {
+        constructor(data: {first: string, last: string}) {
             this.first = data.first;
             this.last = data.last;
         }

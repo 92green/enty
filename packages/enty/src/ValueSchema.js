@@ -2,14 +2,17 @@
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {EntitySchemaInterface} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
 import type {Create} from './util/definitions';
+import type {Merge} from './util/definitions';
 
 /**
  * ValueSchema
  */
-export default class ValueSchema {
+export default class ValueSchema implements StructuralSchemaInterface {
     shape: EntitySchemaInterface;
     create: Create;
+    merge: Merge;
 
     constructor(
         shape: EntitySchemaInterface,
