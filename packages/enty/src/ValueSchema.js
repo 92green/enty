@@ -9,13 +9,13 @@ import type {Merge} from './util/definitions';
 /**
  * ValueSchema
  */
-export default class ValueSchema implements StructuralSchemaInterface {
-    shape: EntitySchemaInterface;
+export default class ValueSchema<A: EntitySchemaInterface<any>> implements StructuralSchemaInterface<A> {
+    shape: A;
     create: Create;
     merge: Merge;
 
     constructor(
-        shape: EntitySchemaInterface,
+        shape: A,
         options: {create?: Create} = {}
     ) {
         this.shape = shape;

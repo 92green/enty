@@ -1,11 +1,10 @@
 // @flow
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {KeyedShape} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
 import type {Create} from './util/definitions';
 import type {Merge} from './util/definitions';
 import type {StructuralSchemaOptions} from './util/definitions';
-import type {StructuralSchemaInterface} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -15,12 +14,12 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 import {DELETED_ENTITY} from './util/SchemaConstant';
 
 
-export default class ObjectSchema implements StructuralSchemaInterface {
+export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A> {
     create: Create;
     merge: Merge;
-    shape: KeyedShape;
+    shape: A;
 
-    constructor(shape: KeyedShape, options?: StructuralSchemaOptions = {}) {
+    constructor(shape: A, options?: StructuralSchemaOptions = {}) {
         this.shape = shape;
         this.create = options.create || (item => ({...item}));
         this.merge = options.merge || ((previous, next) => ({...previous, ...next}));

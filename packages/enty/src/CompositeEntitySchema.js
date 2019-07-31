@@ -2,6 +2,7 @@
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {EntitySchemaOptions} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
 
 import map from 'unmutable/lib/map';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
@@ -12,12 +13,12 @@ function isEntitySchema(schema) {
 }
 
 
-export default class CompositeEntitySchema extends EntitySchema {
-    compositeKeys: Object;
+export default class CompositeEntitySchema<A: StructuralSchemaInterface<any>, B: {}>  extends EntitySchema<A> {
+    compositeKeys: B;
 
     constructor(
         name: string,
-        options: EntitySchemaOptions & {compositeKeys: Object} = {}
+        options: EntitySchemaOptions<A> & {compositeKeys: B} = {}
     ) {
         super(name, options);
         this.compositeKeys = options.compositeKeys;

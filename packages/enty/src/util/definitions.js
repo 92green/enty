@@ -16,25 +16,20 @@ export type StructuralSchemaOptions = {
     merge?: Merge
 };
 
-export type EntitySchemaOptions = {
-    shape?: StructuralSchemaInterface,
+export type EntitySchemaOptions<Shape> = {
+    +shape?: Shape,
     idAttribute?: (entity: Object) => string
 };
 
-export type CompositeEntitySchemaOptions = {
-    shape?: EntitySchemaInterface,
+export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
+    shape?: Shape,
     idAttribute?: (entity: Object) => string,
-    compositeKeys?: {
-        [key: string]: EntitySchemaInterface
-    }
-};
-
-export type KeyedShape = {
-    [key: string]: StructuralSchemaInterface|EntitySchemaInterface
+    compositeKeys?: CompositeShape
 };
 
 
-export type DynamicShape = (data: any) => SchemaInterface;
+
+export type DynamicShape = (data: any) => Schema;
 
 
 //
@@ -50,22 +45,23 @@ export type IdAttribute = (data: *) => string;
 //
 // Interfaces
 
-export interface EntitySchemaInterface {
+export interface EntitySchemaInterface<Shape> {
     +normalize: Normalize,
     +denormalize: Denormalize,
-    +shape: StructuralSchemaInterface,
+    shape: Shape,
     name: string,
     idAttribute: (item: mixed) => string
 }
 
-export interface StructuralSchemaInterface {
+export interface StructuralSchemaInterface<Shape> {
     +normalize: Normalize,
     +denormalize: Denormalize,
+    shape: Shape,
     create: Create,
     merge: Merge
 }
 
-export interface SchemaInterface {
+export interface Schema {
     +normalize: Normalize,
     +denormalize: Denormalize
 }

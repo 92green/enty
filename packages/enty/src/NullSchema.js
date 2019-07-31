@@ -1,6 +1,9 @@
 // @flow
+import type {EntitySchemaInterface} from './util/definitions';
+import type {Schema} from './util/definitions';
 
-export default class NullSchema {
+
+export default class NullSchema implements Schema {
     shape: any;
     parentName: string;
 

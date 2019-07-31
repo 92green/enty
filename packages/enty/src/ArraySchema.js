@@ -3,10 +3,9 @@ import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
 import type {Create} from './util/definitions';
 import type {StructuralSchemaInterface} from './util/definitions';
-import type {EntitySchemaInterface} from './util/definitions';
 import type {Merge} from './util/definitions';
 import type {StructuralSchemaOptions} from './util/definitions';
-import type {SchemaInterface} from './util/definitions';
+import type {Schema} from './util/definitions';
 
 import {DELETED_ENTITY} from './util/SchemaConstant';
 
@@ -15,13 +14,13 @@ import {DELETED_ENTITY} from './util/SchemaConstant';
  * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.wrap
  *
  */
-export default class ArraySchema implements StructuralSchemaInterface {
-    shape: SchemaInterface;
+export default class ArraySchema<A: Schema> implements StructuralSchemaInterface<A> {
+    shape: A;
     create: Create;
     merge: Merge;
 
     constructor(
-        shape: StructuralSchemaInterface| EntitySchemaInterface,
+        shape: A,
         options: StructuralSchemaOptions = {}
     ) {
         this.shape = shape;

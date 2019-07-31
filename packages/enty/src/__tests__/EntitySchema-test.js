@@ -1,5 +1,6 @@
 //@flow
 import EntitySchema from '../EntitySchema';
+import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
 import {UndefinedIdError} from '../util/Error';
 
@@ -12,16 +13,25 @@ baz.shape = new ObjectSchema({bar});
 bar.shape = new ObjectSchema({foo});
 
 
-describe('EntitySchema.constructor', () => {
+describe('configuration', () => {
 
-    test('EntitySchema can mutate shape', () => {
+    it('can mutate its shape', () => {
         var schema = new EntitySchema('foo');
         const shape = new ObjectSchema({});
         schema.shape = shape;
         expect(schema.shape).toBe(shape);
     });
 
+    it('will auto construct object and array schemas when shape is set', () => {
+        let schemaA = new EntitySchema('foo', {shape: []});
+        let schemaB = new EntitySchema('foo');
+        schemaB.shape = {};
+        expect(schemaA.shape).toBeInstanceOf(ArraySchema);
+        expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
+    });
+
 });
+
 
 
 describe('EntitySchema.normalize', () => {

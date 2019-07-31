@@ -11,19 +11,27 @@ import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
 import NullSchema from './NullSchema';
 import {DELETED_ENTITY} from './util/SchemaConstant';
+import constructSchemaFromLiteral from './util/constructSchemaFromLiteral';
 
 
 
 
-export default class EntitySchema implements EntitySchemaInterface {
+export default class EntitySchema<A: StructuralSchemaInterface<any>> implements EntitySchemaInterface<A> {
     name: string;
-    shape: StructuralSchemaInterface;
+    _shape: A;
     idAttribute: IdAttribute;
 
-    constructor(name: string, options: EntitySchemaOptions = {}) {
+    constructor(name: string, options: EntitySchemaOptions<any> = {}) {
         this.name = name;
         this.shape = options.shape || new NullSchema(name);
         this.idAttribute = options.idAttribute || get('id');
+    }
+
+    get shape(): A {
+        return this._shape;
+    }
+    set shape(shape: any) {
+        this._shape = constructSchemaFromLiteral(shape);
     }
 
     normalize(data: *, entities: Object = {}): NormalizeState {
@@ -34,6 +42,7 @@ export default class EntitySchema implements EntitySchemaInterface {
         // It is reasonable to assume that a number or string represents an id not an entity.
         // If the data is sometimes saying an entity is an object and sometimes a primitive
         // there are bigger problems with the data structure.
+        // @todo I'm skeptical that this check even needs to happen
         if(typeof data === 'string' || typeof data === 'number') {
             return {
                 entities,

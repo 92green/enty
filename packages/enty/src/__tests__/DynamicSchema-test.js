@@ -12,7 +12,7 @@ foo.shape = new ObjectSchema({});
 baz.shape = new ObjectSchema({});
 bar.shape = new ObjectSchema({});
 
-const fooBarBaz = new DynamicSchema((data: {type: string}): EntitySchema => {
+const fooBarBaz = new DynamicSchema((data: {type: string}) => {
     switch(data.type) {
         case 'foo':
             return foo;
