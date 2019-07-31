@@ -1,5 +1,4 @@
 // @flow
-import type {EntitySchemaInterface} from './util/definitions';
 import type {Schema} from './util/definitions';
 
 
