@@ -1,6 +1,5 @@
 //@flow
 import type {Schema} from 'enty/lib/util/definitions';
-import type {Structure} from 'enty/lib/util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -15,8 +14,8 @@ import RequestState from './data/RequestState';
 import Logger from './util/Logger';
 
 type State = {
-    baseSchema: Schema<Structure>,
-    schemas: {[key: string]: Schema<any>},
+    baseSchema: Schema,
+    schemas: {[key: string]: Schema},
     response: {[key: string]: *},
     error: {[key: string]: *},
     requestState: {[key: string]: *},
@@ -26,7 +25,7 @@ type State = {
     }
 };
 
-export default function EntityReducerFactory(config: {schema?: Schema<Structure>}): Function {
+export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
 
     return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {

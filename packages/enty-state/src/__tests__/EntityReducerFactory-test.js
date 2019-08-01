@@ -1,9 +1,7 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
 import RequestState from '../data/RequestState';
-import EntitySchema from 'enty/lib/EntitySchema';
-import ArraySchema from 'enty/lib/ArraySchema';
-import ObjectSchema from 'enty/lib/ObjectSchema';
+import {EntitySchema, ArraySchema, ObjectSchema} from 'enty';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
@@ -12,18 +10,24 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 // Schemas
 //
 
-var author = EntitySchema('author', {idAtribute: get('fullnameId')})
-    .set(ObjectSchema({}));
+var author = new EntitySchema('author', {
+    idAtribute: get('fullnameId'),
+    shape: {}
+});
 
-var topListings = EntitySchema('topListings', {idAttribute: get('fullnameId')})
-    .set(ObjectSchema({author}));
+var topListings = new EntitySchema('topListings', {
+    idAttribute: get('fullnameId'),
+    shape: {author}
+});
 
-var subreddit = EntitySchema('subreddit', {idAttribute: get('fullnameId')})
-    .set(ObjectSchema({
-        topListings: ArraySchema(topListings)
-    }));
+var subreddit = new EntitySchema('subreddit', {
+    idAttribute: get('fullnameId'),
+    shape: {
+        topListings: [topListings]
+    }
+});
 
-const schema = ObjectSchema({
+const schema = new ObjectSchema({
     subreddit
 });
 
