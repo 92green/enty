@@ -28,7 +28,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         const {shape} = this;
         const dataMap = this.create(data);
         let schemas = {};

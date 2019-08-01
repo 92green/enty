@@ -22,7 +22,7 @@ export default class ValueSchema<A: EntitySchemaInterface<any>> implements Struc
         this.create = options.create || (id => ({id}));
     }
 
-    normalize(data: *, entities: Object = {}): NormalizeState {
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         const {result, schemas} = this.shape.normalize(this.create(data), entities);
         return {result, schemas, entities};
     }

@@ -24,7 +24,7 @@ export default class CompositeEntitySchema<A: StructuralSchemaInterface<any>, B:
         this.compositeKeys = options.compositeKeys;
     }
 
-    normalize(data: Object, entities?: Object = {}): NormalizeState {
+    normalize(data: mixed, entities?: Object = {}): NormalizeState {
         const {compositeKeys, name} = this;
         const adjustedData = Object.assign({}, data);
 

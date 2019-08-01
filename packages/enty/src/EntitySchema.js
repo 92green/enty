@@ -34,7 +34,7 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
         this._shape = constructSchemaFromLiteral(shape);
     }
 
-    normalize(data: *, entities: Object = {}): NormalizeState {
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         const {shape, idAttribute, name} = this;
 
 

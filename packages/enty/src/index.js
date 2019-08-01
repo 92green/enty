@@ -18,3 +18,8 @@ export {default as ValueSchema} from './ValueSchema';
 
 export type {NormalizeState} from './util/definitions';
 export type {DenormalizeState} from './util/definitions';
+export type {StructuralSchemaOptions} from './util/definitions';
+export type {EntitySchemaOptions} from './util/definitions';
+export type {Schema} from './util/definitions';
+export type {StructuralSchemaInterface} from './util/definitions';
+export type {EntitySchemaInterface} from './util/definitions';
