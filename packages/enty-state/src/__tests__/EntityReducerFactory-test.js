@@ -1,7 +1,7 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
 import RequestState from '../data/RequestState';
-import {EntitySchema, ArraySchema, ObjectSchema} from 'enty';
+import {EntitySchema, ObjectSchema} from 'enty';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';

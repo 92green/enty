@@ -12,7 +12,7 @@ describe('exports', () => {
         bar: {
             baz: () => Promise.resolve()
         }
-    }, ObjectSchema({}));
+    }, new ObjectSchema({}));
 
     it('will export the api shape', () => {
         const requestHoc = expect.any(Function);
@@ -43,11 +43,11 @@ describe('Provider', () => {
     it('will transparently stack providers', () => {
         const A = EntityApi({
             foo: () => Promise.resolve()
-        }, ObjectSchema({}));
+        }, new ObjectSchema({}));
 
         const B = EntityApi({
             foo: () => Promise.resolve()
-        }, ObjectSchema({}));
+        }, new ObjectSchema({}));
         const Child = () => null;
 
         expect(() => mount(<A.Provider>
