@@ -9,14 +9,7 @@ type Meta = {
     responseKey: string
 };
 
-//
-// Creates the redux-thunk promise action.
-// Insetead of returning the dispatch function though. This uses the getState method
-// to select the next denormalized state and return that to the promise chain.
-// This means request functions can be chained, yet still contain the latests state.
-//
-
-export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
+export default function createRequestAction(sideEffect: SideEffect): Function {
     return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function): AsyncType => {
 
         const makeAction = (type) => (payload) => dispatch({
@@ -31,9 +24,9 @@ export default function createRequestAction(actionType: string, sideEffect: Side
             getState
         };
 
-        const fetchAction = makeAction(`${actionType}_FETCH`);
-        const receiveAction = makeAction(`${actionType}_RECEIVE`);
-        const errorAction = makeAction(`${actionType}_ERROR`);
+        const fetchAction = makeAction(`ENTY_FETCH`);
+        const receiveAction = makeAction(`ENTY_RECEIVE`);
+        const errorAction = makeAction(`ENTY_ERROR`);
 
         const pending = sideEffect(requestPayload, sideEffectMeta);
         fetchAction(null);
