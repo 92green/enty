@@ -2,6 +2,8 @@
 import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
+import {ArraySchema} from 'enty';
+import {EntitySchema} from 'enty';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
 
@@ -78,3 +80,34 @@ it('can request and render without a schema', async () => {
     expect(wrapper).toBeSuccess('FOO!');
 });
 
+it.todo('provides a way to remove entities', async () => {
+    //const response = [{id: 'a'}, {id: 'b'}, {id: 'c'}];
+    //const {foo, useRemove, Provider} = EntityApi(
+        //{
+            //foo: () => Promise.resolve(response)
+        //},
+        //new ArraySchema(new EntitySchema('foo', {shape: {}}))
+    //);
+
+    //const Child = () => {
+        //const message = foo.useRequest();
+        //const remove = useRemove();
+
+        //useEffect(() => {
+            //message.onRequest();
+        //}, []);
+
+        //return <div>
+            //<button className="remove" onClick={() => remove('foo', 'b')} />
+            //<ExpectsMessage message={message} />
+        //</div>;
+    //};
+
+    //const wrapper = mount(<Provider><Child/></Provider>);
+    //expect(wrapper).toBeFetching();
+    //await asyncUpdate(wrapper);
+    //expect(wrapper).toBeSuccess(response);
+    //wrapper.find('.remove').simulate('click');
+    //await asyncUpdate(wrapper);
+    //expect(wrapper).toBeSuccess(response);
+});

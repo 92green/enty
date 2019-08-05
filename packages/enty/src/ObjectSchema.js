@@ -11,7 +11,7 @@ import get from 'unmutable/lib/get';
 import del from 'unmutable/lib/delete';
 import set from 'unmutable/lib/set';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import {DELETED_ENTITY} from './util/SchemaConstant';
+import REMOVED_ENTITY from './util/RemovedEntity';
 
 
 export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A> {
@@ -57,7 +57,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
         const {result, entities} = denormalizeState;
         const {shape} = this;
 
-        if(result == null || result === DELETED_ENTITY) {
+        if(result == null || result === REMOVED_ENTITY) {
             return result;
         }
 
@@ -78,7 +78,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
                         const result = get(key)(newItem);
                         const value = schema.denormalize({result, entities}, [...path, this]);
 
-                        if(value !== DELETED_ENTITY) {
+                        if(value !== REMOVED_ENTITY) {
                             newItem = set(key, value)(newItem);
                         } else {
                             newItem = del(key)(newItem);

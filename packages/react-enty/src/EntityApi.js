@@ -6,6 +6,8 @@ import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHoc from './RequestHoc';
 import RequestHook from './RequestHook';
+import RemoveHook from './RemoveHook';
+import RemoveHoc from './RemoveHoc';
 
 
 type ActionMap = {
@@ -13,7 +15,7 @@ type ActionMap = {
 };
 
 
-export default function EntityApi(actionMap: ActionMap, schema?: Schema<*>): Object {
+export default function EntityApi(actionMap: ActionMap, schema?: Schema): Object {
 
     const {Provider, ProviderHoc, Context} = ProviderFactory({
         reducer: EntityReducerFactory({schema})
@@ -30,8 +32,12 @@ export default function EntityApi(actionMap: ActionMap, schema?: Schema<*>): Obj
         }
     );
 
+    const useRemove = RemoveHook(Context);
+
     api.Provider = Provider;
     api.ProviderHoc = ProviderHoc;
+    api.useRemove = useRemove;
+    api.RemoveHoc = RemoveHoc({useRemove});
 
     return api;
 }

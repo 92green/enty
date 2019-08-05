@@ -10,7 +10,7 @@ import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
 import NullSchema from './NullSchema';
-import {DELETED_ENTITY} from './util/SchemaConstant';
+import REMOVED_ENTITY from './util/RemovedEntity';
 import constructSchemaFromLiteral from './util/constructSchemaFromLiteral';
 
 
@@ -84,7 +84,7 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
         const {shape, name} = this;
         const entity = getIn([name, result])(entities);
 
-        if(entity == null || entity === DELETED_ENTITY) {
+        if(entity == null || entity === REMOVED_ENTITY) {
             return entity;
         }
 

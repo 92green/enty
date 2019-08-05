@@ -1,7 +1,7 @@
 //@flow
 import ObjectSchema from '../ObjectSchema';
 import EntitySchema from '../EntitySchema';
-import {DELETED_ENTITY} from '../util/SchemaConstant';
+import REMOVED_ENTITY from '../util/RemovedEntity';
 
 var foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
@@ -75,12 +75,12 @@ test('ObjectSchema will not denormalize unknown keys', () => {
     expect(schema.denormalize({result: {foo: "1", bar: "2"}, entities})).toEqual({foo: {id: "1"}, bar: "2"});
 });
 
-test('ObjectSchema will filter out DELETED_ENTITY keys', () => {
+test('ObjectSchema will filter out REMOVED_ENTITY keys', () => {
     const schema = new ObjectSchema({foo});
 
     const entities = {
         foo: {
-            "1": DELETED_ENTITY
+            "1": REMOVED_ENTITY
         }
     };
 

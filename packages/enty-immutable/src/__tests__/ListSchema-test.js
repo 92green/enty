@@ -4,7 +4,7 @@ import ListSchema from '../ListSchema';
 import MapSchema from '../MapSchema';
 import {fromJS} from 'immutable';
 import {List} from 'immutable';
-import {DELETED_ENTITY} from 'enty/lib/util/SchemaConstant';
+import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 const foo = new EntitySchema('foo', {shape: new MapSchema({})});
 
@@ -55,7 +55,7 @@ test('ListSchema will not return deleted entities', () => {
         foo: {
             "1": {id: "1"},
             "2": {id: "2"},
-            "3": DELETED_ENTITY
+            "3": REMOVED_ENTITY
         }
     });
     expect(

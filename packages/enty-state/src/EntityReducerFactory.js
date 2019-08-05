@@ -9,6 +9,7 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import updateIn from 'unmutable/lib/updateIn';
+import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
 import Logger from './util/Logger';
@@ -48,6 +49,7 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
         const requestStatePath = ['requestState', responseKey];
         const responsePath = ['response', responseKey];
         const errorPath = ['error', responseKey];
+        const incrementResponseCount = updateIn(['stats', 'responseCount'], count => count + 1);
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
@@ -95,7 +97,7 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                             set('entities', entities),
                             setIn(responsePath, result),
                             updateIn(['schemas'], merge(schemas)),
-                            updateIn(['stats', 'responseCount'], count => count + 1),
+                            incrementResponseCount,
                             state => Logger.silly('state', state) || state
                         );
                     } else {
@@ -103,14 +105,18 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                         return pipeWith(
                             state,
                             setIn(responsePath, payload),
-                            updateIn(['stats', 'responseCount'], count => count + 1),
+                            incrementResponseCount
                         );
                     }
                 }
                 return state;
 
-            case 'ENTY_DELETE':
-                return state;
+            case 'ENTY_REMOVE':
+                return pipeWith(
+                    state,
+                    incrementResponseCount,
+                    setIn(['entities', ...payload], REMOVED_ENTITY)
+                );
 
             default:
                 return state;

@@ -5,6 +5,7 @@ import {EntitySchema, ObjectSchema} from 'enty';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
+import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 //
 // Schemas
@@ -288,6 +289,26 @@ describe('no schema reducer', () => {
         expect(stateB.response['456']).toBe('BAR');
         expect(stateB.stats.responseCount).toBe(2);
 
+    });
+
+});
+
+describe('remove entity', () => {
+
+    it('will replace a removed entity with REMOVED_ENTITY sentinel', () => {
+        const initialState = {
+            entities: {
+                foo: {bar: 'ENTITY'},
+                baz: {qux: 'ENTITY'}
+            }
+        }
+        const reducer = EntityReducerFactory({});
+        const state = reducer(
+            initialState,
+            {type: 'ENTY_REMOVE', payload: ['foo', 'bar']}
+        );
+        expect(state.entities.foo.bar).toBe(REMOVED_ENTITY);
+        expect(state.entities.baz.qux).not.toBe(REMOVED_ENTITY);
     });
 
 });

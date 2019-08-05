@@ -7,7 +7,7 @@ import type {Merge} from './util/definitions';
 import type {StructuralSchemaOptions} from './util/definitions';
 import type {Schema} from './util/definitions';
 
-import {DELETED_ENTITY} from './util/SchemaConstant';
+import REMOVED_ENTITY from './util/RemovedEntity';
 
 /**
  * Class for array schema.
@@ -55,7 +55,7 @@ export default class ArraySchema<A: Schema> implements StructuralSchemaInterface
             .map((item: any): any => {
                 return this.shape.denormalize({result: item, entities}, path);
             })
-            .filter(ii => ii !== DELETED_ENTITY);
+            .filter(ii => ii !== REMOVED_ENTITY);
     }
 }
 

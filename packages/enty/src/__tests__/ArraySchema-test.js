@@ -2,7 +2,7 @@
 import EntitySchema from '../EntitySchema';
 import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
-import {DELETED_ENTITY} from '../util/SchemaConstant';
+import REMOVED_ENTITY from '../util/RemovedEntity';
 
 const foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
@@ -55,7 +55,7 @@ test('ArraySchema will not return deleted entities', () => {
         foo: {
             "1": {id: "1"},
             "2": {id: "2"},
-            "3": DELETED_ENTITY
+            "3": REMOVED_ENTITY
         }
     };
     expect(schema.denormalize({result: ["1", "2", "3"], entities}).map(ii => ii)).toEqual([{id: "1"}, {id: "2"}]);

@@ -2,7 +2,7 @@
 import {EntitySchema} from 'enty';
 import MapSchema from '../MapSchema';
 import {Map} from 'immutable';
-import {DELETED_ENTITY} from 'enty/lib/util/SchemaConstant';
+import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 const foo = new EntitySchema('foo', {shape: new MapSchema({})});
 
@@ -94,12 +94,12 @@ test('MapSchema will not denormalize unknown keys', () => {
     expect(schema.denormalize({result: {foo: "1", bar: "2"}, entities})).toEqual({foo: {id: "1"}, bar: "2"});
 });
 
-test('MapSchema will filter out DELETED_ENTITY keys', () => {
+test('MapSchema will filter out REMOVED_ENTITY keys', () => {
     const schema = new MapSchema({foo});
 
     const entities = {
         foo: {
-            "1": DELETED_ENTITY
+            "1": REMOVED_ENTITY
         }
     };
 
