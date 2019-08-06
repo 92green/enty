@@ -8,9 +8,10 @@ export {default as ArraySchema} from './ArraySchema';
 export {default as CompositeEntitySchema} from './CompositeEntitySchema';
 export {default as DynamicSchema} from './DynamicSchema';
 export {default as EntitySchema} from './EntitySchema';
+export {default as IdSchema} from './IdSchema';
 export {default as NullSchema} from './NullSchema';
 export {default as ObjectSchema} from './ObjectSchema';
-export {default as IdSchema} from './IdSchema';
+export {default as ValueSchema} from './ValueSchema';
 
 
 //
