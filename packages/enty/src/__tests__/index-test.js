@@ -12,7 +12,7 @@ test('that index has a defined set of exports', () => {
     expect(Enty.ObjectSchema).toBeDefined();
     expect(Enty.CompositeEntitySchema).toBeDefined();
     expect(Enty.NullSchema).toBeDefined();
-    expect(Enty.ValueSchema).toBeDefined();
+    expect(Enty.IdSchema).toBeDefined();
     expect(Enty.DynamicSchema).toBeDefined();
 });
 

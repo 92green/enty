@@ -7,9 +7,9 @@ import type {Create} from './util/definitions';
 import type {Merge} from './util/definitions';
 
 /**
- * ValueSchema
+ * IdSchema
  */
-export default class ValueSchema<A: EntitySchemaInterface<any>> implements StructuralSchemaInterface<A> {
+export default class IdSchema<A: EntitySchemaInterface<any>> implements StructuralSchemaInterface<A> {
     shape: A;
     create: Create;
     merge: Merge;

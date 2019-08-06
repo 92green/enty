@@ -1,14 +1,14 @@
 //@flow
 import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
-import ValueSchema from '../ValueSchema';
+import IdSchema from '../IdSchema';
 
 const foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
 });
 
 const fooValues = new ObjectSchema({
-    foo: new ValueSchema(foo)
+    foo: new IdSchema(foo)
 });
 
 
@@ -25,12 +25,12 @@ test('normalize', () => {
             "1": data
         }
     };
-    expect(data).toEqual(new ValueSchema(foo).normalize('1', entities).entities.foo['1']);
-    expect(data).toEqual(new ValueSchema(foo).normalize('1', undefined).entities.foo['1']);
+    expect(data).toEqual(new IdSchema(foo).normalize('1', entities).entities.foo['1']);
+    expect(data).toEqual(new IdSchema(foo).normalize('1', undefined).entities.foo['1']);
 });
 
 test('denormalize', () => {
-    const fooValue = new ValueSchema(foo);
+    const fooValue = new IdSchema(foo);
     const data = {id: '1'};
     const entities = {
         foo: {

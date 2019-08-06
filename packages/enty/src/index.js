@@ -10,7 +10,7 @@ export {default as DynamicSchema} from './DynamicSchema';
 export {default as EntitySchema} from './EntitySchema';
 export {default as NullSchema} from './NullSchema';
 export {default as ObjectSchema} from './ObjectSchema';
-export {default as ValueSchema} from './ValueSchema';
+export {default as IdSchema} from './IdSchema';
 
 
 //
