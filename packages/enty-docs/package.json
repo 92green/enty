@@ -1,0 +1,22 @@
+{
+  "name": "enty-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@mdx-js/mdx": "^1.1.0",
+    "@mdx-js/react": "^1.0.27",
+    "babel-plugin-styled-components": "^1.10.6",
+    "gatsby": "^2.13.20",
+    "gatsby-plugin-flow": "^1.1.2",
+    "gatsby-plugin-mdx": "^1.0.17",
+    "gatsby-plugin-styled-components": "^3.1.2",
+    "gatsby-remark-prismjs": "^3.3.4",
+    "gatsby-source-filesystem": "^2.1.6",
+    "gatsby-transformer-remark": "^2.6.6",
+    "prismjs": "^1.17.1",
+    "react-dom": "^16.8.6",
+    "styled-components": "^4.3.2",
+    "styled-system": "^5.0.16"
+  }
+}
