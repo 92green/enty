@@ -3,9 +3,9 @@ import * as Enty from '../index';
 
 
 test('that index has a defined set of exports', () => {
-    expect.assertions(8); // number of exports + 1 for the exportList
+    expect.assertions(9); // number of exports + 1 for the exportList
     const exportList = Object.keys(Enty);
-    expect(exportList).toHaveLength(7);
+    expect(exportList).toHaveLength(8);
 
     expect(Enty.EntitySchema).toBeDefined();
     expect(Enty.ArraySchema).toBeDefined();
@@ -13,6 +13,7 @@ test('that index has a defined set of exports', () => {
     expect(Enty.CompositeEntitySchema).toBeDefined();
     expect(Enty.NullSchema).toBeDefined();
     expect(Enty.IdSchema).toBeDefined();
+    expect(Enty.ValueSchema).toBeDefined();
     expect(Enty.DynamicSchema).toBeDefined();
 });
 

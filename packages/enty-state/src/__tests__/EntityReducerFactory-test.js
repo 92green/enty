@@ -301,7 +301,7 @@ describe('remove entity', () => {
                 foo: {bar: 'ENTITY'},
                 baz: {qux: 'ENTITY'}
             }
-        }
+        };
         const reducer = EntityReducerFactory({});
         const state = reducer(
             initialState,
