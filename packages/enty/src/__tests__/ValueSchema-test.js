@@ -1,69 +1,35 @@
 //@flow
-import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
 import ValueSchema from '../ValueSchema';
 
-const foo = EntitySchema('foo').set(ObjectSchema());
-
-const fooValues = ObjectSchema({
-    foo: ValueSchema(foo)
+const foo = new ObjectSchema({
+    name: new ValueSchema('name'),
+    date: new ValueSchema('date', {idAttribute: x => x.getTime().toString()})
 });
 
 
-
-test('denormalize is almost the inverse of normalize', () => {
-    const data = {foo: '1'};
-    expect(data.foo).toEqual(fooValues.denormalize(fooValues.normalize(data)).foo.id);
+it('normalizes and denormalizes transparently', () => {
+    const input = {name: 'john', date: new Date()};
+    expect(foo.denormalize(foo.normalize(input))).toEqual(input);
 });
 
-test('normalize', () => {
-    const data = {id: '1'};
-    const entities = {
-        foo: {
-            "1": data
-        }
-    };
-    expect(data).toEqual(ValueSchema(foo).normalize('1', entities).entities.foo['1']);
-    expect(data).toEqual(ValueSchema(foo).normalize('1', undefined).entities.foo['1']);
+it('can calculate its id through idAttribute', () => {
+    const fakeDate = new Date(1);
+    const input = {name: 'john', date: fakeDate};
+    const state = foo.normalize(input);
+    expect(state.entities.date).toEqual({["1"]: fakeDate});
+    expect(state.entities.date).not.toEqual({[fakeDate.toString()]: fakeDate});
 });
 
-test('denormalize', () => {
-    const foo = EntitySchema('foo').set(ObjectSchema());
-    const fooValue = ValueSchema(foo);
-    const data = {id: '1'};
-    const entities = {
-        foo: {
-            "1": data
-        }
-    };
-    expect(data).toEqual(fooValue.denormalize({result: '1', entities}));
-    expect(data).toEqual(fooValue.denormalize({result: '1', entities}, undefined));
+it('can normalize values', () => {
+    const input = {name: 'john'};
+    const state = foo.normalize(input);
+    expect(state.entities.name.john).toBe('john');
 });
 
-
-//
-// Geters and Seters
-//
-test('set, get & update dont mutate the schema while still returning it', () => {
-    const schema = ValueSchema();
-    expect(schema.set(foo)).toBe(schema);
-    expect(schema.get()).toBe(foo);
-    expect(schema.update(() => schema.definition)).toBe(schema);
+it('can denormalize values', () => {
+    let state = foo.normalize({name: 'john', date: new Date(1)});
+    state.entities.name.john = 'FAKE';
+    expect(foo.denormalize(state)).toEqual({name: 'FAKE', date: new Date(1)});
 });
 
-test('set will replace the definition at a key', () => {
-    const schema = ValueSchema();
-    schema.set(foo);
-    expect(schema.definition).toBe(foo);
-});
-
-test('get will return the definition at a key', () => {
-    const schema = ValueSchema(foo);
-    expect(schema.get()).toBe(foo);
-});
-
-test('update will replace the whole definition via an updater function', () => {
-    const schema = ValueSchema(foo);
-    schema.update(() => foo);
-    expect(schema.definition).toBe(foo);
-});

@@ -2,6 +2,8 @@
 import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
+//import {ArraySchema} from 'enty';
+//import {EntitySchema} from 'enty';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
 
@@ -12,7 +14,7 @@ describe('exports', () => {
         bar: {
             baz: () => Promise.resolve()
         }
-    }, ObjectSchema({}));
+    }, new ObjectSchema({}));
 
     it('will export the api shape', () => {
         const requestHoc = expect.any(Function);
@@ -43,11 +45,11 @@ describe('Provider', () => {
     it('will transparently stack providers', () => {
         const A = EntityApi({
             foo: () => Promise.resolve()
-        }, ObjectSchema({}));
+        }, new ObjectSchema({}));
 
         const B = EntityApi({
             foo: () => Promise.resolve()
-        }, ObjectSchema({}));
+        }, new ObjectSchema({}));
         const Child = () => null;
 
         expect(() => mount(<A.Provider>

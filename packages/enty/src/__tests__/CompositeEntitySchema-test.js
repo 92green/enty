@@ -3,21 +3,22 @@ import EntitySchema from '../EntitySchema';
 import CompositeEntitySchema from '../CompositeEntitySchema';
 import ObjectSchema from '../ObjectSchema';
 
-var course = EntitySchema('course').set(ObjectSchema());
-var dog = EntitySchema('dog').set(ObjectSchema());
-var participant = EntitySchema('participant').set(ObjectSchema());
+var course = new EntitySchema('course');
+course.shape = new ObjectSchema({});
 
-var courseParticipant = CompositeEntitySchema('courseParticipant', {
+var participant = new CompositeEntitySchema('participant', {
+    shape: new ObjectSchema({}),
     compositeKeys: {
         course
     }
-}).set(participant);
+});
 
-var dogCourseParticipant = CompositeEntitySchema('dogCourseParticipant', {
+var dog = new CompositeEntitySchema('dog', {
+    shape: new ObjectSchema({}),
     compositeKeys: {
-        courseParticipant
+        participant
     }
-}).set(dog);
+});
 
 const derek = {
     id: '123',
@@ -32,51 +33,20 @@ const derek = {
 
 
 test('denormalize is the inverse of normalize', () => {
-    expect(courseParticipant.denormalize(courseParticipant.normalize(derek))).toEqual(derek);
-});
-
-test('cannot be made up of structural types', () => {
-    const badDefinition = CompositeEntitySchema('badDefinition', {
-        definition: ObjectSchema({course})
-    });
-
-    const badKeys = CompositeEntitySchema('badKeys', {
-        definition: course,
-        compositeKeys: {
-            deep: ObjectSchema({participant})
-        }
-    });
-
-    const data = {
-        id: '123',
-        deep: {
-            participant: {
-                id: 'spk456',
-                courseName: 'Learn All The Things!'
-            }
-        }
-    };
-
-    expect(() => badKeys.normalize(data)).toThrow();
-    expect(() => badDefinition.normalize(data)).toThrow();
-});
-
-test('options.idAttribute defaults to an empty function', () => {
-    const {idAttribute} = CompositeEntitySchema('foo').options;
-    expect(idAttribute()).toBe(undefined);
+    expect(participant.denormalize(participant.normalize(derek))).toEqual(derek);
 });
 
 test('throw without a definition', () => {
-    expect(() => CompositeEntitySchema('foo').normalize(derek, {})).toThrow();
-    expect(() => CompositeEntitySchema('foo', {definition: null}).normalize(derek, {})).toThrow();
+    expect(() => new CompositeEntitySchema('foo').normalize(derek, {})).toThrow();
+    // $FlowFixMe - deliberate missuse of types
+    expect(() => new CompositeEntitySchema('foo', {shape: null}).normalize(derek, {})).toThrow();
 });
-
 
 test('can hold CompositeEntitySchemas', () => {
 
     const aa = {
         id: 'lassie',
-        courseParticipant: {
+        participant: {
             id: '123',
             name: 'Derek Tibbs',
             course: {
@@ -86,42 +56,37 @@ test('can hold CompositeEntitySchemas', () => {
         }
     };
 
-    const {entities, result} = dogCourseParticipant.normalize(aa);
+    const {entities, result} = dog.normalize(aa);
     expect(entities.course).toBeTruthy();
-    expect(entities.courseParticipant).toBeTruthy();
+    expect(entities.participant).toBeTruthy();
     expect(entities.dog).toBeTruthy();
-    expect(entities.dogCourseParticipant).toBeTruthy();
+    expect(entities.dog).toBeTruthy();
     expect(entities.participant).toBeTruthy();
     expect(result).toBe('lassie-123-spk456');
 });
 
 test('can defer their definition', () => {
-    var lateCourseParticipant = CompositeEntitySchema('courseParticipant', {
-        compositeKeys: {
-            course
-        }
-    });
-
-    lateCourseParticipant.set(participant);
-
+    var lateCourseParticipant = new CompositeEntitySchema('participant');
+    lateCourseParticipant.shape = new ObjectSchema({});
+    lateCourseParticipant.compositeKeys = {course};
     expect(() => lateCourseParticipant.normalize(derek)).not.toThrow();
 });
 
 
 test('compositeKeys will override defintion keys ', () => {
-    const cat = EntitySchema('cat').set(ObjectSchema({
-        friend: dog
-    }));
 
-    const owl = EntitySchema('owl').set(ObjectSchema());
+    const owl = new EntitySchema('owl', {
+        shape: new ObjectSchema({})
+    });
 
-    var catOwl = CompositeEntitySchema('catOwl', {
+    var cat = new CompositeEntitySchema('cat', {
+        shape: new ObjectSchema({friend: dog}),
         compositeKeys: {
             friend: owl
         }
-    }).set(cat);
+    });
 
-    const {entities} = catOwl.normalize({
+    const {entities} = cat.normalize({
         id: 'sparky',
         friend: {
             id: 'hedwig'
@@ -129,44 +94,17 @@ test('compositeKeys will override defintion keys ', () => {
     });
 
 
-    expect(entities.catOwl['sparky-hedwig']).toBeTruthy();
+    expect(entities.cat['sparky-hedwig']).toBeTruthy();
     expect(entities.dog).toBeFalsy();
 });
 
 test('will not try to normalize null compositeKeys', () => {
-    expect(() => courseParticipant.normalize({id: 'rad'})).not.toThrow();
+    expect(() => participant.normalize({id: 'rad'})).not.toThrow();
 });
 
 test('will not try to denormalize null compositeKeys', () => {
     const data = {id: 'rad'};
-    expect(() => courseParticipant.denormalize(courseParticipant.normalize(data))).not.toThrow();
+    expect(() => participant.denormalize(participant.normalize(data))).not.toThrow();
 });
 
-
-
-
-//
-// Geters and Seters
-//
-test('set, get & update dont mutate the schema while still returning it', () => {
-    const schema = courseParticipant;
-    expect(schema.set(dog)).toBe(schema);
-    expect(schema.get()).toBe(dog);
-    expect(schema.update(() => schema.definition)).toBe(schema);
-});
-
-test('set will replace the definition at a key', () => {
-    const schema = courseParticipant;
-    schema.set(dog);
-    expect(schema.definition).toBe(dog);
-});
-
-test('get will return the definition at a key', () => {
-    expect(courseParticipant.get()).toBe(dog);
-});
-
-test('update will replace the whole definition via an updater function', () => {
-    courseParticipant.update(() => dog);
-    expect(courseParticipant.definition).toBe(dog);
-});
 

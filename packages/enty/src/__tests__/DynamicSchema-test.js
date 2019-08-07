@@ -4,24 +4,29 @@ import ArraySchema from '../ArraySchema';
 import DynamicSchema from '../DynamicSchema';
 import ObjectSchema from '../ObjectSchema';
 
-const foo = EntitySchema('foo').set(ObjectSchema());
-const bar = EntitySchema('bar').set(ObjectSchema());
-const baz = EntitySchema('baz').set(ObjectSchema());
+const foo = new EntitySchema('foo');
+const bar = new EntitySchema('bar');
+const baz = new EntitySchema('baz');
 
-const fooBarBaz = DynamicSchema((data: *): * => {
-    switch(data.type || data.get('type')) {
+foo.shape = new ObjectSchema({});
+baz.shape = new ObjectSchema({});
+bar.shape = new ObjectSchema({});
+
+const fooBarBaz = new DynamicSchema((data: {type: string}) => {
+    switch(data.type) {
         case 'foo':
             return foo;
         case 'bar':
             return bar;
         case 'baz':
+        default:
             return baz;
     }
 });
 
 
 test('DynamicSchema can choose an appropriate schema to normalize', () => {
-    const unknownArray = ArraySchema(fooBarBaz);
+    const unknownArray = new ArraySchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
         {type: 'bar', id: '1'},
@@ -37,7 +42,7 @@ test('DynamicSchema can choose an appropriate schema to normalize', () => {
 
 
 test('DynamicSchema.denormalize is the inverse of DynamicSchema.normalize', () => {
-    const schema = ArraySchema(fooBarBaz);
+    const schema = new ArraySchema(fooBarBaz);
     const data = [
         {type: 'foo', id: '0'},
         {type: 'bar', id: '1'},
@@ -56,7 +61,7 @@ test('DynamicSchema.normalize', () => {
 
 
 test('DynamicSchema.normalize on to existing data', () => {
-    const schema = ArraySchema(fooBarBaz);
+    const schema = new ArraySchema(fooBarBaz);
 
     const first = [
         {type: 'foo', id: '0'}
@@ -75,30 +80,3 @@ test('DynamicSchema.normalize on to existing data', () => {
     expect(output.entities.baz['2']).toEqual(second[1]);
 });
 
-
-//
-// Geters and Seters
-//
-test('set, get & update dont mutate the schema while still returning it', () => {
-    const schema = DynamicSchema();
-    expect(schema.set(fooBarBaz)).toBe(schema);
-    expect(schema.get()).toBe(fooBarBaz);
-    expect(schema.update(() => schema.definition)).toBe(schema);
-});
-
-test('set will replace the definition at a key', () => {
-    const schema = DynamicSchema();
-    schema.set(fooBarBaz);
-    expect(schema.definition).toBe(fooBarBaz);
-});
-
-test('get will return the definition at a key', () => {
-    const schema = DynamicSchema(fooBarBaz);
-    expect(schema.get()).toBe(fooBarBaz);
-});
-
-test('update will replace the whole definition via an updater function', () => {
-    const schema = DynamicSchema(fooBarBaz);
-    schema.update(() => fooBarBaz);
-    expect(schema.definition).toBe(fooBarBaz);
-});

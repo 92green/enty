@@ -21,7 +21,7 @@ denormalize `friend` as a user.
 
 ## Params
 ```js
-ValueSchema(
+IdSchema(
     definition: Schema,
     options?: {
         constructor: (value) => entity
@@ -36,7 +36,7 @@ The Schema that this value represents.
 
 ```js
 const user = EntitySchema('user');
-const friend = ValueSchema(user);
+const friend = IdSchema(user);
 user.set({friend});
 ```
 
@@ -44,7 +44,7 @@ user.set({friend});
 **type:** `(id: string) => *`  
 **default:** `(value) => ({id: value})`  
 
-By defualt the ValueSchema constructs a faux entity by placing the value on the `id` key of an 
+By defualt the IdSchema constructs a faux entity by placing the value on the `id` key of an 
 object. If your definition has a differnt idAtribute function you can replace this to match.
 
 ```
@@ -52,7 +52,7 @@ const user = EntitySchema('user', {
     idAtribute: user => user.email
 });
 
-const friend = ValueSchema(user, {
+const friend = IdSchema(user, {
     constructor: value => ({email: value})
 });
 user.set({friend});

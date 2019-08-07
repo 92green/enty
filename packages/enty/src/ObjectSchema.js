@@ -1,56 +1,42 @@
 // @flow
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {KeyedDefinition} from './util/definitions';
-import type {Schema} from './util/definitions';
-import type {Structure} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
+import type {Create} from './util/definitions';
+import type {Merge} from './util/definitions';
+import type {StructuralSchemaOptions} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
 import del from 'unmutable/lib/delete';
 import set from 'unmutable/lib/set';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import {DELETED_ENTITY, type DeletedEntity} from './util/SchemaConstant';
-import Keyed from './abstract/Keyed';
+import REMOVED_ENTITY from './util/RemovedEntity';
 
-/**
- * The ObjectSchema is a structural schema used to define relationships in objects.
- *
- * @example
- * const user = entity('user');
- * user.set(ObjectSchema({
- *     friends: ListSchema(user)
- * }))
- *
- * @param definition - an object describing any entity relationships that should be traversed.
- * @param options
- *
- */
-export class ObjectSchema extends Keyed implements Schema<Structure> {
-    options: Structure;
 
-    constructor(definition: KeyedDefinition = {}, options: Object = {}) {
-        super(definition);
-        this.options = {
-            constructor: item => ({...item}),
-            denormalizeFilter: item => item && !item.deleted,
-            merge: (previous, next) => ({...previous, ...next}),
-            ...options
-        };
+export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A> {
+    create: Create;
+    merge: Merge;
+    shape: A;
+
+    constructor(shape: A, options?: StructuralSchemaOptions = {}) {
+        this.shape = shape;
+        this.create = options.create || (item => ({...item}));
+        this.merge = options.merge || ((previous, next) => ({...previous, ...next}));
     }
 
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
-        const {definition} = this;
-        const dataMap = this.options.constructor(data);
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
+        const {shape} = this;
+        const dataMap = this.create(data);
         let schemas = {};
 
-        const result = this.keys
+        const result = Object.keys(shape)
             .reduce((result: Object, key: *): any => {
                 const value = get(key)(dataMap);
-                const schema = get(key)(definition);
+                const schema = get(key)(shape);
                 if(value) {
                     const {result: childResult, schemas: childSchemas} = schema.normalize(value, entities);
                     Object.assign(schemas, childSchemas);
@@ -69,10 +55,9 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
      */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
-        const {definition, options} = this;
-        let deletedKeys = [];
+        const {shape} = this;
 
-        if(result == null) {
+        if(result == null || result === REMOVED_ENTITY) {
             return result;
         }
 
@@ -87,32 +72,21 @@ export class ObjectSchema extends Keyed implements Schema<Structure> {
                 if(path.indexOf(this) !== -1) {
                     return item;
                 }
-                return this.keys
+                return Object.keys(shape)
                     .reduce((newItem: Object, key: string): Object => {
-                        const schema = get(key)(definition);
+                        const schema = get(key)(shape);
                         const result = get(key)(newItem);
-                        const value = schema.denormalize({result, entities}, path.concat(this));
+                        const value = schema.denormalize({result, entities}, [...path, this]);
 
-                        if(value !== DELETED_ENTITY) {
+                        if(value !== REMOVED_ENTITY) {
                             newItem = set(key, value)(newItem);
                         } else {
                             newItem = del(key)(newItem);
-                            deletedKeys.push(key);
                         }
 
                         return newItem;
                     }, item);
-            },
-            (item: Object): Object|DeletedEntity => {
-                return options.denormalizeFilter(item, deletedKeys) ? item : DELETED_ENTITY;
             }
         );
     }
-}
-
-/**
- * ObjectSchemaFactory
- */
-export default function ObjectSchemaFactory(...args: any[]): ObjectSchema {
-    return new ObjectSchema(...args);
 }

@@ -1,32 +1,36 @@
 // @flow
 import type {Schema} from './util/definitions';
-import type {NormalizeState} from './util/definitions';
-import type {DenormalizeState} from './util/definitions';
 
-/**
- * The NullSchema isn't a useful type. It just declares the base functions
- * all schemas must have.
- */
-export default class NullSchema implements Schema<*> {
-    options: Object;
-    definition: *;
 
-    /**
-     * NullSchema.normalize
-     */
-    normalize(data: *, entities?: Object = {}): NormalizeState  {
-        return {
-            entities,
-            result: null,
-            schemas: {}
-        };
+export default class NullSchema implements Schema {
+    shape: any;
+    parentName: string;
+
+    constructor(parentName: string) {
+        this.parentName = parentName;
     }
 
-    /**
-     * NullSchema.denormalize
-     */
-    // eslint-disable-next-line
-    denormalize(denormalizeState: DenormalizeState, path?: Array<*> = []): * {
-        return null;
+    _error(method: string): Error {
+        return new Error(`Tried to call .${method}() on '${this.parentName}' schema, but it does not have a shape. Please check your configuration.`);
+    }
+
+    create = () => {
+        throw this._error('create');
+    }
+
+    merge = () => {
+        throw this._error('merge');
+    }
+
+    idAttribute() {
+        throw this._error('idAttribute');
+    }
+
+    normalize() {
+        throw this._error('normalize');
+    }
+
+    denormalize() {
+        throw this._error('denormalize');
     }
 }

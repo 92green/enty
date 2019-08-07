@@ -1,6 +1,5 @@
 //@flow
 import type {Schema} from 'enty/lib/util/definitions';
-import type {Structure} from 'enty/lib/util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -10,13 +9,14 @@ import pipeWith from 'unmutable/lib/util/pipeWith';
 import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import updateIn from 'unmutable/lib/updateIn';
+import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
 import Logger from './util/Logger';
 
 type State = {
-    baseSchema: Schema<Structure>,
-    schemas: {[key: string]: Schema<any>},
+    baseSchema: Schema,
+    schemas: {[key: string]: Schema},
     response: {[key: string]: *},
     error: {[key: string]: *},
     requestState: {[key: string]: *},
@@ -26,7 +26,7 @@ type State = {
     }
 };
 
-export default function EntityReducerFactory(config: {schema?: Schema<Structure>}): Function {
+export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
 
     return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
@@ -49,72 +49,77 @@ export default function EntityReducerFactory(config: {schema?: Schema<Structure>
         const requestStatePath = ['requestState', responseKey];
         const responsePath = ['response', responseKey];
         const errorPath = ['error', responseKey];
+        const incrementResponseCount = updateIn(['stats', 'responseCount'], count => count + 1);
 
 
         Logger.info(`Attempting to reduce with type "${type}"`);
 
 
-        //
-        // Set Request States for BLANK/FETCH/ERROR
-        if(/_FETCH$/g.test(type)) {
-            if(getIn(requestStatePath)(state)) {
-                Logger.info(`Setting RequestState.refetching for "${requestStatePath.join('.')}"`);
-                state = setIn(requestStatePath, RequestState.refetching())(state);
-            } else {
-                state = setIn(requestStatePath, RequestState.fetching())(state);
-                Logger.info(`Setting RequestState.fetching for "${requestStatePath.join('.')}"`, state);
-            }
-        } else if(/_ERROR$/g.test(type)) {
-            Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
-            state = pipeWith(
-                state,
-                setIn(requestStatePath, RequestState.error(payload)),
-                setIn(errorPath, payload)
-            );
-        }
-
-
-
-        if(/_RECEIVE$/g.test(type)) {
-            Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
-
-            // set success action before payload tests
-            // to make sure the request state is still updated even if there is no payload
-            state = setIn(requestStatePath, RequestState.success())(state);
-
-            if(payload) {
-                if(schema) {
-                    const {result, entities, schemas} = schema.normalize(
-                        payload,
-                        pipeWith(state, get('entities'), clone())
-                    );
-
-                    Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
-                    Logger.info(`Merging any normalized entities and response into state`);
-
-
-                    return pipeWith(
-                        state,
-                        set('entities', entities),
-                        setIn(responsePath, result),
-                        updateIn(['schemas'], merge(schemas)),
-                        updateIn(['stats', 'responseCount'], count => count + 1),
-                        state => Logger.silly('state', state) || state
-                    );
+        switch (type) {
+            case 'ENTY_FETCH':
+                if(getIn(requestStatePath)(state)) {
+                    Logger.info(`Setting RequestState.refetching for "${requestStatePath.join('.')}"`);
+                    state = setIn(requestStatePath, RequestState.refetching())(state);
                 } else {
-                    Logger.info(`No schema, merging response without normalizing`);
-                    return pipeWith(
-                        state,
-                        setIn(responsePath, payload),
-                        updateIn(['stats', 'responseCount'], count => count + 1),
-                    );
+                    state = setIn(requestStatePath, RequestState.fetching())(state);
+                    Logger.info(`Setting RequestState.fetching for "${requestStatePath.join('.')}"`, state);
                 }
-            }
+                return state;
+
+            case 'ENTY_ERROR':
+                Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
+                return pipeWith(
+                    state,
+                    setIn(requestStatePath, RequestState.error(payload)),
+                    setIn(errorPath, payload)
+                );
+
+            case 'ENTY_RECEIVE':
+                Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
+
+                // set success action before payload tests
+                // to make sure the request state is still updated even if there is no payload
+                state = setIn(requestStatePath, RequestState.success())(state);
+
+                if(payload) {
+                    if(schema) {
+                        const {result, entities, schemas} = schema.normalize(
+                            payload,
+                            pipeWith(state, get('entities'), clone())
+                        );
+
+                        Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
+                        Logger.info(`Merging any normalized entities and response into state`);
 
 
+                        return pipeWith(
+                            state,
+                            set('entities', entities),
+                            setIn(responsePath, result),
+                            updateIn(['schemas'], merge(schemas)),
+                            incrementResponseCount,
+                            state => Logger.silly('state', state) || state
+                        );
+                    } else {
+                        Logger.info(`No schema, merging response without normalizing`);
+                        return pipeWith(
+                            state,
+                            setIn(responsePath, payload),
+                            incrementResponseCount
+                        );
+                    }
+                }
+                return state;
+
+            case 'ENTY_REMOVE':
+                return pipeWith(
+                    state,
+                    incrementResponseCount,
+                    setIn(['entities', ...payload], REMOVED_ENTITY)
+                );
+
+            default:
+                return state;
         }
-
-        Logger.info(`Type is not *_RECEIVE, no entity data has been changed`, state);
-        return state;
     };
 }

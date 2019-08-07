@@ -15,7 +15,7 @@ function setupTests() {
         foo: (data = 'foo') => Promise.resolve({data}),
         fooError: () => Promise.reject('ouch!'),
         bar: (data = 'bar') => Promise.resolve({data})
-    }, ObjectSchema({}));
+    }, new ObjectSchema({}));
 
     function ExpectsMessage(props: Object) {
         const {onRequest} = props.message;

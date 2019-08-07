@@ -1,43 +1,38 @@
 // @flow
-import {DELETED_ENTITY} from './util/SchemaConstant';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {Create} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
+import type {Merge} from './util/definitions';
+import type {StructuralSchemaOptions} from './util/definitions';
 import type {Schema} from './util/definitions';
-import type {Structure} from './util/definitions';
-import type {StructureInput} from './util/definitions';
-import type {ChildDefinition} from './util/definitions';
-import Child from './abstract/Child';
+
+import REMOVED_ENTITY from './util/RemovedEntity';
 
 /**
  * Class for array schema.
  * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.wrap
  *
  */
-export class ArraySchema extends Child implements Schema<Structure> {
-    options: Structure;
+export default class ArraySchema<A: Schema> implements StructuralSchemaInterface<A> {
+    shape: A;
+    create: Create;
+    merge: Merge;
 
-    constructor(definition: ChildDefinition, options: StructureInput = {}) {
-        super(definition);
-        this.options = {
-            constructor: item => item,
-            ...options
-        };
+    constructor(
+        shape: A,
+        options: StructuralSchemaOptions = {}
+    ) {
+        this.shape = shape;
+        this.merge = options.merge || ((aa, bb) => bb);
+        this.create = options.create || (aa => aa);
     }
 
-    /**
-     * ArraySchema.normalize
-     */
-    normalize(data: Array<any>, entities: Object = {}): NormalizeState {
-        const {definition} = this;
-        const {constructor} = this.options;
-        // const {denormalizeFilter} = this.options;
-        // console.log(denormalizeFilter());
-
-
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
         let schemas = {};
-        const result = constructor(data)
+        const result = this.create(data)
             .map((item: any): any => {
-                const {result, schemas: childSchemas} = definition.normalize(item, entities);
+                const {result, schemas: childSchemas} = this.shape.normalize(item, entities);
 
                 // add child schemas to the schema collection
                 Object.assign(schemas, childSchemas);
@@ -48,12 +43,8 @@ export class ArraySchema extends Child implements Schema<Structure> {
         return {entities, schemas, result};
     }
 
-    /**
-     * ArraySchema.denormalize
-     */
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
         const {result, entities} = denormalizeState;
-        const {definition} = this;
 
         // Filter out any deleted keys
         if(result == null) {
@@ -62,12 +53,9 @@ export class ArraySchema extends Child implements Schema<Structure> {
         // Map denormalize to our result List.
         return result
             .map((item: any): any => {
-                return definition.denormalize({result: item, entities}, path);
+                return this.shape.denormalize({result: item, entities}, path);
             })
-            .filter(ii => ii !== DELETED_ENTITY);
+            .filter(ii => ii !== REMOVED_ENTITY);
     }
 }
 
-export default function ArraySchemaFactory(...args: any[]): ArraySchema {
-    return new ArraySchema(...args);
-}

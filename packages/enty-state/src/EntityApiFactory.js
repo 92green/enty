@@ -14,7 +14,7 @@ type Visitor = ({actionType: string, requestAction: Function, generateResultKey:
 export default function EntityApiFactory(actionMap: ActionMap, visitor: Visitor) {
     return visitActionMap(actionMap, (sideEffect, path) => {
         const actionType = path.join('_').toUpperCase();
-        const requestAction = createRequestAction(actionType, sideEffect);
+        const requestAction = createRequestAction(sideEffect);
 
         return visitor({
             actionType,

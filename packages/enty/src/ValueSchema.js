@@ -1,47 +1,37 @@
 // @flow
-import Child from './abstract/Child';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
+import type {IdAttribute} from './util/definitions';
 
-/**
- * ValueSchema
- */
-export class ValueSchema extends Child implements Schema<Entity> {
-    options: Entity;
+type Options = {
+    idAttribute: IdAttribute
+};
+export default class ValueSchema {
+    name: string;
+    idAttribute: Function;
 
-    constructor(definition: Schema<Entity>, options: Object = {}) {
-        super(definition);
-        this.options = {
-            constructor: item => ({id: item}),
-            ...options
-        };
+    constructor(name: string, options?: Options = {}) {
+        this.name = name;
+        this.idAttribute = options.idAttribute || (x => x);
     }
 
-    /**
-     * ValueSchema.normalize
-     */
-    normalize(data: *, entities: Object = {}): NormalizeState {
-        const {constructor} = this.options;
-        const {result, schemas} = this.definition.normalize(constructor(data), entities);
+    normalize(data: mixed, entities: Object = {}): NormalizeState {
+        const {name} = this;
+        const id = this.idAttribute(data);
+
+        entities[name] = entities[name] || {};
+        entities[name][id] = data;
 
         return {
-            result,
-            schemas,
+            result: id,
+            schemas: {[name]: this},
             entities
         };
     }
 
-    /**
-     * ValueSchema.denormalize
-     */
-    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        const {definition} = this;
-        return definition.denormalize(denormalizeState, path);
+    denormalize(denormalizeState: DenormalizeState): any {
+        const {entities, result} = denormalizeState;
+        return entities[this.name][result];
     }
 }
 
-export default function ValueSchemaFactory(...args: any[]): ValueSchema {
-    return new ValueSchema(...args);
-}

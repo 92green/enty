@@ -1,31 +1,14 @@
 //@flow
 import NullSchema from '../NullSchema';
 
-var foo = new NullSchema();
-const denormalizeState = {entities: {}, result: {}};
+var foo = new NullSchema('foo');
 
-test('denormalize will return null', () => {
-    expect(foo.denormalize(denormalizeState)).toBe(null);
+it('will create a dummy schema that will throw all methods', () => {
+    expect(() => foo.create()).toThrow(/create/);
+    expect(() => foo.merge()).toThrow(/merge/);
+    expect(() => foo.idAttribute()).toThrow(/idAttribute/);
+    expect(() => foo.normalize()).toThrow(/normalize/);
+    expect(() => foo.denormalize()).toThrow(/denormalize/);
 });
 
-
-test('denormalize does not care about path', () => {
-    expect(() => foo.denormalize(denormalizeState)).not.toThrow();
-    expect(() => foo.denormalize(denormalizeState, ['foo'])).not.toThrow();
-});
-
-test('normalize will return blank NormalizeState', () => {
-    const state = foo.normalize('_', {foo: 'foo'});
-
-    expect(state.entities.foo).toBe('foo');
-    expect(state.result).toBe(null);
-    expect(state.schemas).toEqual({});
-});
-
-test('normalize will not mutate entities', () => {
-    const entities = {foo: {}};
-    const state = foo.normalize('_', entities);
-
-    expect(state.entities.foo).toBe(entities.foo);
-});
 
