@@ -1,8 +1,6 @@
 // @flow
 import type {Node} from 'react';
-
 import React from 'react';
-import styled from 'styled-components';
 import {ThemeProvider} from 'styled-components';
 import {MDXProvider} from "@mdx-js/react"
 import {
@@ -17,6 +15,9 @@ import {
     Text
 } from './Affordance';
 
+import Normalize from '../partials/Normalize';
+import Denormalize from '../partials/Denormalize';
+
 
 type Props = {
 };
@@ -25,12 +26,14 @@ export default function Provider(props: Props): Node {
     const {children, theme} = props;
 
     const mdxComponents = {
+        Normalize,
+        Denormalize,
         a: Link,
         blockquote: Quote,
         em: ({children}) => <Text as="em" textStyle="em" my={3}>{children}</Text>,
-        h1: (props) => <Text as="h1" textStyle="h1" mb={3} {...props} />,
-        h2: (props) => <Text as="h2" textStyle="h2" mt={4} mb={3} {...props} />,
-        h3: (props) => <Text as="h3" textStyle="h3" mt={3} {...props} />,
+        h1: ({children: id}) => <Text as="h1" textStyle="h1" mb={3} id={id} children={id} />,
+        h2: ({children: id}) => <Text as="h2" textStyle="h2" pt={4} mb={3} id={id} children={id} />,
+        h3: ({children: id}) => <Text as="h3" textStyle="h3" pt={3} id={id} children={id} />,
         img: (props) => <Image maxWidth="100%" {...props} />,
         inlineCode: ({children}) => <Text as="code" textStyle="code" my={3}>{children}</Text>,
         li: ListItem,
@@ -43,10 +46,9 @@ export default function Provider(props: Props): Node {
         ol: ({children}) => <List as="ol" my={3}>{children}</List>
     };
 
+
     return <ThemeProvider theme={theme}>
-        <MDXProvider components={mdxComponents}>
-            {children}
-        </MDXProvider>
+        <MDXProvider components={mdxComponents} children={children} />
     </ThemeProvider>;
 
 }

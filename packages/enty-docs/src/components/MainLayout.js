@@ -1,32 +1,37 @@
 // @flow
 import type {Node} from 'react';
 import React, {useState} from "react";
+import {MDXRenderer} from 'gatsby-plugin-mdx';
 import {DarkTheme, LightTheme} from './Theme';
-import {Box, Flex, Fixed} from './Layout';
+import {Box, Flex, Sticky, Wrapper} from './Layout';
 import {Text} from './Affordance';
 import GlobalStyle from './GlobalStyle';
 import Navigation from './Navigation';
 import Provider from './Provider';
 
 type Props = {
-    children: any
+    body: any,
+    title: string,
+    sidebar: Node,
+    minimap: Node
 };
 
 export default function MainLayout(props: Props): Node {
-    const {children} = props;
+    const {title, body, sidebar, minimap} = props;
     const [darkMode, setDarkMode] = useState(false);
-
     return <Provider theme={darkMode ? DarkTheme : LightTheme}>
         <Navigation />
-        <Fixed top={1} left={1}>
-            <Text bg="bg" p={1} textStyle="href" onClick={() => setDarkMode(!darkMode)}>{darkMode ? 'dark' : 'light'}</Text>
-        </Fixed>
+        <Wrapper>
         <Flex display={['block', null, 'flex']} alignItems="start" pb={6}>
             <GlobalStyle />
-            <Box width={[1, null, .4]}>side bar</Box>
-            <Box order="1" width={[1, null, .4]}>document</Box>
-            <Box width={[1, null, .6]} mr={[null, null, 3]} mb={3} flexShrink={0}>{children}</Box>
+            <Sticky width={[1, null, .4]} p={4}>{sidebar}</Sticky>
+            <Sticky order="1" width={[1, null, .4]} px={3} mt={4} top={4} borderLeft={`1px solid`} borderColor="hairline">{minimap}</Sticky>
+            <Box width={[1, null, .6]} mx={[null, null, 4]} mb={3} pt={3} flexShrink={0}>
+                <Text as="h1" textStyle="h1" mb="4" pt={2}>{title}</Text>
+                <MDXRenderer>{body}</MDXRenderer>
+            </Box>
         </Flex>
+        </Wrapper>
     </Provider>;
 }
 

@@ -3,22 +3,22 @@ import React from 'react';
 import styled from 'styled-components';
 import {space, layout, textStyle, typography, color} from 'styled-system';
 import GatsbyLink from 'gatsby-link';
+import getIn from 'unmutable/getIn';
 
+
+const theme = (...keys) => getIn(['theme', ...keys]);
 const getColor = (key) => (props) => props.theme.colors[key];
 
 export const List = styled.ul`
     ${space}
-    padding-left: 1.8em;
+    padding-left: 1em;
     position: relative;
 `;
 
 export const ListItem = styled.li`
+    ${textStyle}
     ul > & {
-        &:before {
-            content: '*';
-            position: absolute;
-            left: .6em;
-        }
+        list-style-type: disc;
     }
 
     ol > & {
@@ -29,7 +29,7 @@ export const ListItem = styled.li`
 
 
 
-export const Link = styled((props) => props.href ? <a {...props} /> : <GatsbyLink {...props} />)`
+export const Link = styled((props) => props.href ? <a {...props} children={props.children}/> : <GatsbyLink {...props} />)`
     ${color}
     color: ${_ => _.theme.colors.link};
     &:visited {
@@ -95,30 +95,9 @@ export const Quote = styled.blockquote`
     padding-top: 1.2em;
     margin: 1em 0;
     color: ${getColor('purple')};
-    &:before {
-        content: '>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>\\A>';
-        position: absolute;
-        left: 0;
-        white-space: pre;
-        top: -2px;
-    }
 `;
 
 export const Text = styled.span({}, textStyle, typography, space, color);
-
-export const Heading = styled(Text)``;
-Heading.defaultProps = {
-    as: 'h1',
-    textStyle: 'h1'
-};
-
-export const SubHeading = styled(Text)``;
-SubHeading.defaultProps = {
-    as: 'h2',
-    textStyle: 'h2'
-};
-
-
 export const Image = styled('img')({}, layout);
 
 //
@@ -133,4 +112,31 @@ export const TableHeadCell = styled.th`
     border-bottom: 1px solid;
     text-align: left;
     font-weight: bold;
+`;
+
+
+
+// Navgation Lists
+
+export const NavList = styled.ul`
+    ${typography}
+    ${color}
+    padding-bottom: ${theme('space', 3)}px;
+`;
+
+const ItemLink = props => <li>{props.to ? <GatsbyLink {...props}/> : <Text {...props}/>}</li>;
+export const NavListHeading = styled(ItemLink)`
+    ${space}
+    color: inherit;
+    font-weight: 500;
+    display: block;
+    text-decoration: none;
+`;
+
+export const NavListItem = styled(ItemLink)`
+    padding: ${theme('space', 1)}px;
+    color: ${theme('colors', 'muted')};
+    font-size: ${theme('fontSizes', 1)}px;
+    display: block;
+    text-decoration: none;
 `;

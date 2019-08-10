@@ -1,29 +1,21 @@
 // @flow
+const path = require('path');
 
 module.exports = {
     plugins: [
-        `gatsby-plugin-styled-components`,
-        `gatsby-transformer-remark`,
         `gatsby-plugin-flow`,
         {
             resolve: `gatsby-source-filesystem`,
             options: {
                 name: `tutorial`,
-                path: `${__dirname}/src/pages/tutorial`
+                path: `${__dirname}/src/content/tutorial`
             }
         },
         {
             resolve: `gatsby-source-filesystem`,
             options: {
                 name: `api`,
-                path: `${__dirname}/src/pages/api`
-            }
-        },
-        {
-            resolve: `gatsby-source-filesystem`,
-            options: {
-                name: `pages`,
-                path: `${__dirname}/src/pages/`
+                path: `${__dirname}/src/content/api`
             }
         },
         {
@@ -37,13 +29,10 @@ module.exports = {
                             noInlineHighlight: true
                         }
                     }
-                ],
-                defaultLayouts: {
-                    pages: require.resolve('./src/components/MainLayout'),
-                    api: require.resolve('./src/components/ApiLayout'),
-                    tutorial: require.resolve('./src/components/TutorialLayout')
-                }
+                ]
             }
-        }
+        },
+        `gatsby-plugin-styled-components`,
+        `gatsby-transformer-remark`,
     ]
 };

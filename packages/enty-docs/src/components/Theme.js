@@ -1,6 +1,7 @@
 
 function makeTheme(colors: {}) {
     const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72];
+    const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
     const fonts = {
         copy: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
         code: 'Menlo, monospace'
@@ -9,6 +10,7 @@ function makeTheme(colors: {}) {
         colors,
         fontSizes,
         fonts,
+        space,
         textStyles: {
             href: {
                 textDecoration: 'underline',
@@ -21,18 +23,24 @@ function makeTheme(colors: {}) {
                 backgroundColor: 'rgba(27,31,35,.05)',
             },
             em: {
-                fontStyle: 'italics'
+                fontStyle: 'italic'
+            },
+            strong: {
+                fontWeight: '500'
+            },
+            muted: {
+                color: colors.muted
             },
             h1: {
-                fontWeight: 'bold',
+                fontWeight: '500',
                 fontSize: fontSizes[5]
             },
             h2: {
-                fontWeight: 'bold',
+                fontWeight: '500',
                 fontSize: fontSizes[4]
             },
             h3: {
-                fontWeight: 'bold',
+                fontWeight: '500',
                 fontSize: fontSizes[3]
             },
         }
@@ -60,6 +68,8 @@ export const DarkTheme = makeTheme({
 
 export const LightTheme = makeTheme({
     fg: '#222',
+    muted: '#717171',
+    hairline: '#ccc',
     bg: '#fff',
     alpha: '#2d2b57',
     navigationCopy: '#fff',

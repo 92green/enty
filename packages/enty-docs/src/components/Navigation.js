@@ -3,7 +3,7 @@ import type {Node} from 'react';
 
 import React from 'react';
 import styled from 'styled-components';
-import {Flex, Box} from './Layout';
+import {Flex, Box, Wrapper} from './Layout';
 import {Link, Text} from './Affordance';
 
 
@@ -16,16 +16,20 @@ function Navigation(props: Props): Node {
     const logo = 'Logo';
     const title = <Text color="navigationCopy">Enty</Text>;
 
-    return <Flex justifyContent="space-between" p={3} className={props.className}>
-        <Flex>
-            <Box>{logo}</Box>
-            <Box>{title}</Box>
-        </Flex>
-        <Flex>
-            <Box px={2}>{api}</Box>
-            <Box px={2}>{tutorial}</Box>
-        </Flex>
-    </Flex>
+    return <Box className={props.className}>
+        <Wrapper>
+            <Flex justifyContent="space-between" p={3}>
+                <Flex>
+                    <Box>{logo}</Box>
+                    <Box>{title}</Box>
+                </Flex>
+                <Flex>
+                    <Box px={2}>{api}</Box>
+                    <Box px={2}>{tutorial}</Box>
+                </Flex>
+            </Flex>
+        </Wrapper>
+    </Box>;
 }
 
 export default styled(Navigation)`
