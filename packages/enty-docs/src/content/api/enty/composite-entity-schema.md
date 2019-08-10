@@ -1,6 +1,7 @@
 ---
 id: composite-entity-schema
 title: Composite Entity Schema
+group: Enty
 ---
 
 Sometimes a backend will merge two data types together and in the process create an entity that is 
@@ -107,20 +108,7 @@ See [EntitySchema.options.idAttribute](./entity-schema#optionsidattribute)
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set](./all-schemas#set).
-
-### .update()
-See [update](./all-schemas#update).
-
-
-
-## Examples
+<Denormalize />

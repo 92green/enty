@@ -1,6 +1,7 @@
 ---
 id: dynamic-schema
 title: Dynamic Schema
+group: Enty
 ---
 
 The dynamic schema lets you choose a schema based on the data that is being normalized. 
@@ -33,19 +34,10 @@ const groupOrUser = DynamicSchema((data) => {
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set](./all-schemas#set).
-
-### .update()
-See [update](./all-schemas#update).
+<Denormalize />
 
 
 ## Examples

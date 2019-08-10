@@ -1,6 +1,7 @@
 ---
 id: object-schema
 title: Object Schema
+group: Enty
 ---
 
 The ObjectSchema is a structural schema used to define relationships in objects.
@@ -12,7 +13,7 @@ ObjectSchema(
         [key: string]: Schema
     }
     options?: {
-        constructor: (entity: A) => B,
+        shape: (entity: A) => B,
         denormalizeFilter: (entity: A) => boolean,
         merge: (previous: A, next: B) => C
     }
@@ -33,16 +34,16 @@ const person = EntitySchema('person')
     }));
 ```
 
-### options.constructor 
+### options.shape 
 **type:** `(entity: A) => B`  
 **default:** `(entity) => entity`
 
-When an EntitySchema finds a new entity it will call the constructor of its definition before
+When an EntitySchema finds a new entity it will call the shape of its definition before
 storing the data in state. _You can use this to construct custom classes for your entities._
 
 ```
 const person = ObjectSchema({}, {
-    constructor: (data) => new Person(data)
+    shape: (data) => new Person(data)
 });
 
 const user = EntitySchema('user').set(person);
@@ -93,38 +94,9 @@ const person = ObjectSchema({}, {
 
 
 ## Methods
+
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .set()
-**type:** `(key: string, definition: Schema) => Schema`
-
-Replace the definition schema at a key. 
-
-```js
-import {catShape} from 'my-schemas';
-const dog = EntitySchema('dog');
-const myCatShape = catShape.set('friend', dog);
-```
-
-
-### .get()
-**type:** `(key: string) => Schema`
-
-Return the definition schema at a key.
-```
-const dog = myCatShape.get('friend');
-```
-
-
-### .update()
-**type a:** `(updater: (Schema) => Schema) => Schema`  
-**type b:** `(key: string, updater: (Schema) => Schema) => Schema`
-
-Overloaded function that lets you user an updater function on either the whole definition or the 
-schema at a key.
-
-
+<Denormalize />

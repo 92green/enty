@@ -1,6 +1,7 @@
 ---
 id: value-schema
 title: Value Schema
+group: Enty
 ---
 
 Sometimes data can exist in a partially normalized state. E.g. a user object has a friend key,
@@ -24,7 +25,7 @@ denormalize `friend` as a user.
 IdSchema(
     definition: Schema,
     options?: {
-        constructor: (value) => entity
+        shape: (value) => entity
     }
 );
 ```
@@ -40,7 +41,7 @@ const friend = IdSchema(user);
 user.set({friend});
 ```
 
-## options.constructor
+### options.shape
 **type:** `(id: string) => *`  
 **default:** `(value) => ({id: value})`  
 
@@ -53,7 +54,7 @@ const user = EntitySchema('user', {
 });
 
 const friend = IdSchema(user, {
-    constructor: value => ({email: value})
+    shape: value => ({email: value})
 });
 user.set({friend});
 ```
@@ -63,19 +64,7 @@ user.set({friend});
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set](./all-schemas#set).
-
-### .update()
-See [update](./all-schemas#update).
-
-
-## Examples
+<Denormalize />

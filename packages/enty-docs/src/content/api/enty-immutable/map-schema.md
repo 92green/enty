@@ -1,9 +1,10 @@
 ---
 id: map-schema
 title: Map Schema
+group: Enty Immutable
 ---
 
-The MapSchema is identical in function to [ObjectSchema] but its constructor and merge functions
+The MapSchema is identical in function to [ObjectSchema] but its shape and merge functions
 will cast your object to an immutable map. _This is especially useful when working with immutable 
 data structures as all data creation can be handled by your schema. Just describe the shapes that 
 your apis will return and Enty will automatically construct all of your maps and lists for you._
@@ -15,7 +16,7 @@ MapSchema(
         [key: string]: Schema
     }
     options?: {
-        constructor: (entity: A) => B,
+        shape: (entity: A) => B,
         denormalizeFilter: (entity: A) => boolean,
         merge: (previous: A, next: B) => C
     }
@@ -37,7 +38,7 @@ const person = EntitySchema('person')
     }));
 ```
 
-### options.constructor 
+### options.shape 
 **type:** `(entity: A) => B`  
 **default:** `(entity) => entity`
 

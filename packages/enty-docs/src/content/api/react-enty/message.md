@@ -1,6 +1,7 @@
 ---
 id: Message
 title: Message
+group: React Enty
 ---
 
 A Message bundles up all of the information surrounding a request and response from the api.

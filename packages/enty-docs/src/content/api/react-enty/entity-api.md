@@ -1,6 +1,7 @@
 ---
 id: EntityApi
 title: Entity Api
+group: React Enty
 ---
 
 The EntityApi provides a declarative way to turn a series of promise returning functions into hoc's

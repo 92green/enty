@@ -1,6 +1,7 @@
 ---
 id: RequestState
 title: Request State
+group: React Enty
 ---
 
 RequestState is a [Variant] monad. It allows the user to render the different states

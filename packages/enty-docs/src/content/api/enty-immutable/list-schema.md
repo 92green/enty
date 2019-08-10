@@ -1,9 +1,10 @@
 ---
 id: list-schema
 title: List Schema
+group: Enty Immutable
 ---
 
-The ListSchema is identical in function to [ArraySchema] but its constructor and merge functions
+The ListSchema is identical in function to [ArraySchema] but its shape and merge functions
 will cast your list to an immutable list. _This is especially useful when working with immutable 
 data structures as all data creation can be handled by your schema. Just describe the shapes that 
 your apis will return and Enty will automatically construct all of your maps and lists for you._
@@ -14,7 +15,7 @@ your apis will return and Enty will automatically construct all of your maps and
 ListSchema(
     definition: Schema<Structure>,
     options?: {
-        constructor: (entity: A) => B
+        shape: (entity: A) => B
     }
 );
 ```
@@ -29,11 +30,11 @@ const person = EntitySchema('person');
 const friends = ListSchema(person);
 ```
 
-### options.constructor 
+### options.shape 
 **type:** `(entity: A) => B`  
 **default:** `(entity) => List(entity)`
 
-See [ArraySchema.options.constructor()](./array-schema#optionsconstructor).
+See [ArraySchema.options.shape()](./array-schema#optionsshape).
 
 
 ### options.merge 

@@ -89,17 +89,17 @@ you to define a single consructor for each structural schema and let enty do the
 This lets you define your models but never worry about constructing them. As new data comes in it 
 is automatically constructed for you.
 
-We can extend the previous example by adding a constructor to our people structural schema.
+We can extend the previous example by adding a shape to our people structural schema.
 
 ```js
 person.set(ObjectSchema(
     {mother: person, father: person},
-    {constructor: data => new Person(data)}
+    {shape: data => new Person(data)}
 ));
 
 ```
 
-_NOTE: constructors are defined on structure schemas not their entities. This is because the entity 
+_NOTE: shapes are defined on structure schemas not their entities. This is because the entity 
 schema is really just a reference to an id in state. Because an entity could be of any
 shape entity schemas must have a structural definition assigned to it so that enty knows how to
 correctly contruct or merge it._

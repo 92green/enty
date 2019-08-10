@@ -1,6 +1,7 @@
 ---
 id: array-schema
 title: Array Schema
+group: Enty
 ---
 
 The ArraySchema is a structural schema used to define relationships in homogeneous arrays.
@@ -11,7 +12,7 @@ The ArraySchema is a structural schema used to define relationships in homogeneo
 ArraySchema(
     definition: Schema<Structure>,
     options?: {
-        constructor: (entity: A) => B
+        shape: (entity: A) => B
     }
 );
 ```
@@ -26,16 +27,16 @@ const person = EntitySchema('person');
 const friends = ArraySchema(person);
 ```
 
-### options.constructor 
+### options.shape 
 **type:** `(entity: A) => B`  
 **default:** `(entity) => entity`
 
-When an EntitySchema finds a new entity it will call the constructor of its definition before
+When an EntitySchema finds a new entity it will call the shape of its definition before
 storing the data in state. _You can use this to construct custom classes for your entities._
 
 ```js
 const friends = ArraySchema(person, {
-    constructor: (entity) => List(entity)
+    shape: (entity) => List(entity)
 });
 ```
 
@@ -59,19 +60,8 @@ const person = ArraySchema({}, {
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
+<Denormalize />
 
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set].
-
-### .update()
-See [update](./all-schemas#update).
-
-
-[set]: ./all-schemas#set

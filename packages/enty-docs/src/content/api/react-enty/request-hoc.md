@@ -1,6 +1,7 @@
 ---
 id: RequestHoc
 title: Request Hoc
+group: React Enty
 ---
 
 Request Hoc's are the way api functions are bound to your components.

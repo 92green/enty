@@ -1,5 +1,6 @@
 ---
-id: entity-schema
+groupRank: 1
+group: Enty
 title: Entity Schema
 ---
 
@@ -22,11 +23,11 @@ EntitySchema(
 );
 ```
 
-### name 
-**type:** `string`  
+### name
+**type:** `string`
 
 Each category of entity requires a name so that Enty can store and locate them in state.
-It must be unique amongst your collection of schemas. 
+It must be unique amongst your collection of schemas.
 
 ```js
 const user = EntitySchema('user');
@@ -34,11 +35,11 @@ const cat = EntitySchema('cat');
 ```
 
 
-### options.definition 
-**type:** `Schema<Structure>`  
+### options.definition
+**type:** `Schema<Structure>`
 
 Because entities can come in many shapes Enty chooses not to define this in the EntitySchema.
-All EntitySchemas must contain a definition of their shape.  
+All EntitySchemas must contain a definition of their shape.
 
 _Note: the definition can also be updated via the [.set()](./all-schemas#set) method._
 
@@ -53,7 +54,7 @@ const notifications = EntitySchema('notifications', {
 ```
 
 ### options.idAttribute
-**type:** `(any) => string`  
+**type:** `(any) => string`
 **defaults:** `(entity) => entity && entity.id`
 
 Defines where the EntitySchema can locate each entity's id value.
@@ -68,19 +69,7 @@ const user = EntitySchema('user', {
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set].
-
-### .update()
-See [update](./all-schemas#update).
-
-
-[set]: ./all-schemas#set
+<Denormalize />
