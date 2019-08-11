@@ -30,10 +30,29 @@ export const ListItem = styled.li`
 
 
 export const Link = styled((props) => props.href ? <a {...props} children={props.children}/> : <GatsbyLink {...props} />)`
-    ${color}
     color: ${_ => _.theme.colors.link};
     &:visited {
         color: ${_ => _.theme.colors.link};
+    }
+`;
+
+export const Button = styled(Link)`
+    background: ${theme('colors', 'alpha')};
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    text-align: center;
+    color: ${theme('colors', 'bg')};
+    &:visited {
+        color: ${theme('colors', 'bg')};
+    }
+`;
+
+export const NavigationLink = styled(Link)`
+    color: ${theme('colors', 'bg')};
+    text-decoration: none;
+    &:visited {
+        color: ${theme('colors', 'bg')};
     }
 `;
 

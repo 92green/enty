@@ -22,14 +22,14 @@ denormalize `friend` as a user.
 ## Params
 ```js
 IdSchema(
-    definition: Schema,
+    shape: Schema,
     options?: {
         shape: (value) => entity
     }
 );
 ```
 
-### definition 
+### shape 
 **type:** `Schema`  
 
 The Schema that this value represents.
@@ -45,7 +45,7 @@ user.set({friend});
 **default:** `(value) => ({id: value})`  
 
 By defualt the IdSchema constructs a faux entity by placing the value on the `id` key of an 
-object. If your definition has a differnt idAtribute function you can replace this to match.
+object. If your shape has a differnt idAtribute function you can replace this to match.
 
 ```
 const user = EntitySchema('user', {

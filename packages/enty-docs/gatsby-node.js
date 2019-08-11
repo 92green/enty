@@ -1,6 +1,22 @@
 // @flow
 const path = require("path");
 const {createFilePath} = require("gatsby-source-filesystem");
+const normalizeFlowAst = require('./src/normalizeFlowAst');
+
+//exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
+    //const entities = await normalizeFlowAst();
+    //console.log(entities);
+//};
+
+exports.onCreateNode = ({node, actions, getNode}) => {
+    const {createNodeField} = actions;
+    if (node.internal.type === 'Mdx') {
+        const {sourceInstanceName} = getNode(node.parent);
+        const value = createFilePath({node, getNode});
+        createNodeField({node, name: 'slug', value: `${sourceInstanceName}${value}`});
+        createNodeField({node, name: 'type', value: sourceInstanceName});
+    }
+}
 
 exports.createPages = async ({graphql, actions, reporter}) => {
 
@@ -35,12 +51,3 @@ exports.createPages = async ({graphql, actions, reporter}) => {
 
 
 
-exports.onCreateNode = ({node, actions, getNode}) => {
-    const {createNodeField} = actions;
-    if (node.internal.type === 'Mdx') {
-        const {sourceInstanceName} = getNode(node.parent);
-        const value = createFilePath({node, getNode});
-        createNodeField({node, name: 'slug', value: `${sourceInstanceName}${value}`});
-        createNodeField({node, name: 'type', value: sourceInstanceName});
-    }
-}

@@ -5,16 +5,16 @@ group: Enty
 ---
 
 The dynamic schema lets you choose a schema based on the data that is being normalized. 
-The definition takes a function that will be called with each peice of data. The return value of
+The shape takes a function that will be called with each peice of data. The return value of
 that function will then be used to continue the normalizing. _This is useful if you have 
 non-homogeneous arrays or union types._
 
 ## Params
 ```js
-DynamicSchema(definition: (*) => Schema);
+DynamicSchema(shape: (*) => Schema);
 ```
 
-### definition 
+### shape 
 **type:** `(*) => Schema`  
 
 A function that will be given the current data that must return a schema to 
@@ -83,9 +83,9 @@ ArraySchema(thing).denormalize([
         }
     },
     result: [
-        {definitionResult: '1', definitionSchema: user},
-        {definitionResult: '2', definitionSchema: group},
-        {definitionResult: '3', definitionSchema: account},
+        {shapeResult: '1', shapeSchema: user},
+        {shapeResult: '2', shapeSchema: group},
+        {shapeResult: '3', shapeSchema: account},
     ]
 
 } */

@@ -13,14 +13,14 @@ your apis will return and Enty will automatically construct all of your maps and
 
 ```js
 ListSchema(
-    definition: Schema<Structure>,
+    shape: Schema<Structure>,
     options?: {
         shape: (entity: A) => B
     }
 );
 ```
 
-### definition 
+### shape 
 **type:**`Schema<Structure>`  
 
 A single structural schema that describes what is in this collection.

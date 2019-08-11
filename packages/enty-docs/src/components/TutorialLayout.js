@@ -1,11 +1,61 @@
 // @flow
+import type {Node} from 'react';
 import React from 'react';
-import MainLayout from '../components/MainLayout';
+import {graphql} from 'gatsby';
+import DocsLayout from './DocsLayout';
+import Minimap from './Minimap';
+import Sidebar from './Sidebar';
 
 type Props = {};
 
-export default function TutorialLayout(props: Props) {
-    return <MainLayout>{props.children}</MainLayout>;
+export default function TutorialLayout({data, children}: Props): Node {
+    const {frontmatter, fields, headings, body} = data.mdx;
+    return <DocsLayout
+        sidebar={<Sidebar allFile={data.allFile} />}
+        minimap={<Minimap headings={headings} slug={fields.slug} title={frontmatter.title} />}
+        body={body}
+        title={frontmatter.title}
+    />;
 }
+
+export const pageQuery = graphql`
+  query TutorialLayout($id: String) {
+    allFile(filter: {sourceInstanceName: {eq: "tutorial"}}) {
+        group(field: childMdx___frontmatter___group) {
+            fieldValue
+            nodes {
+                childMdx {
+                    fields {
+                        slug
+                    }
+                    frontmatter {
+                        title
+                    }
+                    headings {
+                        value
+                        depth
+                    }
+                }
+            }
+        }
+    }
+    mdx(id: { eq: $id }) {
+      id
+      body
+      fields {
+          slug
+      }
+      headings {
+          depth
+          value
+      }
+      frontmatter {
+        title
+      }
+    }
+  }
+`
+
+
 
 

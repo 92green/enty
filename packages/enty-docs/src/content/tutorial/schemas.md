@@ -1,6 +1,7 @@
 ---
 id: schemas
 title: Schemas
+group: Tutorials
 ---
 
 _This is an introductory description of what schemas are and how they work. For specific details of
@@ -101,13 +102,13 @@ person.set(ObjectSchema(
 
 _NOTE: shapes are defined on structure schemas not their entities. This is because the entity 
 schema is really just a reference to an id in state. Because an entity could be of any
-shape entity schemas must have a structural definition assigned to it so that enty knows how to
+shape entity schemas must have a structural shape assigned to it so that enty knows how to
 correctly contruct or merge it._
 
 
 ### Merging
 Because an entity could be of any shape, when Enty is finds an entity that already exists in state 
-it simply calls the merge function on its definition. This lets enty be smart about how to merge things.
+it simply calls the merge function on its shape. This lets enty be smart about how to merge things.
 An object schema performs a shallow merge, while the array schema just replaces the old with the new.
 
 

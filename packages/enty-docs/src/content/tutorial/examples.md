@@ -1,6 +1,7 @@
 ---
 id: examples
 title: Examples
+group: Tutorials
 ---
 
 ## Request on Load

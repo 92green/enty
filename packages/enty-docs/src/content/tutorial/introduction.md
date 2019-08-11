@@ -1,6 +1,7 @@
 ---
 id: introduction
 title: Introduction
+group: Tutorials
 ---
 
 Enty is a framework for managing data requested from APIs. Instead of you manually storing data, 

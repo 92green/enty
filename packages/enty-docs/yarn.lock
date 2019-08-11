@@ -3237,6 +3237,11 @@ es-to-primitive@^1.2.0:
     is-date-object "^1.0.1"
     is-symbol "^1.0.2"
 
+es6-promise@^3.2.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
+  integrity sha1-oIzd6EzNvzTQJ6FFG8kdS80ophM=
+
 es6-promisify@^6.0.0:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/es6-promisify/-/es6-promisify-6.0.1.tgz#6edaa45f3bd570ffe08febce66f7116be4b1cdb6"
@@ -3802,6 +3807,11 @@ flatted@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
 
+flow-parser@^0.105.0:
+  version "0.105.0"
+  resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.105.0.tgz#14c27c5cb6be23dc7f3431e7837ab805331bbc35"
+  integrity sha512-f9lkQkr/rGQYjmxjPpgnoBaeWL/0UYjSp/eUR7cb8uRZArxtibyB+9+JYuuPJJJxSbSYfscYO/8KO7jlEhBjMA==
+
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"
@@ -3839,6 +3849,11 @@ from2@^2.1.0, from2@^2.1.1:
   dependencies:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
+
+fronads@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.18.0.tgz#0dd0b50933852c006060759748e5ff274f16fcef"
+  integrity sha512-rSCaoxTfZ3/svGfuzHvpdP1U8HuqfEhz+QijdnUUSuPpcyaYCvZK+eG3OWhX6eTGOOyd2kLPdQ3PBiIfDlvq5w==
 
 fs-exists-cached@1.0.0, fs-exists-cached@^1.0.0:
   version "1.0.0"
@@ -6426,6 +6441,13 @@ node-pre-gyp@^0.12.0:
     rimraf "^2.6.1"
     semver "^5.3.0"
     tar "^4"
+
+node-readfiles@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/node-readfiles/-/node-readfiles-0.2.0.tgz#dbbd4af12134e2e635c245ef93ffcf6f60673a5d"
+  integrity sha1-271K8SE04uY1wkXvk//Pb2BnOl0=
+  dependencies:
+    es6-promise "^3.2.1"
 
 node-releases@^1.1.25:
   version "1.1.26"

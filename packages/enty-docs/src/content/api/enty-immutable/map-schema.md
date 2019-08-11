@@ -12,7 +12,7 @@ your apis will return and Enty will automatically construct all of your maps and
 ## Params
 ```js
 MapSchema(
-    definition: {
+    shape: {
         [key: string]: Schema
     }
     options?: {
@@ -23,7 +23,7 @@ MapSchema(
 );
 
 ```
-### definition 
+### shape 
 **type:**`{[key: string]: StructuralSchema}`  
 **default:** `{}`
 

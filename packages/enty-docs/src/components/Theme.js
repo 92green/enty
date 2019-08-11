@@ -16,6 +16,11 @@ function makeTheme(colors: {}) {
                 textDecoration: 'underline',
                 cursor: 'pointer'
             },
+            navigationLink: {
+                textDecoration: 'none',
+                cursor: 'pointer',
+                color: colors.bg
+            },
             code: {
                 fontFamily: fonts.code,
                 fontSize: '13px',

@@ -1,6 +1,7 @@
 ---
 id: glossary
 title: Glossary
+group: Resources
 ---
 
 ## Api
@@ -8,11 +9,11 @@ An EntityApi is a collection of promise returning functions that get bound to [R
 It's called an Api becuase it most often is the binding between an API and a client.
 
 ## Child Schema
-Any schema that requires a definition on a single child.
+Any schema that requires a shape on a single child.
 See: [EntitySchema], [ArraySchema], [DynamicSchema]
 
-## Definition
-Definitions are the ke peice of information required by a schema. For an [EntitySchema] it is 
+## shape
+shapes are the ke peice of information required by a schema. For an [EntitySchema] it is 
 [Structural Schema], for an [ObjectSchema] it is an object literal describing its relationships.
 
 ## Denormalize

@@ -1,6 +1,7 @@
 ---
 id: getting-started
 title: Getting Started
+group: Tutorials
 ---
 
 ## Installation

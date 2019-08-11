@@ -4,25 +4,27 @@ import type {Node} from 'react';
 import React from 'react';
 import styled from 'styled-components';
 import {Flex, Box, Wrapper} from './Layout';
-import {Link, Text} from './Affordance';
+import {NavigationLink, Text} from './Affordance';
+import Logo from '../images/logo.svg';
 
 
 type Props = {
 };
 
 function Navigation(props: Props): Node {
-    const api = <Link to="/api/entity-schema" color="navigationCopy">Api</Link>;
-    const tutorial = <Link to="/tutorial/getting-started" color="navigationCopy">Tutorial</Link>;
-    const logo = 'Logo';
-    const title = <Text color="navigationCopy">Enty</Text>;
+    const api = <NavigationLink to="/api/enty/entity-schema" textStyle="navigationLink">Api</NavigationLink>;
+    const tutorial = <NavigationLink to="/tutorial/getting-started" textStyle="navigationLink">Tutorial</NavigationLink>;
+    const logo = <NavigationLink to="/" textStyle="navigationLink">
+        <Flex>
+            <Box><img src={Logo} /></Box>
+            <Box ml={2}>Enty</Box>
+        </Flex>
+    </NavigationLink>;
 
     return <Box className={props.className}>
         <Wrapper>
-            <Flex justifyContent="space-between" p={3}>
-                <Flex>
-                    <Box>{logo}</Box>
-                    <Box>{title}</Box>
-                </Flex>
+            <Flex justifyContent="space-between" py={3} px={4}>
+                {logo}
                 <Flex>
                     <Box px={2}>{api}</Box>
                     <Box px={2}>{tutorial}</Box>

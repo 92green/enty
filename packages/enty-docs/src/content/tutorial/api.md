@@ -1,6 +1,7 @@
 ---
 id: api
 title: Entity Api
+group: Tutorials
 ---
 _This is an introductory description of the EntityApi. For specific details of
 their types and methods check the [Api](/docs/data/EntityApi)._

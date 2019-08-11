@@ -9,7 +9,7 @@ The ObjectSchema is a structural schema used to define relationships in objects.
 ## Params
 ```js
 ObjectSchema(
-    definition: {
+    shape: {
         [key: string]: Schema
     }
     options?: {
@@ -19,7 +19,7 @@ ObjectSchema(
     }
 );
 ```
-### definition 
+### shape 
 **type:**`{[key: string]: string}`  
 **default:** `{}`
 
@@ -38,7 +38,7 @@ const person = EntitySchema('person')
 **type:** `(entity: A) => B`  
 **default:** `(entity) => entity`
 
-When an EntitySchema finds a new entity it will call the shape of its definition before
+When an EntitySchema finds a new entity it will call the shape of its shape before
 storing the data in state. _You can use this to construct custom classes for your entities._
 
 ```
@@ -54,7 +54,7 @@ const user = EntitySchema('user').set(person);
 **default:** `(previous, next) => ({...previous, ...next})`
 
 When an EntitySchema finds an entity, before storing it in state it checks to see if it has already
-been normalized. If it finds an existing entity it will use it's definition schemas merge function 
+been normalized. If it finds an existing entity it will use it's shape schemas merge function 
 to combine the two. _The default merge is a simple object spread, use this if your object has its 
 own merge method or can't be merged via spreading._
 

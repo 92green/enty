@@ -57,7 +57,7 @@ CompositeEntitySchema(
         compositeKeys: {
             [key: string]: Schema
         },
-        definition: Schema<Structure>,
+        shape: Schema<Structure>,
         idAttribute: (*) => string
     }
 );
@@ -68,16 +68,16 @@ CompositeEntitySchema(
 
 See [EntitySchema.name](./entity-schema#name)
 
-### options.definition 
+### options.shape 
 **type:** `Schema`  
 
-The definition of the main schema that has been tainted by other keys.
+The shape of the main schema that has been tainted by other keys.
 
-See [EntitySchema.options.definition](./entity-schema#optionsdefinition)
+See [EntitySchema.options.shape](./entity-schema#optionsshape)
 
 ```js
 const courseCompletion = CompositeEntitySchema('courseCompletion', {
-    definition: course
+    shape: course
 });
 ```
 
@@ -90,7 +90,7 @@ An object mapping of the keys that are tainting this entity and the schema that 
 ```js
 const completion = EntitySchema('completion');
 const courseCompletion = CompositeEntitySchema('courseCompletion', {
-   definition: course,
+   shape: course,
    compositeKeys: {
         completion
    }

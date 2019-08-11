@@ -1,6 +1,7 @@
 ---
 id: faq
 title: FAQ
+group: Resources
 ---
 
 
