@@ -31,22 +31,24 @@ function makeTheme(colors: {}) {
                 fontStyle: 'italic'
             },
             strong: {
-                fontWeight: '500'
+                fontWeight: '900'
             },
             muted: {
                 color: colors.muted
             },
             h1: {
-                fontWeight: '500',
-                fontSize: fontSizes[5]
+                fontWeight: '900',
+                fontSize: fontSizes[6]
             },
             h2: {
-                fontWeight: '500',
-                fontSize: fontSizes[4]
+                fontWeight: '900',
+                fontSize: fontSizes[4],
+                fontStyle: 'italic'
             },
             h3: {
-                fontWeight: '500',
-                fontSize: fontSizes[3]
+                fontWeight: '900',
+                fontSize: fontSizes[3],
+                fontStyle: 'italic'
             },
         }
     };
