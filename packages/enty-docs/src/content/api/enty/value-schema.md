@@ -36,7 +36,7 @@ IdSchema(
 The Schema that this value represents.
 
 ```js
-const user = EntitySchema('user');
+const user = new EntitySchema('user');
 const friend = IdSchema(user);
 user.set({friend});
 ```
@@ -49,7 +49,7 @@ By defualt the IdSchema constructs a faux entity by placing the value on the `id
 object. If your shape has a differnt idAtribute function you can replace this to match.
 
 ```
-const user = EntitySchema('user', {
+const user = new EntitySchema('user', {
     idAtribute: user => user.email
 });
 

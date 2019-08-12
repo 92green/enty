@@ -28,7 +28,7 @@ export default function App() {
             </Wrapper>
         </Box>
         <Wrapper>
-            <Flex display={['block', 'flex']} justifyContent="space-between">
+            <Flex display={['block', 'flex']} justifyContent="space-between" mb={4}>
                 <Box m={4}>
                     <img src={Declarative} />
                     <Text as="h3" textStyle="h3">Declarative</Text>

@@ -8,8 +8,8 @@ The ArraySchema is a structural schema used to define relationships in homogeneo
 ## Params
 
 ```js
-ArraySchema(
-    shape: Schema<Structure>,
+new ArraySchema(
+    shape: StructuralSchema,
     options?: {
         create?: (entity: A) => B,
         merge?: (previous: A, next: B) => C
@@ -18,7 +18,7 @@ ArraySchema(
 ```
 
 ### shape 
-**type:**`Schema<Structure>`  
+**type:** `StructuralSchema`  
 
 A single structural schema that describes what is in this collection.
 
@@ -31,7 +31,7 @@ const friends = new ArraySchema(person);
 <Create/>
 
 ```js
-const friends = ArraySchema(person, {
+const friends = new ArraySchema(person, {
     create: (entity) => new List(entity)
 });
 ```
@@ -45,7 +45,7 @@ create some interesting funcitonality with custom merge function. E.g. if your m
 the two arrays, you would create an append only list._
 
 ```js
-const person = ArraySchema({}, {
+const person = new ArraySchema({}, {
     merge: (prev, next) => prev.concat(next)
 });
 ```

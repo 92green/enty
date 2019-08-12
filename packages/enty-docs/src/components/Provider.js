@@ -20,6 +20,7 @@ import Denormalize from '../partials/Denormalize';
 import Merge from '../partials/Merge';
 import Create from '../partials/Create';
 import Id from '../partials/Id';
+import Name from '../partials/Name';
 
 
 type Props = {
@@ -34,6 +35,7 @@ export default function Provider(props: Props): Node {
         Create,
         Merge,
         Id,
+        Name,
         a: Link,
         blockquote: Quote,
         em: ({children}) => <Text as="em" textStyle="em" my={3}>{children}</Text>,

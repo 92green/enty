@@ -16,7 +16,7 @@ Entity schemas describe to enty where a unique entity can be found in your data 
 EntitySchema(
     name: string,
     options?: {
-        definition: Schema<Structure>,
+        definition: StructuralSchema,
         idAttribute: (entity: Object) => string
     }
 );
@@ -29,13 +29,13 @@ Each category of entity requires a name so that Enty can store and locate them i
 It must be unique amongst your collection of schemas. 
 
 ```js
-const user = EntitySchema('user');
-const cat = EntitySchema('cat');
+const user = new EntitySchema('user');
+const cat = new EntitySchema('cat');
 ```
 
 
 ### options.definition 
-**type:** `Schema<Structure>`  
+**type:** `StructuralSchema`  
 
 Because entities can come in many shapes Enty chooses not to define this in the EntitySchema.
 All EntitySchemas must contain a definition of their shape.  
@@ -43,11 +43,11 @@ All EntitySchemas must contain a definition of their shape.
 _Note: the definition can also be updated via the [.set()](./all-schemas#set) method._
 
 ```js
-const person = EntitySchema('person', {
+const person = new EntitySchema('person', {
     definition: ObjectSchema({})
 });
 
-const notifications = EntitySchema('notifications', {
+const notifications = new EntitySchema('notifications', {
     definition: ArraySchema(notifications)
 });
 ```
@@ -59,7 +59,7 @@ const notifications = EntitySchema('notifications', {
 Defines where the EntitySchema can locate each entity's id value.
 
 ```js
-const user = EntitySchema('user', {
+const user = new EntitySchema('user', {
     idAttribute: (user) => user.email
 });
 ```

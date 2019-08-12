@@ -9,7 +9,7 @@ The ArraySchema is a structural schema used to define relationships in homogeneo
 
 ```js
 ArraySchema(
-    definition: Schema<Structure>,
+    definition: StructuralSchema,
     options?: {
         constructor: (entity: A) => B
     }
@@ -17,13 +17,13 @@ ArraySchema(
 ```
 
 ### definition 
-**type:**`Schema<Structure>`  
+**type:**`StructuralSchema`  
 
 A single structural schema that describes what is in this collection.
 
 ```js
-const person = EntitySchema('person');
-const friends = ArraySchema(person);
+const person = new EntitySchema('person');
+const friends = new ArraySchema(person);
 ```
 
 ### options.constructor 
@@ -34,7 +34,7 @@ When an EntitySchema finds a new entity it will call the constructor of its defi
 storing the data in state. _You can use this to construct custom classes for your entities._
 
 ```js
-const friends = ArraySchema(person, {
+const friends = new ArraySchema(person, {
     constructor: (entity) => List(entity)
 });
 ```
@@ -50,7 +50,7 @@ create some interesting funcitonality with cusome merge function. E.g. if your m
 the two arrays, you would create an append only list._
 
 ```js
-const person = ArraySchema({}, {
+const person = new ArraySchema({}, {
     merge: (prev, next) => prev.concat(next)
 });
 ```

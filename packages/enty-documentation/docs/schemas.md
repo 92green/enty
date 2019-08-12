@@ -66,8 +66,8 @@ can exist both in an personList and as a mother or father
 
 ```js
 // define our person and personList
-const person = EntitySchema('person');
-const personList = ArraySchema(person);
+const person = new EntitySchema('person');
+const personList = new ArraySchema(person);
 
 // lazily define the relationships between people and their parents
 person.set(ObjectSchema({
@@ -119,8 +119,8 @@ Entity schemas describe to enty where a unique entity can be found in your data 
 * entities must have some sort of shape.
 
 ```js
-const user = EntitySchema('user');
-const friendList = ArraySchema(user);
+const user = new EntitySchema('user');
+const friendList = new ArraySchema(user);
 user.set(ObjectSchema({
     friendList
 }));
@@ -137,7 +137,7 @@ By default the EntitySchema looks to the user.id property to uniquely identify e
 This can be configured to match your own data structure.
 
 ```
-const user = EntitySchema('user', {
+const user = new EntitySchema('user', {
     idAttribute: user => user.email
 });
 ```

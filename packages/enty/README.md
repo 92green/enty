@@ -45,7 +45,7 @@ import {
     EntitySchema,
 } from 'enty';
 
-var user = EntitySchema('user');
+var user = new EntitySchema('user');
 var userList = ListSchema(user);
 
 user.set(MapSchema({

@@ -27,8 +27,8 @@ import {ObjectSchema} from 'react-enty';
 import {ArraySchema} from 'react-enty';
 import {EntitySchema} from 'react-enty';
 
-var user = EntitySchema('user');
-var userList = ArraySchema(user);
+var user = new EntitySchema('user');
+var userList = new ArraySchema(user);
 
 user.set(ObjectSchema({
     friendList: userList

@@ -56,7 +56,7 @@ CompositeEntitySchema(
         compositeKeys: {
             [key: string]: Schema
         },
-        definition: Schema<Structure>,
+        definition: StructuralSchema,
         idAttribute: (*) => string
     }
 );
@@ -87,7 +87,7 @@ const courseCompletion = CompositeEntitySchema('courseCompletion', {
 An object mapping of the keys that are tainting this entity and the schema that they belong to.
 
 ```js
-const completion = EntitySchema('completion');
+const completion = new EntitySchema('completion');
 const courseCompletion = CompositeEntitySchema('courseCompletion', {
    definition: course,
    compositeKeys: {

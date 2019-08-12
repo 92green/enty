@@ -1,17 +1,16 @@
 ---
-id: dynamic-schema
 title: Dynamic Schema
 group: Enty
 ---
 
 The dynamic schema lets you choose a schema based on the data that is being normalized. 
-The shape takes a function that will be called with each peice of data. The return value of
+For its shape, this schema takes a function that will be called with the data. The return value of
 that function will then be used to continue the normalizing. _This is useful if you have 
 non-homogeneous arrays or union types._
 
 ## Params
 ```js
-DynamicSchema(shape: (*) => Schema);
+new DynamicSchema(shape: (*) => Schema);
 ```
 
 ### shape 
@@ -20,11 +19,11 @@ DynamicSchema(shape: (*) => Schema);
 A function that will be given the current data that must return a schema to 
 normalize it with.
 
-```
-const group = EntitySchema('group');
-const user = EntitySchema('user');
+```js
+const group = new EntitySchema('group');
+const user = new EntitySchema('user');
 
-const groupOrUser = DynamicSchema((data) => {
+const groupOrUser = new DynamicSchema((data) => {
     const schemaTypes = {group, user};
     return schemaTypes[data.type];
 });
@@ -48,11 +47,11 @@ because it can only handle homogeneous arrays. The dynamic schema can let you in
 and choose the appropriate schema to normalize it with.
 
 ```js
-const account = EntitySchema('account');
-const group = EntitySchema('group');
-const user = EntitySchema('user');
+const account = new EntitySchema('account');
+const group = new EntitySchema('group');
+const user = new EntitySchema('user');
 
-const thing = DynamicSchema((data) => {
+const thing = new DynamicSchema((data) => {
     const schemaTypes = {
         account,
         group,
@@ -64,7 +63,7 @@ const thing = DynamicSchema((data) => {
 });
 
 
-ArraySchema(thing).denormalize([
+new ArraySchema(thing).normalize([
     {id: '1', type: 'user', name: 'Steve'},
     {id: '2', type: 'group', name: 'Steves Group'},
     {id: '3', type: 'account', name: 'Steves Account'}
@@ -98,16 +97,14 @@ Similar to the above example, DynamicSchemas can be used when a key in an object
 contains more than one data type.
 
 ```js
-const account = EntitySchema('account');
-const group = EntitySchema('group');
+const account = new EntitySchema('account');
+const group = new EntitySchema('group');
 const accountOrGroup = DynamicSchema((data) => {
     const schemaTypes = {group, user};
     return schemaTypes[data.type];
 });
 
-const user = EntitySchema('user')
-    .set(ObjectSchema({
-        parent: accountOrGroup
-    });
+const user = new EntitySchema('user');
+user.shape = new ObjectSchema({parent: accountOrGroup});
 ```
 

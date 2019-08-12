@@ -4,21 +4,21 @@ group: Enty
 title: Entity Schema
 ---
 
-Entity schemas describe to enty where a unique entity can be found in your data shape.
+Entity schemas describe where a unique entity can be found in your data shape.
 
 * entities must have a unique name.
 * entities must have a unique id.
-* entities must have some sort of shape.
+* entities must have a shape.
 
 
 ## Params
 
 ```js
-EntitySchema(
+new EntitySchema(
     name: string,
     options?: {
-        shape: Schema<Structure>,
-        idAttribute: (entity: Object) => string
+        shape: StructuralSchema,
+        idAttribute: (entity: any) => string
     }
 );
 ```
@@ -27,41 +27,48 @@ EntitySchema(
 **type:** `string`
 
 Each category of entity requires a name so that Enty can store and locate them in state.
-It must be unique amongst your collection of schemas.
+It must be unique amongst your collection of entities.
+
 
 ```js
-const user = EntitySchema('user');
-const cat = EntitySchema('cat');
+const person = new EntitySchema('person');
+const cat = new EntitySchema('cat');
 ```
 
 
 ### options.shape
-**type:** `Schema<Structure>`
+**type:** `StructuralSchema`
 
 Because entities can come in many shapes Enty chooses not to define this in the EntitySchema.
 All EntitySchemas must contain a shape of their shape.
 
-_Note: the shape can also be updated via the [.set()](./all-schemas#set) method._
 
 ```js
-const person = EntitySchema('person', {
-    shape: ObjectSchema({})
+const person = new EntitySchema('person', {
+    shape: new ObjectSchema({})
 });
 
-const notifications = EntitySchema('notifications', {
-    shape: ArraySchema(notifications)
+const globalPersonList = new EntitySchema('globalPersonList', {
+    shape: new ArraySchema(person)
 });
 ```
 
-### options.idAttribute
-**type:** `(any) => string`
-**defaults:** `(entity) => entity && entity.id`
-
-Defines where the EntitySchema can locate each entity's id value.
+_Note: To allow for schemas with circular structures, shape can be set at any time before execution._
 
 ```js
-const user = EntitySchema('user', {
-    idAttribute: (user) => user.email
+const owner = new EntitySchema('owner');
+const pet = new EntitySchema('pet');
+
+cat.shape = new ObjectSchema({owner});
+owner.shape = new ObjectSchema({pet});
+```
+
+### options.idAttribute
+<Id/>
+
+```js
+const person = new EntitySchema('person', {
+    idAttribute: (person) => person.email
 });
 ```
 

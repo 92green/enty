@@ -1,5 +1,4 @@
 ---
-id: object-schema
 title: Object Schema
 group: Enty
 ---
@@ -27,7 +26,7 @@ A javascript object that describes the relationships to other schemas.
 _Note: you only have to define the keys that hold relationships._
 
 ```js
-const person = EntitySchema('person')
+const person = new EntitySchema('person')
     .set(ObjectSchema({
         friends: friendsSchema,
         cats: catsSchema
@@ -42,11 +41,11 @@ When an EntitySchema finds a new entity it will call the shape of its shape befo
 storing the data in state. _You can use this to construct custom classes for your entities._
 
 ```
-const person = ObjectSchema({}, {
+const person = new ObjectSchema({}, {
     shape: (data) => new Person(data)
 });
 
-const user = EntitySchema('user').set(person);
+const user = new EntitySchema('user').set(person);
 ```
 
 ### options.merge 
@@ -59,7 +58,7 @@ to combine the two. _The default merge is a simple object spread, use this if yo
 own merge method or can't be merged via spreading._
 
 ```js
-const person = ObjectSchema({}, {
+const person = new ObjectSchema({}, {
     constuctor: item => new Person(item),
     merge: (prev, next) => prev.merge(next)
 });
@@ -86,7 +85,7 @@ been deleted. During denormaliziation enty will call denormalizeFilter with the 
 the entity. If the predicate returns true Enty will not return the entity. 
 
 ```js
-const person = ObjectSchema({}, {
+const person = new ObjectSchema({}, {
     constuctor: item => new Person(item),
     denormalizeFilter: (entity) => entity.isDeleted()
 });

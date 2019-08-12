@@ -20,8 +20,8 @@ A function that will be given the current data that must return a schema to
 normalize it with.
 
 ```
-const group = EntitySchema('group');
-const user = EntitySchema('user');
+const group = new EntitySchema('group');
+const user = new EntitySchema('user');
 
 const groupOrUser = DynamicSchema((data) => {
     const schemaTypes = {group, user};
@@ -56,9 +56,9 @@ because it can only handle homogeneous arrays. The dynamic schema can let you in
 and choose the appropriate schema to normalize it with.
 
 ```js
-const account = EntitySchema('account');
-const group = EntitySchema('group');
-const user = EntitySchema('user');
+const account = new EntitySchema('account');
+const group = new EntitySchema('group');
+const user = new EntitySchema('user');
 
 const thing = DynamicSchema((data) => {
     const schemaTypes = {
@@ -106,14 +106,14 @@ Similar to the above example, DynamicSchemas can be used when a key in an object
 contains more than one data type.
 
 ```js
-const account = EntitySchema('account');
-const group = EntitySchema('group');
+const account = new EntitySchema('account');
+const group = new EntitySchema('group');
 const accountOrGroup = DynamicSchema((data) => {
     const schemaTypes = {group, user};
     return schemaTypes[data.type];
 });
 
-const user = EntitySchema('user')
+const user = new EntitySchema('user')
     .set(ObjectSchema({
         parent: accountOrGroup
     });

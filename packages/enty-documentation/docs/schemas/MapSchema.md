@@ -30,7 +30,7 @@ A javascript object that describes the relationships to other schemas.
 _Note: you only have to define the keys that hold relationships._
 
 ```js
-const person = EntitySchema('person')
+const person = new EntitySchema('person')
     .set(MapSchema({
         friends: friendsSchema,
         cats: catsSchema

@@ -12,10 +12,10 @@ All schemas share some common methods.
 Use the schemas relationships to normalize for storage.
 
 ```js
-const person = EntitySchema('person', {
+const person = new EntitySchema('person', {
     definition: ObjectSchema({})
 });
-const people = ArraySchema(person);
+const people = new ArraySchema(person);
 
 people.normalize([
     {id: 'foo', name: 'fooschia'},
@@ -48,10 +48,10 @@ it will reconstruct the data from the entities. You can loosly describe it as :
 _Note: the result shape must match the shape of the schema_
 
 ```js
-const person = EntitySchema('person', {
+const person = new EntitySchema('person', {
     definition: ObjectSchema({})
 });
-const people = ArraySchema(person);
+const people = new ArraySchema(person);
 
 people.denormalize({
     result: ['foo', 'bar'],
@@ -79,8 +79,8 @@ people.denormalize({
 Replace the definition schema. Used most often to defer the definition of recursive schemas.
 
 ```js
-const cat = EntitySchema('cat');
-const cats = ArraySchema(cat);
+const cat = new EntitySchema('cat');
+const cats = new ArraySchema(cat);
 
 cat.set(ObjectSchema({
     friends: cats

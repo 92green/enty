@@ -25,10 +25,10 @@ ObjectSchema makes the most sense.`_
 
 
 ```js
-const user = EntitySchema('user');
-const course = EntitySchema('course');
-const course = EntitySchema('course');
-const rootSchema = ObjectSchema({
+const user = new EntitySchema('user');
+const course = new EntitySchema('course');
+const course = new EntitySchema('course');
+const rootSchema = new ObjectSchema({
     user,
     course,
     location

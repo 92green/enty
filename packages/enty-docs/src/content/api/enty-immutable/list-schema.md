@@ -13,7 +13,7 @@ your apis will return and Enty will automatically construct all of your maps and
 
 ```js
 ListSchema(
-    shape: Schema<Structure>,
+    shape: StructuralSchema,
     options?: {
         shape: (entity: A) => B
     }
@@ -21,12 +21,12 @@ ListSchema(
 ```
 
 ### shape 
-**type:**`Schema<Structure>`  
+**type:**`StructuralSchema`  
 
 A single structural schema that describes what is in this collection.
 
 ```js
-const person = EntitySchema('person');
+const person = new EntitySchema('person');
 const friends = ListSchema(person);
 ```
 
