@@ -7,16 +7,16 @@ The ObjectSchema is a structural schema used to define relationships in objects.
 
 ## Params
 ```js
-ObjectSchema(
+new ObjectSchema(
     shape: {
         [key: string]: Schema
     }
     options?: {
         shape: (entity: A) => B,
-        denormalizeFilter: (entity: A) => boolean,
         merge: (previous: A, next: B) => C
     }
 );
+
 ```
 ### shape 
 **type:**`{[key: string]: string}`  
@@ -27,67 +27,34 @@ _Note: you only have to define the keys that hold relationships._
 
 ```js
 const person = new EntitySchema('person')
-    .set(ObjectSchema({
-        friends: friendsSchema,
-        cats: catsSchema
-    }));
+
+person.shape = new ObjectSchema({
+    friend: person,
+    enemy: person
+});
 ```
 
-### options.shape 
-**type:** `(entity: A) => B`  
-**default:** `(entity) => entity`
-
-When an EntitySchema finds a new entity it will call the shape of its shape before
-storing the data in state. _You can use this to construct custom classes for your entities._
+### options.create 
+<Create />
 
 ```
 const person = new ObjectSchema({}, {
-    shape: (data) => new Person(data)
+    create: (data) => new Person(data)
 });
 
-const user = new EntitySchema('user').set(person);
+const user = new EntitySchema('user');
+user.shape = person;
 ```
 
 ### options.merge 
-**type:** `(previous: A, next: B) => C`  
-**default:** `(previous, next) => ({...previous, ...next})`
+**default:**
+<Merge default="(previous, next) => ({...previous, ...next})"/>
 
-When an EntitySchema finds an entity, before storing it in state it checks to see if it has already
-been normalized. If it finds an existing entity it will use it's shape schemas merge function 
-to combine the two. _The default merge is a simple object spread, use this if your object has its 
-own merge method or can't be merged via spreading._
 
 ```js
 const person = new ObjectSchema({}, {
-    constuctor: item => new Person(item),
+    create: item => new Person(item),
     merge: (prev, next) => prev.merge(next)
-});
-```
-
-
-### options.denormalizeFilter 
-**type:** `(entity: A) => boolean`  
-**default:** `(entity) => entity && entity.deleted`
-
-Sometimes an action will cause the backend to delete an entity. Because Enty stores the results of 
-many requests, it is impossible for it to know if an entity has been deleted without rerequesting 
-that data. For example, you request a list of users, then you make a second request to delete the 
-fourth user. Without either requesting the data again, or manually removing the entity from the 
-user list's normalized response we have no way of knowing that the user has indeed been deleted.
-
-_In small instances this seems trivial to solve, but Enty's relational structure means that the now
-deleted entity could be in any number of normalized responses. To delete the entity from all 
-responses would require you to mimic business logic from the backend on the frontend, and would run
-against Enty's second principal._
-
-Enty solves this problem by allowing you to set a sentinel on your entity to indicate that it has 
-been deleted. During denormaliziation enty will call denormalizeFilter with the current state of
-the entity. If the predicate returns true Enty will not return the entity. 
-
-```js
-const person = new ObjectSchema({}, {
-    constuctor: item => new Person(item),
-    denormalizeFilter: (entity) => entity.isDeleted()
 });
 ```
 

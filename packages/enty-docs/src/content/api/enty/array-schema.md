@@ -37,8 +37,7 @@ const friends = new ArraySchema(person, {
 ```
 
 ### options.merge 
-**default:** `(previous, next) => next` 
-<Merge />
+<Merge default="(previous, next) => next" />
 
 _Note: The default merge for an array is to just accept the new one. But you can
 create some interesting funcitonality with custom merge function. E.g. if your merge functions concats
