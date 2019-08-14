@@ -11,16 +11,7 @@ your apis will return and Enty will automatically construct all of your maps and
 
 ## Params
 ```js
-MapSchema(
-    shape: {
-        [key: string]: Schema
-    }
-    options?: {
-        shape: (entity: A) => B,
-        denormalizeFilter: (entity: A) => boolean,
-        merge: (previous: A, next: B) => C
-    }
-);
+new MapSchema(shape: {[key: string]: Schema});
 
 ```
 ### shape 
@@ -32,50 +23,16 @@ _Note: you only have to define the keys that hold relationships._
 
 ```js
 const person = new EntitySchema('person')
-    .set(MapSchema({
-        friends: friendsSchema,
-        cats: catsSchema
-    }));
+person.shape = new MapSchema({
+    friend: person,
+    enemy: person
+});
 ```
-
-### options.shape 
-**type:** `(entity: A) => B`  
-**default:** `(entity) => entity`
-
-
-### options.merge 
-**type:** `(previous: A, next: B) => C`  
-**default:** `(previous, next) => previous.merge(next)`
-
-See [ObjectSchema.options.merge()](./object-schema#optionsmerge).
-
-
-
-### options.denormalizeFilter 
-**type:** `(entity: A) => boolean`  
-**default:** `(entity) => entity && entity.get('deleted')`
-
-See [ObjectSchema.options.denormalizeFilter()](./object-schema#optionsdenormalizeFilter).
-
 
 ## Methods
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .set()
-See [ObjectSchema.set()](./object-schema#set).
-
-
-### .get()
-See [ObjectSchema.get()](./object-schema#get).
-
-
-### .update()
-See [ObjectSchema.update()](./object-schema#update).
-
-[ObjectSchema]: ./object-schema
-
+<Denormalize />
 

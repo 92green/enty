@@ -12,56 +12,39 @@ your apis will return and Enty will automatically construct all of your maps and
 ## Params
 
 ```js
-ListSchema(
+new ListSchema(
     shape: StructuralSchema,
     options?: {
-        shape: (entity: A) => B
+        create: (entity: A) => B
     }
 );
 ```
 
 ### shape 
-**type:**`StructuralSchema`  
+**type:** `StructuralSchema`  
 
 A single structural schema that describes what is in this collection.
 
 ```js
 const person = new EntitySchema('person');
-const friends = ListSchema(person);
+const friends = new ListSchema(person);
 ```
 
 ### options.shape 
 **type:** `(entity: A) => B`  
-**default:** `(entity) => List(entity)`
-
-See [ArraySchema.options.shape()](./array-schema#optionsshape).
+**default:** `(entity) => Immutable.List(entity)`
 
 
 ### options.merge 
 **type:** `(previous: A, next: B) => C`  
 **default:** `(previous, next) => previous.merge(next)`
 
-See [ArraySchema.options.merge()](./array-schema#optionsmerge).
-
 
 ## Methods
 
 ### .normalize()
-See [normalize](./all-schemas#normalize).
+<Normalize />
 
 ### .denormalize()
-See [denormalize](./all-schemas#denormalize).
-
-### .get()
-See [get](./all-schemas#get).
-
-### .set()
-See [set].
-
-### .update()
-See [update](./all-schemas#update).
-
-
-[set]: ./all-schemas#set
-[ArraySchema]: /docs/schemas/array-schema
+<Denormalize />
 
