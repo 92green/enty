@@ -4,7 +4,7 @@ import type {Node} from 'react';
 import React from 'react';
 import styled from 'styled-components';
 import {Flex, Box, Wrapper} from './Layout';
-import {NavigationLink, Text} from './Affordance';
+import {NavigationLink} from './Affordance';
 import Logo from '../images/logo.svg';
 
 
@@ -16,7 +16,7 @@ function Navigation(props: Props): Node {
     const tutorial = <NavigationLink to="/tutorial/getting-started" textStyle="navigationLink">Tutorial</NavigationLink>;
     const logo = <NavigationLink to="/" textStyle="navigationLink">
         <Flex>
-            <Box><img src={Logo} /></Box>
+            <Box><img src={Logo} alt="Enty" /></Box>
             <Box ml={2}>Enty</Box>
         </Flex>
     </NavigationLink>;

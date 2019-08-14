@@ -16,7 +16,7 @@ export default function App() {
                 <Box py={[4, 6]} px={4}>
                     <Text as="h1" textStyle="h1" fontWeight={900} fontSize={64}>Enty</Text>
                     <Text as="h2" textStyle="h2" mb={2}>Normalized State Management</Text>
-                    <Box width={[1, ,.6]}>
+                    <Box width={[1, null, .6]}>
                         <Text as="p">Enty is a framework for managing data requested from APIs. Instead of you manually storing data, Enty uses schemas to describe relationships and stores the data as normalized entities.</Text>
                     </Box>
 
@@ -30,22 +30,22 @@ export default function App() {
         <Wrapper>
             <Flex display={['block', 'flex']} justifyContent="space-between" mb={4}>
                 <Box m={4}>
-                    <img src={Declarative} />
+                    <img src={Declarative} alt="Declarative" />
                     <Text as="h3" textStyle="h3">Declarative</Text>
                     <Text>Describe relationships between your entitites, dont code them.</Text>
                 </Box>
                 <Box m={4}>
-                    <img src={UpToDate} />
+                    <img src={UpToDate} alt="Declarative" />
                     <Text as="h3" textStyle="h3">Always up to date</Text>
                     <Text>{`Don't waste time making sure relationships are kept up to date.`}</Text>
                 </Box>
                 <Box m={4}>
-                    <img src={LowBoilerPlate} />
+                    <img src={LowBoilerPlate} alt="Declarative" />
                     <Text as="h3" textStyle="h3">Low boilerplate</Text>
                     <Text>Zero reducers, actions, action-creators, or selectors.</Text>
                 </Box>
                 <Box m={4}>
-                    <img src={Predictable} />
+                    <img src={Predictable} alt="Declarative" />
                     <Text as="h3" textStyle="h3">Predictable</Text>
                     <Text>Be confident your app is always rendering the correct state.</Text>
                 </Box>

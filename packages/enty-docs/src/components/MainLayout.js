@@ -2,7 +2,6 @@
 import type {Node} from 'react';
 
 import React, {useState} from "react";
-import {MDXRenderer} from 'gatsby-plugin-mdx';
 import {DarkTheme, LightTheme} from './Theme';
 import {Wrapper} from './Layout';
 import GlobalStyle from './GlobalStyle';

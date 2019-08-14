@@ -8,7 +8,7 @@ import Sidebar from './Sidebar';
 
 type Props = {};
 
-export default function ApiLayout({data, children}: Props) {
+export default function ApiLayout({data, children}: Props): Node {
     const {frontmatter, fields, headings, body} = data.mdx;
     return <DocsLayout
         sidebar={<Sidebar allFile={data.allFile} />}

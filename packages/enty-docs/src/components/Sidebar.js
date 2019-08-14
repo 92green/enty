@@ -1,9 +1,7 @@
 // @flow
 import type {Node} from 'react';
 import React from 'react';
-import MainLayout from './MainLayout';
 import {NavList, NavListHeading, NavListItem} from './Affordance';
-
 
 export default function Sidebar({allFile}): Node {
     return <NavList>

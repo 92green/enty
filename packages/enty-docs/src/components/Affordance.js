@@ -146,14 +146,13 @@ export const NavList = styled.ul`
 const ItemLink = props => <li>{props.to ? <GatsbyLink {...props}/> : <Text {...props}/>}</li>;
 export const NavListHeading = styled(ItemLink)`
     ${space}
-    color: inherit;
+    color: ${theme('colors', 'fg')};
     font-weight: 500;
     display: block;
     text-decoration: none;
 `;
 
 export const NavListItem = styled(ItemLink)`
-    padding: ${theme('space', 1)}px;
     color: ${theme('colors', 'muted')};
     font-size: ${theme('fontSizes', 1)}px;
     display: block;

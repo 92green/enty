@@ -1,8 +1,6 @@
 // @flow
 import type {Node} from 'react';
 import React from 'react';
-import {graphql} from 'gatsby';
-import MainLayout from './MainLayout';
 import {NavList, NavListHeading, NavListItem} from './Affordance';
 
 export default function Minimap({headings, slug, title}): Node {
