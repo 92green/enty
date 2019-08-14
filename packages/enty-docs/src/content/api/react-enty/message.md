@@ -16,13 +16,18 @@ performance._
 
 ```js
 class Message<RequestState> {
-    response: mixed,
-    requestState: RequestState,
-    requestError: mixed,
-    onRequest(payload: mixed) => Promise<mixed>,
-    get(key: string, notFoundValue?: mixed) => mixed,
-    getIn(keyPath: Array<string>, notFoundValue?: mixed) => mixed,
-    updateRequestState(updater: RequestState => RequestState) => Message
+    response: mixed;
+    requestState: RequestState;
+    requestError: mixed;
+    onRequest(payload: mixed) => Promise<mixed>;
+    get(key: string, notFoundValue?: mixed) => mixed;
+    getIn(keyPath: Array<string>, notFoundValue?: mixed) => mixed;
+    updateRequestState(updater: RequestState => RequestState) => Message;
+    toEmpty(): Message<Empty>;
+    toFetching(): Message<Fetching>;
+    toRefetching(response: mixed): Message<Refetching>;
+    toSuccess(response: mixed): Message<Success>;
+    toError(requestError: mixed): Message<Error>;
 }
 ```
 
@@ -108,6 +113,7 @@ Returns the value at the provided key pathm or defaultValue if nothing is found.
 const name = message.getIn(['user', 'name'], '-');
 ```
 
+
 ### .updateRequestState()
 **type:** `(updater: RequestState => RequestState) => Message`  
 
@@ -118,9 +124,39 @@ message on. _Can be used to force the rendering of a specific branch._
 message.updateRequestState(requestState => requestState.toError());
 ```
 
+### .toEmpty()
+**type:** `() => Message<Empty>;`
+
+Cast the current message to a new Message with an empty requestState.
 
 
-## Unit Functions
+### .toFetching()
+**type:** `() => Message<Fetching>;`
+
+Cast the current message to a new Message with a fetching requestState.
+
+
+### .toRefetching()
+**type:** `(response: mixed) => Message<Refetching>;`
+
+Cast the current message to a new Message with a refetching requestState.
+
+
+### .toSuccess()
+**type:** `(response: mixed) => Message<Success>;`
+
+Cast the current message to a new Message with a success requestState.
+
+
+### .toError()
+**type:** `(requestError: mixed) => Message<Error>;`
+
+Cast the current message to a new Message with an error requestState.
+
+
+
+
+## Static Unit Functions
 Enty provides a series of helper functions to let you construct messages
 in various request states. These are mostly used for providing default states.
 
