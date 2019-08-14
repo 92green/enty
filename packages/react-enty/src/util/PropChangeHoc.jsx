@@ -32,7 +32,7 @@ export default (config: Config) => {
             componentDidMount() {
                 this.onPropChange(this.props);
             }
-            componentWillReceiveProps(nextProps: Object) {
+            UNSAFE_componentWillReceiveProps(nextProps: Object) {
                 const propsHaveChanged = paths
                     .some((item: string): boolean => {
                         const path = item.split('.');

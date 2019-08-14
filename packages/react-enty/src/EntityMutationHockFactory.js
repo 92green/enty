@@ -101,7 +101,7 @@ export default function EntityMutationHockFactory(actionCreator: Function, hockO
                     this.updateMutation(props);
                 }
 
-                componentWillReceiveProps(nextProps: Object) {
+                UNSAFE_componentWillReceiveProps(nextProps: Object) {
                     this.updateMutation(nextProps);
                 }
 
