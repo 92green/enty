@@ -1,30 +1,38 @@
 ---
-id: RequestState
 title: Request State
 group: React Enty
 ---
 
-RequestState is a [Variant] monad. It allows the user to render the different states
-of a request in a declarative manner, as well as allowing for easy abstraction of these ideas.
-It's syntax is a little clunky, but Enty prefers clarity over conciseness.
+There are five distinct states to any data fetching request:
 
+| State      | Data                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| Empty      | Nothing has been requested                                            |
+| Fetching   | Request is in process for the first time                              |
+| Refetching | Request has already returned data but is in process for a second time | 
+| Success    | Request has completed and returned requested data                     | 
+| Error      | Request has failed and returned an error                              |
+
+
+
+RequestState is a variant that allows the user to render the different states of a request in a declarative manner. 
 
 
 ```js
 class RequestState {
+    // States
+    isEmpty: boolean;
+    isFetching: boolean;
+    isRefetching: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+
     // Map
     emptyMap(mapper: RequestStateMapper) => RequestState
     fetchingMap(mapper: RequestStateMapper) => RequestState
     refetchingMap(mapper: RequestStateMapper) => RequestState
     successMap(mapper: RequestStateMapper) => RequestState
     errorMap(mapper: RequestStateMapper) => RequestState
-
-    // Casting
-    toEmpty() => RequestState
-    toFetching() => RequestState
-    toRefetching() => RequestState
-    toSuccess() => RequestState
-    toError() => RequestState
         
     // FlatMap
     emptyFlatMap(mapper: RequestStateFlatMapper) => RequestState
@@ -33,9 +41,42 @@ class RequestState {
     successFlatMap(mapper: RequestStateFlatMapper) => RequestState
     errorFlatMap(mapper: RequestStateFlatMapper) => RequestState
 
-    type: 'Empty' | 'Fetching' | 'Refetching' | 'Success' | 'Error'
+    // Casting
+    toEmpty() => RequestState
+    toFetching() => RequestState
+    toRefetching() => RequestState
+    toSuccess() => RequestState
+    toError() => RequestState
+
     value(defaultValue: *) => *
 }
+```
+
+## Properties
+
+### .is{State}
+
+
+State properties hold the raw booleans to describe the request state. 
+
+_They are easy to access but map functions or [LoadingBoundary] make your code more predictable._
+
+```
+isEmpty: boolean;
+isFetching: boolean;
+isRefetching: boolean;
+isSuccess: boolean;
+isError: boolean;
+```
+
+```jsx
+function User({message}) {
+    if(message.requestState.isFetching) {
+        return <Spinner />;
+    }
+    return <img src={message.resonse.user.avatar} />
+}
+
 ```
 
 
@@ -48,24 +89,20 @@ of the five possible states of a request:  Empty, Fetching, Refetching, Success 
 
 Map functions will call their mapper with the current value of the variant and update it with the 
 result. The useful part is that they will only call the functions that match the current state of
-the variant. This means you can describe what should happend for all states of the request but 
+the variant. This means you can describe what should happen for all states of the request but 
 only action on the current state.
 
 
 ```jsx
-// contrived function
-function concatState(requestState) {
-    return requestState
-        .emptyMap((value) => value + '_empty')
-        .fetchingMap((value) => value + '_fetching')
-        .refetchingMap((value) => value + '_refetching')
-        .successMap((value) => value + '_success')
-        .errorMap((value) => value + '_error')
-        .value() 
+function User({message}) {
+    return message.requestState
+        .emptyMap(() => null)
+        .fetchingMap(() => <Spinner />)
+        .refetchingMap(() => <img src={mesage.get('avatar')} />)
+        .successMap(() => <img src={mesage.get('avatar')} />)
+        .errorMap(() => <Error error={message.requestError} />)
+        .value();
 }
-concatState(FetchingState('foo')) // foo_fetching
-concatState(ErrorState('foo')) // foo_error
-concatState(SuccessState('foo')) // foo_success
 ```
 
 ### .to{state}()
