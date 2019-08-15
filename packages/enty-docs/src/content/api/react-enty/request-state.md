@@ -15,17 +15,11 @@ There are five distinct states to any data fetching request:
 
 
 
-RequestState is a variant that allows the user to render the different states of a request in a declarative manner. 
+RequestState is a variant that allows the user to render the different states of a request in a declarative manner. It's api gives you a clear way of handling each possible state and makes sure your app is never rendering an unpredicted state.
 
 
 ```js
 class RequestState {
-    // States
-    isEmpty: boolean;
-    isFetching: boolean;
-    isRefetching: boolean;
-    isSuccess: boolean;
-    isError: boolean;
 
     // Map
     emptyMap(mapper: RequestStateMapper) => RequestState
@@ -47,6 +41,13 @@ class RequestState {
     toRefetching() => RequestState
     toSuccess() => RequestState
     toError() => RequestState
+
+    // States
+    isEmpty: boolean;
+    isFetching: boolean;
+    isRefetching: boolean;
+    isSuccess: boolean;
+    isError: boolean;
 
     value(defaultValue: *) => *
 }
@@ -105,17 +106,6 @@ function User({message}) {
 }
 ```
 
-### .to{state}()
-**type:** `() => RequestState`
-
-Casts a request state to a different type.
-
-```jsx
-FetchingState('foo')
-    .toError()
-    .fetchingMap(() => 'bar')
-    .value() // foo
-```
 
 ### .{state}FlatMap()
 **type:** `(mapper: (A) => RequestState<B>) => RequestState<B>`  
@@ -143,6 +133,19 @@ the data. But we can still maintain single purpose functions for how to render t
 respond to an error.
 
 
+### .to{state}()
+**type:** `() => RequestState`
+
+Casts a request state to a different type.
+
+```jsx
+RequestState.fetching('foo')
+    .toError()
+    .fetchingMap(() => 'bar')
+    .value() // foo
+```
+
+
 ### .value()
 **type:** `() => *`   
 
@@ -150,14 +153,16 @@ Returns either the current state of the variant.
 
 
 ### Unit Functions
-`react-enty` exports a unit function for each state of the requestState variant.
+The request state class has static unit functions for creating requestStates in different forms.
 
 ```js
-import {EmptyState} from 'react-enty';
-import {FetchingState} from 'react-enty';
-import {RefetchingState} from 'react-enty';
-import {SuccessState} from 'react-enty';
-import {ErrorState} from 'react-enty';
+import {RequestState} from 'react-enty';
+
+RequestState.empty();
+RequestState.fetching();
+RequestState.refetching();
+RequestState.success();
+RequestState.error();
 ```
 
 ## Examples
@@ -186,30 +191,6 @@ function User({userMessage}) {
         .successMap(() => <img src={userMessage.get('avatar')} />)
         .value();
 }
-```
-
-### LoadingHoc
-We can take apply loader and put it into a hoc form to use with RequstHocs.
-
-```jsx
-const LoadingHoc = (config) => (Component) => (props) => {
-    return applyLoader(props[config.name])
-        .successMap(() => <Component {...props} />)
-        .value();
-}
-
-// Use a composeWith so we can write the hoc chain in a logical order.
-export composeWith(
-    UserRequestHoc({
-        name: 'userMessage',
-        auto: ['userId']
-    }),
-    LoadingHoc({
-        name: 'userMessage'
-    })
-    UserProfileStructure // last item in composeWith is the hocked view
-);
-    
 ```
 
 ### Merging RequestStates

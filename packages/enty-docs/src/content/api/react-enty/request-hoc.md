@@ -1,32 +1,23 @@
 ---
-id: RequestHoc
-title: Request Hoc
+title: RequestHoc
 group: React Enty
 ---
 
-Request Hoc's are the way api functions are bound to your components.
-
-When a component is wrapped with a RequestHoc it will be given a [Message] object that contains all 
-the necessary tools to request data and render something when it comes back. The hoc handles the 
-normalizing and denormalizing of the data so that you only need to worry about what data you want 
-and when you want to ask for it.
+The RequestHoc is a hoc version of useRequest. It has a slightly different api, but under the hood is just useRequest.
 
 ```flow
 RequestHock({
-    name: string
+    name: string,
     auto?: boolean|Array<string>,
-    mapResponseToProps?: boolean|(response) => newProps,
-    optimistic?: boolean,
     payloadCreator?: (props: *) => *,
-    shouldComponentAutoRequest?: (props: *) => boolean,
-    updateResultKey?: (resultKey: string, props: *) => string
+    shouldComponentAutoRequest?: (props: *) => boolean
 })(Component);
 ```
 
 
 ## Config
 
-### config.name
+### .name
 **type:** `string`  
 **required:** `true`  
 
@@ -36,7 +27,7 @@ The name of the prop to pass the [Message] down through.
 const withUser = UserGetHoc({name: 'userMessage'});
 ```
 
-### config.auto
+### .auto
 **type:** `boolean|Array<string>`  
 
 Automatically request data on component mount or if a prop changes.
@@ -66,14 +57,14 @@ UserGetHoc({
 ```
 
 
-### config.payloadCreator
+### .payloadCreator
 **type:** `(props|payload) => *`  
 
 The payload creator is used to generate a unique key to keep track of your requests. The result is 
 hashed and stored in Enty state. This means a single RequestHoc can query different types of the 
 same data and Enty is able to cache the results.
 
-* If `auto` is truthy props are passed through `mapPropsToPayload` and then into `payloadCreator`.
+* If `auto` is truthy props are passed to `payloadCreator`.
 * Calls to `message.onRequest` are passed directly to `payloadCreator`.
 
 
@@ -88,79 +79,77 @@ UserGetHoc({
 });
 ```
 
-### config.mapPropsToPayload
-**type:** `(props: Object) => Object`
-
-If `config.auto` is truthy `mapPropsToPayload` is called on props before they are passed to the 
-payload creator. This is useful in situations where you are both automatically requesting data 
-and triggering the `onRequest` callback as the payload creator does not need to mimic the props 
-object.
-
-```jsx
-// Request the user on component mount based on props.userId
-UserGetHoc({
-    name: 'userMessage',
-    auto: ['userId'],
-    mapPropsToPayload: (props) => props.userId,
-    payloadCreator: (id) => ({query: {user: id}}
-})
-
-// in another component request the user based on props.id and props.userMessage
-function RefreshUserButton(props) {
-    const {id, userMessage} = props;
-    return <button onClick={() => userMessage.onRequest(id)}>Refresh</button>;
-}
-```
-
-
-### config.mapResponseToProps
-**type:** `boolean|(response) => newProps`  
-
-Function to map response back and then spread it back onto props.
-Useful for when you don't wish to fish the response out of the request message.
-
-
-### config.optimistic
-**type:** `boolean`
-**default:** `true`
-
-If true the request hoc will return any existing data it has for the current request
-during the empty, fetching and refetching states.
-
-
-### config.shouldComponentAutoRequest
+### .shouldComponentAutoRequest
 **type:** `(props) => boolean`  
 
 If auto requesting is enabled, this hook lets you cancel the request based on props.
 
 
-### config.updateResultKey
-**type:** `boolean|Array<string>`  
-
-Thunk to amend the result key based on props, used when you only have one instance of hock,
-but it is invoked in various ways.
-
-```js
-// Update based on an id
-UserGetHoc({
-    name: 'userMessage',
-    updateResultKey: (resultKey, props) => `${resultKey}-${props.id}`
-});
-
-// Create a fixed resuly key.
-UserGetHoc({
-    name: 'userMessage',
-    updateResultKey: () => 'USER_GET_HOC'
-});
-```
-
-
-
-
 
 ## Examples
 
+### Fetch On Load
+```js
+api.user.requestHoc({
+    name: 'userMessage', 
+    auto: true,
+    payloadCreator: (props) => ({id: props.id})
+});
+```
 
+### Fetch On Prop Change
+```js
+api.user.requestHoc({
+    name: 'userMessage', 
+    auto: ['match.params.id'],
+    payloadCreator: ({match}) => ({id: match.params.id})
+});
+```
 
-[Message]: /docs/data/Message
+### Fetch On Callback
+```jsx
+composeWith(
+    api.saveUser.requestHoc({
+        name: 'saveMessage', 
+        payloadCreator: (payload) => payload
+    }),
+    (props) => {
+        const {payload, saveMessage} = props;
+        return <button onClick={() => message.onRequest(payload)}>save user</button>
+    }
+);
+```
+
+### Fetch Series
+```jsx
+// Contrived example
+composeWith(
+    api.foo.requestHoc({name: 'foo'}),
+    api.bar.requestHoc({name: 'bar'}),
+    class Test extends React.Component<{aa: Message, bb: Message}> {
+        componentDidMount() {
+            const {foo, bar} = this.props;
+            foo.onRequest('first').then(() => bar.onRequest('second'));
+        }
+        render() {
+            const {aa, bb} = this.props;
+            return <div>
+                <ExpectsMessage message={aa} />
+                <ExpectsMessage message={bb} />
+            </div>;
+        }
+    }
+);
+```
+
+### Fetch Parallel
+```jsx
+composeWith(
+    api.foo.requestHoc({name: 'foo', auto: true}),
+    api.bar.requestHoc({name: 'bar', auto: true}),
+    MyComponent
+);
+```
+
+[Message]: /api/react-enty/Message
 
