@@ -1,5 +1,4 @@
 ---
-id: getting-started
 title: Getting Started
 group: Tutorials
 ---
@@ -30,11 +29,11 @@ import {EntitySchema} from 'react-enty';
 var user = new EntitySchema('user');
 var userList = new ArraySchema(user);
 
-user.set(ObjectSchema({
+user.shape = new ObjectSchema({
     friendList: userList
-}))
+});
 
-export default ObjectSchema({
+export default new ObjectSchema({
    user,
    userList
 });
@@ -47,21 +46,16 @@ The second thing we need to do is to create an api from our schema. This will le
 The EntityApi takes a bunch of promise returning functions and turns them into hocs that fetch, normalize and then provide data to our application. 
 
 ```jsx
-// entity/EntityApi.js
+// Api.js
 import {EntityApi} from 'react-enty';
 import ApplicationSchema from './ApplicationSchema';
 
-const Api = EntityApi(ApplicationSchema, {
+export default EntityApi({
     user: {
         get: variables => request('/graphql', {query: UserQuery, variables}),
         list: variables => request('/graphql', {query: UserListQuery, variables})
     }
-});
-
-export const EntityProvider = Api.EntityProvider;
-export const UserRequestHock = Api.user.get.request;
-export const UserListRequestHock = Api.user.list.request;
-
+}, ApplicationSchema);
 
 ```
 Read more: [Api]
@@ -69,20 +63,18 @@ Read more: [Api]
 ### 3. Connect to react
 Currently Enty uses redux to store it's data. The api we recently created exports a store that
 we can dump into a redux provider. 
-TODO: enty should export a provider and completely abastract away the store. 
-TODO: invesitgate context api / hidden redux pros and cons.
 
 ```jsx
-// client.jsx
+// index.js
 import {React} from 'react';
 import ReactDOM from 'react-dom';
-import {EntityProvider} from './entity/EntityApi';
+import Api from './Api';
 
 
 ReactDOM.render(
-    <EntityProvider>
+    <Api.EntityProvider>
         <App />
-    </EntityProvider>,
+    </Api.EntityProvider>,
     document.getElementById('app'),
 );
 
@@ -93,27 +85,25 @@ ReactDOM.render(
 Now we can use one of the request hocs exported from our api to request data.
 
 ```jsx
-// component/User.jsx
-import {React} from 'react';
-import {UserRequestHock} from '../entity/EntityApi';
+// UserAvatar.js
+import React from 'react';
+import Api from './Api';
+import Spinner from './Spinner';
+import Error from './Error';
 
-const withUserData = UserRequestHock({
-    name: 'userMessage',
-    auto: ['userId'],
-    payloadCreator: (props) => ({id: props.userId})
-});
+export default function UserAvatar(props) {
+    const {id} = props;
+    const userMessage = Api.user.get.useRequest();
 
-function User(props) {
-    const {response, requestState, requestError} = props.userMessage;
-    return requestState
-        .fetchingMap(() => <Loader/>)
-        .refetchingMap(() => <Loader/>)
-        .errorMap(() => <Message.error error={requestError} />)
-        .successMap(() => <img src={response.user.avatar} />)
-        .value();
+    useEffect(() => {
+        userMessage.onRequest({id});
+    }, [id]);
+
+    return <LoadingBoundary fallback={Spinner} error={Error}>
+        {({user}) => <img src={user.avatar} />}
+    </LoadingBoundary>;
 }
 
-export default withUserData(User);
 
 ```
 

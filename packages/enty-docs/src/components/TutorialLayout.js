@@ -18,13 +18,7 @@ export default function TutorialLayout({data, children}: Props): Node {
                 <NavListItem to="/tutorial/getting-started">Getting Started</NavListItem>
                 <NavListItem to="/tutorial/schemas">Defining Schemas</NavListItem>
                 <NavListItem to="/tutorial/api">Connecting to an API</NavListItem>
-                <NavListItem to="/tutorial/request-hook">Requesting Data</NavListItem>
-            </NavList>
-            <NavListHeading as="h3" textStyle="strong">Resources</NavListHeading>
-            <NavList>
-                <NavListItem to="/tutorial/entity-flow">Entity Flow</NavListItem>
-                <NavListItem to="/tutorial/faq">FAQ</NavListItem>
-                <NavListItem to="/tutorial/glossary">Glossary</NavListItem>
+                <NavListItem to="/tutorial/requesting-data">Requesting Data</NavListItem>
             </NavList>
         </>}
         minimap={<Minimap headings={headings} slug={fields.slug} title={frontmatter.title} />}

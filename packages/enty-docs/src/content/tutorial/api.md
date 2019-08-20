@@ -1,5 +1,4 @@
 ---
-id: api
 title: Entity Api
 group: Tutorials
 ---
@@ -7,18 +6,13 @@ _This is an introductory description of the EntityApi. For specific details of
 their types and methods check the [Api](/docs/data/EntityApi)._
 
 The EntityApi provides a standard way to separate your data fetching code from your views.
-It lets you declare groups of Promise returning functions that are converted to hocs.
+It lets you declare groups of Promise or Observable returning functions that are converted to hooks.
 
-These hocs handle when data is requested and it is normalized into state. They then provide your
-views with a consitent data stucture that holds both the most up to date version of your requested
+These hooks handle when data is requested and it is normalized into state. They then provide your
+views with a consistent data structure that holds both the most up to date version of your requested
 data and what stage the request cycle is currently in.
 
-This abstraction is helpful as it creates a barrier between your data fetching code and your views.
-
-* It is declarative
-* It is shareable
-* It is non-prescriptive
-* It is shimmable
+This abstraction is helpful as it creates a clean barrier between your data fetching code and your views.
 
 
 ## Declaring an API
@@ -27,6 +21,7 @@ Below is an example of an api that can fetch both users and jobs from a graphql 
 
 ```js
 import {EntityApi} from 'react-enty';
+import ApplicationSchema from './ApplicationSchema';
 
 const api = EntityApi({
     user: {
@@ -37,16 +32,16 @@ const api = EntityApi({
         item: variables => fetch('/graphql', {query: JobItemQuery, variables}),
         list: variables => fetch('/graphql', {query: JobListQuery, variables})
     }
-});
+}, ApplicationSchema);
 
-export UserItemRequestHock = api.user.item.request;
-export UserListRequestHock = api.user.list.request;
-export JobItemRequestHock = api.job.item.request;
-export JobListRequestHock = api.job.list.request;
+export UserItemRequestHook = api.user.item.useRequest
+export UserListRequestHook = api.user.list.useRequest
+export JobItemRequestHook = api.job.item.useRequest
+export JobListRequestHook = api.job.list.useRequest
 ```
 
-### Sharing
-Because the api is declared up front it becomes really easy to split your core api into smaller parts.
+## Sharing
+Because the api is declared up front it is very easy to split your core api into smaller parts.
 
 ```js
 // UserApi.js
@@ -59,22 +54,23 @@ export default {
 
 // ApplicationApi.js
 import {EntityApi} from 'react-enty';
-import UserApi from './UserApi';
-import CoffeeApi from './CoffeeApi';
-import CatApi from './CatApi';
+import ApplicationSchema from './ApplicationSchema';
+import user from './UserApi';
+import coffee from './CoffeeApi';
+import cat from './CatApi';
 
-const Api = EntityApi(ApplicationSchema, {
-    user: UserApi,
-    coffee: CoffeeApi,
-    cat: CatApi
-});
+const Api = EntityApi({
+    user,
+    coffee,
+    cat
+}, ApplicationSchema);
 
 ```
 
-### Non prescriptive
-TODO: Becuase promises are standard you can use any promise returning logic. (RX)
+## Non prescriptive
+TODO: Because promises and observables are standard you can use any promise returning logic. 
 
-### Api shimming
+## Api shimming
 One of the benefits of declaring your api separate to your views is that it provides a space
 to shim data before it enters your app. If an external api can only provide you with data in a certain 
 shape you can change it to a shape that makes sense to your entities before normalizing.

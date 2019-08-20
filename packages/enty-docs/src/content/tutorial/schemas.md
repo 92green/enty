@@ -71,13 +71,13 @@ const person = new EntitySchema('person');
 const personList = new ArraySchema(person);
 
 // lazily define the relationships between people and their parents
-person.set(ObjectSchema({
+person.shape = new ObjectSchema({
     mother: person,
     father: person
-}));
+});
 
 // export a schema that matches the shape of our api
-export default ObjectSchema({
+export default new ObjectSchema({
     personList
 });
 ```
@@ -93,9 +93,12 @@ is automatically constructed for you.
 We can extend the previous example by adding a shape to our people structural schema.
 
 ```js
-person.set(ObjectSchema(
-    {mother: person, father: person},
-    {shape: data => new Person(data)}
+person.shape = new ObjectSchema(
+    {
+        mother: person, 
+        father: person
+    },
+    {create: data => new Person(data)}
 ));
 
 ```
@@ -119,12 +122,12 @@ Entity schemas describe to enty where a unique entity can be found in your data 
 * entities must have a unique id.
 * entities must have some sort of shape.
 
-```js
+```jsx
 const user = new EntitySchema('user');
 const friendList = new ArraySchema(user);
-user.set(ObjectSchema({
+user.shape = new ObjectSchema({
     friendList
-}));
+});
 ```
 In this example we have first defined a user as a type of entity, giving it the unique name of `user`.
 Next we define a friendList that is made up of users.
@@ -137,19 +140,15 @@ TODO: FriendList normalizing example.
 By default the EntitySchema looks to the user.id property to uniquely identify each user.
 This can be configured to match your own data structure.
 
-```
+```jsx
 const user = new EntitySchema('user', {
     idAttribute: user => user.email
 });
 ```
 
 ### Why does an entity require a structure?
-Entities are really nothing more than a category and an id; they are closer to a variable than a real data structure. 
-Because of this they need some other information to describe their shape. Enty chooses to use structural schemas
-to describe this information as it lets you construct entities of any shape. You can use the common Object schema 
-define models. Or the ArraySchema to create list of notifications bound to the viewer of the app. You can
-even define your own schema that has unique logic for normalizing and denormalizing. 
+Entities are really nothing more than a category and an id; they are closer to a variable than a real data structure. Because of this they need some other information to describe their shape. Enty chooses to use structural schemas to describe this information as it lets you construct entities of any shape. You can use the common Object schema define models. Or the ArraySchema to create list of notifications bound to the viewer of the app. You can even define your own schema that has unique logic for normalizing and denormalizing. 
 
 
-[ObjectSchema]: /docs/data/ObjectSchema
-[ArraySchema]: /docs/data/ArraySchema
+[ObjectSchema]: /api/enty/object-schema
+[ArraySchema]: /api/enty/array-schema

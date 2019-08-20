@@ -13,12 +13,11 @@ use those schemas in a react project. React Enty depends on Enty, so you only ne
 enty to your project._
 
 ## Setup
-
 When using Enty in a project there are two parts: The schema and the API.
 
-### 1. Schema
-The first step in implementing Enty is to create your schema. This defines the relationships between
-your entities.  In this example we'll say a user has a list of friends which are also users. 
+### 1. Define a schema
+The first step in implementing Enty is to define your schema. This creates the relationships between
+your entities. In this example we'll say a user has a list of friends which are also users. 
 
 ```js
 // ApplicationSchema.js
@@ -41,7 +40,7 @@ export default ObjectSchema({
 ```
 Read more: [Schemas]
 
-### 2. API
+### 2. Connect to an API
 The second thing we need to do is to create an api from our schema. This will let us fetch some data.
 The EntityApi takes a bunch of promise returning functions and turns them into hocs that fetch, normalize and then provide data to our application. 
 
@@ -57,7 +56,7 @@ const Api = EntityApi(ApplicationSchema, {
     }
 });
 
-export const EntityProvider = Api.EntityProvider;
+export default Api;
 export const UserRequestHock = Api.user.get.request;
 export const UserListRequestHock = Api.user.list.request;
 
@@ -65,10 +64,9 @@ export const UserListRequestHock = Api.user.list.request;
 ```
 Read more: [Api]
 
-### 3. Connect to react
+### 3. Set-up react
 Currently Enty uses redux to store it's data. The api we recently created exports a store that
 we can dump into a redux provider. 
-TODO: enty should export a provider and completely abastract away the store. 
 TODO: invesitgate context api / hidden redux pros and cons.
 
 ```jsx

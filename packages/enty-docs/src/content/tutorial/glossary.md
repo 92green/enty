@@ -1,28 +1,14 @@
 ---
-id: glossary
 title: Glossary
-group: Resources
 ---
 
 ## Api
 An EntityApi is a collection of promise returning functions that get bound to [RequestHoc]'s.
 It's called an Api becuase it most often is the binding between an API and a client.
 
-## Child Schema
-Any schema that requires a shape on a single child.
-See: [EntitySchema], [ArraySchema], [DynamicSchema]
-
-## shape
-shapes are the ke peice of information required by a schema. For an [EntitySchema] it is 
-[Structural Schema], for an [ObjectSchema] it is an object literal describing its relationships.
-
 ## Denormalize
 The process of taking a normalized result structure and replacing all the id strings with their
 current entity.
-
-## Keyed Schema
-A schema that describes a keyed data type.
-See: [ObjectSchema], [MapSchema]
 
 ## Normalize
 The process of traversing a data structure to find entities. These entities are then stored by 
@@ -30,6 +16,10 @@ a unique type and id.
 
 ## Schema
 A stand alone class that can normalize and denormalize a single layer of data.
+
+## Shape
+Shapes are the key peice of information required by a schema. For an [EntitySchema] it is 
+[Structural Schema], for an [ObjectSchema] it is an object literal describing its relationships.
 
 ## Structural Schema
 A schema that describes how to traverse a specific shape of data. 
