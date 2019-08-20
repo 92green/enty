@@ -3192,6 +3192,13 @@ entities@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
 
+enty@^1.0.0-alpha.2:
+  version "1.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-1.0.0-alpha.2.tgz#a9c64e27efbc4d83176c9cd6078ead3d3a0777c8"
+  dependencies:
+    fronads "^0.18.0"
+    unmutable "^0.39.0"
+
 envinfo@^5.8.1:
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-5.12.1.tgz#83068c33e0972eb657d6bc69a6df30badefb46ef"
@@ -3240,7 +3247,6 @@ es-to-primitive@^1.2.0:
 es6-promise@^3.2.1:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-3.3.1.tgz#a08cdde84ccdbf34d027a1451bc91d4bcd28a613"
-  integrity sha1-oIzd6EzNvzTQJ6FFG8kdS80ophM=
 
 es6-promisify@^6.0.0:
   version "6.0.1"
@@ -3626,7 +3632,6 @@ extglob@^2.0.4:
 fast-deep-equal@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
-  integrity sha1-wFNHeBfIa1HaqFPIHgWbcz0CNhQ=
 
 fast-deep-equal@^2.0.1:
   version "2.0.1"
@@ -3810,7 +3815,6 @@ flatted@^2.0.0:
 flow-parser@^0.105.0:
   version "0.105.0"
   resolved "https://registry.yarnpkg.com/flow-parser/-/flow-parser-0.105.0.tgz#14c27c5cb6be23dc7f3431e7837ab805331bbc35"
-  integrity sha512-f9lkQkr/rGQYjmxjPpgnoBaeWL/0UYjSp/eUR7cb8uRZArxtibyB+9+JYuuPJJJxSbSYfscYO/8KO7jlEhBjMA==
 
 flush-write-stream@^1.0.0:
   version "1.1.1"
@@ -3853,7 +3857,6 @@ from2@^2.1.0, from2@^2.1.1:
 fronads@^0.18.0:
   version "0.18.0"
   resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.18.0.tgz#0dd0b50933852c006060759748e5ff274f16fcef"
-  integrity sha512-rSCaoxTfZ3/svGfuzHvpdP1U8HuqfEhz+QijdnUUSuPpcyaYCvZK+eG3OWhX6eTGOOyd2kLPdQ3PBiIfDlvq5w==
 
 fs-exists-cached@1.0.0, fs-exists-cached@^1.0.0:
   version "1.0.0"
@@ -4057,6 +4060,13 @@ gatsby-plugin-styled-components@^3.1.2:
   resolved "https://registry.yarnpkg.com/gatsby-plugin-styled-components/-/gatsby-plugin-styled-components-3.1.2.tgz#1f8ab130e2fdc02fbc8b158b237e7f620d15c2a9"
   dependencies:
     "@babel/runtime" "^7.0.0"
+
+gatsby-plugin-web-font-loader@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-web-font-loader/-/gatsby-plugin-web-font-loader-1.0.4.tgz#c50bdb0c1980110b3fd213a5be70feb2459514c3"
+  dependencies:
+    babel-runtime "^6.26.0"
+    webfontloader "^1.6.28"
 
 gatsby-react-router-scroll@^2.1.3:
   version "2.1.3"
@@ -5803,7 +5813,6 @@ lodash.pick@^4.2.1:
 lodash.range@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
-  integrity sha1-9GHliPZmg/fq3q3lE+OKaaVloV0=
 
 lodash.reduce@^4.4.0:
   version "4.6.0"
@@ -6445,7 +6454,6 @@ node-pre-gyp@^0.12.0:
 node-readfiles@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/node-readfiles/-/node-readfiles-0.2.0.tgz#dbbd4af12134e2e635c245ef93ffcf6f60673a5d"
-  integrity sha1-271K8SE04uY1wkXvk//Pb2BnOl0=
   dependencies:
     es6-promise "^3.2.1"
 
@@ -9314,10 +9322,17 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
 
+unmutable@^0.39.0:
+  version "0.39.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.39.0.tgz#8ccdfb237ba4c572cba793cbbbd7d503227ad576"
+  dependencies:
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
+
 unmutable@^0.46.0:
   version "0.46.0"
   resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.0.tgz#c6688e002e07e7bd926a7e324509a106ef4cb414"
-  integrity sha512-2yLSQINfd8sC4tU+VKR4S6630pnXVbs5cMIQvChOYrxIDnwypqhK1T31DoZPJ6KWDZUjrrs2IdkmyR3DwcfWTw==
   dependencies:
     "@babel/runtime" "^7.1.5"
     fast-deep-equal "^1.0.0"
@@ -9554,6 +9569,10 @@ wbuf@^1.1.0, wbuf@^1.7.3:
 web-namespaces@^1.0.0, web-namespaces@^1.1.2:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/web-namespaces/-/web-namespaces-1.1.3.tgz#9bbf5c99ff0908d2da031f1d732492a96571a83f"
+
+webfontloader@^1.6.28:
+  version "1.6.28"
+  resolved "https://registry.yarnpkg.com/webfontloader/-/webfontloader-1.6.28.tgz#db786129253cb6e8eae54c2fb05f870af6675bae"
 
 webpack-dev-middleware@^3.0.1, webpack-dev-middleware@^3.7.0:
   version "3.7.0"

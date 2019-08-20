@@ -2,11 +2,20 @@
 function makeTheme(colors: {}) {
     const fontSizes = [12, 14, 16, 20, 24, 32, 48, 64, 72];
     const space = [0, 4, 8, 16, 32, 64, 128, 256, 512];
+    let breakpoints = ['40em', '52em', '64em'];
+    breakpoints.sm = breakpoints[0];
+    breakpoints.md = breakpoints[1];
+    breakpoints.lg = breakpoints[2];
+
+
     const fonts = {
+
+        heading: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
         copy: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
         code: 'Menlo, monospace'
     };
     return {
+        breakpoints,
         colors,
         fontSizes,
         fonts,
@@ -38,15 +47,18 @@ function makeTheme(colors: {}) {
             },
             h1: {
                 fontWeight: '900',
+                fontFamily: fonts.heading,
                 fontSize: fontSizes[6]
             },
             h2: {
                 fontWeight: '900',
+                fontFamily: fonts.heading,
                 fontSize: fontSizes[4],
                 fontStyle: 'italic'
             },
             h3: {
                 fontWeight: '900',
+                fontFamily: fonts.heading,
                 fontSize: fontSizes[3],
                 fontStyle: 'italic'
             },

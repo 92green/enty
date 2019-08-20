@@ -16,14 +16,14 @@ function Navigation(props: Props): Node {
     const tutorial = <NavigationLink to="/tutorial/getting-started" textStyle="navigationLink">Tutorial</NavigationLink>;
     const logo = <NavigationLink to="/" textStyle="navigationLink">
         <Flex>
-            <Box><img src={Logo} alt="Enty" /></Box>
+            <Box><img src={Logo} height="24px" alt="Enty" /></Box>
             <Box ml={2}>Enty</Box>
         </Flex>
     </NavigationLink>;
 
     return <Box className={props.className}>
         <Wrapper>
-            <Flex justifyContent="space-between" py={3} px={4}>
+            <Flex justifyContent="space-between" py={3} px={{_:3, sm: 4}}>
                 {logo}
                 <Flex>
                     <Box px={2}>{api}</Box>

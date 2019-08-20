@@ -18,7 +18,7 @@ export default function MainLayout(props: Props): Node {
     return <Provider theme={darkMode ? DarkTheme : LightTheme}>
         <GlobalStyle/>
         <Navigation setDarkMode={setDarkMode} />
-        {wrapper ? <Wrapper>{children}</Wrapper> : children}
+        {wrapper ? <Wrapper px={[3, null, 0]}>{children}</Wrapper> : children}
     </Provider>;
 }
 

@@ -4,14 +4,29 @@ import React from 'react';
 import {graphql} from 'gatsby';
 import DocsLayout from './DocsLayout';
 import Minimap from './Minimap';
-import Sidebar from './Sidebar';
+import {NavList, NavListHeading, NavListItem} from './Affordance';
 
 type Props = {};
 
 export default function TutorialLayout({data, children}: Props): Node {
     const {frontmatter, fields, headings, body} = data.mdx;
     return <DocsLayout
-        sidebar={<Sidebar allFile={data.allFile} />}
+        sidebar={<>
+            <NavListHeading as="h3" textStyle="strong">Tutorials</NavListHeading>
+            <NavList>
+                <NavListItem to="/tutorial/introduction">Introduction</NavListItem>
+                <NavListItem to="/tutorial/getting-started">Getting Started</NavListItem>
+                <NavListItem to="/tutorial/schemas">Defining Schemas</NavListItem>
+                <NavListItem to="/tutorial/api">Connecting to an API</NavListItem>
+                <NavListItem to="/tutorial/request-hook">Requesting Data</NavListItem>
+            </NavList>
+            <NavListHeading as="h3" textStyle="strong">Resources</NavListHeading>
+            <NavList>
+                <NavListItem to="/tutorial/entity-flow">Entity Flow</NavListItem>
+                <NavListItem to="/tutorial/faq">FAQ</NavListItem>
+                <NavListItem to="/tutorial/glossary">Glossary</NavListItem>
+            </NavList>
+        </>}
         minimap={<Minimap headings={headings} slug={fields.slug} title={frontmatter.title} />}
         body={body}
         title={frontmatter.title}

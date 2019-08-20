@@ -34,5 +34,13 @@ module.exports = {
         },
         `gatsby-plugin-styled-components`,
         `gatsby-transformer-remark`,
+        {
+            resolve: 'gatsby-plugin-web-font-loader',
+            options: {
+                typekit: {
+                    id: 'lne0axq'
+                }
+            }
+        }
     ]
 };

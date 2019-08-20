@@ -133,6 +133,10 @@ export const TableHeadCell = styled.th`
     font-weight: bold;
 `;
 
+export const TableCell = styled.td`
+    padding: ${theme('space', 1)}px 0;
+`;
+
 
 
 // Navgation Lists
