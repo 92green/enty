@@ -9,17 +9,41 @@ function makeTheme(colors: {}) {
 
 
     const fonts = {
-
         heading: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
         copy: '-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol',
         code: 'Menlo, monospace'
     };
+
+
+    const syntax = (keys, color, style) => ({
+        types: [].concat(keys),
+        style: {...style, color: colors[color]}
+    });
+    const codeTheme = {
+        plain: {
+            backgroundColor: colors.codeBg,
+            color: colors.codeFg,
+            fontFamily: fonts.code,
+            fontSize: '13px'
+        },
+        styles: [
+            syntax('comment', 'comment'),
+            syntax('keyword', 'orange'),
+            syntax('string', 'green'),
+            syntax('number', 'yellow'),
+            syntax('tag', 'yellow'),
+            syntax('script', 'codeFg'),
+            syntax('selector', 'yellow'),
+            syntax('property', 'red'),
+        ]
+    }
     return {
         breakpoints,
         colors,
         fontSizes,
         fonts,
         space,
+        codeTheme,
         textStyles: {
             href: {
                 textDecoration: 'underline',
@@ -83,6 +107,7 @@ export const DarkTheme = makeTheme({
     yellow: '#f8d000',
     orange: '#fb9e00',
     green: '#4cd213',
+    red: '#fb1841'
 });
 
 export const LightTheme = makeTheme({
@@ -101,4 +126,16 @@ export const LightTheme = makeTheme({
     yellow: '#f8d000',
     orange: '#fb9e00',
     green: '#4cd213',
+    red: '#fb1841',
+
+    // greys
+    grey100: 'hsl(0, 0%, 90%)',
+    grey200: 'hsl(0, 0%, 80%)',
+    grey300: 'hsl(0, 0%, 70%)',
+    grey400: 'hsl(0, 0%, 60%)',
+    grey500: 'hsl(0, 0%, 50%)',
+    grey600: 'hsl(0, 0%, 40%)',
+    grey700: 'hsl(0, 0%, 30%)',
+    grey800: 'hsl(0, 0%, 20%)',
+    grey900: 'hsl(0, 0%, 10%)',
 });

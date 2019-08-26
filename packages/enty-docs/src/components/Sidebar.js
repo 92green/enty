@@ -6,9 +6,10 @@ import {NavList, NavListHeading, NavListItem} from './Affordance';
 export default function Sidebar({allFile}): Node {
     return <NavList>
         {allFile.group.map(group => {
+            const key = group.fieldValue;
             return <>
-                <NavListHeading as="h3" textStyle="strong">{group.fieldValue}</NavListHeading>
-                <NavList>{group.nodes.map(ii => {
+                <NavListHeading key={`${key}title`} as="h3" textStyle="strong">{key}</NavListHeading>
+                <NavList key={`${key}list`}>{group.nodes.map(ii => {
                     const {title} = ii.childMdx.frontmatter;
                     const {slug} = ii.childMdx.fields;
                     return <NavListItem key={slug} to={slug}>{title}</NavListItem>;

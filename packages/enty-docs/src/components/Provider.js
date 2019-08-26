@@ -3,9 +3,9 @@ import type {Node} from 'react';
 import React from 'react';
 import {ThemeProvider} from 'styled-components';
 import {MDXProvider} from "@mdx-js/react"
-import {Box} from './Layout';
+import {Box} from './Layout'
+import CodeBlock from './CodeBlock';
 import {
-    Code,
     Image,
     Link,
     List,
@@ -49,8 +49,9 @@ export default function Provider(props: Props): Node {
         inlineCode: ({children}) => <Text as="code" textStyle="code" my={3}>{children}</Text>,
         li: ListItem,
         p: ({children}) => <Text as="p" mb={3}>{children}</Text>,
-        pre: Code,
         strong: ({children}) => <Text as="strong" textStyle="strong" my={3}>{children}</Text>,
+        pre: props => <div {...props} />,
+        code: CodeBlock,
         table: (props) => <Box mb={3}><Table {...props} /></Box>,
         th: TableHeadCell,
         td: TableCell,
