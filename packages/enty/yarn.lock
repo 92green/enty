@@ -706,6 +706,12 @@
     pirates "^4.0.0"
     source-map-support "^0.5.9"
 
+"@babel/runtime@^7.1.5":
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
+  dependencies:
+    regenerator-runtime "^0.13.2"
+
 "@babel/runtime@^7.2.0":
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.4.tgz#cb7d1ad7c6d65676e66b47186577930465b5271b"
@@ -2653,6 +2659,10 @@ fragment-cache@^0.2.1:
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
   dependencies:
     map-cache "^0.2.2"
+
+fronads@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.18.0.tgz#0dd0b50933852c006060759748e5ff274f16fcef"
 
 fs-exists-sync@^0.1.0:
   version "0.1.0"
@@ -5809,10 +5819,11 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
 
-unmutable@^0.39.0:
-  version "0.39.0"
-  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.39.0.tgz#8ccdfb237ba4c572cba793cbbbd7d503227ad576"
+unmutable@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.0.tgz#c6688e002e07e7bd926a7e324509a106ef4cb414"
   dependencies:
+    "@babel/runtime" "^7.1.5"
     fast-deep-equal "^1.0.0"
     is-plain-object "^2.0.4"
     lodash.range "^3.2.0"

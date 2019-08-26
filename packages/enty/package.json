@@ -34,6 +34,6 @@
     "flow-bin": "^0.104.0"
   },
   "dependencies": {
-    "unmutable": "^0.39.0"
+    "unmutable": "^0.46.0"
   }
 }

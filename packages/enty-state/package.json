@@ -37,7 +37,6 @@
     "react-dom": "^16.8.6"
   },
   "dependencies": {
-    "fronads": "^0.18.0",
-    "unmutable": "^0.39.0"
+    "unmutable": "^0.46.0"
   }
 }

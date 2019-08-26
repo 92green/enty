@@ -5862,9 +5862,9 @@ universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
 
-unmutable@^0.45.1:
-  version "0.45.1"
-  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.45.1.tgz#182ded785db16a2947758518b0eebd4d3cf6566f"
+unmutable@^0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.0.tgz#c6688e002e07e7bd926a7e324509a106ef4cb414"
   dependencies:
     "@babel/runtime" "^7.1.5"
     fast-deep-equal "^1.0.0"
