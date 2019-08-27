@@ -2,7 +2,7 @@
 import Message from '../Message';
 import RequestState from '../../data/RequestState';
 
-test('will let you set responseKey, response, requestState, requestError, onRequest', () => {
+it('will let you set responseKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
         responseKey: 'foo',
         response: 'bar',
@@ -19,8 +19,19 @@ test('will let you set responseKey, response, requestState, requestError, onRequ
 });
 
 
-test('will default requestState to Empty', () => {
+it('will default requestState to Empty', () => {
     expect(new Message().requestState.isEmpty).toBe(true);
+});
+
+it('will let you update the message', () => {
+    const newMessage = Message
+        .empty({response: 'foo'})
+        .update(message => ({
+            ...message,
+            response: 'bar'
+        }));
+
+    expect(newMessage.response).toBe('bar');
 });
 
 describe('Message response methods', () => {
@@ -63,6 +74,15 @@ describe('Message requestState methods', () => {
         expect(errorMessage.requestState.isError).toBe(true);
         expect(errorMessage.requestState.isSuccess).not.toBe(true);
     });
+
+    it('will change requestState with .to functions', () => {
+        expect(Message.fetching().toEmpty().requestState.isEmpty).toBe(true);
+        expect(Message.empty().toFetching().requestState.isFetching).toBe(true);
+        expect(Message.empty().toRefetching().requestState.isRefetching).toBe(true);
+        expect(Message.empty().toSuccess().requestState.isSuccess).toBe(true);
+        expect(Message.empty().toError().requestState.isError).toBe(true);
+    });
+
 
 });
 
