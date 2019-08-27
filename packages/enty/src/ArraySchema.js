@@ -9,11 +9,6 @@ import type {Schema} from './util/definitions';
 
 import REMOVED_ENTITY from './util/RemovedEntity';
 
-/**
- * Class for array schema.
- * Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate nobis quas exercitationem, eum, asperiores ut, perferendis harum beatae laborum magni assumenda enim qui incidunt ratione quia fugit praesentium dignissimos placeat.wrap
- *
- */
 export default class ArraySchema<A: Schema> implements StructuralSchemaInterface<A> {
     shape: A;
     create: Create;
