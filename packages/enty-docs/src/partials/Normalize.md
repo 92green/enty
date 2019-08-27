@@ -3,13 +3,15 @@
 
 Use the schemas relationships to normalize for storage.
 
-```js
+```js live=true
 function Normalize() {
     const person = new EntitySchema('person', {
         shape: new ObjectSchema({})
     });
     const people = new ArraySchema(person);
 
+
+    // Will only store two entities and merge their first and last names
     const state = people.normalize([
         {id: 'foo', name: 'fooschia'},
         {id: 'bar', name: 'bartholomew'},
@@ -17,7 +19,7 @@ function Normalize() {
         {id: 'bar', lastName: 'barterer'},
     ]);
 
-    return <JSON data={state.entities} />;
+    return <JSON>{state}</JSON>;
 }
 ```
 

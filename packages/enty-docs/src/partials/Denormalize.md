@@ -7,28 +7,25 @@ it will reconstruct the data from the entities. You can loosly describe it as:
 
 _Note: the result shape must match the shape of the schema_
 
-```js
-const person = new EntitySchema('person', {
-    shape: new ObjectSchema({})
-});
-const people = new ArraySchema(person);
+```js live=true
+function Denormalize() {
+    const person = new EntitySchema('person', {
+        shape: new ObjectSchema({})
+    });
+    const people = new ArraySchema(person);
 
-people.denormalize({
-    result: ['foo', 'bar'],
-    entities: {
-        person: {
-            foo: {id: 'foo', name: 'fooschia'},
-            bar: {id: 'bar', name: 'bartholomew'}
-        }
-    }
-});
-
-/*
-[
-    {id: 'foo', name: 'fooschia'},
-    {id: 'bar', name: 'bartholomew'}
-]
-*/
+    return <JSON>
+        {people.denormalize({
+            result: ['foo', 'bar'],
+            entities: {
+                person: {
+                    foo: {id: 'foo', name: 'fooschia'},
+                    bar: {id: 'bar', name: 'bartholomew'}
+                }
+            }
+        })}
+    </JSON>
+}
 
 ```
 

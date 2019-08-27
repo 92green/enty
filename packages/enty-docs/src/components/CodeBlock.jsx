@@ -11,6 +11,7 @@ const Editor = styled(LiveEditor)`
     height: 100%;
     flex-basis: 50%;
     flex-shrink: 0;
+    flex-grow: 1;
 `;
 
 
@@ -34,7 +35,6 @@ function CodeResult(props) {
     const {children} = props;
     const {codeTheme, colors, fonts} = useContext(ThemeContext);
 
-    console.log(colors);
     return <JSONTree
         data={children}
         invertTheme={false}
@@ -45,13 +45,17 @@ function CodeResult(props) {
                 width: '100%',
                 height: '100%',
                 padding: '.5rem',
+                paddingLeft: '2.5rem',
                 fontFamily: fonts.code,
                 backgroundColor: 'inherit',
                 fontSize: '13px',
                 display: 'block'
             },
             value: {padding: '0', margin: '0', paddingLeft: '1rem', textIndent: '0'},
-            nestedNode: {padding: '0', margin: '0', marginLeft: '1.5rem'},
+            nestedNode: {padding: '0', margin: '0', paddingLeft: '0'},
+            nestedNodeChildren: {
+                paddingLeft: '1rem'
+            },
             arrowContainer: {
                 marginLeft: '-1.5rem'
             },
@@ -64,8 +68,8 @@ function CodeResult(props) {
                 base05: colors.fg,
                 base06: colors.fg,
                 base07: colors.fg,
-                base08: colors.orange,
-                base09: colors.yellow, // number
+                base08: colors.comment,
+                base09: colors.comment, // number
                 base0A: colors.fg,
                 base0B: colors.comment, // string
                 base0C: colors.fg,
@@ -79,12 +83,11 @@ function CodeResult(props) {
 }
 
 export default function CodeBlock(props) {
-    const {children, className, live, render} = props;
+    const {children, className, live = false, render} = props;
     const {codeTheme} = useContext(ThemeContext);
-    const language = className.replace(/language-/, '')
-        //transformCode={code => '/** @jsx mdx */' + code}
+    //transformCode={code => '/** @jsx mdx */' + code}
     return <LiveProvider
-        code={children}
+        code={children.trim()}
         theme={codeTheme}
         scope={{
             mdx,
@@ -92,10 +95,8 @@ export default function CodeBlock(props) {
             ...Enty
         }}
     >
-        <Flex>
-            <Editor />
-            <Preview />
-        </Flex>
-        <Error/>
+        <Editor />
+        {live && <Preview />}
+        {live && <Error/>}
     </LiveProvider>;
 }

@@ -22,7 +22,7 @@ new ArraySchema(
 
 A single structural schema that describes what is in this collection.
 
-```jsx live=true
+```jsx 
 const person = new EntitySchema('person');
 const friends = new ArraySchema(person);
 ```

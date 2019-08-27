@@ -9,20 +9,6 @@ will cast your list to an immutable list. _This is especially useful when workin
 data structures as all data creation can be handled by your schema. Just describe the shapes that 
 your apis will return and Enty will automatically construct all of your maps and lists for you._
 
-```js
-function() {
-    return <JSON>{{
-        rad: null,
-        foo: 'asdas', 
-        bar: 1231, 
-        baz: new Date(), 
-        cool: {
-            foo: 1,
-            bar: 2
-        }
-    }}</JSON>
-}
-```
 
 ## Params
 

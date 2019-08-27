@@ -46,48 +46,30 @@ If you have a array that contains multiple types of object the ArraySchema alone
 because it can only handle homogeneous arrays. The dynamic schema can let you inspect each item
 and choose the appropriate schema to normalize it with.
 
-```js
-const account = new EntitySchema('account');
-const group = new EntitySchema('group');
-const user = new EntitySchema('user');
+```js live=true
+function NonHomogeneousArrayExample() {
+    const account = new EntitySchema('account', {shape: {}});
+    const group = new EntitySchema('group', {shape: {}});
+    const user = new EntitySchema('user', {shape: {}});
 
-const thing = new DynamicSchema((data) => {
-    const schemaTypes = {
-        account,
-        group,
-        user
-    };
-    const schema = schemaTypes[data.type];
-    if(!schema) throw `No schema found for ${data.type}`;
-    return schema;
-});
+    const thing = new DynamicSchema((data) => {
+        const schemaTypes = {
+            account,
+            group,
+            user
+        };
+        const schema = schemaTypes[data.type];
+        if(!schema) throw `No schema found for ${data.type}`;
+        return schema;
+    });
 
 
-new ArraySchema(thing).normalize([
-    {id: '1', type: 'user', name: 'Steve'},
-    {id: '2', type: 'group', name: 'Steves Group'},
-    {id: '3', type: 'account', name: 'Steves Account'}
-]);
-
-/* {
-    entities: {
-        account: {
-            3: {id: '3', type: 'account', name: 'Steves Account'}
-        },
-        group: {
-            2: {id: '2', type: 'group', name: 'Steves Group'},
-        },
-        user: {
-            1: {id: '1', type: 'user', name: 'Steve'},
-        }
-    },
-    result: [
-        {shapeResult: '1', shapeSchema: user},
-        {shapeResult: '2', shapeSchema: group},
-        {shapeResult: '3', shapeSchema: account},
-    ]
-
-} */
+    return <JSON>{new ArraySchema(thing).normalize([
+        {id: '1', type: 'user', name: 'Steve'},
+        {id: '2', type: 'group', name: 'Steves Group'},
+        {id: '3', type: 'account', name: 'Steves Account'}
+    ])}</JSON>;
+}
 ```
 
 
@@ -96,15 +78,26 @@ new ArraySchema(thing).normalize([
 Similar to the above example, DynamicSchemas can be used when a key in an object
 contains more than one data type.
 
-```js
-const account = new EntitySchema('account');
-const group = new EntitySchema('group');
-const accountOrGroup = DynamicSchema((data) => {
-    const schemaTypes = {group, user};
-    return schemaTypes[data.type];
-});
+```js live=true
+function UnionExample() {
+    const account = new EntitySchema('account', {shape: {}});
+    const group = new EntitySchema('group', {shape: {}});
+    const accountOrGroup = new DynamicSchema((data) => {
+        const schemaTypes = {account, group};
+        return schemaTypes[data.type];
+    });
 
-const user = new EntitySchema('user');
-user.shape = new ObjectSchema({parent: accountOrGroup});
+    const user = new EntitySchema('user', {shape: {
+        parent: accountOrGroup
+    }});
+
+    const userList = new ArraySchema(user);
+    
+    return <JSON>{userList.normalize([
+        {id: '1', parent: {id: 'a1', type: 'account', name: 'account 1'}},
+        {id: '2', parent: {id: 'g1', type: 'group', name: 'group 1'}},
+        {id: '3', parent: {id: 'g2', type: 'group', name: 'group 2'}}
+    ])}</JSON>;
+}
 ```
 
