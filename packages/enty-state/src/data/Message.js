@@ -34,11 +34,11 @@ export default class Message {
     // Response Getters
 
     get(key: string, notFoundValue: mixed): mixed {
-        return get(key, notFoundValue)(this.response);
+        return get(key, notFoundValue)(this.response || {});
     }
 
     getIn(path: string[], notFoundValue: mixed): mixed {
-        return getIn(path, notFoundValue)(this.response);
+        return getIn(path, notFoundValue)(this.response || {});
     }
 
 

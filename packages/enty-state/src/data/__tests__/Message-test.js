@@ -31,12 +31,19 @@ describe('Message response methods', () => {
         }
     });
 
-    test('Message.get will select a value from the response', () => {
+    it('will select a value from the response', () => {
         expect(message.get('foo')).toBe('bar');
+        expect(message.getIn(['bar', 'baz'])).toBe('qux');
     });
 
-    test('Message.getIn will select a deep value from the response', () => {
-        expect(message.getIn(['bar', 'baz'])).toBe('qux');
+    it('will use not found value if nothing is found', () => {
+        expect(message.get('blah', '!')).toBe('!');
+        expect(message.getIn(['bar', 'blah'], '!')).toBe('!');
+    });
+
+    it('will not break on empty responses', () => {
+        expect(Message.empty().get('blah', '!')).toBe('!');
+        expect(Message.empty().getIn(['bar', 'blah'], '!')).toBe('!');
     });
 
 });
