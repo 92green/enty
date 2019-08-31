@@ -3249,13 +3249,6 @@ entities@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
 
-enty@^1.0.0-alpha.2:
-  version "1.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/enty/-/enty-1.0.0-alpha.2.tgz#a9c64e27efbc4d83176c9cd6078ead3d3a0777c8"
-  dependencies:
-    fronads "^0.18.0"
-    unmutable "^0.39.0"
-
 envinfo@^5.8.1:
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-5.12.1.tgz#83068c33e0972eb657d6bc69a6df30badefb46ef"
@@ -9461,14 +9454,6 @@ unist-util-visit@^1.0.0, unist-util-visit@^1.1.0, unist-util-visit@^1.3.0, unist
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
-
-unmutable@^0.39.0:
-  version "0.39.0"
-  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.39.0.tgz#8ccdfb237ba4c572cba793cbbbd7d503227ad576"
-  dependencies:
-    fast-deep-equal "^1.0.0"
-    is-plain-object "^2.0.4"
-    lodash.range "^3.2.0"
 
 unmutable@^0.46.0:
   version "0.46.0"
