@@ -1,7 +1,7 @@
 // @flow
 import Message from 'enty-state/lib/data/Message';
 import RequestState from 'enty-state/lib/data/RequestState';
-import {useState, useContext, useCallback, useMemo, useRef} from 'react';
+import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
 
 type RequestHookConfig = {
     actionType: string,
@@ -18,8 +18,15 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
         const responseRef = useRef();
+        const mounted = useRef(true);
 
         let requestState = state.requestState[responseKey] || RequestState.empty();
+
+        useEffect(() => {
+            return () => {
+                mounted.current = false;
+            };
+        }, []);
 
         let response = useMemo(() => {
             const schema = state.baseSchema;
@@ -38,7 +45,11 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             const responseKey = generateResultKey(payload);
             setResultKey(responseKey);
             return dispatch(requestAction(payload, {responseKey}))
-                .then(() => responseRef.current)
+                .then(() => {
+                    if(mounted.current) {
+                        return responseRef.current;
+                    }
+                })
                 .catch(() => {});
         });
 

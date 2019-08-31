@@ -2660,10 +2660,6 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-fronads@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/fronads/-/fronads-0.18.0.tgz#0dd0b50933852c006060759748e5ff274f16fcef"
-
 fs-exists-sync@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/fs-exists-sync/-/fs-exists-sync-0.1.0.tgz#982d6893af918e72d08dec9e8673ff2b5a8d6add"

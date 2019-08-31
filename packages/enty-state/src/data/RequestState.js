@@ -42,6 +42,9 @@ export default class RequestState {
     emptyMap(fn: (any) => any): RequestState {
         return this.isEmpty ? RequestState.empty(fn(this.val)) : this;
     }
+    toEmpty(): RequestState {
+        return RequestState.empty(this.val);
+    }
 
 
     //
@@ -55,6 +58,9 @@ export default class RequestState {
     }
     fetchingMap(fn: (any) => any): RequestState {
         return this.isFetching ? RequestState.fetching(fn(this.val)) : this;
+    }
+    toFetching(): RequestState {
+        return RequestState.fetching(this.val);
     }
 
 
@@ -70,6 +76,9 @@ export default class RequestState {
     refetchingMap(fn: (any) => any): RequestState {
         return this.isRefetching ? RequestState.refetching(fn(this.val)) : this;
     }
+    toRefetching(): RequestState {
+        return RequestState.refetching(this.val);
+    }
 
 
     //
@@ -84,6 +93,9 @@ export default class RequestState {
     successMap(fn: (any) => any): RequestState {
         return this.isSuccess ? RequestState.success(fn(this.val)) : this;
     }
+    toSuccess(): RequestState {
+        return RequestState.success(this.val);
+    }
 
 
     //
@@ -97,6 +109,9 @@ export default class RequestState {
     }
     errorMap(fn: (any) => any): RequestState {
         return this.isError ? RequestState.error(fn(this.val)) : this;
+    }
+    toError(): RequestState {
+        return RequestState.error(this.val);
     }
 
 }
