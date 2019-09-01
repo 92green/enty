@@ -8,6 +8,7 @@ import merge from 'unmutable/lib/merge';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
+import hasIn from 'unmutable/lib/hasIn';
 import updateIn from 'unmutable/lib/updateIn';
 import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
@@ -56,8 +57,10 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
 
 
         switch (type) {
-            case 'ENTY_FETCH':
-                if(getIn(requestStatePath)(state)) {
+            case 'ENTY_FETCH': {
+                let requestState = getIn(requestStatePath)(state);
+                let hasResponse = hasIn(responsePath)(state);
+                if(requestState && hasResponse) {
                     Logger.info(`Setting RequestState.refetching for "${requestStatePath.join('.')}"`);
                     state = setIn(requestStatePath, RequestState.refetching())(state);
                 } else {
@@ -65,6 +68,7 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                     Logger.info(`Setting RequestState.fetching for "${requestStatePath.join('.')}"`, state);
                 }
                 return state;
+            }
 
             case 'ENTY_ERROR':
                 Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
