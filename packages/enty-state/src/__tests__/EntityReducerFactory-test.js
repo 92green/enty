@@ -77,15 +77,25 @@ describe('EntityReducer requestState', () => {
         expect(data.isFetching).toBe(true);
     });
 
-    test('requestState is Refetching when action is _FETCH and requestState already exists', () => {
+    test('requestState is Refetching when action is _FETCH and requestState and response already exists', () => {
         const data = pipeWith(
             EntityReducer(
-                {requestState: {TEST: RequestState.fetching()}},
+                {
+                    requestState: {TEST: RequestState.fetching()},
+                    response: {TEST: {}}
+                },
                 {type: 'ENTY_FETCH', meta: {responseKey: 'TEST'}}
             ),
             getIn(['requestState', 'TEST'])
         );
         expect(data.isRefetching).toBe(true);
+    });
+
+    test('requestState will not be refecthing if two fetching fire in a row', () => {
+        let stateA = EntityReducer({}, {type: 'ENTY_FETCH', meta: {responseKey: 'foo'}});
+        let stateB = EntityReducer(stateA, {type: 'ENTY_FETCH', meta: {responseKey: 'foo'}});
+        expect(stateB.requestState.foo.isRefetching).toBe(undefined);
+        expect(stateB.requestState.foo.isFetching).toBe(true);
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
