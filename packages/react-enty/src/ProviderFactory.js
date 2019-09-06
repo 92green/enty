@@ -2,7 +2,7 @@
 import type {ComponentType} from 'react';
 import type {Element} from 'react';
 
-import React, {createContext} from 'react';
+import React, {createContext, useMemo} from 'react';
 import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
 import LoggingReducer from 'enty-state/lib/util/LoggingReducer';
@@ -34,13 +34,21 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     const Context = createContext();
 
     function Provider({children, initialState, debug}: ProviderProps): Element<any> {
-        const initialAction = {type: 'ENTY_INIT'};
-        const reducer = debug
-            ? (state, action) => LoggingReducer(entityReducer(state, action), action)
-            : entityReducer;
+        const {reducer, intialValue} = useMemo(() => {
+            const reducer = debug
+                ? (state, action) => LoggingReducer(entityReducer(state, action), action, debug)
+                : entityReducer;
+            return {
+                reducer,
+                intialValue: reducer(initialState, {type: 'ENTY_INIT'})
+            };
+        }, [debug, initialState]);
+
+        const storeValue = useReducerThunk(reducer, intialValue);
+
 
         return <Context.Provider
-            value={useReducerThunk(reducer, reducer(initialState, initialAction))}
+            value={storeValue}
             children={children}
         />;
     }
