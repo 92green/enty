@@ -37,7 +37,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             }
             return result;
 
-        }, [requestState, responseKey, state.responseCount]);
+        }, [requestState, responseKey, state.stats.responseCount]);
 
         responseRef.current = response;
 
