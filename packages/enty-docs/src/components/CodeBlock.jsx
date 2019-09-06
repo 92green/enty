@@ -5,7 +5,6 @@ import {LiveProvider, LiveEditor, LiveError, LivePreview} from 'react-live';
 import {mdx} from '@mdx-js/react'
 import * as Enty from 'enty';
 import JSONTree from 'react-json-tree';
-import {Flex, Box} from './Layout';
 
 const Editor = styled(LiveEditor)`
     height: 100%;
@@ -33,7 +32,7 @@ const Error = styled(LiveError)`
 
 function CodeResult(props) {
     const {children} = props;
-    const {codeTheme, colors, fonts} = useContext(ThemeContext);
+    const {colors, fonts} = useContext(ThemeContext);
 
     return <JSONTree
         data={children}
@@ -83,7 +82,7 @@ function CodeResult(props) {
 }
 
 export default function CodeBlock(props) {
-    const {children, className, live = false, render} = props;
+    const {children, live = false} = props;
     const {codeTheme} = useContext(ThemeContext);
     //transformCode={code => '/** @jsx mdx */' + code}
     return <LiveProvider

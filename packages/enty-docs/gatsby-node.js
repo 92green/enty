@@ -3,10 +3,17 @@ const path = require("path");
 const {createFilePath} = require("gatsby-source-filesystem");
 const normalizeFlowAst = require('./src/normalizeFlowAst');
 
-//exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
-    //const entities = await normalizeFlowAst();
-    //console.log(entities);
-//};
+
+exports.onCreateWebpackConfig = ({stage, actions}) => {
+    actions.setWebpackConfig({
+        resolve: {
+            alias: {
+                react: path.resolve('./node_modules/react'),
+                'react-dom': path.resolve('./node_modules/react-dom')
+            }
+        }
+    });
+};
 
 exports.onCreateNode = ({node, actions, getNode}) => {
     const {createNodeField} = actions;
