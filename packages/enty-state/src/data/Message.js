@@ -12,7 +12,7 @@ type MessageInput<R, E> = {
     responseKey: string
 };
 
-export default class Message<R, E> {
+export default class Message<R, E = void> {
 
     response: R;
     requestError: E;
@@ -75,7 +75,7 @@ export default class Message<R, E> {
     //
     // fetching
 
-    static fetching(messageProps?: MessageInput<R, E> = {}): Message<R, E> {
+    static fetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
             response: undefined,
@@ -90,30 +90,28 @@ export default class Message<R, E> {
     //
     // refetching
 
-    static refetching(response: R, messageProps?: MessageInput<R, E> = {}): Message<R, E> {
+    static refetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            response,
             requestState: RequestState.refetching()
         });
     }
-    toRefetching(response?: R): Message<R, E> {
-        return this.updateRequestState(_ => _.toRefetching(), {...this, response});
+    toRefetching(): Message<R, E> {
+        return this.updateRequestState(_ => _.toRefetching(), {...this});
     }
 
 
     //
     // success
 
-    static success(response: R, messageProps?: MessageInput<R, E> = {}): Message<R, E> {
+    static success(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            response,
             requestState: RequestState.success()
         });
     }
-    toSuccess(response?: R): Message<R, E> {
-        return this.updateRequestState(_ => _.toSuccess(), {...this, response});
+    toSuccess(): Message<R, E> {
+        return this.updateRequestState(_ => _.toSuccess(), {...this});
     }
 
 
@@ -121,15 +119,14 @@ export default class Message<R, E> {
     //
     // Error
 
-    static error(requestError: E, messageProps?: MessageInput<R, E> = {}): Message<R, E> {
+    static error(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            requestError,
             requestState: RequestState.error()
         });
     }
-    toError(requestError: E): Message<R, E> {
-        return this.updateRequestState(_ => _.toError(), {...this, requestError});
+    toError(): Message<R, E> {
+        return this.updateRequestState(_ => _.toError(), {...this});
     }
 }
 

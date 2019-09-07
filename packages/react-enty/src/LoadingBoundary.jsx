@@ -5,9 +5,9 @@ import type Message from 'enty-state/lib/data/Message';
 
 import React from 'react';
 
-type Props = {
+type Props<R, E> = {
     children: (response: mixed, {refetching: boolean}) => Node,
-    message: Message,
+    message: Message<R, E>,
     fallbackOnRefetch?: boolean,
     fallback?: ComponentType<*>,
     error?: ComponentType<*>,
@@ -16,7 +16,7 @@ type Props = {
 
 const NullRender = () => null;
 
-export default function LoadingBoundary(props: Props): Node {
+export default function LoadingBoundary<R, E>(props: Props<R, E>): Node {
     // Config
     const {children} = props;
     const {message} = props;

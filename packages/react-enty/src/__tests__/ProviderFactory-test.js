@@ -69,19 +69,16 @@ describe('Hoc', () => {
 describe('Debugging', () => {
 
     it('will log reducer state if debug prop is provided', () => {
-        const group = jest.spyOn(console, 'group').mockImplementation();
-        const groupEnd = jest.spyOn(console, 'groupEnd').mockImplementation();
-        const log = jest.spyOn(console, 'log').mockImplementation();
+        const group = jest.spyOn(console, 'group').mockImplementation(() => {});
+        const groupEnd = jest.spyOn(console, 'groupEnd').mockImplementation(() => {});
         const {Provider} = ProviderFactory({});
-        mount(<Provider debug={true} />);
+        mount(<Provider debug="Foo" />);
 
         expect(group).toHaveBeenCalled();
         expect(groupEnd).toHaveBeenCalled();
-        expect(log).toHaveBeenCalled();
 
         group.mockRestore();
         groupEnd.mockRestore();
-        log.mockRestore();
     });
 
 

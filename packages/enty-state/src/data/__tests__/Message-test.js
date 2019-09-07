@@ -42,9 +42,12 @@ it('will let you update the message', () => {
 
 describe('Message response methods', () => {
     const message = Message.success({
-        foo: 'bar',
-        bar: {
-            baz: 'qux'
+        ...messageInput,
+        response: {
+            foo: 'bar',
+            bar: {
+                baz: 'qux'
+            }
         }
     });
 
@@ -66,7 +69,7 @@ describe('Message response methods', () => {
 });
 
 describe('Message requestState methods', () => {
-    const message = Message.success({foo: 'foo'});
+    const message = Message.success(messageInput);
 
     test('Message.updateRequestState can replace the requestState', () => {
         const errorMessage = message.updateRequestState(RequestState.error);
@@ -108,22 +111,22 @@ describe('Message Constructors', () => {
     });
 
     test('Message.refetching will create a refetching message with a response', () => {
-        const message = Message.refetching('foo', messageInput);
-        expect(message.response).toBe('foo');
+        const message = Message.refetching(messageInput);
+        expect(message.response).toBe(response);
         expect(message.requestState.isRefetching).toBe(true);
         expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.success will create a success message with a response', () => {
-        const message = Message.success('foo', messageInput);
-        expect(message.response).toBe('foo');
+        const message = Message.success(messageInput);
+        expect(message.response).toBe(response);
         expect(message.requestState.isSuccess).toBe(true);
         expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.error will create a error message with requestError', () => {
-        const message = Message.error('foo', messageInput);
-        expect(message.requestError).toBe('foo');
+        const message = Message.error(messageInput);
+        expect(message.requestError).toBe(requestError);
         expect(message.requestState.isError).toBe(true);
         expect(message.responseKey).toBe('FOO');
     });
