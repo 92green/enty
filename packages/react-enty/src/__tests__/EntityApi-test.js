@@ -80,7 +80,7 @@ it('can request and render without a schema', async () => {
     expect(wrapper).toBeSuccess('FOO!');
 });
 
-it.only('can log reducer cycles', async () => {
+it('can log reducer cycles', async () => {
     const {foo, Provider} = EntityApi({
         foo: () => Promise.resolve('FOO!')
     });

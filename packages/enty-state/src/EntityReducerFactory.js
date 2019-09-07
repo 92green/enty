@@ -1,5 +1,6 @@
 //@flow
 import type {Schema} from 'enty/lib/util/definitions';
+import type {State, Action} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -14,22 +15,11 @@ import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
 
-type State = {
-    baseSchema: Schema,
-    schemas: {[key: string]: Schema},
-    response: {[key: string]: *},
-    error: {[key: string]: *},
-    requestState: {[key: string]: *},
-    entities: {[key: string]: *},
-    stats: {
-        responseCount: number
-    }
-};
 
 export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
 
-    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
+    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Action): State {
 
 
         let state = previousState || {

@@ -23,7 +23,7 @@ type ProviderFactoryReturn = {
 
 type ProviderProps = {
     children: Element<any>,
-    debug?: boolean,
+    debug?: string,
     initialState?: {}
 };
 
@@ -32,6 +32,11 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     const {schema} = config;
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext();
+    const intialAction = {
+        type: 'ENTY_INIT',
+        payload: null,
+        meta: {responseKey: 'None'}
+    };
 
     function Provider({children, initialState, debug}: ProviderProps): Element<any> {
         const {reducer, intialValue} = useMemo(() => {
@@ -40,7 +45,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                 : entityReducer;
             return {
                 reducer,
-                intialValue: reducer(initialState, {type: 'ENTY_INIT'})
+                intialValue: reducer(initialState, intialAction)
             };
         }, [debug, initialState]);
 
