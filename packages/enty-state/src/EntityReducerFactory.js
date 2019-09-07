@@ -1,5 +1,6 @@
 //@flow
 import type {Schema} from 'enty/lib/util/definitions';
+import type {State, Action} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -13,26 +14,13 @@ import updateIn from 'unmutable/lib/updateIn';
 import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
-import Logger from './util/Logger';
 
-type State = {
-    baseSchema: Schema,
-    schemas: {[key: string]: Schema},
-    response: {[key: string]: *},
-    error: {[key: string]: *},
-    requestState: {[key: string]: *},
-    entities: {[key: string]: *},
-    stats: {
-        responseCount: number
-    }
-};
 
 export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
 
-    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Object): State {
+    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Action): State {
 
-        Logger.info(`\n\nEntity reducer:`);
 
         let state = previousState || {
             baseSchema: schema,
@@ -53,7 +41,6 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
         const incrementResponseCount = updateIn(['stats', 'responseCount'], count => count + 1);
 
 
-        Logger.info(`Attempting to reduce with type "${type}"`);
 
 
         switch (type) {
@@ -61,17 +48,14 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                 let requestState = getIn(requestStatePath)(state);
                 let hasResponse = hasIn(responsePath)(state);
                 if(requestState && hasResponse) {
-                    Logger.info(`Setting RequestState.refetching for "${requestStatePath.join('.')}"`);
                     state = setIn(requestStatePath, RequestState.refetching())(state);
                 } else {
                     state = setIn(requestStatePath, RequestState.fetching())(state);
-                    Logger.info(`Setting RequestState.fetching for "${requestStatePath.join('.')}"`, state);
                 }
                 return state;
             }
 
             case 'ENTY_ERROR':
-                Logger.info(`Setting ErrorState for "${requestStatePath.join('.')}"`);
                 return pipeWith(
                     state,
                     setIn(requestStatePath, RequestState.error(payload)),
@@ -79,7 +63,6 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                 );
 
             case 'ENTY_RECEIVE':
-                Logger.info(`Type is *_RECEIVE, will attempt to receive data. Payload:`, payload);
 
                 // set success action before payload tests
                 // to make sure the request state is still updated even if there is no payload
@@ -92,8 +75,6 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                             pipeWith(state, get('entities'), clone())
                         );
 
-                        Logger.infoIf(entities.size == 0, `0 entities have been normalised with your current schema. This is the schema being used:`, schema);
-                        Logger.info(`Merging any normalized entities and response into state`);
 
 
                         return pipeWith(
@@ -102,10 +83,8 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                             setIn(responsePath, result),
                             updateIn(['schemas'], merge(schemas)),
                             incrementResponseCount,
-                            state => Logger.silly('state', state) || state
                         );
                     } else {
-                        Logger.info(`No schema, merging response without normalizing`);
                         return pipeWith(
                             state,
                             setIn(responsePath, payload),

@@ -1,32 +1,31 @@
 // @flow
-
 import RequestState from '../data/RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
 
-type MessageProps = {
-    responseKey?: ?string,
-    response?: any,
+type MessageInput<R, E> = {
+    response: R,
+    requestError: E,
+    onRequest: (response: mixed) => Promise<mixed>,
     requestState?: RequestState,
-    requestError?: any,
-    onRequest?: (response: mixed) => Promise<mixed>
+    responseKey: string
 };
 
-export default class Message {
+export default class Message<R, E = void> {
 
+    response: R;
+    requestError: E;
     onRequest: (response: mixed) => Promise<mixed>;
+    responseKey: string;
     requestState: RequestState;
-    response: mixed;
-    requestError: mixed;
-    responseKey: ?string;
 
-    constructor(props: MessageProps = {}) {
+    constructor(props: MessageInput<R, E>) {
         this.responseKey = props.responseKey;
         this.response = props.response;
         this.requestState = props.requestState || RequestState.empty();
         this.requestError = props.requestError;
-        this.onRequest = props.onRequest || Promise.resolve;
+        this.onRequest = props.onRequest;
     }
 
 
@@ -45,13 +44,12 @@ export default class Message {
     //
     // Updating Methods
 
-    update(updater: Function): Message {
+    update(updater: Function): Message<R, E> {
         return new Message(updater(this));
     }
 
-    updateRequestState(updater: Function, messageProps?: MessageProps = {}): Message {
+    updateRequestState(updater: Function, messageProps?: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
-            ...this,
             ...messageProps,
             requestState: updater(this.requestState)
         });
@@ -61,73 +59,74 @@ export default class Message {
     //
     // empty
 
-    static empty(messageProps?: MessageProps = {}): Message {
+    static empty(messageProps: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
+            response: undefined,
+            requestError: undefined,
             requestState: RequestState.empty()
         });
     }
-    toEmpty(): Message {
-        return this.updateRequestState(_ => _.toEmpty());
+    toEmpty(): Message<R, E> {
+        return this.updateRequestState(_ => _.toEmpty(), {...this});
     }
 
 
     //
     // fetching
 
-    static fetching(messageProps?: MessageProps = {}): Message {
+    static fetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
+            response: undefined,
             requestState: RequestState.fetching()
         });
     }
-    toFetching(): Message {
-        return this.updateRequestState(_ => _.toFetching());
+    toFetching(): Message<R, E> {
+        return this.updateRequestState(_ => _.toFetching(), {...this});
     }
 
 
     //
     // refetching
 
-    static refetching(response: mixed, messageProps?: MessageProps = {}): Message {
+    static refetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            response,
             requestState: RequestState.refetching()
         });
     }
-    toRefetching(response?: mixed): Message {
-        return this.updateRequestState(_ => _.toRefetching(), {response});
+    toRefetching(): Message<R, E> {
+        return this.updateRequestState(_ => _.toRefetching(), {...this});
     }
 
 
     //
     // success
 
-    static success(response: mixed, messageProps?: MessageProps = {}): Message {
+    static success(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            response,
             requestState: RequestState.success()
         });
     }
-    toSuccess(response?: mixed): Message {
-        return this.updateRequestState(_ => _.toSuccess(), {response});
+    toSuccess(): Message<R, E> {
+        return this.updateRequestState(_ => _.toSuccess(), {...this});
     }
+
 
 
     //
     // Error
 
-    static error(requestError: mixed, messageProps?: MessageProps = {}): Message {
+    static error(messageProps: MessageInput<R, E> = {}): Message<R, E> {
         return new Message({
             ...messageProps,
-            requestError,
             requestState: RequestState.error()
         });
     }
-    toError(requestError?: mixed): Message {
-        return this.updateRequestState(_ => _.toError(), {requestError});
+    toError(): Message<R, E> {
+        return this.updateRequestState(_ => _.toError(), {...this});
     }
 }
 

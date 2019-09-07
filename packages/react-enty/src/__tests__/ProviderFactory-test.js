@@ -11,6 +11,7 @@ const expectContext = (testFn) => {
 
 };
 
+
 describe('Factory', () => {
 
     it('returns a hock, component and context', () => {
@@ -26,10 +27,8 @@ describe('Factory', () => {
 });
 
 describe('Component', () => {
-    it('applies the reducer and intial state to a context', () => {
-        const {Provider, Context} = ProviderFactory({
-            reducer: (state, action) => `${state}:${action.type}`
-        });
+    it('applies the intial state to a context', () => {
+        const {Provider, Context} = ProviderFactory({});
 
         expectContext((Child) => () => {
             return <Provider initialState="component">
@@ -38,7 +37,7 @@ describe('Component', () => {
                 />
             </Provider>;
         }).toEqual([
-            'component:ENTY_INIT',
+            'component',
             expect.any(Function)
         ]);
     });
@@ -47,9 +46,7 @@ describe('Component', () => {
 describe('Hoc', () => {
 
     it('returns a config => component => props function', () => {
-        const {ProviderHoc, Context} = ProviderFactory({
-            reducer: (state, action) => `${state}:${action.type}`
-        });
+        const {ProviderHoc, Context} = ProviderFactory({});
 
         expectContext((Child) => composeWith(
             (Component) => (props) => <Component {...props} initialState="hoc" />,
@@ -60,7 +57,7 @@ describe('Hoc', () => {
                 />;
             }
         )).toEqual([
-            'hoc:ENTY_INIT',
+            'hoc',
             expect.any(Function)
         ]);
 
@@ -69,3 +66,20 @@ describe('Hoc', () => {
 
 });
 
+describe('Debugging', () => {
+
+    it('will log reducer state if debug prop is provided', () => {
+        const group = jest.spyOn(console, 'group').mockImplementation(() => {});
+        const groupEnd = jest.spyOn(console, 'groupEnd').mockImplementation(() => {});
+        const {Provider} = ProviderFactory({});
+        mount(<Provider debug="Foo" />);
+
+        expect(group).toHaveBeenCalled();
+        expect(groupEnd).toHaveBeenCalled();
+
+        group.mockRestore();
+        groupEnd.mockRestore();
+    });
+
+
+});

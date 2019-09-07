@@ -2,7 +2,6 @@
 import type {Schema} from 'enty/lib/util/definitions';
 
 import EntityApiFactory from 'enty-state/lib/EntityApiFactory';
-import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHoc from './RequestHoc';
 import RequestHook from './RequestHook';
@@ -17,9 +16,7 @@ type ActionMap = {
 
 export default function EntityApi(actionMap: ActionMap, schema?: Schema): Object {
 
-    const {Provider, ProviderHoc, Context} = ProviderFactory({
-        reducer: EntityReducerFactory({schema})
-    });
+    const {Provider, ProviderHoc, Context} = ProviderFactory({schema});
 
     let api = EntityApiFactory(
         actionMap,

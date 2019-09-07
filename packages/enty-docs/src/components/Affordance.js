@@ -29,7 +29,7 @@ export const ListItem = styled.li`
 
 
 
-export const Link = styled((props) => props.href ? <a {...props} children={props.children}/> : <GatsbyLink {...props} />)`
+export const Link = styled(({textStyle, ...props}) => props.href ? <a {...props} children={props.children}/> : <GatsbyLink {...props} />)`
     color: ${_ => _.theme.colors.link};
     &:visited {
         color: ${_ => _.theme.colors.link};

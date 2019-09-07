@@ -80,3 +80,22 @@ it('can request and render without a schema', async () => {
     expect(wrapper).toBeSuccess('FOO!');
 });
 
+it('can log reducer cycles', async () => {
+    const {foo, Provider} = EntityApi({
+        foo: () => Promise.resolve('FOO!')
+    });
+
+    const Child = () => {
+        const message = foo.useRequest();
+        useEffect(() => {
+            message.onRequest();
+        }, []);
+        return <ExpectsMessage message={message} />;
+    };
+
+    const wrapper = mount(<Provider debug={true}><Child/></Provider>);
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess('FOO!');
+});
+

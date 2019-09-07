@@ -24,6 +24,7 @@
     "prism-react-renderer": "^0.1.7",
     "prismjs": "^1.17.1",
     "react-dom": "^16.8.6",
+    "react-enty": "^1.0.0-alpha.5",
     "react-json-tree": "^0.11.2",
     "react-live": "^2.2.0",
     "styled-components": "^4.3.2",

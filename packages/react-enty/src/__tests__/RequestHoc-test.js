@@ -186,7 +186,7 @@ describe('usage', () => {
             return composeWith(
                 foo.requestHoc({name: 'aa'}),
                 foo.requestHoc({name: 'bb'}),
-                class Test extends React.Component<{aa: Message, bb: Message}> {
+                class Test extends React.Component<{aa: Message<{data: string}>, bb: Message<{data: string}>}> {
                     componentDidMount() {
                         const {aa, bb} = this.props;
                         aa.onRequest('first').then(() => bb.onRequest('second'));

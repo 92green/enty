@@ -12,8 +12,8 @@ type RequestHookConfig = {
 export default function RequestHookFactory(context: *, config: RequestHookConfig) {
     const {requestAction, generateResultKey} = config;
 
-    return () => {
-        const [responseKey, setResultKey] = useState();
+    return <R>() => {
+        const [responseKey, setResponseKey] = useState('Unknown');
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
@@ -37,13 +37,13 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             }
             return result;
 
-        }, [requestState, responseKey, state.responseCount]);
+        }, [requestState, responseKey, state.stats.responseCount]);
 
         responseRef.current = response;
 
         let onRequest = useCallback((payload) => {
             const responseKey = generateResultKey(payload);
-            setResultKey(responseKey);
+            setResponseKey(responseKey);
             return dispatch(requestAction(payload, {responseKey}))
                 .then(() => {
                     if(mounted.current) {
@@ -54,7 +54,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         });
 
 
-        return useMemo(() => new Message({
+        return useMemo(() => new Message<R>({
             responseKey,
             requestState,
             response,

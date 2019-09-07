@@ -7,11 +7,18 @@ const TestEmpty = () => null;
 const TestError = () => null;
 const TestFallback = () => null;
 
+const messageInput = {
+    response: 'RESPONSE',
+    responseKey: 'FOO',
+    onRequest: async () => 'FOO',
+    requestError: 'OUCH!'
+};
+
 describe('Empty', () => {
 
     it('will render empty', () => {
         const Component = shallow(<LoadingBoundary
-            message={Message.empty()}
+            message={Message.empty(messageInput)}
             empty={TestEmpty}
             children={() => null}
         />);
@@ -24,7 +31,7 @@ describe('Fetching', () => {
 
     it('will render fallback', () => {
         const wrapper = shallow(<LoadingBoundary
-            message={Message.fetching()}
+            message={Message.fetching(messageInput)}
             fallback={TestFallback}
             children={() => null}
         />);
@@ -37,7 +44,7 @@ describe('Refetching', () => {
 
     it('will render children with response and extra boolean', () => {
         shallow(<LoadingBoundary
-            message={Message.refetching('RESPONSE')}
+            message={Message.refetching(messageInput)}
             children={(response, {refetching}) => {
                 expect(response).toBe('RESPONSE');
                 expect(refetching).toBe(true);
@@ -48,7 +55,7 @@ describe('Refetching', () => {
 
     it('will render fallback on if fallbackOnRefetch is true', () => {
         const wrapper = shallow(<LoadingBoundary
-            message={Message.refetching()}
+            message={Message.refetching(messageInput)}
             fallback={TestFallback}
             fallbackOnRefetch={true}
             children={() => null}
@@ -62,7 +69,7 @@ describe('Success', () => {
 
     it('will render children with response', () => {
         shallow(<LoadingBoundary
-            message={Message.success('RESPONSE')}
+            message={Message.success(messageInput)}
             children={(response, {refetching}) => {
                 expect(response).toBe('RESPONSE');
                 expect(refetching).toBe(false);
@@ -77,7 +84,7 @@ describe('Error', () => {
 
     it('will render error with requestError in props.error', () => {
         const wrapper = shallow(<LoadingBoundary
-            message={Message.error('OUCH!')}
+            message={Message.error(messageInput)}
             error={TestError}
             children={() => null}
         />);
@@ -90,9 +97,9 @@ describe('Error', () => {
 describe('SafeRendering', () => {
 
     it('will not render anything if not provided', () => {
-        const empty = mount(<LoadingBoundary children={() => null} message={Message.empty()} />);
-        const fetching = mount(<LoadingBoundary children={() => null} message={Message.fetching()} />);
-        const error = mount(<LoadingBoundary children={() => null} message={Message.error()} />);
+        const empty = mount(<LoadingBoundary children={() => null} message={Message.empty(messageInput)} />);
+        const fetching = mount(<LoadingBoundary children={() => null} message={Message.fetching(messageInput)} />);
+        const error = mount(<LoadingBoundary children={() => null} message={Message.error(messageInput)} />);
         expect(empty).toContainMatchingElement('NullRender');
         expect(fetching).toContainMatchingElement('NullRender');
         expect(error).toContainMatchingElement('NullRender');
