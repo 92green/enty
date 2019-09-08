@@ -30,6 +30,10 @@ describe('configuration', () => {
         expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
     });
 
+    it('will default to a ObjectSchema shape', () => {
+        let schemaB = new EntitySchema('foo');
+        expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
+    });
 });
 
 
@@ -53,20 +57,6 @@ describe('EntitySchema.normalize', () => {
         expect(Object.keys(baz.normalize(entityTest, baz).schemas)).toEqual(['foo', 'bar', 'baz']);
     });
 
-    test('will not try to normalize numbers or strings', () => {
-        const schema = new EntitySchema('foo', {shape: new ObjectSchema({})});
-        expect(schema.normalize('1', {})).toEqual({
-            entities: {},
-            schemas: {},
-            result: '1'
-        });
-        expect(schema.normalize(2, {})).toEqual({
-            entities: {},
-            schemas: {},
-            result: '2'
-        });
-    });
-
     test('will throw an error if an entity doesnt have and id', () => {
         const schema = new EntitySchema('foo', {shape: new ObjectSchema({})});
         expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo'));
@@ -86,16 +76,20 @@ describe('EntitySchema.normalize', () => {
         );
     });
 
-    test('will not normalize null definitions', () => {
-        const NullSchemaEntity = new EntitySchema('foo');
-        expect(() => NullSchemaEntity.normalize({id: 'foo'}, {})).toThrow(/normalize.*foo/);
+    it('will treat null shapes like an Id schema', () => {
+        const NullSchemaEntity = new EntitySchema('foo', {
+            shape: null,
+            idAttribute: data => `${data}-foo`
+        });
+        const state = NullSchemaEntity.normalize(2, {});
+        expect(state.entities.foo['2-foo']).toBe(2);
     });
 });
 
 
 describe('EntitySchema.denormalize', () => {
 
-    test('can denormalize entities', () => {
+    it('can denormalize entities', () => {
         const entities = {
             foo: {
                 "1": {id: "1"}
@@ -105,7 +99,7 @@ describe('EntitySchema.denormalize', () => {
         expect(foo.denormalize({result: "1", entities})).toEqual({id: "1"});
     });
 
-    test('will not cause an infinite recursion', () => {
+    it('will not cause an infinite recursion', () => {
         const foo = new EntitySchema('foo');
         const bar = new EntitySchema('bar');
 
@@ -129,7 +123,7 @@ describe('EntitySchema.denormalize', () => {
         });
     });
 
-    test('will not denormalize null entities', () => {
+    it('will not denormalize null entities', () => {
         const entities = {
             bar: {"1": {id: "1", foo: null}}
         };
@@ -137,6 +131,14 @@ describe('EntitySchema.denormalize', () => {
         expect(bar.denormalize({result: "2", entities})).toEqual(undefined);
     });
 
+    it('can denormalize null shapes', () => {
+        const NullSchemaEntity = new EntitySchema('foo', {
+            shape: null,
+            idAttribute: data => `${data}-foo`
+        });
+        const state = NullSchemaEntity.normalize(2, {});
+        expect(NullSchemaEntity.denormalize(state)).toBe(2);
+    });
 
 
 });
