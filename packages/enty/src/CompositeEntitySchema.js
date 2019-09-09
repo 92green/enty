@@ -69,7 +69,7 @@ export default class CompositeEntitySchema<A: StructuralSchemaInterface<any>, B:
         ;
 
 
-        entities[name] = entities[name] || {};
+        // dont need a safe check here as it is already done by composite normalizing
         entities[name][id] = result;
 
 

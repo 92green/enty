@@ -107,4 +107,24 @@ test('will not try to denormalize null compositeKeys', () => {
     expect(() => participant.denormalize(participant.normalize(data))).not.toThrow();
 });
 
+it('will throw if compositeKey is structural', () => {
+    var badSchema = new CompositeEntitySchema('participant', {
+        shape: new ObjectSchema({}),
+        compositeKeys: {
+            course: new ObjectSchema({})
+        }
+    });
+    const data = {
+        id: 'steve',
+        course: {id: 'electronics101'}
+    };
+    expect(() => badSchema.normalize(data, {})).toThrow(/participant/);
+});
+
+it('can normalize the entity without any compositeKeys', () => {
+    const data = {
+        id: 'steve'
+    };
+    expect(() => participant.normalize(data, {})).not.toThrow();
+});
 

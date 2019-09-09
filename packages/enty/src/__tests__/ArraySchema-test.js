@@ -99,3 +99,11 @@ test('ArraySchemas can construct custom objects', () => {
     expect(state.result.data[0]).toEqual({foo: 1});
 });
 
+
+it('will default replace array on merge', () => {
+    const foo = new EntitySchema('foo');
+    const schema = new ArraySchema(foo);
+
+    expect(schema.merge([1,2,3], [4,5,6])).toEqual([4,5,6]);
+
+});
