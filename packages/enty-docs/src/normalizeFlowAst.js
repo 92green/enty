@@ -8,7 +8,7 @@ const params = new ArraySchema(body);
 
 
 const typeAnnotation = new EntitySchema('typeAnnotation', {
-    idAttribute: data => {
+    id: data => {
         const type = getIn(data, ['typeAnnotation', 'type']);
         const name = getIn(data, ['typeAnnotation', 'id', 'name']);
         return `${type}${name ? `:${name}` : ''}`
@@ -17,7 +17,7 @@ const typeAnnotation = new EntitySchema('typeAnnotation', {
 typeAnnotation.shape = {typeAnnotation};
 
 const Identifier = new EntitySchema('Identifier', {
-    idAttribute: data => data.name,
+    id: data => data.name,
     shape: new ObjectSchema({
         typeAnnotation
     })
@@ -40,7 +40,7 @@ const ReturnStatement = new ObjectSchema({});
 
 function ast(name, shape = {}) {
     return new EntitySchema(name, {
-        idAttribute: data => data.id ? data.id.name : 'anonymous',
+        id: data => data.id ? data.id.name : 'anonymous',
         shape: new ObjectSchema({
             body,
             params,
@@ -55,12 +55,12 @@ const astBodyArray = new ObjectSchema({body: new ArraySchema(body)});
 const ClassBody = astBodyArray;
 
 const ClassProperty = new EntitySchema('ClassProperty', {
-    idAttribute: data => data.key.name,
+    id: data => data.key.name,
     shape: new ObjectSchema({typeAnnotation})
 });
 
 const MethodDefinition = new EntitySchema('MethodDefinition', {
-    idAttribute: data => data.key.name,
+    id: data => data.key.name,
     shape: new ObjectSchema({
         value: new ObjectSchema({
             params,

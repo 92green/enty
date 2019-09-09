@@ -19,12 +19,12 @@ import constructSchemaFromLiteral from './util/constructSchemaFromLiteral';
 export default class EntitySchema<A: StructuralSchemaInterface<any>> implements EntitySchemaInterface<A> {
     name: string;
     _shape: A;
-    idAttribute: IdAttribute;
+    id: IdAttribute;
 
     constructor(name: string, options: EntitySchemaOptions<any> = {}) {
         this.name = name;
         this.shape = (options.shape === undefined) ? new ObjectSchema({}) : options.shape;
-        this.idAttribute = options.idAttribute || get('id');
+        this.id = options.id || get('id');
     }
 
     get shape(): A {
@@ -35,9 +35,9 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
     }
 
     normalize(data: mixed, entities: Object = {}): NormalizeState {
-        const {shape, idAttribute, name} = this;
+        const {shape, name} = this;
 
-        let id = idAttribute(data);
+        let id = this.id(data);
         let previousEntity;
         let schemas = {};
         let result;

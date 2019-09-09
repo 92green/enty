@@ -45,7 +45,7 @@ user.shape = new ObjectSchema({friend});
 **default:** `(value) => ({id: value})`  
 
 By default the IdSchema constructs a faux entity by placing the value on the `id` key of an 
-object. If your entity has a different `idAttribute` function you can replace this to match.
+object. If your entity has a different `id` function you can replace this to match.
 
 ```js
 const user = new EntitySchema('user', {

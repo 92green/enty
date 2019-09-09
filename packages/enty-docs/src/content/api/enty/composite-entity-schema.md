@@ -41,7 +41,7 @@ new CompositeEntitySchema(
             [key: string]: Schema
         },
         shape: StructuralSchema,
-        idAttribute: (*) => string
+        id: (*) => string
     }
 );
 ```
@@ -80,12 +80,12 @@ const course = CompositeEntitySchema('course', {
 ```
 
 
-### options.idAttribute
+### options.id
 <Id/>
 
 ```js
 const course = new CompositeEntitySchema('course', {
-    idAttribute: (course) => course.id
+    id: (course) => course.id
 });
 ```
 

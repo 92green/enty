@@ -79,7 +79,7 @@ describe('EntitySchema.normalize', () => {
     it('will treat null shapes like an Id schema', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
             shape: null,
-            idAttribute: data => `${data}-foo`
+            id: data => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(state.entities.foo['2-foo']).toBe(2);
@@ -134,7 +134,7 @@ describe('EntitySchema.denormalize', () => {
     it('can denormalize null shapes', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
             shape: null,
-            idAttribute: data => `${data}-foo`
+            id: data => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(NullSchemaEntity.denormalize(state)).toBe(2);

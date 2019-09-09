@@ -18,7 +18,7 @@ new EntitySchema(
     name: string,
     options?: {
         shape: StructuralSchema,
-        idAttribute: (entity: any) => string
+        id: (entity: any) => string
     }
 );
 ```
@@ -63,12 +63,12 @@ cat.shape = new ObjectSchema({owner});
 owner.shape = new ObjectSchema({pet});
 ```
 
-### options.idAttribute
+### options.id
 <Id/>
 
 ```js
 const person = new EntitySchema('person', {
-    idAttribute: (person) => person.email
+    id: (person) => person.email
 });
 ```
 
