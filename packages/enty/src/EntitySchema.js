@@ -23,8 +23,14 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
 
     constructor(name: string, options: EntitySchemaOptions<any> = {}) {
         this.name = name;
-        this.shape = (options.shape === undefined) ? new ObjectSchema({}) : options.shape;
-        this.id = options.id || get('id');
+
+        if(options.shape === null) {
+            this.shape = null;
+            this.id = options.id || (data => '' + data);
+        } else {
+            this.shape = options.shape || new ObjectSchema({});
+            this.id = options.id || get('id');
+        }
     }
 
     get shape(): A {

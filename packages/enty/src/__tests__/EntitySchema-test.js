@@ -84,6 +84,14 @@ describe('EntitySchema.normalize', () => {
         const state = NullSchemaEntity.normalize(2, {});
         expect(state.entities.foo['2-foo']).toBe(2);
     });
+
+    it('will default id function to stringify if shape is null', () => {
+        const NullSchemaEntity = new EntitySchema('foo', {
+            shape: null
+        });
+        const state = NullSchemaEntity.normalize({}, {});
+        expect(state.entities.foo['[object Object]']).toEqual({});
+    });
 });
 
 
