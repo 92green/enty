@@ -18,12 +18,12 @@ export type StructuralSchemaOptions = {
 
 export type EntitySchemaOptions<Shape> = {
     +shape?: Shape,
-    idAttribute?: (entity: Object) => string
+    id?: (entity: Object) => string
 };
 
 export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
     shape?: Shape,
-    idAttribute?: (entity: Object) => string,
+    id?: (entity: Object) => string,
     compositeKeys?: CompositeShape
 };
 
@@ -50,7 +50,7 @@ export interface EntitySchemaInterface<Shape> {
     +denormalize: Denormalize,
     shape: Shape,
     name: string,
-    idAttribute: (item: mixed) => string
+    id: (item: mixed) => string
 }
 
 export interface StructuralSchemaInterface<Shape> {

@@ -13,8 +13,6 @@ export {default as CompositeEntitySchema} from 'enty/lib/CompositeEntitySchema';
 export {default as DynamicSchema} from 'enty/lib/DynamicSchema';
 export {default as EntitySchema} from 'enty/lib/EntitySchema';
 export {default as IdSchema} from 'enty/lib/IdSchema';
-export {default as NullSchema} from 'enty/lib/NullSchema';
 export {default as ObjectSchema} from 'enty/lib/ObjectSchema';
-export {default as ValueSchema} from 'enty/lib/ValueSchema';
 
 

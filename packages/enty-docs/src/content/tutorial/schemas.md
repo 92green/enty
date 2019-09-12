@@ -136,13 +136,13 @@ Finally we declare the relationship that users can have friendList's that are ar
 
 TODO: FriendList normalizing example.
 
-### Changing the idAttribute
+### Changing the id
 By default the EntitySchema looks to the user.id property to uniquely identify each user.
 This can be configured to match your own data structure.
 
 ```jsx
 const user = new EntitySchema('user', {
-    idAttribute: user => user.email
+    id: user => user.email
 });
 ```
 

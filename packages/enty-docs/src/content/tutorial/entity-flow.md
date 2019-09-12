@@ -19,7 +19,7 @@ with an Error requestState.
 3. **Normalize**    
 The successful response is passed into schema.normalize, which will in turn call schema.normalize 
 recursively on its children as defined. Entities found are collected under their schema type and the 
-result of their idAttribute function. These entities are passed through their shape 
+result of their id function. These entities are passed through their shape 
 function and if that entity already exists in state, the existing and new entities are passed through 
 the shapes merge function.
 

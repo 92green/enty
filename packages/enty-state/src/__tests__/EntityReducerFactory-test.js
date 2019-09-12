@@ -17,12 +17,12 @@ var author = new EntitySchema('author', {
 });
 
 var topListings = new EntitySchema('topListings', {
-    idAttribute: get('fullnameId'),
+    id: get('fullnameId'),
     shape: {author}
 });
 
 var subreddit = new EntitySchema('subreddit', {
-    idAttribute: get('fullnameId'),
+    id: get('fullnameId'),
     shape: {
         topListings: [topListings]
     }
