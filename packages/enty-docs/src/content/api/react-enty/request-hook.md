@@ -15,16 +15,14 @@ useRequest(): Message
 ### Fetch On Load
 
 ```jsx
-import {useEffect} from 'react';
+import {useAutoRequest} from 'react-enty';
 import api from './api';
 import Spinner from ./components/Spinner';
 import Error from ./components/Error';
 
 export default function Avatar(props) {
     const message = api.user.useRequest();
-    useEffect(() => {
-        message.onRequest({id: props.id});
-    }, []);
+    useAutoRequest(() => message.onRequest({id: props.id}));
 
     return <LoadingBoundary message={message} fallback={<Spinner/>} error={<Error />}>
         {({user}) => <img src={user.avatar} alt={user.name} />}
@@ -34,16 +32,14 @@ export default function Avatar(props) {
 
 ### Fetch On Prop Change
 ```jsx
-import {useEffect} from 'react';
+import {useAutoRequest} from 'react-enty';
 import api from './api';
 import Spinner from ./components/Spinner';
 import Error from ./components/Error';
 
 export default function Avatar(props) {
     const message = api.user.useRequest();
-    useEffect(() => {
-        message.onRequest({id: props.id});
-    }, [props.id]);
+    useAutoRequest(() => message.onRequest({id: props.id}), [props.id]);
 
     return <LoadingBoundary message={message} fallback={<Spinner/>} error={<Error />}>
         {({user}) => <img src={user.avatar} alt={user.name} />}
@@ -53,7 +49,6 @@ export default function Avatar(props) {
 
 ### Fetch On Callback
 ```jsx
-import {useEffect} from 'react';
 import {useState} from 'react';
 import api from './api';
 import Spinner from ./components/Spinner';
@@ -76,7 +71,7 @@ export default function Avatar(props) {
 ### Fetch Series
 
 ```jsx
-import {useEffect} from 'react';
+import {useAutoRequest} from 'react-enty';
 import api from './api';
 import Spinner from ./components/Spinner';
 import Error from ./components/Error';
@@ -87,13 +82,10 @@ export default function Avatar(props) {
     const loadingProps = {fallback: <Spinner />, error: <Error />};
     const renderUser = {({user}) => <img src={user.avatar} alt={user.name} />}
     
-    useEffect(() => {
-        let fetch = async () => {
-            await foo.onRequest('foo');
-            await bar.onRequest('bar');
-        }
-        fetch();
-    }, [])
+    useAutoRequest(async () => {
+        await foo.onRequest('foo');
+        await bar.onRequest('bar');
+    });
 
     return <Box>
         <LoadingBoundary message={foo} {...loadingProps} />{renderUser}</LoadingBoundary>
@@ -106,7 +98,7 @@ export default function Avatar(props) {
 ### Fetch Parallel
 
 ```jsx
-import {useEffect} from 'react';
+import {useAutoRequest} from 'react-enty';
 import api from './api';
 import Spinner from ./components/Spinner';
 import Error from ./components/Error';
@@ -117,10 +109,10 @@ export default function Avatar(props) {
     const loadingProps = {fallback: <Spinner />, error: <Error />};
     const renderUser = {({user}) => <img src={user.avatar} alt={user.name} />}
     
-    useEffect(() => {
+    useAutoRequest(() => {
         foo.onRequest('foo');
         bar.onRequest('bar');
-    }, [])
+    });
 
     return <Box>
         <LoadingBoundary message={foo} {...loadingProps} />{renderUser}</LoadingBoundary>
