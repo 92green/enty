@@ -2,7 +2,7 @@
 import visitActionMap from '../visitActionMap';
 
 it('will recurse through deep object trees', () => {
-    const visitor = jest.fn();
+    const visitor = jest.fn(value => value);
     const data = {
         foo: {
             bar: {
@@ -12,6 +12,7 @@ it('will recurse through deep object trees', () => {
         }
     };
     const output = visitActionMap(data, visitor);
+
     expect(visitor).toHaveBeenCalledTimes(2);
 });
 
@@ -31,7 +32,7 @@ it('will visit functions & record their path', () => {
 });
 
 it('preserve the given object tree', () => {
-    const visitor = jest.fn(() => 'FOO');
+    const visitor = jest.fn(value => value);
     const data = {
         foo: {
             bar: {
@@ -40,6 +41,6 @@ it('preserve the given object tree', () => {
         }
     };
     const output = visitActionMap(data, visitor);
-    expect(output.foo.bar.baz).toBe('FOO');
+    expect(output).toEqual(data);
 });
 
