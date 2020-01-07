@@ -5,6 +5,7 @@ import type {EntitySchemaOptions} from './util/definitions';
 import type {EntitySchemaInterface} from './util/definitions';
 import type {StructuralSchemaInterface} from './util/definitions';
 import type {IdAttribute} from './util/definitions';
+import type {Merge} from './util/definitions';
 
 import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
@@ -20,9 +21,11 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
     name: string;
     _shape: A;
     id: IdAttribute;
+    merge: ?Merge;
 
     constructor(name: string, options: EntitySchemaOptions<any> = {}) {
         this.name = name;
+        this.merge = options.merge;
 
         if(options.shape === null) {
             this.shape = null;
@@ -69,7 +72,7 @@ export default class EntitySchema<A: StructuralSchemaInterface<any>> implements 
         schemas[name] = this;
 
         entities[name][id] = previousEntity
-            ? shape.merge(previousEntity, result)
+            ? (this.merge || shape.merge)(previousEntity, result)
             : result
         ;
 
