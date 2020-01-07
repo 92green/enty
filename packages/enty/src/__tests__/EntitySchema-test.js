@@ -34,6 +34,19 @@ describe('configuration', () => {
         let schemaB = new EntitySchema('foo');
         expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
     });
+
+    it('can override the shapes merge function', () => {
+        let schema = new EntitySchema('test', {
+            id: () => 'aa',
+            shape: new ArraySchema(new ObjectSchema({})),
+            merge: (aa, bb) => aa.concat(bb)
+        });
+
+        const {entities} = schema.normalize([{id: 1}]);
+        const secondState = schema.normalize([{id: 2}], entities);
+
+        expect(secondState.entities.test.aa).toEqual([{id: 1}, {id: 2}]);
+    });
 });
 
 

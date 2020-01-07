@@ -18,7 +18,8 @@ export type StructuralSchemaOptions = {
 
 export type EntitySchemaOptions<Shape> = {
     +shape?: Shape,
-    id?: (entity: Object) => string
+    id?: (entity: Object) => string,
+    merge?: Merge
 };
 
 export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
