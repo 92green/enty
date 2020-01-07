@@ -9,9 +9,7 @@ export default function isPlainObject(o: Object): boolean {
     ctor = o.constructor;
     if (typeof ctor !== 'function') return false;
 
-    // If has modified prototype
     prot = ctor.prototype;
-    if (isObjectObject(prot) === false) return false;
 
     // If constructor does not have an Object-specific method
     if (prot.hasOwnProperty('isPrototypeOf') === false) {
