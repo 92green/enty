@@ -36,9 +36,7 @@
     "immutable": "^3.8.1"
   },
   "peerDependencies": {
-    "immutable": ">=3.8.1"
-  },
-  "dependencies": {
+    "immutable": ">=3.8.1",
     "enty": "^1.0.0-alpha.7"
   }
 }
