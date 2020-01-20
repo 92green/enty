@@ -1,7 +1,6 @@
 // @flow
 import createRequestAction from '../createRequestAction';
 
-
 const payload = 'PAYLOAD';
 const meta = 'META';
 
@@ -18,8 +17,9 @@ describe('observable support', () => {
         const subscribe = jest.fn();
         const request = createRequestAction(() => observable(subscribe));
 
-        request(payload, meta)(dispatch, getState);
+        let result = request(payload, meta)(dispatch, getState);
         expect(subscribe).toHaveBeenCalled();
+        expect(typeof result.then).toBe('function');
     });
 
     it('will auto trigger fetching action', () => {
@@ -31,7 +31,7 @@ describe('observable support', () => {
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'ENTY_FETCH'});
     });
 
-    it('can trigger multiple success actions via next', () => {
+    it('can trigger multiple success actions via next', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => observable((sub) => {
@@ -39,30 +39,36 @@ describe('observable support', () => {
             sub.next('2');
         }));
 
-        request(payload, meta)(dispatch, getState);
+        let result = request(payload, meta)(dispatch, getState);
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '1', type: 'ENTY_RECEIVE'});
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '2', type: 'ENTY_RECEIVE'});
+        expect(await result).toBe('1');
     });
 
-    it('can trigger error action via error', () => {
+    it('can trigger error action via error', async () => {
+        expect.assertions(2);
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => observable((sub) => {
             sub.error('ERROR');
         }));
 
-        request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: 'ERROR', type: 'ENTY_ERROR'});
+        return request(payload, meta)(dispatch, getState)
+            .catch((error) => {
+                expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: 'ERROR', type: 'ENTY_ERROR'});
+                expect(error).toBe('ERROR');
+            });
     });
 
-    it('will trigger receive action via complete', () => {
+    it('will trigger receive action via complete', async () => {
         const dispatch = jest.fn();
         const request = createRequestAction(() => observable((sub) => {
             sub.complete('1');
         }));
 
-        request(payload, meta)(dispatch, jest.fn());
+        let result = request(payload, meta)(dispatch, jest.fn());
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '1', type: 'ENTY_RECEIVE'});
+        expect(await result).toBe('1');
     });
 
 });
@@ -72,26 +78,30 @@ describe('promise support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.resolve());
-        request(payload, meta)(dispatch, getState);
+        let result = request(payload, meta)(dispatch, getState);
         expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'ENTY_FETCH'});
+        expect(typeof result.then).toBe('function');
     });
 
     it('can trigger success action via a resolved promise', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.resolve('DATA'));
-        await request(payload, meta)(dispatch, getState);
+        let resultPayload = await request(payload, meta)(dispatch, getState);
         expect(dispatch).toHaveBeenLastCalledWith({meta: 'META', payload: 'DATA', type: 'ENTY_RECEIVE'});
+        expect(resultPayload).toBe('DATA');
     });
 
     it('can trigger error action via a rejected promise', () => {
+        expect.assertions(2);
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.reject('BORKD'));
         const meta = {responseKey: '123'};
         return request(payload, meta)(dispatch, getState)
-            .catch(() => {
+            .catch((error) => {
                 expect(dispatch).toHaveBeenLastCalledWith({meta, payload: 'BORKD', type: 'ENTY_ERROR'});
+                expect(error).toBe('BORKD');
             });
     });
 
