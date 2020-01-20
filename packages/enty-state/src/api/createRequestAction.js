@@ -1,6 +1,5 @@
 // @flow
 import type {SideEffect} from '../util/definitions';
-import type {AsyncType} from '../util/definitions';
 
 import isObservable from '../util/isObservable';
 
@@ -10,7 +9,7 @@ type Meta = {
 };
 
 export default function createRequestAction(sideEffect: SideEffect): Function {
-    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function): AsyncType => {
+    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function): Promise<*> => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
@@ -31,13 +30,30 @@ export default function createRequestAction(sideEffect: SideEffect): Function {
         const pending = sideEffect(requestPayload, sideEffectMeta);
         fetchAction(null);
         if(isObservable(pending)) {
+
+            let promiseCallbacks = {};
+            let promise = new Promise((resolve, reject) => {
+                promiseCallbacks.resolve = resolve;
+                promiseCallbacks.reject = reject;
+            });
+
             // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
-                next: (data) => receiveAction(data),
-                complete: (data) => receiveAction(data),
-                error: (error) => errorAction(error)
+                next: (data) => {
+                    receiveAction(data);
+                    promiseCallbacks.resolve(data);
+                },
+                complete: (data) => {
+                    receiveAction(data);
+                    promiseCallbacks.resolve(data);
+                },
+                error: (error) => {
+                    errorAction(error);
+                    promiseCallbacks.reject(error);
+                }
             });
-            return pending;
+
+            return promise;
         }
 
         // $FlowFixMe - see above
