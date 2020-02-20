@@ -72,20 +72,24 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
                 if(path.indexOf(this) !== -1) {
                     return item;
                 }
-                return Object.keys(shape)
-                    .reduce((newItem: Object, key: string): Object => {
-                        const schema = get(key)(shape);
-                        const result = get(key)(newItem);
-                        const value = schema.denormalize({result, entities}, [...path, this]);
 
-                        if(value !== REMOVED_ENTITY) {
-                            newItem = set(key, value)(newItem);
-                        } else {
-                            newItem = del(key)(newItem);
-                        }
+                const keys = Object.keys(shape);
 
-                        return newItem;
-                    }, item);
+                for(let key of keys) {
+
+                    const schema = get(key)(shape);
+                    const result = get(key)(item);
+                    const value = schema.denormalize({result, entities}, [...path, this]);
+
+                    if(value !== REMOVED_ENTITY) {
+                        item = set(key, value)(item);
+                    } else {
+                        item = del(key)(item);
+                    }
+                }
+
+                return item;
+
             }
         );
     }
