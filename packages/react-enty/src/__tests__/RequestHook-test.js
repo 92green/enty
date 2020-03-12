@@ -19,7 +19,7 @@ describe('config', () => {
 
     it('will return a message', () => {
         expect.assertions(1);
-        mountWithProvider(() =>  () => {
+        mountWithProvider(() => () => {
             const message = foo.useRequest();
             expect(message).toBeInstanceOf(Message);
             return null;
@@ -122,5 +122,32 @@ describe('usage', () => {
         });
     });
 
+
 });
 
+describe('config.returnResponse', () => {
+
+    it('will return the prending response in a promise if config.returnResponse is true', async () => {
+        expect.assertions(2);
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.onRequest('first');
+                expect(pending).resolves.toBeUndefined();
+            }, []);
+
+            return null;
+        });
+
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.onRequest('first', {returnResponse: true});
+                expect(pending).resolves.toEqual({data: 'first'});
+            }, []);
+
+            return null;
+        });
+    });
+
+});
