@@ -46,15 +46,19 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             const responseKey = generateResultKey(payload);
             setResponseKey(responseKey);
             const pending = dispatch(requestAction(payload, {responseKey}));
+            const isPromise = !isObservable(pending);
 
-
-            if (isObservable(pending) && returnResponse) {
-                return pending;
+            if(!returnResponse) {
+                if(isPromise) {
+                    pending.catch(() => {});
+                }
+                return;
             }
 
-            return returnResponse
+            return isPromise
                 ? pending.then(() => mounted.current ? responseRef.current : undefined)
-                : pending.then(() => {}).catch(() => {});
+                : pending
+            ;
         });
 
 

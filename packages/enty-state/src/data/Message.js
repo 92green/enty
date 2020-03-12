@@ -7,7 +7,7 @@ import getIn from 'unmutable/lib/getIn';
 type MessageInput<R, E> = {
     response: R,
     requestError: E,
-    onRequest: (response: mixed) => Promise<mixed>,
+    onRequest: (response: mixed, config?: {returnResponse: boolean}) => Promise<mixed>,
     requestState?: RequestState,
     responseKey: string
 };

@@ -5,16 +5,16 @@ import {ObjectSchema} from 'enty';
 import equals from 'unmutable/equals';
 
 
-
 //
 // Test Bootstrap
 //
 
 function setupTests() {
-    const {Provider, foo, fooError, bar} = EntityApi({
+    const {Provider, foo, fooError, bar, obs} = EntityApi({
         foo: (data = 'foo') => Promise.resolve({data}),
         fooError: () => Promise.reject('ouch!'),
-        bar: (data = 'bar') => Promise.resolve({data})
+        bar: (data = 'bar') => Promise.resolve({data}),
+        obs: () => ({subscribe: () => {}})
     }, new ObjectSchema({}));
 
     function ExpectsMessage(props: Object) {
@@ -32,14 +32,15 @@ function setupTests() {
         },
         foo,
         bar,
+        obs,
         fooError
     };
 }
 
-export const {mountWithProvider, foo, bar, fooError, ExpectsMessage} = setupTests();
+export const {mountWithProvider, foo, bar, obs, fooError, ExpectsMessage} = setupTests();
 
 export function asyncUpdate(wrapper: Object) {
-    return (new Promise(resolve => setImmediate(resolve)))
+    return (new Promise(resolve => setTimeout(resolve, 0)))
         .then(() => wrapper.update());
 }
 
