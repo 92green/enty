@@ -10,6 +10,7 @@ type MessageInput<R, E> = {
     response: R,
     requestError: E,
     onRequest: OnRequest,
+    reset: () => void,
     requestState?: RequestState,
     responseKey: string
 };
@@ -19,6 +20,7 @@ export default class Message<R, E = void> {
     response: R;
     requestError: E;
     onRequest: OnRequest;
+    reset: () => void;
     responseKey: string;
     requestState: RequestState;
 
@@ -28,6 +30,7 @@ export default class Message<R, E = void> {
         this.requestState = props.requestState || RequestState.empty();
         this.requestError = props.requestError;
         this.onRequest = props.onRequest;
+        this.reset = props.reset;
     }
 
 

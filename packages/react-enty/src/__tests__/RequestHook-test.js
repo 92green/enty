@@ -7,6 +7,7 @@ import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
 import {nothing} from './RequestSuite';
 import {refetch} from './RequestSuite';
+import {reset} from './RequestSuite';
 import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
@@ -122,6 +123,17 @@ describe('usage', () => {
         });
     });
 
+
+});
+
+describe('Message.reset', () => {
+
+    it('can reset a request', () => {
+        return reset((ExpectsMessage) => () => {
+            const message = foo.useRequest();
+            return <ExpectsMessage message={message} />;
+        });
+    });
 
 });
 

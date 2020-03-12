@@ -10,6 +10,7 @@ const TestFallback = () => null;
 const messageInput = {
     response: 'RESPONSE',
     responseKey: 'FOO',
+    reset: () => {},
     onRequest: async () => 'FOO',
     requestError: 'OUCH!'
 };

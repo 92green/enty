@@ -18,9 +18,12 @@ function setupTests() {
     }, new ObjectSchema({}));
 
     function ExpectsMessage(props: Object) {
-        const {onRequest} = props.message;
+        const {onRequest, reset} = props.message;
         const {payload} = props;
-        return <button className="onRequest" onClick={() => onRequest(payload)} />;
+        return <>
+            <button className="onRequest" onClick={() => onRequest(payload)} />
+            <button className="reset" onClick={() => reset()} />
+        </>;
     }
 
     return {
@@ -114,6 +117,20 @@ export async function refetch(testFn: Function) {
     expect(wrapper).toBeSuccess({data: 'foo'});
     click();
     expect(wrapper).toBeRefetching({data: 'foo'});
+}
+
+export async function reset(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    let clickRequest = () => wrapper.find('.onRequest').simulate('click');
+    let clickReset = () => wrapper.find('.reset').simulate('click');
+
+    expect(wrapper).toBeEmpty();
+    clickRequest();
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess({data: 'foo'});
+    clickReset();
+    expect(wrapper).toBeEmpty();
 }
 
 export async function fetchOnPropChange(testFn: Function) {

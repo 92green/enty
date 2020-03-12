@@ -21,7 +21,7 @@ export type State = {
 };
 
 export type Action = {
-    type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_INIT',
+    type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_RESET' | 'ENTY_INIT',
     payload: any,
     meta: {
         responseKey: string

@@ -6,11 +6,13 @@ const response = {name: 'foo'};
 const responseKey = 'FOO';
 const onRequest = async () => response;
 const requestError = 'ERROR!';
+const reset = () => {};
 
-const messageInput = {response, responseKey, onRequest, requestError};
+const messageInput = {response, responseKey, onRequest, requestError, reset};
 
 it('will let you set responseKey, response, requestState, requestError, onRequest', () => {
     const message = new Message({
+        reset,
         responseKey: 'foo',
         response: 'bar',
         requestState: RequestState.success('baz'),
@@ -27,7 +29,7 @@ it('will let you set responseKey, response, requestState, requestError, onReques
 
 
 it('will default requestState to Empty', () => {
-    expect(new Message({response: null, responseKey: 'foo', onRequest: Promise.resolve, requestError: null}).requestState.isEmpty).toBe(true);
+    expect(new Message({reset, response: null, responseKey: 'foo', onRequest: Promise.resolve, requestError: null}).requestState.isEmpty).toBe(true);
 });
 
 it('will let you update the message', () => {

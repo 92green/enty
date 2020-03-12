@@ -11,6 +11,7 @@ import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import hasIn from 'unmutable/lib/hasIn';
 import updateIn from 'unmutable/lib/updateIn';
+import deleteIn from 'unmutable/lib/deleteIn';
 import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
@@ -75,8 +76,6 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                             pipeWith(state, get('entities'), clone())
                         );
 
-
-
                         return pipeWith(
                             state,
                             set('entities', entities),
@@ -84,6 +83,7 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                             updateIn(['schemas'], merge(schemas)),
                             incrementResponseCount,
                         );
+
                     } else {
                         return pipeWith(
                             state,
@@ -99,6 +99,14 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
                     state,
                     incrementResponseCount,
                     setIn(['entities', ...payload], REMOVED_ENTITY)
+                );
+
+            case 'ENTY_RESET':
+                return pipeWith(
+                    state,
+                    incrementResponseCount,
+                    setIn(requestStatePath, RequestState.empty()),
+                    deleteIn(responsePath)
                 );
 
             default:
