@@ -81,7 +81,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
                     const result = get(key)(item);
                     const value = schema.denormalize({result, entities}, [...path, this]);
 
-                    if(value !== REMOVED_ENTITY) {
+                    if(value !== REMOVED_ENTITY && value !== undefined) {
                         item = set(key, value)(item);
                     } else {
                         item = del(key)(item);
