@@ -168,7 +168,7 @@ describe('config.returnResponse', () => {
         // HOW?
     });
 
-    it.only('rejected promises will can be caught if config.returnResponse is true', async () => {
+    it('rejected promises will can be caught if config.returnResponse is true', async () => {
         expect.assertions(1);
 
         mountWithProvider(() => () => {
