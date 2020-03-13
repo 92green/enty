@@ -7,11 +7,12 @@ import getIn from 'unmutable/lib/getIn';
 type Request = (payload: mixed, config?: {returnResponse: boolean}) => any;
 
 type MessageInput<R, E> = {
-    response: R,
-    requestError: E,
+    removeEntity: (type: string, id: string) => void,
     request: Request,
-    reset: () => void,
+    requestError: E,
     requestState?: RequestState,
+    reset: () => void,
+    response: R,
     responseKey: string
 };
 
@@ -21,6 +22,7 @@ export default class Message<R, E = void> {
     requestError: E;
     request: Request;
     reset: () => void;
+    removeEntity: (type: string, id: string) => void;
     responseKey: string;
     requestState: RequestState;
 
@@ -31,6 +33,7 @@ export default class Message<R, E = void> {
         this.requestError = props.requestError;
         this.request = props.request;
         this.reset = props.reset;
+        this.removeEntity = props.removeEntity;
     }
 
 

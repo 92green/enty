@@ -4,6 +4,7 @@ import Hash from './util/Hash';
 import visitActionMap from './api/visitActionMap';
 import createRequestAction from './api/createRequestAction';
 import resetAction from './api/resetAction';
+import removeEntityAction from './api/removeAction';
 
 
 type ActionMap = {
@@ -14,6 +15,7 @@ type Visitor = ({
     actionType: string,
     requestAction: Function,
     resetAction: Function,
+    removeEntityAction: Function,
     generateResultKey: Function
 }) => *;
 
@@ -26,6 +28,7 @@ export default function EntityApiFactory(actionMap: ActionMap, visitor: Visitor)
             actionType,
             requestAction,
             resetAction,
+            removeEntityAction,
             generateResultKey: (payload) => Hash({payload, actionType})
         });
     });

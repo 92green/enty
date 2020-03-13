@@ -8,11 +8,12 @@ type RequestHookConfig = {
     actionType: string,
     requestAction: Function,
     resetAction: Function,
+    removeEntityAction: Function,
     generateResultKey: Function
 };
 
 export default function RequestHookFactory(context: *, config: RequestHookConfig) {
-    const {requestAction, resetAction, generateResultKey} = config;
+    const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
 
     return <R>() => {
         const [responseKey, setResponseKey] = useState('Unknown');
@@ -63,15 +64,17 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         });
 
         let reset = useCallback(() => dispatch(resetAction(responseKey)));
+        let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)));
 
 
         return useMemo(() => new Message<R>({
-            responseKey,
-            requestState,
-            response,
-            requestError: state.error[responseKey],
+            removeEntity,
             request,
-            reset
+            requestError: state.error[responseKey],
+            requestState,
+            reset,
+            response,
+            responseKey
         }), [requestState, response, responseKey]);
     };
 }

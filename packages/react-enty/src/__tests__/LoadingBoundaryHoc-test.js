@@ -12,6 +12,7 @@ const messageInput = {
     response: 'RESPONSE',
     responseKey: 'FOO',
     reset: () => {},
+    removeEntity: () => {},
     request: async () => 'FOO',
     requestError: 'OUCH!'
 };

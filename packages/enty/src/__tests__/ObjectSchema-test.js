@@ -131,3 +131,14 @@ test('ObjectSchemas can create objects', () => {
     expect(state.result).toBeInstanceOf(Foo);
 });
 
+
+it('will not create extra keys if value is undefined', () => {
+    const schema = new ObjectSchema({
+        foo: new EntitySchema('foo'),
+        bar: new EntitySchema('bar')
+    });
+    const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, schema));
+
+    expect(state).toHaveProperty('foo', {id: 'foo'});
+    expect(state).not.toHaveProperty('bar');
+});
