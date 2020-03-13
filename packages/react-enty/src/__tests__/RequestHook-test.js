@@ -12,7 +12,8 @@ import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
-import {mountWithProvider, foo, fooError, bar, obs} from './RequestSuite';
+import {removeEntity} from './RequestSuite';
+import {mountWithProvider, foo, fooError, bar, obs, entity} from './RequestSuite';
 
 
 
@@ -132,6 +133,17 @@ describe('Message.reset', () => {
         return reset((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
+        });
+    });
+
+});
+
+describe('Message.removeEntity', () => {
+
+    it('can remove entities', () => {
+        return removeEntity((ExpectsMessage) => () => {
+            const message = entity.useRequest();
+            return <ExpectsMessage message={message} removeEntityPayload={['foo', '123']} />;
         });
     });
 

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import EntityApi from '../EntityApi';
-import {ObjectSchema} from 'enty';
+import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 
 
@@ -10,19 +10,25 @@ import equals from 'unmutable/equals';
 //
 
 function setupTests() {
-    const {Provider, foo, fooError, bar, obs} = EntityApi({
+    const fooEntity = new EntitySchema('foo');
+    const {Provider, foo, fooError, bar, obs, entity} = EntityApi({
         foo: (data = 'foo') => Promise.resolve({data}),
+        entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
         fooError: () => Promise.reject('ouch!'),
         bar: (data = 'bar') => Promise.resolve({data}),
         obs: () => ({subscribe: () => {}})
-    }, new ObjectSchema({}));
+    }, new ObjectSchema({
+        foo: fooEntity
+    }));
 
     function ExpectsMessage(props: Object) {
-        const {request, reset} = props.message;
+        const {request, reset, removeEntity} = props.message;
         const {payload} = props;
+        const {removeEntityPayload} = props;
         return <>
             <button className="request" onClick={() => request(payload)} />
             <button className="reset" onClick={() => reset()} />
+            <button className="removeEntity" onClick={() => removeEntity(...removeEntityPayload)} />
         </>;
     }
 
@@ -33,6 +39,7 @@ function setupTests() {
             const SkipProvider = (props) => <Provider><Child {...props} /></Provider>;
             return mount(<SkipProvider {...extraProps} />);
         },
+        entity,
         foo,
         bar,
         obs,
@@ -40,7 +47,7 @@ function setupTests() {
     };
 }
 
-export const {mountWithProvider, foo, bar, obs, fooError, ExpectsMessage} = setupTests();
+export const {mountWithProvider, foo, bar, obs, entity, fooError, ExpectsMessage} = setupTests();
 
 export function asyncUpdate(wrapper: Object) {
     return (new Promise(resolve => setTimeout(resolve, 0)))
@@ -132,6 +139,21 @@ export async function reset(testFn: Function) {
     clickReset();
     expect(wrapper).toBeEmpty();
 }
+
+export async function removeEntity(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    let clickRequest = () => wrapper.find('.request').simulate('click');
+    let clickRemove = () => wrapper.find('.removeEntity').simulate('click');
+
+    expect(wrapper).toBeEmpty();
+    clickRequest();
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess({foo: {id: '123', name: 'foo'}});
+    clickRemove();
+    expect(wrapper).toBeSuccess({});
+}
+
 
 export async function fetchOnPropChange(testFn: Function) {
     let wrapper = mountWithProvider(testFn);

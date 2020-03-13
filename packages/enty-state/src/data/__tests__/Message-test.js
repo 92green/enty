@@ -7,8 +7,9 @@ const responseKey = 'FOO';
 const request = async () => response;
 const requestError = 'ERROR!';
 const reset = () => {};
+const removeEntity = () => {};
 
-const messageInput = {response, responseKey, request, requestError, reset};
+const messageInput = {response, responseKey, request, requestError, reset, removeEntity};
 
 it('will let you set responseKey, response, requestState, requestError, request', () => {
     const message = new Message({
@@ -17,6 +18,7 @@ it('will let you set responseKey, response, requestState, requestError, request'
         response: 'bar',
         requestState: RequestState.success('baz'),
         requestError: 'qux',
+        removeEntity,
         request: () => Promise.resolve('quux')
     });
 
@@ -29,7 +31,14 @@ it('will let you set responseKey, response, requestState, requestError, request'
 
 
 it('will default requestState to Empty', () => {
-    expect(new Message({reset, response: null, responseKey: 'foo', request: Promise.resolve, requestError: null}).requestState.isEmpty).toBe(true);
+    expect(new Message({
+        reset,
+        removeEntity,
+        response: null,
+        responseKey: 'foo',
+        request: Promise.resolve,
+        requestError: null
+    }).requestState.isEmpty).toBe(true);
 });
 
 it('will let you update the message', () => {
