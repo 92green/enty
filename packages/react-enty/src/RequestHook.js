@@ -7,11 +7,12 @@ import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'rea
 type RequestHookConfig = {
     actionType: string,
     requestAction: Function,
+    resetAction: Function,
     generateResultKey: Function
 };
 
 export default function RequestHookFactory(context: *, config: RequestHookConfig) {
-    const {requestAction, generateResultKey} = config;
+    const {requestAction, resetAction, generateResultKey} = config;
 
     return <R>() => {
         const [responseKey, setResponseKey] = useState('Unknown');
@@ -42,7 +43,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
 
         responseRef.current = response;
 
-        let onRequest = useCallback((payload, {returnResponse = false} = {}) => {
+        let request = useCallback((payload, {returnResponse = false} = {}) => {
             const responseKey = generateResultKey(payload);
             setResponseKey(responseKey);
             const pending = dispatch(requestAction(payload, {responseKey}));
@@ -61,13 +62,16 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             ;
         });
 
+        let reset = useCallback(() => dispatch(resetAction(responseKey)));
+
 
         return useMemo(() => new Message<R>({
             responseKey,
             requestState,
             response,
             requestError: state.error[responseKey],
-            onRequest
+            request,
+            reset
         }), [requestState, response, responseKey]);
     };
 }

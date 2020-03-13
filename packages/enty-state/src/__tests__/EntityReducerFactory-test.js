@@ -6,6 +6,7 @@ import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import resetAction from '../api/resetAction';
 
 //
 // Schemas
@@ -319,6 +320,25 @@ describe('remove entity', () => {
         );
         expect(state.entities.foo.bar).toBe(REMOVED_ENTITY);
         expect(state.entities.baz.qux).not.toBe(REMOVED_ENTITY);
+    });
+
+});
+
+describe('ENTY_RESET', () => {
+
+    it('will delete response and set requestState to empty', () => {
+        const reducer = EntityReducerFactory({});
+
+        const stateA = reducer(undefined, {type: 'ENTY_RECEIVE', payload: 'FOO', meta: {responseKey: '123'}});
+        expect(stateA.response['123']).toBe('FOO');
+        expect(stateA.requestState['123'].isSuccess).toBe(true);
+        expect(stateA.stats.responseCount).toBe(1);
+
+        const stateB = reducer(stateA, resetAction('123'));
+        expect(stateB.response['123']).toBeUndefined();
+        expect(stateB.requestState['123'].isSuccess).toBeUndefined();
+        expect(stateB.requestState['123'].isEmpty).toBe(true);
+        expect(stateB.stats.responseCount).toBe(2);
     });
 
 });

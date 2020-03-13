@@ -69,7 +69,7 @@ it('can request and render without a schema', async () => {
     const Child = () => {
         const message = foo.useRequest();
         useEffect(() => {
-            message.onRequest();
+            message.request();
         }, []);
         return <ExpectsMessage message={message} />;
     };
@@ -88,7 +88,7 @@ it('can log reducer cycles', async () => {
     const Child = () => {
         const message = foo.useRequest();
         useEffect(() => {
-            message.onRequest();
+            message.request();
         }, []);
         return <ExpectsMessage message={message} />;
     };

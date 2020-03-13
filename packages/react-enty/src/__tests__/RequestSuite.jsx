@@ -18,9 +18,12 @@ function setupTests() {
     }, new ObjectSchema({}));
 
     function ExpectsMessage(props: Object) {
-        const {onRequest} = props.message;
+        const {request, reset} = props.message;
         const {payload} = props;
-        return <button className="onRequest" onClick={() => onRequest(payload)} />;
+        return <>
+            <button className="request" onClick={() => request(payload)} />
+            <button className="reset" onClick={() => reset()} />
+        </>;
     }
 
     return {
@@ -105,7 +108,7 @@ export async function nothing(testFn: Function) {
 
 export async function refetch(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let click = () => wrapper.find('.onRequest').simulate('click');
+    let click = () => wrapper.find('.request').simulate('click');
 
     expect(wrapper).toBeEmpty();
     click();
@@ -114,6 +117,20 @@ export async function refetch(testFn: Function) {
     expect(wrapper).toBeSuccess({data: 'foo'});
     click();
     expect(wrapper).toBeRefetching({data: 'foo'});
+}
+
+export async function reset(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    let clickRequest = () => wrapper.find('.request').simulate('click');
+    let clickReset = () => wrapper.find('.reset').simulate('click');
+
+    expect(wrapper).toBeEmpty();
+    clickRequest();
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess({data: 'foo'});
+    clickReset();
+    expect(wrapper).toBeEmpty();
 }
 
 export async function fetchOnPropChange(testFn: Function) {
@@ -131,7 +148,7 @@ export async function fetchOnPropChange(testFn: Function) {
 
 export async function fetchOnCallback(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let click = () => wrapper.find('.onRequest').simulate('click');
+    let click = () => wrapper.find('.request').simulate('click');
 
     expect(wrapper).toBeEmpty();
     click();

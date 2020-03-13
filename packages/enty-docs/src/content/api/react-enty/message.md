@@ -19,7 +19,7 @@ class Message<RequestState> {
     response: mixed;
     requestState: RequestState;
     requestError: mixed;
-    onRequest(payload: mixed) => Promise<mixed>;
+    request(payload: mixed) => Promise<mixed>;
     get(key: string, notFoundValue?: mixed) => mixed;
     getIn(keyPath: Array<string>, notFoundValue?: mixed) => mixed;
     updateRequestState(updater: RequestState => RequestState) => Message;
@@ -77,7 +77,7 @@ function UserAvatar(props) {
 
 ## Methods
 
-### .onRequest()
+### .request()
 **type:** `(payload) => Promise<mixed>`  
 
 A promise returning function that will dispatch the corresponding api function. _This is most often 
@@ -87,7 +87,7 @@ _Note: The payload given to onRquest is not passed through `config.payloadCreato
 
 ```jsx
 function Button({message}) {
-    return <button onClick={() => message.onRequest()}>Save</button>;
+    return <button onClick={() => message.request()}>Save</button>;
 }
 
 const SaveUserButton = SaveUserHoc({name: 'message'})(Button);
