@@ -189,7 +189,7 @@ describe('usage', () => {
                 class Test extends React.Component<{aa: Message<{data: string}>, bb: Message<{data: string}>}> {
                     componentDidMount() {
                         const {aa, bb} = this.props;
-                        aa.onRequest('first').then(() => bb.onRequest('second'));
+                        aa.onRequest('first', {returnResponse: true}).then(() => bb.onRequest('second'));
                     }
                     render() {
                         const {aa, bb} = this.props;

@@ -11,7 +11,7 @@ import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
-import {mountWithProvider, foo, fooError, bar} from './RequestSuite';
+import {mountWithProvider, foo, fooError, bar, obs} from './RequestSuite';
 
 
 
@@ -19,7 +19,7 @@ describe('config', () => {
 
     it('will return a message', () => {
         expect.assertions(1);
-        mountWithProvider(() =>  () => {
+        mountWithProvider(() => () => {
             const message = foo.useRequest();
             expect(message).toBeInstanceOf(Message);
             return null;
@@ -96,7 +96,7 @@ describe('usage', () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
-                aa.onRequest('first').then(() => bb.onRequest('second'));
+                aa.onRequest('first', {returnResponse: true}).then(() => bb.onRequest('second'));
             }, []);
 
             return <div>
@@ -122,5 +122,66 @@ describe('usage', () => {
         });
     });
 
+
 });
 
+describe('config.returnResponse', () => {
+    it('onRequest will return undefined for promises', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.onRequest('first');
+                expect(pending).toBeUndefined();
+            }, []);
+
+            return null;
+        });
+    });
+    it('onRequest will return undefined for observables', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = obs.useRequest();
+            useEffect(() => {
+                var pending = message.onRequest('first');
+                expect(pending).toBeUndefined();
+            }, []);
+
+            return null;
+        });
+    });
+
+    it('onRequest will return response for promises if config.returnResponse is true', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.onRequest('first', {returnResponse: true});
+                expect(pending).resolves.toEqual({data: 'first'});
+            }, []);
+
+            return null;
+        });
+    });
+
+    it('onRequest will return response for observables if config.returnResponse is true', async () => {
+        // HOW?
+    });
+
+    it('rejected promises will can be caught if config.returnResponse is true', async () => {
+        expect.assertions(1);
+
+        mountWithProvider(() => () => {
+            const message = fooError.useRequest();
+            useEffect(() => {
+                message.onRequest('first', {returnResponse: true}).catch((e) => {
+                    expect(e).toBe('ouch!');
+                });
+            }, []);
+
+            return null;
+        });
+    });
+
+
+});

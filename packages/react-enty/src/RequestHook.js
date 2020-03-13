@@ -1,6 +1,7 @@
 // @flow
 import Message from 'enty-state/lib/data/Message';
 import RequestState from 'enty-state/lib/data/RequestState';
+import isObservable from 'enty-state/lib/util/isObservable';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
 
 type RequestHookConfig = {
@@ -41,16 +42,23 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
 
         responseRef.current = response;
 
-        let onRequest = useCallback((payload) => {
+        let onRequest = useCallback((payload, {returnResponse = false} = {}) => {
             const responseKey = generateResultKey(payload);
             setResponseKey(responseKey);
-            return dispatch(requestAction(payload, {responseKey}))
-                .then(() => {
-                    if(mounted.current) {
-                        return responseRef.current;
-                    }
-                })
-                .catch(() => {});
+            const pending = dispatch(requestAction(payload, {responseKey}));
+            const isPromise = !isObservable(pending);
+
+            if(!returnResponse) {
+                if(isPromise) {
+                    pending.catch(() => {});
+                }
+                return;
+            }
+
+            return isPromise
+                ? pending.then(() => mounted.current ? responseRef.current : undefined)
+                : pending
+            ;
         });
 
 
