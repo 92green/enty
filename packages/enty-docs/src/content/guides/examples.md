@@ -27,7 +27,7 @@ export default composeWith(
 
 ## Callbacks
 Some times a view will require a request to respond user interaction. In this case we can not set
-the auto config and pass our message's `onRequest` function to a handler.
+the auto config and pass our message's `request` function to a handler.
 
 ```
 function Form(props) {
@@ -35,7 +35,7 @@ function Form(props) {
     const {formState} = this.props;
     return <div>
         ...The rest of the form...
-        <button onClick={() => saveMessage.onRequest(formState)}>Save</button>
+        <button onClick={() => saveMessage.request(formState)}>Save</button>
     </div>;
 }
 

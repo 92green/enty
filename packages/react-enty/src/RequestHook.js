@@ -43,7 +43,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
 
         responseRef.current = response;
 
-        let onRequest = useCallback((payload, {returnResponse = false} = {}) => {
+        let request = useCallback((payload, {returnResponse = false} = {}) => {
             const responseKey = generateResultKey(payload);
             setResponseKey(responseKey);
             const pending = dispatch(requestAction(payload, {responseKey}));
@@ -70,7 +70,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             requestState,
             response,
             requestError: state.error[responseKey],
-            onRequest,
+            request,
             reset
         }), [requestState, response, responseKey]);
     };

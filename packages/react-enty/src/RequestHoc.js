@@ -37,7 +37,7 @@ export default function RequestHocFactory({useRequest}: Config) {
 
             useEffect(() => {
                 if(auto && shouldComponentAutoRequest(props)) {
-                    message.onRequest(payloadCreator(props));
+                    message.request(payloadCreator(props));
                 }
             }, autoValues);
 

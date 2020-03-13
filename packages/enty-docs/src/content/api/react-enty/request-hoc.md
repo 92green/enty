@@ -39,7 +39,7 @@ If `config.auto` is set to an array of strings that match to prop names the api 
 immediately on component mount, and everytime one of those props changes.
 This is useful for fetching data in a component that changes often.
 
-If `config.auto` is not declared nothing will happen until the `onRequest` callback is fired.
+If `config.auto` is not declared nothing will happen until the `request` callback is fired.
 This is useful for mutations triggered by user interaction like save, update or delete.
 
 ```js
@@ -65,7 +65,7 @@ hashed and stored in Enty state. This means a single RequestHoc can query differ
 same data and Enty is able to cache the results.
 
 * If `auto` is truthy props are passed to `payloadCreator`.
-* Calls to `message.onRequest` are passed directly to `payloadCreator`.
+* Calls to `message.request` are passed directly to `payloadCreator`.
 
 
 ```js
@@ -115,7 +115,7 @@ composeWith(
     }),
     (props) => {
         const {payload, saveMessage} = props;
-        return <button onClick={() => message.onRequest(payload)}>save user</button>
+        return <button onClick={() => message.request(payload)}>save user</button>
     }
 );
 ```
@@ -129,7 +129,7 @@ composeWith(
     class Test extends React.Component<{aa: Message, bb: Message}> {
         componentDidMount() {
             const {foo, bar} = this.props;
-            foo.onRequest('first').then(() => bar.onRequest('second'));
+            foo.request('first').then(() => bar.request('second'));
         }
         render() {
             const {aa, bb} = this.props;

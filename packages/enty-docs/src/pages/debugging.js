@@ -49,8 +49,8 @@ function UserAvatar(props) {
 
     return <Box>
         <Box>
-            <button onClick={() => userMessage.onRequest(true)}>Fetch Users</button>
-            <button onClick={() => userMessage.onRequest(false)}>Cause Error</button>
+            <button onClick={() => userMessage.request(true)}>Fetch Users</button>
+            <button onClick={() => userMessage.request(false)}>Cause Error</button>
             <button onClick={() => remove('user', 'foo')}>Remove Foo</button>
         </Box>
 

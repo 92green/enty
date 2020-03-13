@@ -96,7 +96,7 @@ export default function UserAvatar(props) {
     const {id} = props;
     const userMessage = Api.user.get.useRequest();
 
-    useAutoRequest(() => userMessage.onRequest({id}), [id]);
+    useAutoRequest(() => userMessage.request({id}), [id]);
 
     return <LoadingBoundary fallback={Spinner} error={Error}>
         {({user}) => <img src={user.avatar} />}

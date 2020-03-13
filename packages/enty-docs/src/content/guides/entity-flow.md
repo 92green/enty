@@ -4,8 +4,8 @@ title: Entity Flow
 group: Resources
 ---
 
-1. **RequestHoc.onRequest triggered**  
-The Enty data flow begins when a RequestHoc's onRequest is called. This either happens automatically
+1. **RequestHoc.request triggered**  
+The Enty data flow begins when a RequestHoc's request is called. This either happens automatically
 based on `config.auto` or as the result of user interaction.
 
 2. **Data Request**  

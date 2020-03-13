@@ -12,7 +12,7 @@ const messageInput = {
     response: 'RESPONSE',
     responseKey: 'FOO',
     reset: () => {},
-    onRequest: async () => 'FOO',
+    request: async () => 'FOO',
     requestError: 'OUCH!'
 };
 

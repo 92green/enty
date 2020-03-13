@@ -4,12 +4,12 @@ import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
 
-type OnRequest = (payload: mixed, config?: {returnResponse: boolean}) => any;
+type Request = (payload: mixed, config?: {returnResponse: boolean}) => any;
 
 type MessageInput<R, E> = {
     response: R,
     requestError: E,
-    onRequest: OnRequest,
+    request: Request,
     reset: () => void,
     requestState?: RequestState,
     responseKey: string
@@ -19,7 +19,7 @@ export default class Message<R, E = void> {
 
     response: R;
     requestError: E;
-    onRequest: OnRequest;
+    request: Request;
     reset: () => void;
     responseKey: string;
     requestState: RequestState;
@@ -29,7 +29,7 @@ export default class Message<R, E = void> {
         this.response = props.response;
         this.requestState = props.requestState || RequestState.empty();
         this.requestError = props.requestError;
-        this.onRequest = props.onRequest;
+        this.request = props.request;
         this.reset = props.reset;
     }
 

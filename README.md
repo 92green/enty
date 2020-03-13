@@ -110,7 +110,7 @@ export default function App(props) {
 
     // request a new user when props.id changes
     useEffect(() => {
-        message.onRequest(props.id);
+        message.request(props.id);
     }, [props.id]);
 
     return <LoadingBoundary fallback={<Spinner/>} error={<Error/>}>

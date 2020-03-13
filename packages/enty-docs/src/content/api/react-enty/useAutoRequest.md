@@ -20,7 +20,7 @@ import {useAutoRequest} from 'react-enty';
 
 function PetList() {
     const message = api.petList.useRequest();
-    useAutoRequest(() => message.onRequest());
+    useAutoRequest(() => message.request());
     //...
 }
 ```
@@ -33,7 +33,7 @@ import {useAutoRequest} from 'react-enty';
 function UserProfile() {
     const {id} = props;
     const message = api.userProfile.useRequest();
-    useAutoRequest(() => message.onRequest({id}), [id]);
+    useAutoRequest(() => message.request({id}), [id]);
     // ...
 }
 ```

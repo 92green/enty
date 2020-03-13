@@ -4,32 +4,32 @@ import RequestState from '../../data/RequestState';
 
 const response = {name: 'foo'};
 const responseKey = 'FOO';
-const onRequest = async () => response;
+const request = async () => response;
 const requestError = 'ERROR!';
 const reset = () => {};
 
-const messageInput = {response, responseKey, onRequest, requestError, reset};
+const messageInput = {response, responseKey, request, requestError, reset};
 
-it('will let you set responseKey, response, requestState, requestError, onRequest', () => {
+it('will let you set responseKey, response, requestState, requestError, request', () => {
     const message = new Message({
         reset,
         responseKey: 'foo',
         response: 'bar',
         requestState: RequestState.success('baz'),
         requestError: 'qux',
-        onRequest: () => Promise.resolve('quux')
+        request: () => Promise.resolve('quux')
     });
 
     expect(message.responseKey).toBe('foo');
     expect(message.response).toBe('bar');
     expect(message.requestState.value()).toBe('baz');
     expect(message.requestError).toBe('qux');
-    expect(message.onRequest()).resolves.toBe('quux');
+    expect(message.request()).resolves.toBe('quux');
 });
 
 
 it('will default requestState to Empty', () => {
-    expect(new Message({reset, response: null, responseKey: 'foo', onRequest: Promise.resolve, requestError: null}).requestState.isEmpty).toBe(true);
+    expect(new Message({reset, response: null, responseKey: 'foo', request: Promise.resolve, requestError: null}).requestState.isEmpty).toBe(true);
 });
 
 it('will let you update the message', () => {

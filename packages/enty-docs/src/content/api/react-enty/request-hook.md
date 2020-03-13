@@ -22,7 +22,7 @@ import Error from ./components/Error';
 
 export default function Avatar(props) {
     const message = api.user.useRequest();
-    useAutoRequest(() => message.onRequest({id: props.id}));
+    useAutoRequest(() => message.request({id: props.id}));
 
     return <LoadingBoundary message={message} fallback={<Spinner/>} error={<Error />}>
         {({user}) => <img src={user.avatar} alt={user.name} />}
@@ -39,7 +39,7 @@ import Error from ./components/Error';
 
 export default function Avatar(props) {
     const message = api.user.useRequest();
-    useAutoRequest(() => message.onRequest({id: props.id}), [props.id]);
+    useAutoRequest(() => message.request({id: props.id}), [props.id]);
 
     return <LoadingBoundary message={message} fallback={<Spinner/>} error={<Error />}>
         {({user}) => <img src={user.avatar} alt={user.name} />}
@@ -60,7 +60,7 @@ export default function Avatar(props) {
 
     return <Box>
         <input value={id} onChange={(e) => setId(e.value)} />
-        <button onClick={() => message.onRequest({id})}>Fetch User</button>
+        <button onClick={() => message.request({id})}>Fetch User</button>
         <LoadingBoundary message={message} fallback={<Spinner/>} error={<Error />}>
             {({user}) => <img src={user.avatar} alt={user.name} />}
         </LoadingBoundary>
@@ -83,8 +83,8 @@ export default function Avatar(props) {
     const renderUser = {({user}) => <img src={user.avatar} alt={user.name} />}
     
     useAutoRequest(async () => {
-        await foo.onRequest('foo');
-        await bar.onRequest('bar');
+        await foo.request('foo');
+        await bar.request('bar');
     });
 
     return <Box>
@@ -110,8 +110,8 @@ export default function Avatar(props) {
     const renderUser = {({user}) => <img src={user.avatar} alt={user.name} />}
     
     useAutoRequest(() => {
-        foo.onRequest('foo');
-        bar.onRequest('bar');
+        foo.request('foo');
+        bar.request('bar');
     });
 
     return <Box>

@@ -44,7 +44,7 @@ describe('usage', () => {
         return fetchOnLoad((ExpectsMessage) => () => {
             const message = foo.useRequest();
             useEffect(() => {
-                message.onRequest();
+                message.request();
             }, []);
 
             return <ExpectsMessage message={message} />;
@@ -55,7 +55,7 @@ describe('usage', () => {
         return errorOnLoad((ExpectsMessage) => () => {
             const message = fooError.useRequest();
             useEffect(() => {
-                message.onRequest();
+                message.request();
             }, []);
             return <ExpectsMessage message={message} />;
         });
@@ -79,7 +79,7 @@ describe('usage', () => {
         return fetchOnPropChange((ExpectsMessage) => (props: {id: string}) => {
             const message = foo.useRequest();
             useEffect(() => {
-                message.onRequest(props.id);
+                message.request(props.id);
             }, [props.id]);
             return <ExpectsMessage message={message} />;
         });
@@ -97,7 +97,7 @@ describe('usage', () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
-                aa.onRequest('first', {returnResponse: true}).then(() => bb.onRequest('second'));
+                aa.request('first', {returnResponse: true}).then(() => bb.request('second'));
             }, []);
 
             return <div>
@@ -112,8 +112,8 @@ describe('usage', () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
-                aa.onRequest('first');
-                bb.onRequest('second');
+                aa.request('first');
+                bb.request('second');
             }, []);
 
             return <div>
@@ -138,24 +138,24 @@ describe('Message.reset', () => {
 });
 
 describe('config.returnResponse', () => {
-    it('onRequest will return undefined for promises', async () => {
+    it('request will return undefined for promises', async () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
             const message = foo.useRequest();
             useEffect(() => {
-                var pending = message.onRequest('first');
+                var pending = message.request('first');
                 expect(pending).toBeUndefined();
             }, []);
 
             return null;
         });
     });
-    it('onRequest will return undefined for observables', async () => {
+    it('request will return undefined for observables', async () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
             const message = obs.useRequest();
             useEffect(() => {
-                var pending = message.onRequest('first');
+                var pending = message.request('first');
                 expect(pending).toBeUndefined();
             }, []);
 
@@ -163,12 +163,12 @@ describe('config.returnResponse', () => {
         });
     });
 
-    it('onRequest will return response for promises if config.returnResponse is true', async () => {
+    it('request will return response for promises if config.returnResponse is true', async () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
             const message = foo.useRequest();
             useEffect(() => {
-                var pending = message.onRequest('first', {returnResponse: true});
+                var pending = message.request('first', {returnResponse: true});
                 expect(pending).resolves.toEqual({data: 'first'});
             }, []);
 
@@ -176,7 +176,7 @@ describe('config.returnResponse', () => {
         });
     });
 
-    it('onRequest will return response for observables if config.returnResponse is true', async () => {
+    it('request will return response for observables if config.returnResponse is true', async () => {
         // HOW?
     });
 
@@ -186,7 +186,7 @@ describe('config.returnResponse', () => {
         mountWithProvider(() => () => {
             const message = fooError.useRequest();
             useEffect(() => {
-                message.onRequest('first', {returnResponse: true}).catch((e) => {
+                message.request('first', {returnResponse: true}).catch((e) => {
                     expect(e).toBe('ouch!');
                 });
             }, []);
