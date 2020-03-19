@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
 import {useEffect} from 'react';
-import getIn from 'unmutable/lib/getIn';
-import identity from 'unmutable/lib/identity';
+import getIn from 'unmutable/getIn';
+import identity from 'unmutable/identity';
+import pipeWith from 'unmutable/pipeWith';
 
 type Config = {
     useRequest: Function
@@ -33,7 +34,12 @@ export default function RequestHocFactory({useRequest}: Config) {
             const message = useRequest();
 
             const autoValues = (typeof auto === 'boolean' ? [] : auto)
-                .map(path => getIn(path.split('.'))(props));
+                .map(path => pipeWith(
+                    props,
+                    getIn(path.split('.')),
+                    value => JSON.stringify(value)
+                ));
+
 
             useEffect(() => {
                 if(auto && shouldComponentAutoRequest(props)) {

@@ -69,6 +69,36 @@ describe('config', () => {
             expect(wrapper).toBeSuccess({data: '!!!'});
         });
 
+        it('will do deep checks and not update', async () => {
+            let wrapper = mountWithProvider(foo.requestHoc({
+                name: 'message',
+                auto: ['foo', 'bar'],
+                payloadCreator: () => '!!!'
+            }));
+
+
+            expect(wrapper).toBeFetching();
+            await asyncUpdate(wrapper);
+            expect(wrapper).toBeSuccess({data: '!!!'});
+
+            // props.foo
+            wrapper.setProps({foo: '!'}).update();
+            expect(wrapper).toBeRefetching({data: '!!!'});
+            await asyncUpdate(wrapper);
+            expect(wrapper).toBeSuccess({data: '!!!'});
+
+            // props.bar.baz
+            wrapper.setProps({bar: {baz: '!'}}).update();
+            expect(wrapper).toBeRefetching({data: '!!!'});
+            await asyncUpdate(wrapper);
+            expect(wrapper).toBeSuccess({data: '!!!'});
+
+            // props.bar.baz
+            wrapper.setProps({bar: {baz: '!'}}).update();
+            expect(wrapper).toBeSuccess({data: '!!!'});
+        });
+
+
     });
 
     describe('config.shouldComponentAutoRequest', () => {
