@@ -162,6 +162,15 @@ describe('config', () => {
             expect(wrapper).toBeSuccess({data: 'blah!'});
         });
 
+        it('will pass .request() payload through payloadCreator', async () => {
+            const payloadCreator = jest.fn();
+            await fetchOnCallback(foo.requestHoc({
+                name: 'message',
+                payloadCreator
+            }));
+            expect(payloadCreator).toHaveBeenCalled();
+        });
+
     });
 
 });
@@ -248,5 +257,6 @@ describe('usage', () => {
             );
         });
     });
+
 
 });

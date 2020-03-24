@@ -31,7 +31,12 @@ export default function RequestHocFactory({useRequest}: Config) {
         }
 
         return (Component: *) => (props: *) => {
-            const message = useRequest();
+            const message = useRequest()
+                .update(message => ({
+                    ...message,
+                    // attach payload creator to message
+                    request: (payload, ...rest) => message.request(payloadCreator(payload), ...rest)
+                }));
 
             const autoValues = (typeof auto === 'boolean' ? [] : auto)
                 .map(path => pipeWith(
@@ -43,7 +48,7 @@ export default function RequestHocFactory({useRequest}: Config) {
 
             useEffect(() => {
                 if(auto && shouldComponentAutoRequest(props)) {
-                    message.request(payloadCreator(props));
+                    message.request(props);
                 }
             }, autoValues);
 
