@@ -12,8 +12,9 @@ import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
+import {fetchBadEntity} from './RequestSuite';
 import {removeEntity} from './RequestSuite';
-import {mountWithProvider, foo, fooError, bar, obs, entity} from './RequestSuite';
+import {mountWithProvider, foo, fooError, badEntity, bar, obs, entity} from './RequestSuite';
 
 
 
@@ -37,6 +38,32 @@ describe('config', () => {
         expect(() => mount(<Child/>)).toThrow();
     });
 
+    it('request will return undefined for promises', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.request('first');
+                expect(pending).toBeUndefined();
+            }, []);
+
+            return null;
+        });
+    });
+    it('request will return undefined for observables', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = obs.useRequest();
+            useEffect(() => {
+                var pending = message.request('first');
+                expect(pending).toBeUndefined();
+            }, []);
+
+            return null;
+        });
+    });
+
+
 });
 
 describe('usage', () => {
@@ -58,6 +85,17 @@ describe('usage', () => {
             useEffect(() => {
                 message.request();
             }, []);
+            return <ExpectsMessage message={message} />;
+        });
+    });
+
+    it('can catch errors in the reducer', async () => {
+        return fetchBadEntity((ExpectsMessage) => () => {
+            const message = badEntity.useRequest();
+            useEffect(() => {
+                message.request();
+            }, []);
+
             return <ExpectsMessage message={message} />;
         });
     });
@@ -98,8 +136,13 @@ describe('usage', () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
-                aa.request('first', {returnResponse: true}).then(() => bb.request('second'));
-            }, []);
+                if(aa.requestState.isEmpty) {
+                    aa.request('first');
+                }
+                if(aa.requestState.isSuccess) {
+                    bb.request('second');
+                }
+            }, [aa]);
 
             return <div>
                 <ExpectsMessage message={aa} />
@@ -146,66 +189,5 @@ describe('Message.removeEntity', () => {
             return <ExpectsMessage message={message} removeEntityPayload={['foo', '123']} />;
         });
     });
-
-});
-
-describe('config.returnResponse', () => {
-    it('request will return undefined for promises', async () => {
-        expect.assertions(1);
-        mountWithProvider(() => () => {
-            const message = foo.useRequest();
-            useEffect(() => {
-                var pending = message.request('first');
-                expect(pending).toBeUndefined();
-            }, []);
-
-            return null;
-        });
-    });
-    it('request will return undefined for observables', async () => {
-        expect.assertions(1);
-        mountWithProvider(() => () => {
-            const message = obs.useRequest();
-            useEffect(() => {
-                var pending = message.request('first');
-                expect(pending).toBeUndefined();
-            }, []);
-
-            return null;
-        });
-    });
-
-    it('request will return response for promises if config.returnResponse is true', async () => {
-        expect.assertions(1);
-        mountWithProvider(() => () => {
-            const message = foo.useRequest();
-            useEffect(() => {
-                var pending = message.request('first', {returnResponse: true});
-                expect(pending).resolves.toEqual({data: 'first'});
-            }, []);
-
-            return null;
-        });
-    });
-
-    it('request will return response for observables if config.returnResponse is true', async () => {
-        // HOW?
-    });
-
-    it('rejected promises will can be caught if config.returnResponse is true', async () => {
-        expect.assertions(1);
-
-        mountWithProvider(() => () => {
-            const message = fooError.useRequest();
-            useEffect(() => {
-                message.request('first', {returnResponse: true}).catch((e) => {
-                    expect(e).toBe('ouch!');
-                });
-            }, []);
-
-            return null;
-        });
-    });
-
 
 });

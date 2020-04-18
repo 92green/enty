@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {useEffect} from 'react';
 import composeWith from'unmutable/composeWith';
 import Message from 'enty-state/lib/data/Message';
 
@@ -225,18 +225,22 @@ describe('usage', () => {
             return composeWith(
                 foo.requestHoc({name: 'aa'}),
                 foo.requestHoc({name: 'bb'}),
-                class Test extends React.Component<{aa: Message<{data: string}>, bb: Message<{data: string}>}> {
-                    componentDidMount() {
-                        const {aa, bb} = this.props;
-                        aa.request('first', {returnResponse: true}).then(() => bb.request('second'));
-                    }
-                    render() {
-                        const {aa, bb} = this.props;
-                        return <div>
-                            <ExpectsMessage message={aa} />
-                            <ExpectsMessage message={bb} />
-                        </div>;
-                    }
+                (props) => {
+                    const {aa, bb} = props;
+
+                    useEffect(() => {
+                        if(aa.requestState.isEmpty) {
+                            aa.request('first');
+                        }
+                        if(aa.requestState.isSuccess) {
+                            bb.request('second');
+                        }
+                    }, [aa.requestState]);
+
+                    return <div>
+                        <ExpectsMessage message={aa} />
+                        <ExpectsMessage message={bb} />
+                    </div>;
                 }
             );
         });
