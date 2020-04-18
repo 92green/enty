@@ -84,15 +84,16 @@ describe('promise support', () => {
         expect(dispatch).toHaveBeenLastCalledWith({meta: 'META', payload: 'DATA', type: 'ENTY_RECEIVE'});
     });
 
-    it('can trigger error action via a rejected promise', () => {
+    it('can trigger error action via a rejected promise', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.reject('BORKD'));
         const meta = {responseKey: '123'};
-        return request(payload, meta)(dispatch, getState)
-            .catch(() => {
-                expect(dispatch).toHaveBeenLastCalledWith({meta, payload: 'BORKD', type: 'ENTY_ERROR'});
-            });
+        try {
+            await request(payload, meta)(dispatch, getState);
+        } catch (e) {
+            expect(dispatch).toHaveBeenLastCalledWith({meta, payload: 'BORKD', type: 'ENTY_ERROR'});
+        }
     });
 
 });

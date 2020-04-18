@@ -4,7 +4,7 @@ import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
 
-type Request = (payload: mixed, config?: {returnResponse: boolean}) => any;
+type Request = (payload: mixed) => any;
 
 type MessageInput<R, E> = {
     removeEntity: (type: string, id: string) => void,

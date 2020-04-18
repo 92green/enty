@@ -3,6 +3,7 @@ import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
+import {UndefinedIdError} from 'enty/lib/util/Error';
 
 
 //
@@ -11,9 +12,10 @@ import equals from 'unmutable/equals';
 
 function setupTests() {
     const fooEntity = new EntitySchema('foo');
-    const {Provider, foo, fooError, bar, obs, entity} = EntityApi({
+    const {Provider, foo, fooError, badEntity, bar, obs, entity} = EntityApi({
         foo: (data = 'foo') => Promise.resolve({data}),
         entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
+        badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
         fooError: () => Promise.reject('ouch!'),
         bar: (data = 'bar') => Promise.resolve({data}),
         obs: () => ({subscribe: () => {}})
@@ -39,6 +41,7 @@ function setupTests() {
             const SkipProvider = (props) => <Provider><Child {...props} /></Provider>;
             return mount(<SkipProvider {...extraProps} />);
         },
+        badEntity,
         entity,
         foo,
         bar,
@@ -47,7 +50,7 @@ function setupTests() {
     };
 }
 
-export const {mountWithProvider, foo, bar, obs, entity, fooError, ExpectsMessage} = setupTests();
+export const {mountWithProvider, foo, bar, obs, badEntity, entity, fooError, ExpectsMessage} = setupTests();
 
 export function asyncUpdate(wrapper: Object) {
     return (new Promise(resolve => setTimeout(resolve, 0)))
@@ -106,6 +109,13 @@ export async function errorOnLoad(testFn: Function) {
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeError('ouch!');
+}
+
+export async function fetchBadEntity(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeError(UndefinedIdError('foo'));
 }
 
 export async function nothing(testFn: Function) {
