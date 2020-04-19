@@ -6,7 +6,6 @@ import composeWith from 'unmutable/composeWith';
 const expectContext = (testFn) => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
-
     return expect(mount(<Component />).find('ExpectsContext').prop('context'));
 
 };
@@ -31,15 +30,21 @@ describe('Component', () => {
         const {Provider, Context} = ProviderFactory({});
 
         expectContext((Child) => () => {
-            return <Provider initialState="component">
+            return <Provider initialState={{entities: {foo: 'component'}}}>
                 <Context.Consumer
                     children={(context) => <Child context={context}/>}
                 />
             </Provider>;
-        }).toEqual([
-            'component',
-            expect.any(Function)
-        ]);
+        }).toMatchObject([{
+            baseSchema: undefined,
+            entities: {foo: 'component'},
+            error: {},
+            requestState: {},
+            response: {},
+            schemas: {},
+            stats: {responseCount: 0}
+        }, expect.any(Function)]);
+
     });
 });
 
@@ -49,17 +54,22 @@ describe('Hoc', () => {
         const {ProviderHoc, Context} = ProviderFactory({});
 
         expectContext((Child) => composeWith(
-            (Component) => (props) => <Component {...props} initialState="hoc" />,
+            (Component) => (props) => <Component {...props} initialState={{entities: {foo: 'hoc'}}} />,
             ProviderHoc(),
             () => {
                 return <Context.Consumer
                     children={(context) => <Child context={context}/>}
                 />;
             }
-        )).toEqual([
-            'hoc',
-            expect.any(Function)
-        ]);
+        )).toMatchObject([{
+            baseSchema: undefined,
+            entities: {foo: 'hoc'},
+            error: {},
+            requestState: {},
+            response: {},
+            schemas: {},
+            stats: {responseCount: 0}
+        }, expect.any(Function)]);
 
 
     });

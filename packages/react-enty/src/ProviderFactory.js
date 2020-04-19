@@ -39,15 +39,29 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     };
 
     function Provider({children, initialState, debug}: ProviderProps): Element<any> {
+
+        const firstState = {
+            baseSchema: schema,
+            schemas: {},
+            response: {},
+            error: {},
+            requestState: {},
+            entities: {},
+            stats: {
+                responseCount: 0
+            },
+            ...initialState
+        };
+
         const {reducer, intialValue} = useMemo(() => {
             const reducer = debug
                 ? (state, action) => LoggingReducer(entityReducer(state, action), action, debug)
                 : entityReducer;
             return {
                 reducer,
-                intialValue: reducer(initialState, intialAction)
+                intialValue: reducer(firstState, {type: 'ENTY_INIT', payload: null, meta: {}})
             };
-        }, [debug, initialState]);
+        }, [debug, firstState]);
 
         const storeValue = useReducerThunk(reducer, intialValue);
 
