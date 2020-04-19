@@ -12,6 +12,7 @@ type Config = {
 type HockConfig = {
     name: string,
     auto?: boolean|Array<string>,
+    key?: (props: mixed) => string,
     shouldComponentAutoRequest?: (props: *) => boolean,
     payloadCreator?: (props: *) => *
 };
@@ -31,7 +32,7 @@ export default function RequestHocFactory({useRequest}: Config) {
         }
 
         return (Component: *) => (props: *) => {
-            const message = useRequest()
+            const message = useRequest({key: hockConfig.key && hockConfig.key(props)})
                 .update(message => ({
                     ...message,
                     // attach payload creator to message

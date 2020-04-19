@@ -14,7 +14,7 @@ import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
 import {fetchBadEntity} from './RequestSuite';
 import {removeEntity} from './RequestSuite';
-import {mountWithProvider, foo, fooError, badEntity, bar, obs, entity} from './RequestSuite';
+import {mountWithProvider, foo, fooError, exisitingKey, badEntity, bar, baz, obs, entity} from './RequestSuite';
 
 
 
@@ -50,6 +50,7 @@ describe('config', () => {
             return null;
         });
     });
+
     it('request will return undefined for observables', async () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
@@ -62,7 +63,6 @@ describe('config', () => {
             return null;
         });
     });
-
 
 });
 
@@ -113,6 +113,15 @@ describe('usage', () => {
             return <ExpectsMessage message={message} />;
         });
     });
+
+    it('can predefine a responseKey', async () => {
+        return exisitingKey((ExpectsMessage) => () => {
+            const message = baz.useRequest({key: 'baz'});
+
+            return <ExpectsMessage message={message} />;
+        });
+    });
+
 
     it('can fetch if props change', async () => {
         return fetchOnPropChange((ExpectsMessage) => (props: {id: string}) => {

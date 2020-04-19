@@ -7,11 +7,13 @@ import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
 import {nothing} from './RequestSuite';
 import {refetch} from './RequestSuite';
+import {exisitingKey} from './RequestSuite';
 import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
 import {foo} from './RequestSuite';
+import {baz} from './RequestSuite';
 import {fooError} from './RequestSuite';
 import {mountWithProvider} from './RequestSuite';
 import {asyncUpdate} from './RequestSuite';
@@ -203,6 +205,16 @@ describe('usage', () => {
     it('can refetch content', async () => {
         return refetch(foo.requestHoc({
             name: 'message'
+        }));
+    });
+
+    it('can use an exising key', async () => {
+        return exisitingKey(baz.requestHoc({
+            name: 'message',
+            key: (props) => {
+                expect(props).toEqual({});
+                return 'baz';
+            }
         }));
     });
 
