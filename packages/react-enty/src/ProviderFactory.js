@@ -6,6 +6,7 @@ import React, {createContext, useMemo} from 'react';
 import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
 import LoggingReducer from 'enty-state/lib/util/LoggingReducer';
+import type {Action} from 'enty-state/lib/util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
 type ProviderConfig = {
@@ -32,22 +33,31 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     const {schema} = config;
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext();
-    const intialAction = {
-        type: 'ENTY_INIT',
-        payload: null,
-        meta: {responseKey: 'None'}
-    };
 
     function Provider({children, initialState, debug}: ProviderProps): Element<any> {
+
+        const firstState = {
+            baseSchema: schema,
+            schemas: {},
+            response: {},
+            error: {},
+            requestState: {},
+            entities: {},
+            stats: {
+                responseCount: 0
+            },
+            ...initialState
+        };
+
         const {reducer, intialValue} = useMemo(() => {
             const reducer = debug
-                ? (state, action) => LoggingReducer(entityReducer(state, action), action, debug)
+                ? (state, action: Action) => LoggingReducer(entityReducer(state, action), action, debug)
                 : entityReducer;
             return {
                 reducer,
-                intialValue: reducer(initialState, intialAction)
+                intialValue: reducer(firstState, {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}})
             };
-        }, [debug, initialState]);
+        }, [debug, firstState]);
 
         const storeValue = useReducerThunk(reducer, intialValue);
 

@@ -4,6 +4,7 @@ import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
+import RequestState from 'enty-state/lib/data/RequestState';
 
 
 //
@@ -12,12 +13,13 @@ import {UndefinedIdError} from 'enty/lib/util/Error';
 
 function setupTests() {
     const fooEntity = new EntitySchema('foo');
-    const {Provider, foo, fooError, badEntity, bar, obs, entity} = EntityApi({
+    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi({
         foo: (data = 'foo') => Promise.resolve({data}),
         entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
         badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
         fooError: () => Promise.reject('ouch!'),
         bar: (data = 'bar') => Promise.resolve({data}),
+        baz: (data = 'requested-baz') => Promise.resolve({data}),
         obs: () => ({subscribe: () => {}})
     }, new ObjectSchema({
         foo: fooEntity
@@ -38,19 +40,27 @@ function setupTests() {
         ExpectsMessage,
         mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
             const Child = testFn(ExpectsMessage);
-            const SkipProvider = (props) => <Provider><Child {...props} /></Provider>;
+            const SkipProvider = (props) => <Provider
+                initialState={{
+                    entities: {},
+                    response: {baz: {data: 'initial-baz'}},
+                    requestState: {baz: RequestState.success()}
+                }}
+                children={<Child {...props} />}
+            />;
             return mount(<SkipProvider {...extraProps} />);
         },
         badEntity,
         entity,
         foo,
         bar,
+        baz,
         obs,
         fooError
     };
 }
 
-export const {mountWithProvider, foo, bar, obs, badEntity, entity, fooError, ExpectsMessage} = setupTests();
+export const {mountWithProvider, foo, bar, baz, obs, badEntity, entity, fooError, ExpectsMessage} = setupTests();
 
 export function asyncUpdate(wrapper: Object) {
     return (new Promise(resolve => setTimeout(resolve, 0)))
@@ -116,6 +126,16 @@ export async function fetchBadEntity(testFn: Function) {
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeError(UndefinedIdError('foo'));
+}
+
+export async function exisitingKey(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    let click = () => wrapper.find('.request').simulate('click');
+    expect(wrapper).toBeSuccess({data: 'initial-baz'});
+    click();
+    expect(wrapper).toBeRefetching({data: 'initial-baz'});
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess({data: 'requested-baz'});
 }
 
 export async function nothing(testFn: Function) {
