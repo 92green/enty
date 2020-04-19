@@ -200,3 +200,21 @@ describe('Message.removeEntity', () => {
     });
 
 });
+
+
+describe('Message.request', () => {
+
+    it('request will return response if config.returnResponse is true', async () => {
+        expect.assertions(1);
+        mountWithProvider(() => () => {
+            const message = foo.useRequest();
+            useEffect(() => {
+                var pending = message.request('first', {returnResponse: true});
+                expect(pending).resolves.toEqual({data: 'first'});
+            }, []);
+
+            return null;
+        });
+    });
+
+});

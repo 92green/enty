@@ -110,5 +110,18 @@ describe('general', () => {
         expect(typeof thunk).toBe('function');
     });
 
+    it('returns response if meta.returnResponse is true', async () => {
+        expect.assertions(2);
+        const dispatch = jest.fn();
+        const getState = jest.fn();
+
+        const payload = createRequestAction(async () => 'foo');
+        const payloadA = payload('foo', {returnResponse: true})(dispatch, getState);
+        const payloadB = payload('foo', {returnResponse: false})(dispatch, getState);
+
+        expect(payloadA).resolves.toBe('foo');
+        expect(payloadB).toBeUndefined();
+    });
+
 
 });

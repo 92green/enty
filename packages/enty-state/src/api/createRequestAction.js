@@ -5,7 +5,8 @@ import isObservable from '../util/isObservable';
 
 
 type Meta = {
-    responseKey: string
+    responseKey: string,
+    returnResponse?: boolean
 };
 
 export default function createRequestAction(sideEffect: SideEffect): Function {
@@ -38,8 +39,13 @@ export default function createRequestAction(sideEffect: SideEffect): Function {
             });
         } else {
             // $FlowFixMe - see above
-            pending.then(receiveAction).catch(errorAction);
+            pending.then(receiveAction).catch(err => {
+                errorAction(err);
+                return meta.returnResponse ? Promise.reject(err) : undefined;
+            });
         }
+
+        return meta.returnResponse ? pending : undefined;
 
     };
 }
