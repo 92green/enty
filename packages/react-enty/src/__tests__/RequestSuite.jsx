@@ -43,8 +43,10 @@ function setupTests() {
             const SkipProvider = (props) => <Provider
                 initialState={{
                     entities: {},
-                    response: {baz: {data: 'initial-baz'}},
-                    requestState: {baz: RequestState.success()}
+
+                    // Hashed key of 'baz'
+                    response: {'1379365508': {data: 'initial-baz'}},
+                    requestState: {'1379365508': RequestState.success()}
                 }}
                 children={<Child {...props} />}
             />;
@@ -136,6 +138,13 @@ export async function exisitingKey(testFn: Function) {
     expect(wrapper).toBeRefetching({data: 'initial-baz'});
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess({data: 'requested-baz'});
+}
+
+export async function keyClash(testFn: Function) {
+    let wrapper = mountWithProvider(testFn);
+    let first = wrapper.find('ExpectsMessage').at(0).prop('message');
+    let second = wrapper.find('ExpectsMessage').at(1).prop('message');
+    expect(first.responseKey).not.toBe(second.responseKey);
 }
 
 export async function nothing(testFn: Function) {
