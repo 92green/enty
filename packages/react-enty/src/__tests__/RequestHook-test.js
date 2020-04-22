@@ -14,7 +14,7 @@ import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
 import {fetchBadEntity} from './RequestSuite';
 import {removeEntity} from './RequestSuite';
-import {mountWithProvider, foo, fooError, exisitingKey, badEntity, bar, baz, obs, entity} from './RequestSuite';
+import {mountWithProvider, foo, fooError, exisitingKey, keyClash, badEntity, bar, baz, obs, entity} from './RequestSuite';
 
 
 
@@ -119,6 +119,18 @@ describe('usage', () => {
             const message = baz.useRequest({key: 'baz'});
 
             return <ExpectsMessage message={message} />;
+        });
+    });
+
+    it('will not clash keys', async () => {
+        return keyClash((ExpectsMessage) => () => {
+            const aa = baz.useRequest({key: 'baz'});
+            const bb = foo.useRequest({key: 'baz'});
+
+            return <div>
+                <ExpectsMessage message={aa} />
+                <ExpectsMessage message={bb} />
+            </div>;
         });
     });
 
