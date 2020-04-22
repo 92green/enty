@@ -1,6 +1,6 @@
 {
   "name": "enty-state",
-  "version": "1.0.0-alpha.13",
+  "version": "1.0.0-alpha.14",
   "description": "The core functions for handling Enty's internal state",
   "license": "MIT",
   "author": "Allan Hortle",
@@ -31,7 +31,7 @@
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^1.0.1",
     "blueflag-test": "^0.22.0",
-    "enty": "^1.0.0-alpha.13",
+    "enty": "^1.0.0-alpha.14",
     "flow-bin": "^0.104.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
