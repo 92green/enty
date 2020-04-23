@@ -5,8 +5,8 @@ export type Observable = {
     subscribe: Function
 };
 
-export type AsyncType = Promise<*> | Observable;
-export type SideEffect = (*, Object) => AsyncType;
+export type AsyncType = Promise<any> | Observable | AsyncGenerator<any, any, any>;
+export type SideEffect = (any, Object) => AsyncType;
 
 export type State = {
     baseSchema: Schema,
