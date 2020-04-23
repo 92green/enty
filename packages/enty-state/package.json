@@ -23,7 +23,7 @@
     "flow-coverage": "blueflag-test flow-coverage -M",
     "lint": "blueflag-test lint",
     "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage"
+    "test-all": "yarn lint && yarn flow && yarn test"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",
