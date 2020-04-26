@@ -8,7 +8,7 @@
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
     "test-all": "lerna run test-all --parallel --",
-    "deploy-docs": "yarn lerna --scope enty-docs run deploy",
+    "build-docs": "build-storybook --loglevel silly -c .storybook -o .out",
     "docs": "start-storybook -p 8000 --ci"
   },
   "devDependencies": {
