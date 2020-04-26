@@ -1,30 +1,81 @@
 # Enty 
 
+<!-- vim-markdown-toc GFM -->
+
+* [Introduction](#introduction)
+* [Installation](#installation)
+* [Getting Started](#getting-started)
+* [Basics](#basics)
+    * [Auto Request](#auto-request)
+    * [Sequential Requests](#sequential-requests)
+    * [Parallel Requests](#parallel-requests)
+    * [LoadingBoundary](#loadingboundary)
+    * [CRUD](#crud)
+    * [Custom Data Classes](#custom-data-classes)
+    * [Caching](#caching)
+    * [Service Based Api](#service-based-api)
+* [Advanced](#advanced)
+    * [Optimistic Updates](#optimistic-updates)
+    * [Polling](#polling)
+    * [Websockets](#websockets)
+    * [Observables](#observables)
+    * [List Manipulation](#list-manipulation)
+    * [Tainted Entities](#tainted-entities)
+    * [Deleting Entities](#deleting-entities)
+* [Api](#api)
+    * [Schemas](#schemas)
+    * [EntityApi](#entityapi)
+    * [useRequest](#userequest)
+    * [Message](#message)
+    * [LoadingBoundary](#loadingboundary-1)
+* [Getting Started](#getting-started-1)
+    * [1. Schema](#1-schema)
+    * [2. API](#2-api)
+    * [3. Connect to react](#3-connect-to-react)
+    * [4. Make a Query](#4-make-a-query)
+
+<!-- vim-markdown-toc -->
+
 ## Introduction
-Enty is a framework for managing data requested from back-ends and APIs.  Instead of you manually storing requested data, Enty uses schemas to describe relationships and stores the data as normalized entities.
+Enty is a normalized cache for front-ends designed to synchronized local state with an external source like a database.
 
-* Views can declare what data they need.
-* There is practically no data fetching code.
-* Data given to views is always up to date.
-* Bad relationships in data become clear.
-* pairs wonderfully with graphql
+* It's declarative. (Designed for hooks)
+* It keeps your data up to date.
+* It's low boiler plate.
+* It works with promises, async generators and observables.
 
+## Installation
+## Getting Started
 
-## Purpose
+## Basics
+### Auto Request
+* Once
+* Based On Id
+* Callbacks
 
-Any webapp that involves  both a back and a front end will create entities. Unique pieces of data that are known by an id.  The back end might call them models, the front end might call them application state, let's call them entities.
+### Sequential Requests
+### Parallel Requests
+### LoadingBoundary
+### CRUD
+### Custom Data Classes
+### Caching
+### Service Based Api
 
-<!-- ## too much handling of the data -->
-When the client side thinks of storing these entities in terms of endpoints and stores (or even actions and reducers) it's another set of hands touching the data. It allows more places for shady hacks to creep in. It allows more places for code to become brittle. It allows more places for the code to break.
+## Advanced
+### Optimistic Updates
+### Polling
+### Websockets
+### Observables
+### List Manipulation
+### Tainted Entities
+### Deleting Entities
 
-On top of this you force the front end to recreate relationships between entities. Storing data by type in isolated stores logically makes sense, but when a view visually combines two entities (post with comments) you create a point where the front end needs to know exactly how to reconstruct this. This is not an insurmountable problem but as the code base grows so will the places where the front end has to know some specific detail and the places where things can go wrong.
-
-<!-- ## front end concerns.  -->
-In reality the front end doesn't care where the data came from or how it is stored. It just knows that it wants a certain number of entities and information about whether they have arrived yet.
-
-<!-- ## Enty -->
-Enty lets you describe the relationships of your entities through schemas. It is then able to store them in a normalized state. This means that they are not stored by request but by the unique id that they were given by the back-end.
-
+## Api
+### Schemas
+### EntityApi
+### useRequest
+### Message
+### LoadingBoundary
 
 
 ## Getting Started
