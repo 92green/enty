@@ -24,7 +24,7 @@ const api = EntityApi({
             return {personList: data.results};
         },
         get: async (payload) => {
-            const {data} = await get(`https://swapi.dev/api/people/${payload.id}`);
+            const {data} = await get(`https://swapi.dev/api/people/${payload.id}/`);
             return {person: data};
         }
     }

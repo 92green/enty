@@ -7,24 +7,9 @@
     "prep": "yarn && yarn lerna bootstrap",
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
-    "test-all": "lerna run test-all --parallel --",
-    "build-docs": "build-storybook --loglevel silly -c .storybook -o .out",
-    "docs": "start-storybook -p 8000 --ci"
+    "test-all": "lerna run test-all --parallel --"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.3.18",
-    "@storybook/addon-console": "^1.2.1",
-    "@storybook/addon-docs": "^5.3.18",
-    "@storybook/addon-storysource": "^5.3.18",
-    "@storybook/react": "^5.3.18",
-    "axios": "^0.19.2",
-    "babel-loader": "^8.1.0",
-    "lerna": "^3.4.3",
-    "react": "^16.13.1",
-    "react-enty": "file:./packages/react-enty",
-    "react-is": "^16.13.1",
-    "react-markdown": "^4.3.1",
-    "swapi-wrapper": "^1.0.0",
-    "theme-ui": "^0.3.1"
+    "lerna": "^3.4.3"
   }
 }

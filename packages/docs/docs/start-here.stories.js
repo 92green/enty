@@ -64,10 +64,6 @@ export const JustGiveMeTheCode = () => {
             list: async (payload) => {
                 const {data} = await get(`https://swapi.dev/api/people/?page=${payload.page}`);
                 return {personList: data.results};
-            },
-            get: async (payload) => {
-                const {data} = await get(`https://swapi.dev/api/people/${payload.id}`);
-                return {person: data};
             }
         }
     }, MainSchema)

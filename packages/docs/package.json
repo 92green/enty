@@ -1,0 +1,30 @@
+{
+  "name": "docs",
+  "release": {
+    "name": "WorthwhileDinosaur"
+  },
+  "private": true,
+  "scripts": {
+    "build": "build-storybook -c .storybook -o .out",
+    "docs": "start-storybook -p 8000 --ci"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@storybook/addon-actions": "^5.3.18",
+    "@storybook/addon-console": "^1.2.1",
+    "@storybook/addon-storysource": "^5.3.18",
+    "@storybook/react": "^5.3.18",
+    "@storybook/source-loader": "^5.3.18",
+    "axios": "^0.19.2",
+    "babel-loader": "^8.1.0",
+    "github-pages": "^3.0.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-markdown": "^4.3.1",
+    "theme-ui": "^0.3.1",
+    "webpack": "^4.43.0"
+  },
+  "dependencies": {
+    "react-enty": "^1.0.0-alpha.15"
+  }
+}
