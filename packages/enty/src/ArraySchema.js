@@ -23,19 +23,15 @@ export default class ArraySchema<A: Schema> implements StructuralSchemaInterface
         this.create = options.create || (aa => aa);
     }
 
-    normalize(data: mixed, entities: Object = {}): NormalizeState {
+    normalize(data: any, entities: Object = {}): NormalizeState {
         let schemas = {};
-        const result = this.create(data)
-            .map((item: any): any => {
-                const {result, schemas: childSchemas} = this.shape.normalize(item, entities);
+        const result = data.map((item: any): any => {
+            const {result, schemas: childSchemas} = this.shape.normalize(item, entities);
+            Object.assign(schemas, childSchemas);
+            return result;
+        });
 
-                // add child schemas to the schema collection
-                Object.assign(schemas, childSchemas);
-
-                return result;
-            });
-
-        return {entities, schemas, result};
+        return {entities, schemas, result: this.create(result)};
     }
 
     denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
