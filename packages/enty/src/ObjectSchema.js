@@ -30,7 +30,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
      */
     normalize(data: mixed, entities: Object = {}): NormalizeState {
         const {shape} = this;
-        const dataMap = this.create(data);
+        const dataMap = data;
         let schemas = {};
 
         const result = Object.keys(shape)
@@ -46,7 +46,7 @@ export default class ObjectSchema<A: {}> implements StructuralSchemaInterface<A>
                 return result;
             }, dataMap);
 
-        return {entities, schemas, result};
+        return {entities, schemas, result: this.create(result)};
 
     }
 
