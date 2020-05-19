@@ -1,9 +1,9 @@
 {
   "name": "enty",
-  "version": "0.50.1",
+  "version": "1.0.0-alpha.16",
   "description": "An opinionated set of redux tools to cut down on boilerplate",
   "main": "lib/index.js",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "Allan Hortle",
   "repository": {
     "type": "git",
@@ -18,11 +18,22 @@
   "private": false,
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production babel src --out-dir lib --ignore **/*-test.js",
-    "watch": "yarn build -w"
+    "build": "rm -rf lib && NODE_ENV=production yarn babel src --out-dir lib --ignore '**/__tests__/*.js'",
+    "watch": "yarn build -w",
+    "flow": "flow check",
+    "lint": "blueflag-test lint",
+    "test": "yarn jest --maxWorkers=1",
+    "test-all": "yarn lint && yarn flow && yarn test"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "babel-plugin-extract-flow-types": "^1.0.0",
+    "babel-preset-blueflag": "^1.0.1",
+    "blueflag-test": "^0.22.0",
+    "flow-bin": "^0.104.0"
   },
   "dependencies": {
-    "fronads": "^0.18.0",
     "unmutable": "^0.46.0"
   }
 }

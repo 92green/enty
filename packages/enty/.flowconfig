@@ -1,0 +1,9 @@
+[options]
+module.file_ext=.js
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+server.max_workers=1
+
+[ignore]
+<PROJECT_ROOT>/coverage/.*
+<PROJECT_ROOT>/lib/.*
+

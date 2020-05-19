@@ -1,33 +1,16 @@
 {
+  "release": {
+    "name": "WorthwhileDinosaur"
+  },
   "private": true,
   "scripts": {
+    "prep": "yarn && yarn lerna bootstrap",
     "build": "lerna run build --parallel --",
     "watch": "lerna run watch --parallel --",
-    "flow": "blueflag-test flow",
-    "flow-coverage": "blueflag-test flow-coverage -M",
-    "lint": "blueflag-test lint",
-    "test": "yarn jest",
-    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage",
+    "test-all": "lerna run test-all --parallel --",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.23.0",
-    "babel-plugin-extract-flow-types": "^1.0.0",
-    "babel-preset-blueflag": "^0.6.0",
-    "blueflag-test": "0.21.0",
-    "lerna": "^3.4.3",
-    "react": "16.4.2",
-    "react-dom": "16.4.2",
-    "react-redux": "^5.0.6",
-    "redux": "^3.6.0",
-    "require.async": "^0.1.1",
-    "sinon": "^7.2.4"
-  },
-  "dependencies": {}
+    "lerna": "^3.4.3"
+  }
 }

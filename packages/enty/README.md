@@ -45,7 +45,7 @@ import {
     EntitySchema,
 } from 'enty';
 
-var user = EntitySchema('user');
+var user = new EntitySchema('user');
 var userList = ListSchema(user);
 
 user.set(MapSchema({
@@ -137,7 +137,7 @@ If the promise resolves the receive action is triggered, the requestState become
 The payload is passed into schema.normalize, which will in turn call schema.normalize recursively on its children as defined. Entities are stored under their schema type key and the result of their id attribute. Each entity is also passed through their constructor function which is given the current entity and the previous version if it exists. 
 
 4. **Results & Entities Stored**  
-The normalised entities are shallow merged with the previous state. The normalised result object is stored under its resultKey.
+The normalised entities are shallow merged with the previous state. The normalised result object is stored under its responseKey.
 
 5. **Views Updated**  
 The update in state triggers a rerender. All hocked views select their data based on their result key. 

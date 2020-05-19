@@ -1,0 +1,82 @@
+---
+groupRank: 1
+group: Enty
+title: Entity Schema
+---
+
+Entity schemas describe where a unique entity can be found in your data shape.
+
+* entities must have a unique name.
+* entities must have a unique id.
+* entities must have a shape.
+
+
+## Params
+
+```js
+new EntitySchema(
+    name: string,
+    options?: {
+        shape: StructuralSchema,
+        id: (entity: any) => string
+    }
+);
+```
+
+### name
+**type:** `string`
+
+Each category of entity requires a name so that Enty can store and locate them in state.
+It must be unique amongst your collection of entities.
+
+
+```js
+const person = new EntitySchema('person');
+const cat = new EntitySchema('cat');
+```
+
+
+### options.shape
+**type:** `StructuralSchema`
+
+Because entities can come in many shapes Enty chooses not to define this in the EntitySchema.
+All EntitySchemas must contain a shape of their shape.
+
+
+```js
+const person = new EntitySchema('person', {
+    shape: new ObjectSchema({})
+});
+
+const globalPersonList = new EntitySchema('globalPersonList', {
+    shape: new ArraySchema(person)
+});
+```
+
+_Note: To allow for schemas with circular structures, shape can be set at any time before execution._
+
+```js
+const owner = new EntitySchema('owner');
+const pet = new EntitySchema('pet');
+
+cat.shape = new ObjectSchema({owner});
+owner.shape = new ObjectSchema({pet});
+```
+
+### options.id
+<Id/>
+
+```js
+const person = new EntitySchema('person', {
+    id: (person) => person.email
+});
+```
+
+
+## Methods
+
+### .normalize()
+<Normalize />
+
+### .denormalize()
+<Denormalize />

@@ -1,6 +1,4 @@
 # Enty 
-[![enty npm](https://img.shields.io/npm/v/enty.svg?style=flat-square)](https://www.npmjs.com/package/enty)
-[![enty circle](https://img.shields.io/circleci/project/github/blueflag/enty.svg?style=flat-square)](https://circleci.com/gh/blueflag/enty)
 
 ## Introduction
 Enty is a framework for managing data requested from back-ends and APIs.  Instead of you manually storing requested data, Enty uses schemas to describe relationships and stores the data as normalized entities.
@@ -39,19 +37,19 @@ The first step in implementing Enty is to define your schema. This defines what 
 ```js
 // entity/ApplicationSchema.js
 import {
-    MapSchema,
-    ListSchema,
+    ObjectSchema,
+    ArraySchema,
     EntitySchema,
 } from 'enty';
 
-var user = EntitySchema('user');
-var userList = ListSchema(user);
+var user = new EntitySchema('user');
+var userList = new ListSchema(user);
 
-user.set(MapSchema({
+user.shape = new ObjectSchema({
     friendList: userList
-}))
+});
 
-export default MapSchema({
+export default new ObjectSchema({
    user,
    userList
 });
@@ -65,33 +63,33 @@ The second thing we need to do is to create our EntityApi from our schema;
 // entity/EntityApi.js
 import {EntityApi} from 'enty';
 import ApplicationSchema from './ApplicationSchema';
+import UserQuery from './UserQuery';
+import UserListQuery from './UserListQuery';
 
-const Api = EntityApi(ApplicationSchema, {
-    core: payload => request('/graphql', payload)
-});
+const Api = EntityApi({
+    user: (variables) => request('/graphql', {query: UserQuery, variables}),
+    userList: (variables) => request('/graphql', {query: UserListQuery, variables})
+}, ApplicationSchema);
 
-export const {
-    EntityStore,
-    CoreQueryHock,
-    CoreMutationHock,
-} = Api;
-
+export const EntityProvider = Api.Provider;
+export const user = Api.user;
+export const userList = Api.userList;
 ```
 
 ### 3. Connect to react
 
 ```jsx
-// client.jsx
+// index.js
 import {React} from 'react';
-import {Provider} from 'react-redux';
+import {EntityProvider} from './EntityApi';
 import ReactDOM from 'react-dom';
-import {EntityStore} from './entity/EntityApi';
+import App from './App';
 
 
 ReactDOM.render(
-    <Provider store={EntityStore}>
+    <EntityProvider>
         <App />
-    </Provider>,
+    </EntityProvider>,
     document.getElementById('app'),
 );
 
@@ -100,87 +98,25 @@ ReactDOM.render(
 ### 4. Make a Query
 
 ```jsx
-// component/User.jsx
+// ./App.js
 import {React} from 'react';
-import {CoreQueryHock} from '../entity/EntityApi';
+import {LoadingBoundary} from 'react-enty';
+import {user} from './EntityApi';
+import Spinner from './components/Spinner';
+import Error from './components/Error';
 
-function User(props) {
-    const {user} = props;
-    return <img src={user.get('avatar')} />;
+export default function App(props) {
+    const message = user.useRequest();
+
+    // request a new user when props.id changes
+    useEffect(() => {
+        message.request(props.id);
+    }, [props.id]);
+
+    return <LoadingBoundary fallback={<Spinner/>} error={<Error/>}>
+        ({user}) => <img src={user.avatar} />
+    </LoadingBoundary>
 }
 
-const withData = CoreQueryHock(props => {
-    return {
-        query: UserDataQuery,
-        variables: {
-            id: props.id
-        }
-    };
-}, ['id']);
-
-export default withData(User);
-
 ```
-
-
-## Entity Flow
-
-1. **Props Change / OnMutate Triggered**  
-The Enty data flow begins when either a QueryHocked components props change or a MutationHocked component fires its onMutate callback. When this happens the corresponding promise creator in the API is fired. 
-
-2. **Data Request / Receive**  
-The data request actions is triggered and the corresponding queryRequestState becomes a FetchingState. If the promise rejects the Error action is triggered, the requestState becomes an error and the flow finishes. 
-If the promise resolves the receive action is triggered, the requestState becomes a SuccessState. 
-
-3. **Normalize**    
-The payload is passed into schema.normalize, which will in turn call schema.normalize recursively on its children as defined. Entities are stored under their schema type key and the result of their id attribute. Each entity is also passed through their constructor function which is given the current entity and the previous version if it exists. 
-
-4. **Results & Entities Stored**  
-The normalised entities are shallow merged with the previous state. The normalised result object is stored under its resultKey.
-
-5. **Views Updated**  
-The update in state triggers a rerender. All hocked views select their data based on their result key. 
-Schema.denormalize is given the new entity state and the normalised result object that matches their result key. As the result object is traversed denormalizeFilter is called on each entity. Any that fail the test will not be returned. 
-
-
-## Entity Types
-
-
-## FAQ
-
-### What if I am using two Query/Mutation hocks
-Use the options override!
-
-```js
-const withQuery = CoreQueryHock(
-    props => ({
-        query: UserQuery, 
-        variables: {
-            id: props.id
-        }
-    }),
-    {
-        queryRequestStateProp: 'userRequestState'
-    }
-);
-```
-
-
-### How do I load things?
-
-### Why is react-redux a peer dependency (it's not yet... but it should be)
-
-### How do I handle endpoints that return arrays?
-We have found the cleanest way is to add a new service to your api and modify the data before it is given to Enty
-
-```js
-// EntityApi.js
-const Api = EntityApi(ApplicationSchema, {
-    core: payload => request('/graphql', payload),
-    userList: payload => request('/user', payload).then(data => ({userList: data}))
-});
-```
-
-### Do I have to export an MapSchema from my EntityApi?
-
 

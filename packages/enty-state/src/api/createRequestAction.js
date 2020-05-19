@@ -1,25 +1,13 @@
 // @flow
 import type {SideEffect} from '../util/definitions';
-import type {AsyncType} from '../util/definitions';
-
-import {selectEntityByResult} from '../EntitySelector';
-import RequestStateSelector from '../RequestStateSelector';
-import isObservable from '../util/isObservable';
-
 
 type Meta = {
-    resultKey: string
+    responseKey: string,
+    returnResponse?: boolean
 };
 
-//
-// Creates the redux-thunk promise action.
-// Insetead of returning the dispatch function though. This uses the getState method
-// to select the next denormalized state and return that to the promise chain.
-// This means request functions can be chained, yet still contain the latests state.
-//
-
-export default function createRequestAction(actionType: string, sideEffect: SideEffect): Function {
-    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function): AsyncType => {
+export default function createRequestAction(sideEffect: SideEffect): Function {
+    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function)  => {
 
         const makeAction = (type) => (payload) => dispatch({
             type,
@@ -33,32 +21,41 @@ export default function createRequestAction(actionType: string, sideEffect: Side
             getState
         };
 
-        const fetchAction = makeAction(`${actionType}_FETCH`);
-        const receiveAction = makeAction(`${actionType}_RECEIVE`);
-        const errorAction = makeAction(`${actionType}_ERROR`);
-
+        const fetchAction = makeAction(`ENTY_FETCH`);
+        const receiveAction = makeAction(`ENTY_RECEIVE`);
+        const errorAction = makeAction(`ENTY_ERROR`);
         const pending = sideEffect(requestPayload, sideEffectMeta);
+
         fetchAction(null);
-        if(isObservable(pending)) {
+        if(typeof pending.subscribe === 'function') {
             // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
                 next: (data) => receiveAction(data),
-                complete: () => selectEntityByResult(getState(), meta.resultKey),
+                complete: (data) => receiveAction(data),
                 error: (error) => errorAction(error)
             });
-            return pending;
+        }
+        else if(typeof pending.then === 'function') {
+            // $FlowFixMe - see above
+            pending.then(receiveAction).catch(err => {
+                errorAction(err);
+                return meta.returnResponse ? Promise.reject(err) : undefined;
+            });
+        }
+        else {
+            (async () => {
+                try {
+                    // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
+                    for await (const data of pending) {
+                        receiveAction(data);
+                    }
+                } catch (err) {
+                    errorAction(err);
+                }
+            })();
         }
 
-        // $FlowFixMe - see above
-        return pending.then(
-            (data: any): * => {
-                receiveAction(data);
-                return selectEntityByResult(getState(), meta.resultKey);
-            },
-            (error: any): * => {
-                errorAction(error);
-                return Promise.reject(RequestStateSelector(getState(), meta.resultKey).value());
-            }
-        );
+        return meta.returnResponse ? pending : undefined;
+
     };
 }

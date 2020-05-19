@@ -1,27 +1,13 @@
 // @flow
 import {List} from 'immutable';
 import {ArraySchema} from 'enty';
-import type {StructureInput} from 'enty';
+import type {StructuralSchemaOptions} from 'enty';
+import type {Schema} from 'enty';
 
-/**
- * An array schema that casts the data to an immutable js List
- */
-// $FlowFixMe - cant handle the fact tha classes end up as functions
-export class ListSchema extends ArraySchema {
-    constructor(definition: Object, options: StructureInput = {}) {
-        super(definition, options);
-        this.options = {
-            constructor: item => List(item),
-            merge: (previous, next) => next,
-            ...options
-        };
+export default class ListSchema<A: Schema> extends ArraySchema<A> {
+    constructor(shape: A, options?: StructuralSchemaOptions = {}) {
+        super(shape, options);
+        this.create = (item) => List(item);
     }
 }
 
-
-/**
- * An array schema that casts the data to an immutable js List
- */
-export default function ListSchemaFactory(...args: any[]): ListSchema {
-    return new ListSchema(...args);
-}

@@ -1,114 +1,81 @@
 // @flow
-import type {Schema} from './util/definitions';
-import type {Entity} from './util/definitions';
 import type {NormalizeState} from './util/definitions';
 import type {DenormalizeState} from './util/definitions';
+import type {EntitySchemaOptions} from './util/definitions';
+import type {StructuralSchemaInterface} from './util/definitions';
 
-import getIn from 'unmutable/lib/getIn';
-import {CompositeDefinitionMustBeEntityError} from './util/Error';
+import map from 'unmutable/lib/map';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
-import {NoDefinitionError} from './util/Error';
-import Child from './abstract/Child';
-import NullSchema from './NullSchema';
+import EntitySchema from './EntitySchema';
+
+function isEntitySchema(schema) {
+    return schema instanceof EntitySchema || schema instanceof CompositeEntitySchema;
+}
 
 
-/**
- * CompositeEntitySchemaOptions
- */
-type CompositeInput = {
-    definition: Object,
-    compositeKeys: *
-};
-
-/**
- * CompositeEntitySchema
- */
-export class CompositeEntitySchema extends Child implements Schema<Entity> {
-    type: string;
-    options: Entity;
-    compositeKeys: Object;
-    definition: Schema<Entity>;
+export default class CompositeEntitySchema<A: StructuralSchemaInterface<any>, B: {}>  extends EntitySchema<A> {
+    compositeKeys: B;
 
     constructor(
         name: string,
-        {
-            definition = new NullSchema(),
-            compositeKeys = {},
-            ...options
-        }: CompositeInput = {}
+        options: EntitySchemaOptions<A> & {compositeKeys: B} = {}
     ) {
-        super(definition);
-        this.type = 'entity';
-        this.compositeKeys = compositeKeys;
-
-        this.options = {
-            name,
-            idAttribute: () => {},
-            ...options
-        };
+        super(name, options);
+        this.compositeKeys = options.compositeKeys;
     }
 
-    /**
-     * CompositeEntitySchema.normalize
-     */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
-        const {definition, compositeKeys} = this;
-        const {name} = this.options;
-
+    normalize(data: mixed, entities?: Object = {}): NormalizeState {
+        const {compositeKeys, name} = this;
         const adjustedData = Object.assign({}, data);
 
         let idList = [];
 
-        if(!definition) {
-            throw NoDefinitionError(name);
-        }
-
-        if(definition.type !== 'entity') {
-            throw CompositeDefinitionMustBeEntityError(name, definition.constructor.name);
-        }
-
-        const compositeResults = Object.keys(this.compositeKeys)
-            .reduce((rr: Object, key: string): Object => {
-                if(compositeKeys[key].type !== 'entity') {
-                    throw CompositeKeysMustBeEntitiesError(`${name}.${key}`, compositeKeys[key].type);
+        const compositeResults = map(
+            (schema, key) => {
+                if(!isEntitySchema(compositeKeys[key])) {
+                    throw CompositeKeysMustBeEntitiesError(`${name}.${key}`, compositeKeys[key].constructor.name);
+                }
+                if(adjustedData[key] == null) {
+                    return null;
                 }
 
-                // Check that there is data before be continue
-                // normalizing compositeKeys
-                if(!adjustedData[key]) {
-                    rr[key] = null;
-                    return rr;
-                }
-
+                // normalize the tainted key
                 const {result: compositeResult} = compositeKeys[key].normalize(adjustedData[key], entities);
 
-                rr[key] = compositeResult;
-                idList.push(compositeResult);
+                // remove tainted taineted key from main entity
                 delete adjustedData[key];
-                return rr;
-            }, Object.assign({}, this.compositeKeys));
+
+                // store its id
+                idList.push(compositeResult);
+
+                return compositeResult;
+
+            }
+        )(compositeKeys);
 
 
-
-        // recurse into the main definition
-        let {schemas, result: mainResult} = definition.normalize(adjustedData, entities);
+        // recurse into the main shape
+        let {schemas, result: mainResult} = super.normalize(adjustedData, entities);
 
         const result = {
-            [definition.options.name]: mainResult,
+            [name]: mainResult,
             ...compositeResults
         };
+
 
         const id = [mainResult]
             .concat(idList)
             .join('-')
         ;
 
-        entities[name] = entities[name] || {};
+
+        // dont need a safe check here as it is already done by composite normalizing
         entities[name][id] = result;
 
 
         // Save the schema
         schemas[name] = this;
+
 
         return {
             entities,
@@ -120,33 +87,24 @@ export class CompositeEntitySchema extends Child implements Schema<Entity> {
     /**
      * CompositeEntitySchema.denormalize
      */
-    denormalize(denormalizeState: DenormalizeState, path: Array<*> = []): any {
-        const {definition, compositeKeys} = this;
-        const {name} = this.options;
-        const {result, entities} = denormalizeState;
+    denormalize(denormalizeState: DenormalizeState, path?: Array<*> = []): any {
+        const {shape, compositeKeys, name} = this;
+        const {entities} = denormalizeState;
 
-        const entity = getIn([name, result])(entities);
+        // turn the composite id into its main and extra keys
+        const result = super.denormalize(denormalizeState, path);
 
-        const mainDenormalizedState = definition.denormalize({result: entity[definition.options.name], entities}, path);
+        const mainDenormalizedState = super.denormalize({result: result[name], entities}, path);
 
 
+        const compositeDenormalizedState = map(
+            (schema, key) => schema.denormalize({result: result[key], entities}, path)
+        )(compositeKeys);
 
-        const compositeDenormalizedState = Object.keys(compositeKeys)
-            .reduce((rr: Object, key: string): Object => {
-                // Check that there is data before be continue
-                // denormalize compositeKeys
-                if(!entity[key]) {
-                    rr[key] = null;
-                    return rr;
-                }
-                rr[key] = compositeKeys[key].denormalize({result: entity[key], entities}, path);
-                return rr;
-            }, Object.assign({}, this.compositeKeys));
-
-        return definition.definition.options.merge(mainDenormalizedState, compositeDenormalizedState);
+        return shape.merge(
+            mainDenormalizedState,
+            compositeDenormalizedState
+        );
     }
 }
 
-export default function CompositeEntitySchemaFactory(...args: any[]): CompositeEntitySchema {
-    return new CompositeEntitySchema(...args);
-}
