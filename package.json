@@ -6,9 +6,7 @@
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
     "build": "lerna run build --parallel --",
-    "watch": "lerna run watch --parallel --",
-    "test-all": "lerna run test-all --parallel --",
-    "deploy-docs": "yarn lerna --scope enty-docs run deploy"
+    "test": "lerna run test --parallel --"
   },
   "devDependencies": {
     "lerna": "^3.4.3"

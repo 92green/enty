@@ -18,8 +18,7 @@
     "prepublishOnly": "yarn build",
     "build": "tsc --noEmit -p .",
     "watch": "yarn build -w",
-    "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn build && yarn test"
+    "test": "yarn jest --maxWorkers=1"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
