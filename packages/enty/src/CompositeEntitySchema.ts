@@ -4,7 +4,6 @@ import {EntitySchemaOptions} from './util/definitions';
 import {ShapeSchema} from './util/definitions';
 import {Entities} from './util/definitions';
 
-import map from 'unmutable/lib/map';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
 import EntitySchema from './EntitySchema';
 
@@ -14,7 +13,7 @@ function isEntitySchema(schema: unknown): boolean {
 
 export default class CompositeEntitySchema<
     A extends ShapeSchema<any>,
-    B extends {}
+    B extends Object
 > extends EntitySchema<A> {
     compositeKeys: B;
 
@@ -29,7 +28,8 @@ export default class CompositeEntitySchema<
 
         let idList = [];
 
-        const compositeResults = map((_: any, key: string) => {
+        let compositeResults = {};
+        Object.keys(compositeKeys).forEach((key: string) => {
             if (!isEntitySchema(compositeKeys[key])) {
                 throw CompositeKeysMustBeEntitiesError(
                     `${name}.${key}`,
@@ -41,19 +41,16 @@ export default class CompositeEntitySchema<
             }
 
             // normalize the tainted key
-            const {result: compositeResult} = compositeKeys[key].normalize(
-                adjustedData[key],
-                entities
-            );
+            const {result} = compositeKeys[key].normalize(adjustedData[key], entities);
 
             // remove tainted taineted key from main entity
             delete adjustedData[key];
 
             // store its id
-            idList.push(compositeResult);
+            idList.push(result);
 
-            return compositeResult;
-        })(compositeKeys);
+            compositeResults[key] = result;
+        });
 
         // recurse into the main shape
         let {schemas, result: mainResult} = super.normalize(adjustedData, entities);
@@ -89,9 +86,13 @@ export default class CompositeEntitySchema<
 
         const mainDenormalizedState = super.denormalize({result: result[name], entities}, path);
 
-        const compositeDenormalizedState = map((schema: A, key: string) =>
-            schema.denormalize({result: result[key], entities}, path)
-        )(compositeKeys);
+        let compositeDenormalizedState = {};
+        Object.keys(compositeKeys).forEach((key: string) => {
+            compositeDenormalizedState[key] = compositeKeys[key].denormalize(
+                {result: result[key], entities},
+                path
+            );
+        });
 
         return shape.merge(mainDenormalizedState, compositeDenormalizedState);
     }

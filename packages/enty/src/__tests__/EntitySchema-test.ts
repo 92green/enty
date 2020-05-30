@@ -45,9 +45,9 @@ describe('EntitySchema.normalize', () => {
     test('will throw an error if an entity doesnt have and id', () => {
         const schema = new EntitySchema({
             name: 'foo',
-            shape: new ObjectSchema({}),
+            shape: new ObjectSchema({})
         });
-        expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo', null));
+        expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo'));
     });
 
     test('will call merge on definition when an entity already exists', () => {
@@ -58,39 +58,39 @@ describe('EntitySchema.normalize', () => {
         }
         const schema = new EntitySchema({
             name: 'foo',
-            shape: new MockMerge({}),
+            shape: new MockMerge({})
         });
 
         schema.normalize({id: 'a', name: 'second'}, entities);
         expect(merge).toHaveBeenCalledWith({id: 'a', name: 'first'}, {id: 'a', name: 'second'});
     });
 
-    it('will treat null shapes like an Id schema', () => {
-        const NullSchemaEntity = new EntitySchema({
-            name: 'foo',
-            shape: null,
-            id: (data) => `${data}-foo`,
-        });
-        const state = NullSchemaEntity.normalize(2, {});
-        expect(state.entities.foo['2-foo']).toBe(2);
-    });
+    //it('will treat null shapes like an Id schema', () => {
+    //const NullSchemaEntity = new EntitySchema({
+    //name: 'foo',
+    //shape: null,
+    //id: (data) => `${data}-foo`
+    //});
+    //const state = NullSchemaEntity.normalize(2, {});
+    //expect(state.entities.foo['2-foo']).toBe(2);
+    //});
 
-    it('will default id function to stringify if shape is null', () => {
-        const NullSchemaEntity = new EntitySchema({
-            name: 'foo',
-            shape: null,
-        });
-        const state = NullSchemaEntity.normalize({}, {});
-        expect(state.entities.foo['[object Object]']).toEqual({});
-    });
+    //it('will default id function to stringify if shape is null', () => {
+    //const NullSchemaEntity = new EntitySchema({
+    //name: 'foo',
+    //shape: null
+    //});
+    //const state = NullSchemaEntity.normalize({}, {});
+    //expect(state.entities.foo['[object Object]']).toEqual({});
+    //});
 });
 
 describe('EntitySchema.denormalize', () => {
     it('can denormalize entities', () => {
         const entities = {
             foo: {
-                '1': {id: '1'},
-            },
+                '1': {id: '1'}
+            }
         };
 
         expect(foo.denormalize({result: '1', entities})).toEqual({id: '1'});
@@ -105,7 +105,7 @@ describe('EntitySchema.denormalize', () => {
 
         const entities = {
             bar: {'1': {id: '1', foo: '1'}},
-            foo: {'1': {id: '1', bar: '1'}},
+            foo: {'1': {id: '1', bar: '1'}}
         };
 
         expect(bar.denormalize({result: '1', entities})).toEqual({
@@ -114,28 +114,27 @@ describe('EntitySchema.denormalize', () => {
                 id: '1',
                 bar: {
                     id: '1',
-                    foo: '1',
-                },
-            },
+                    foo: '1'
+                }
+            }
         });
     });
 
     it('will not denormalize null entities', () => {
         const entities = {
-            bar: {'1': {id: '1', foo: null}},
+            bar: {'1': {id: '1', foo: null}}
         };
 
         expect(bar.denormalize({result: '2', entities})).toEqual(undefined);
     });
 
-    it('can denormalize null shapes', () => {
-        const NullSchemaEntity = new EntitySchema({
-            name: 'foo',
-            shape: null,
-            id: (data) => `${data}-foo`,
-        });
-        const state = NullSchemaEntity.normalize(2, {});
-        expect(NullSchemaEntity.denormalize(state)).toBe(2);
-    });
+    //it('can denormalize null shapes', () => {
+    //const NullSchemaEntity = new EntitySchema({
+    //name: 'foo',
+    //shape: null,
+    //id: (data) => `${data}-foo`,
+    //});
+    //const state = NullSchemaEntity.normalize(2, {});
+    //expect(NullSchemaEntity.denormalize(state)).toBe(2);
+    //});
 });
-

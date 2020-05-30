@@ -4,11 +4,11 @@ import IdSchema from '../IdSchema';
 
 const foo = new EntitySchema({
     name: 'foo',
-    shape: new ObjectSchema({}),
+    shape: new ObjectSchema({})
 });
 
 const fooValues = new ObjectSchema({
-    foo: new IdSchema(foo),
+    foo: new IdSchema(foo)
 });
 
 test('denormalize is almost the inverse of normalize', () => {
@@ -20,8 +20,8 @@ test('normalize', () => {
     const data = {id: '1'};
     const entities = {
         foo: {
-            '1': data,
-        },
+            '1': data
+        }
     };
     expect(data).toEqual(new IdSchema(foo).normalize('1', entities).entities.foo['1']);
     expect(data).toEqual(new IdSchema(foo).normalize('1', undefined).entities.foo['1']);
@@ -32,10 +32,9 @@ test('denormalize', () => {
     const data = {id: '1'};
     const entities = {
         foo: {
-            '1': data,
-        },
+            '1': data
+        }
     };
     expect(data).toEqual(fooValue.denormalize({result: '1', entities}));
     expect(data).toEqual(fooValue.denormalize({result: '1', entities}, undefined));
 });
-

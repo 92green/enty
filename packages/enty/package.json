@@ -28,10 +28,8 @@
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "jest": "^26.0.1",
+    "prettier": "^2.0.5",
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.3"
-  },
-  "dependencies": {
-    "prettier": "^2.0.5"
   }
 }

@@ -4,7 +4,7 @@ import REMOVED_ENTITY from '../util/RemovedEntity';
 
 var foo = new EntitySchema({
     name: 'foo',
-    shape: new ObjectSchema({}),
+    shape: new ObjectSchema({})
 });
 
 class Foo {
@@ -57,25 +57,17 @@ test('ObjectSchema can normalize empty objects', () => {
 test('ObjectSchema can denormalize objects', () => {
     const schema = new ObjectSchema({foo});
 
-    const entities = {
-        foo: {
-            '1': {id: '1'},
-        },
-    };
+    const entities = {foo: {1: {id: '1'}}};
 
     expect(schema.denormalize({result: {foo: '1'}, entities})).toEqual({
-        foo: {id: '1'},
+        foo: {id: '1'}
     });
 });
 
 test('ObjectSchema will not denormalize null values', () => {
     const schema = new ObjectSchema({foo});
 
-    const entities = {
-        foo: {
-            '1': {id: '1'},
-        },
-    };
+    const entities = {foo: {1: {id: '1'}}};
 
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
@@ -85,13 +77,13 @@ test('ObjectSchema will not denormalize unknown keys', () => {
 
     const entities = {
         foo: {
-            '1': {id: '1'},
-        },
+            '1': {id: '1'}
+        }
     };
 
     expect(schema.denormalize({result: {foo: '1', bar: '2'}, entities})).toEqual({
         foo: {id: '1'},
-        bar: '2',
+        bar: '2'
     });
 });
 
@@ -100,8 +92,8 @@ test('ObjectSchema will filter out REMOVED_ENTITY keys', () => {
 
     const entities = {
         foo: {
-            '1': REMOVED_ENTITY,
-        },
+            '1': REMOVED_ENTITY
+        }
     };
 
     expect(schema.denormalize({result: {foo: '1'}, entities})).toEqual({});
@@ -113,8 +105,8 @@ test('ObjectSchema can denormalize objects without mutating', () => {
     const originalResult = {...result};
     const entities = {
         foo: {
-            '1': {id: '1'},
-        },
+            '1': {id: '1'}
+        }
     };
 
     schema.denormalize({result, entities});
@@ -138,7 +130,7 @@ test('ObjectSchemas can create objects', () => {
 it('will not create extra keys if value is undefined', () => {
     const schema = new ObjectSchema({
         foo: new EntitySchema({name: 'foo'}),
-        bar: new EntitySchema({name: 'bar'}),
+        bar: new EntitySchema({name: 'bar'})
     });
     const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, {}));
 

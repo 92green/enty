@@ -6,7 +6,6 @@ import {Id} from './util/definitions';
 import {Entities} from './util/definitions';
 
 import {UndefinedIdError} from './util/Error';
-import getIn from 'unmutable/lib/getIn';
 import REMOVED_ENTITY from './util/RemovedEntity';
 import ObjectSchema from './ObjectSchema';
 
@@ -17,14 +16,8 @@ export default class EntitySchema<A extends ShapeSchema<any>> {
 
     constructor(options: EntitySchemaOptions<A>) {
         this.name = options.name;
-
-        if (options.shape === null) {
-            this.shape = null;
-            this.id = options.id || ((data) => '' + data);
-        } else {
-            this.shape = options.shape || new ObjectSchema({});
-            this.id = options.id || ((data) => data.id);
-        }
+        this.shape = options.shape || new ObjectSchema({});
+        this.id = options.id || ((data) => data.id);
     }
 
     normalize(data: unknown, entities: Entities = {}): NormalizeState {
@@ -60,14 +53,14 @@ export default class EntitySchema<A extends ShapeSchema<any>> {
         return {
             entities,
             schemas,
-            result: id,
+            result: id
         };
     }
 
     denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
         const {result, entities} = denormalizeState;
         const {shape, name} = this;
-        const entity = getIn([name, result])(entities);
+        const entity = entities?.[name]?.[result];
 
         if (entity == null || entity === REMOVED_ENTITY || shape == null) {
             return entity;
