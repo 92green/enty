@@ -10,7 +10,7 @@ import set from 'unmutable/lib/set';
 import setIn from 'unmutable/lib/setIn';
 import updateIn from 'unmutable/lib/updateIn';
 import deleteIn from 'unmutable/lib/deleteIn';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import {REMOVED_ENTITY} from 'enty';
 
 
 export default function EntityReducerFactory(config: {schema?: Schema}): Function {
