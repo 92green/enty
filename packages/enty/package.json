@@ -1,7 +1,7 @@
 {
   "name": "enty",
   "version": "1.0.0",
-  "description": "An opinionated set of redux tools to cut down on boilerplate",
+  "description": "Schemas for normalizing data structures",
   "main": "lib/index.js",
   "license": "MIT",
   "author": "Allan Hortle",
@@ -9,9 +9,7 @@
     "type": "git",
     "url": "git+https://github.com/blueflag/enty.git"
   },
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "bugs": {
     "url": "https://github.com/blueflag/enty/issues"
   },
@@ -20,10 +18,8 @@
     "prepublishOnly": "yarn build",
     "build": "tsc --noEmit -p .",
     "watch": "yarn build -w",
-    "flow": "flow check",
-    "lint": "blueflag-test lint",
     "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test"
+    "test-all": "yarn build && yarn test"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
