@@ -5,7 +5,11 @@ type Meta = {
     key: string;
 };
 
-export default function createRequestAction(sideEffect: SideEffect, Store: EntityStore): Function {
+export default function createRequestAction(
+    Store: EntityStore,
+    sideEffect: SideEffect,
+    path: string[]
+): Function {
     return <A>(requestPayload: A, meta: Meta) => {
         const {key} = meta;
         const success = <D>(data: D) => Store.updateRequest(key, 'success', data);

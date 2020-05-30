@@ -32,7 +32,9 @@ export default class EntityStore {
         this._request = {};
         this._responseCount = 0;
         this._rootSchema = options.schema;
-        this._api = visitActionMap(options.api, createRequestAction);
+        this._api = visitActionMap(options.api, (sideEffect, path) =>
+            createRequestAction(this, sideEffect, path)
+        );
     }
 
     //

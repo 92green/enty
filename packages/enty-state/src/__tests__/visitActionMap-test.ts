@@ -5,9 +5,9 @@ it('will recurse through deep object trees', () => {
     const data = {
         foo: {
             bar: {
-                baz: 1
+                baz: () => {}
             },
-            qux: 2
+            qux: () => {}
         }
     };
     visitActionMap(data, visitor);
