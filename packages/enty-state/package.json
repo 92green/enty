@@ -28,6 +28,7 @@
   "devDependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
+    "@babel/runtime": "^7.10.1",
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^1.0.1",
     "blueflag-test": "^0.22.0",
