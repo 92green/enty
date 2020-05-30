@@ -1,8 +1,6 @@
-// @flow
-
 type RemoveAction = {
-    type: string,
-    meta: {responseKey: string}
+    type: string;
+    meta: {responseKey: string};
 };
 
 export default function resetAction(responseKey: string): RemoveAction {

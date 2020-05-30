@@ -1,11 +1,9 @@
-//@flow
 import EntityApiFactory from '../EntityApiFactory';
 import Hash from '../util/Hash';
 
 jest.mock('../api/createRequestAction', () => () => 'REQUEST');
 
 describe('EntityApiFactory', () => {
-
     it('visits every function provided', () => {
         const visitor = jest.fn();
         const data = {
@@ -53,6 +51,4 @@ describe('EntityApiFactory', () => {
         expect(requestAction).toBe('REQUEST');
     });
 });
-
-
 

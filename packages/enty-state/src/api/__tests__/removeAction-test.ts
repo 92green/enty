@@ -1,4 +1,3 @@
-// @flow
 import removeAction from '../removeAction';
 
 it('will have a type of ENTY_REMOVE', () => {

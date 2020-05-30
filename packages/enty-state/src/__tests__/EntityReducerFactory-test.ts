@@ -1,4 +1,3 @@
-//@flow
 import EntityReducerFactory from '../EntityReducerFactory';
 import {EntitySchema, ObjectSchema, ArraySchema} from 'enty';
 import get from 'unmutable/lib/get';
@@ -13,7 +12,7 @@ import resetAction from '../api/resetAction';
 
 var author = new EntitySchema({
     name: 'author',
-    id: get('fullnameId'),
+    id: get('fullnameId')
 });
 
 var topListings = new EntitySchema({
@@ -36,7 +35,6 @@ const schema = new ObjectSchema({
 
 const EntityReducer = EntityReducerFactory({schema});
 
-
 // Mock data
 
 const INITIAL_STATE = {
@@ -48,11 +46,11 @@ const INITIAL_STATE = {
 it('can normalize a result', () => {
     const examplePayload = {
         subreddit: {
-            name: "MechanicalKeyboards",
-            fullnameId: "MK",
+            name: 'MechanicalKeyboards',
+            fullnameId: 'MK',
             topListings: [
-                {fullnameId: "CT", title: "Cool title"},
-                {fullnameId: "NT", title: "Nice title"}
+                {fullnameId: 'CT', title: 'Cool title'},
+                {fullnameId: 'NT', title: 'Nice title'}
             ]
         }
     };
@@ -67,10 +65,12 @@ it('can normalize a result', () => {
     expect(state.entities.subreddit.MK.fullnameId).toBe(examplePayload.subreddit.fullnameId);
 });
 
-
 describe('EntityReducer request', () => {
     test('request is Fetching when action is _FETCH', () => {
-        const state = EntityReducer(undefined, {type: 'ENTY_FETCH', meta: {responseKey: 'TEST'}});
+        const state = EntityReducer(undefined, {
+            type: 'ENTY_FETCH',
+            meta: {responseKey: 'TEST'}
+        });
         expect(state.request.TEST.requestState).toBe('fetching');
     });
 
@@ -85,15 +85,21 @@ describe('EntityReducer request', () => {
     test('request will not be refetching if two fetching fire in a row', () => {
         const stateA = EntityReducer({}, {type: 'ENTY_FETCH', meta: {responseKey: 'foo'}});
         expect(stateA.request.foo.requestState).toBe('fetching');
-        const stateB = EntityReducer(stateA, {type: 'ENTY_FETCH', meta: {responseKey: 'foo'}});
+        const stateB = EntityReducer(stateA, {
+            type: 'ENTY_FETCH',
+            meta: {responseKey: 'foo'}
+        });
         expect(stateB.request.foo.requestState).toBe('fetching');
     });
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
         return pipeWith(
-            EntityReducer(undefined, {type: 'nothing', meta: {responseKey: 'nothing'}}),
+            EntityReducer(undefined, {
+                type: 'nothing',
+                meta: {responseKey: 'nothing'}
+            }),
             getIn(['request', 'nothing']),
-            value => expect(value).toBe(undefined)
+            (value) => expect(value).toBe(undefined)
         );
     });
 
@@ -105,12 +111,9 @@ describe('EntityReducer request', () => {
                 meta: {responseKey: 'TEST'}
             }),
             getIn(['request', 'TEST']),
-            value => expect(value.requestState).toBe('error')
+            (value) => expect(value.requestState).toBe('error')
         );
     });
-
-
-
 });
 
 describe('EntityReducer Config', () => {
@@ -140,7 +143,6 @@ describe('EntityReducer Config', () => {
     test('does not have to be called with meta', () => {
         expect(() => EntityReducer(undefined, {})).not.toThrow();
     });
-
 });
 
 describe('EntityReducer Normalizing', () => {
@@ -159,7 +161,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['request', 'TEST', 'response', 'subreddit']),
-            key => expect(key).toBe('MK')
+            (key) => expect(key).toBe('MK')
         );
     });
 
@@ -178,7 +180,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['entities', 'subreddit', 'MK']),
-            data => expect(data).toEqual(action.payload.subreddit)
+            (data) => expect(data).toEqual(action.payload.subreddit)
         );
     });
 
@@ -189,10 +191,7 @@ describe('EntityReducer Normalizing', () => {
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
-                    topListings: [
-                        {fullnameId: 'FOO'},
-                        {fullnameId: 'BAR'}
-                    ]
+                    topListings: [{fullnameId: 'FOO'}, {fullnameId: 'BAR'}]
                 }
             }
         };
@@ -200,7 +199,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['entities', 'topListings', 'FOO']),
-            data => expect(data).toEqual({fullnameId: 'FOO'})
+            (data) => expect(data).toEqual({fullnameId: 'FOO'})
         );
     });
 
@@ -211,88 +210,93 @@ describe('EntityReducer Normalizing', () => {
             payload
         });
 
-
-
         const payloadA = {
             subreddit: {
-                name: "MechanicalKeyboards",
-                code: "123",
-                fullnameId: "MK",
+                name: 'MechanicalKeyboards',
+                code: '123',
+                fullnameId: 'MK',
                 topListings: [
                     {
-                        "fullnameId": "CT",
-                        "title": "Cool title"
+                        fullnameId: 'CT',
+                        title: 'Cool title'
                     },
                     {
-                        "fullnameId": "NT",
-                        "title": "Nice title"
+                        fullnameId: 'NT',
+                        title: 'Nice title'
                     }
                 ],
-                tags: [
-                    "A",
-                    "B"
-                ]
+                tags: ['A', 'B']
             }
         };
 
-
         const payloadB = {
             subreddit: {
-                name: "MechanicalKeyboards!",
-                fullnameId: "MK",
+                name: 'MechanicalKeyboards!',
+                fullnameId: 'MK',
                 topListings: [
                     {
-                        "fullnameId": "NT",
-                        "title": "Nice title!"
+                        fullnameId: 'NT',
+                        title: 'Nice title!'
                     },
                     {
-                        "fullnameId": "GL",
-                        "title": "Good luck"
+                        fullnameId: 'GL',
+                        title: 'Good luck'
                     }
                 ],
-                tags: [
-                    "C",
-                    "D"
-                ]
+                tags: ['C', 'D']
             }
         };
 
         const mergeStateOne = EntityReducer(undefined, action(payloadA));
         const mergeStateTwo = EntityReducer(mergeStateOne, action(payloadB));
 
-        expect(getIn(['entities', 'subreddit', 'MK', 'name'])(mergeStateTwo)).toBe(payloadB.subreddit.name);
-        expect(getIn(['entities', 'subreddit', 'MK', 'tags'])(mergeStateTwo)).toEqual(payloadB.subreddit.tags);
-        expect(getIn(['entities', 'subreddit', 'MK', 'code'])(mergeStateTwo)).toBe(payloadA.subreddit.code);
-        expect(getIn(['entities', 'topListings', 'NT'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[0]);
-        expect(getIn(['entities', 'topListings', 'CT'])(mergeStateTwo)).toEqual(payloadA.subreddit.topListings[0]);
-        expect(getIn(['entities', 'topListings', 'GL'])(mergeStateTwo)).toEqual(payloadB.subreddit.topListings[1]);
-
+        expect(getIn(['entities', 'subreddit', 'MK', 'name'])(mergeStateTwo)).toBe(
+            payloadB.subreddit.name
+        );
+        expect(getIn(['entities', 'subreddit', 'MK', 'tags'])(mergeStateTwo)).toEqual(
+            payloadB.subreddit.tags
+        );
+        expect(getIn(['entities', 'subreddit', 'MK', 'code'])(mergeStateTwo)).toBe(
+            payloadA.subreddit.code
+        );
+        expect(getIn(['entities', 'topListings', 'NT'])(mergeStateTwo)).toEqual(
+            payloadB.subreddit.topListings[0]
+        );
+        expect(getIn(['entities', 'topListings', 'CT'])(mergeStateTwo)).toEqual(
+            payloadA.subreddit.topListings[0]
+        );
+        expect(getIn(['entities', 'topListings', 'GL'])(mergeStateTwo)).toEqual(
+            payloadB.subreddit.topListings[1]
+        );
     });
 });
 
-
 describe('no schema reducer', () => {
-
     it('will not normalize if a schema is not provided', () => {
         const reducer = EntityReducerFactory({});
-        const stateA = reducer(undefined, {type: 'ENTY_RECEIVE', payload: 'FOO', meta: {responseKey: '123'}});
+        const stateA = reducer(undefined, {
+            type: 'ENTY_RECEIVE',
+            payload: 'FOO',
+            meta: {responseKey: '123'}
+        });
 
         expect(stateA.entities).toEqual({});
         expect(stateA.request['123'].response).toBe('FOO');
         expect(stateA.request['456']).toBeUndefined();
         expect(stateA.stats.responseCount).toBe(1);
 
-        const stateB = reducer(stateA, {type: 'ENTY_RECEIVE', payload: 'BAR', meta: {responseKey: '456'}});
+        const stateB = reducer(stateA, {
+            type: 'ENTY_RECEIVE',
+            payload: 'BAR',
+            meta: {responseKey: '456'}
+        });
         expect(stateB.request['123'].response).toBe('FOO');
         expect(stateB.request['456'].response).toBe('BAR');
         expect(stateB.stats.responseCount).toBe(2);
-
     });
-
 });
 
 describe('remove entity', () => {
-
     it('will replace a removed entity with REMOVED_ENTITY sentinel', () => {
         const initialState = {
             entities: {
@@ -301,22 +305,24 @@ describe('remove entity', () => {
             }
         };
         const reducer = EntityReducerFactory({});
-        const state = reducer(
-            initialState,
-            {type: 'ENTY_REMOVE', payload: ['foo', 'bar']}
-        );
+        const state = reducer(initialState, {
+            type: 'ENTY_REMOVE',
+            payload: ['foo', 'bar']
+        });
         expect(state.entities.foo.bar).toBe(REMOVED_ENTITY);
         expect(state.entities.baz.qux).not.toBe(REMOVED_ENTITY);
     });
-
 });
 
 describe('ENTY_RESET', () => {
-
     it('will delete response and set request to empty', () => {
         const reducer = EntityReducerFactory({});
 
-        const stateA = reducer(undefined, {type: 'ENTY_RECEIVE', payload: 'FOO', meta: {responseKey: '123'}});
+        const stateA = reducer(undefined, {
+            type: 'ENTY_RECEIVE',
+            payload: 'FOO',
+            meta: {responseKey: '123'}
+        });
         const requestA = stateA.request['123'];
         expect(requestA.response).toBe('FOO');
         expect(requestA.requestState).toBe('success');
@@ -328,5 +334,5 @@ describe('ENTY_RESET', () => {
         expect(requestB.requestState).toBe('empty');
         expect(stateB.stats.responseCount).toBe(2);
     });
-
 });
+

@@ -1,6 +1,4 @@
-// @flow
 import createRequestAction from '../createRequestAction';
-
 
 const payload = 'PAYLOAD';
 const meta = 'META';
@@ -28,43 +26,68 @@ describe('observable support', () => {
         const request = createRequestAction(() => observable(() => null));
 
         request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'ENTY_FETCH'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: null,
+            type: 'ENTY_FETCH'
+        });
     });
 
     it('can trigger multiple success actions via next', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
-        const request = createRequestAction(() => observable((sub) => {
-            sub.next('1');
-            sub.next('2');
-        }));
+        const request = createRequestAction(() =>
+            observable((sub) => {
+                sub.next('1');
+                sub.next('2');
+            })
+        );
 
         request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '1', type: 'ENTY_RECEIVE'});
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '2', type: 'ENTY_RECEIVE'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: '1',
+            type: 'ENTY_RECEIVE'
+        });
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: '2',
+            type: 'ENTY_RECEIVE'
+        });
     });
 
     it('can trigger error action via error', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
-        const request = createRequestAction(() => observable((sub) => {
-            sub.error('ERROR');
-        }));
+        const request = createRequestAction(() =>
+            observable((sub) => {
+                sub.error('ERROR');
+            })
+        );
 
         request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: 'ERROR', type: 'ENTY_ERROR'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: 'ERROR',
+            type: 'ENTY_ERROR'
+        });
     });
 
     it('will trigger receive action via complete', () => {
         const dispatch = jest.fn();
-        const request = createRequestAction(() => observable((sub) => {
-            sub.complete('1');
-        }));
+        const request = createRequestAction(() =>
+            observable((sub) => {
+                sub.complete('1');
+            })
+        );
 
         request(payload, meta)(dispatch, jest.fn());
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: '1', type: 'ENTY_RECEIVE'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: '1',
+            type: 'ENTY_RECEIVE'
+        });
     });
-
 });
 
 describe('promise support', () => {
@@ -73,7 +96,11 @@ describe('promise support', () => {
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.resolve());
         request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'ENTY_FETCH'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: null,
+            type: 'ENTY_FETCH'
+        });
     });
 
     it('can trigger success action via a resolved promise', async () => {
@@ -81,7 +108,11 @@ describe('promise support', () => {
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.resolve('DATA'));
         await request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenLastCalledWith({meta: 'META', payload: 'DATA', type: 'ENTY_RECEIVE'});
+        expect(dispatch).toHaveBeenLastCalledWith({
+            meta: 'META',
+            payload: 'DATA',
+            type: 'ENTY_RECEIVE'
+        });
     });
 
     it('can trigger error action via a rejected promise', async () => {
@@ -92,10 +123,13 @@ describe('promise support', () => {
         try {
             await request(payload, meta)(dispatch, getState);
         } catch (e) {
-            expect(dispatch).toHaveBeenLastCalledWith({meta, payload: 'BORKD', type: 'ENTY_ERROR'});
+            expect(dispatch).toHaveBeenLastCalledWith({
+                meta,
+                payload: 'BORKD',
+                type: 'ENTY_ERROR'
+            });
         }
     });
-
 });
 
 describe('async generators', () => {
@@ -104,7 +138,11 @@ describe('async generators', () => {
         const getState = jest.fn();
         const request = createRequestAction(async function* () {});
         request(payload, meta)(dispatch, getState);
-        expect(dispatch).toHaveBeenCalledWith({meta: 'META', payload: null, type: 'ENTY_FETCH'});
+        expect(dispatch).toHaveBeenCalledWith({
+            meta: 'META',
+            payload: null,
+            type: 'ENTY_FETCH'
+        });
     });
 
     it('can trigger success action via yielding data', async () => {
@@ -115,10 +153,22 @@ describe('async generators', () => {
             yield 'bar';
         });
         request(payload, meta)(dispatch, getState);
-        await (new Promise(resolve => setTimeout(resolve, 0)));
-        expect(dispatch).toHaveBeenNthCalledWith(1, {meta: 'META', payload: null, type: 'ENTY_FETCH'});
-        expect(dispatch).toHaveBeenNthCalledWith(2, {meta: 'META', payload: 'foo', type: 'ENTY_RECEIVE'});
-        expect(dispatch).toHaveBeenNthCalledWith(3, {meta: 'META', payload: 'bar', type: 'ENTY_RECEIVE'});
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(dispatch).toHaveBeenNthCalledWith(1, {
+            meta: 'META',
+            payload: null,
+            type: 'ENTY_FETCH'
+        });
+        expect(dispatch).toHaveBeenNthCalledWith(2, {
+            meta: 'META',
+            payload: 'foo',
+            type: 'ENTY_RECEIVE'
+        });
+        expect(dispatch).toHaveBeenNthCalledWith(3, {
+            meta: 'META',
+            payload: 'bar',
+            type: 'ENTY_RECEIVE'
+        });
     });
 
     it('can trigger error action via throwing in the generator', async () => {
@@ -129,18 +179,26 @@ describe('async generators', () => {
             throw 'bar';
         });
         request(payload, meta)(dispatch, getState);
-        await (new Promise(resolve => setTimeout(resolve, 0)));
-        expect(dispatch).toHaveBeenNthCalledWith(1, {meta: 'META', payload: null, type: 'ENTY_FETCH'});
-        expect(dispatch).toHaveBeenNthCalledWith(2, {meta: 'META', payload: 'foo', type: 'ENTY_RECEIVE'});
-        expect(dispatch).toHaveBeenNthCalledWith(3, {meta: 'META', payload: 'bar', type: 'ENTY_ERROR'});
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(dispatch).toHaveBeenNthCalledWith(1, {
+            meta: 'META',
+            payload: null,
+            type: 'ENTY_FETCH'
+        });
+        expect(dispatch).toHaveBeenNthCalledWith(2, {
+            meta: 'META',
+            payload: 'foo',
+            type: 'ENTY_RECEIVE'
+        });
+        expect(dispatch).toHaveBeenNthCalledWith(3, {
+            meta: 'META',
+            payload: 'bar',
+            type: 'ENTY_ERROR'
+        });
     });
-
 });
 
-
-
 describe('general', () => {
-
     it('returns a function accepts payload/meta that returns a redux thunk', () => {
         const payloadFunction = createRequestAction(() => Promise.resolve());
         const thunk = payloadFunction('bar', {responseKey: '123'});
@@ -161,6 +219,5 @@ describe('general', () => {
         expect(payloadA).resolves.toBe('foo');
         expect(payloadB).toBeUndefined();
     });
-
-
 });
+

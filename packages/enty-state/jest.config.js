@@ -1,4 +1,4 @@
-// @flow
 module.exports = {
-    preset: 'blueflag-test'
+  preset: 'ts-jest',
+  testEnvironment: 'node',
 };

@@ -1,8 +1,7 @@
-// @flow
 import visitActionMap from '../visitActionMap';
 
 it('will recurse through deep object trees', () => {
-    const visitor = jest.fn(value => value);
+    const visitor = jest.fn((value) => value);
     const data = {
         foo: {
             bar: {
@@ -27,11 +26,10 @@ it('will visit functions & record their path', () => {
     };
     visitActionMap(data, visitor);
     expect(visitor).toHaveBeenCalledWith(func, ['foo', 'bar', 'baz']);
-
 });
 
 it('preserve the given object tree', () => {
-    const visitor = jest.fn(value => value);
+    const visitor = jest.fn((value) => value);
     const data = {
         foo: {
             bar: {
