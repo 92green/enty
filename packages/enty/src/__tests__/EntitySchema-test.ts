@@ -64,25 +64,6 @@ describe('EntitySchema.normalize', () => {
         schema.normalize({id: 'a', name: 'second'}, entities);
         expect(merge).toHaveBeenCalledWith({id: 'a', name: 'first'}, {id: 'a', name: 'second'});
     });
-
-    //it('will treat null shapes like an Id schema', () => {
-    //const NullSchemaEntity = new EntitySchema({
-    //name: 'foo',
-    //shape: null,
-    //id: (data) => `${data}-foo`
-    //});
-    //const state = NullSchemaEntity.normalize(2, {});
-    //expect(state.entities.foo['2-foo']).toBe(2);
-    //});
-
-    //it('will default id function to stringify if shape is null', () => {
-    //const NullSchemaEntity = new EntitySchema({
-    //name: 'foo',
-    //shape: null
-    //});
-    //const state = NullSchemaEntity.normalize({}, {});
-    //expect(state.entities.foo['[object Object]']).toEqual({});
-    //});
 });
 
 describe('EntitySchema.denormalize', () => {
@@ -127,14 +108,4 @@ describe('EntitySchema.denormalize', () => {
 
         expect(bar.denormalize({result: '2', entities})).toEqual(undefined);
     });
-
-    //it('can denormalize null shapes', () => {
-    //const NullSchemaEntity = new EntitySchema({
-    //name: 'foo',
-    //shape: null,
-    //id: (data) => `${data}-foo`,
-    //});
-    //const state = NullSchemaEntity.normalize(2, {});
-    //expect(NullSchemaEntity.denormalize(state)).toBe(2);
-    //});
 });
