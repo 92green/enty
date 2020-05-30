@@ -1,127 +1,131 @@
-import EntitySchema from "../EntitySchema"
-import CompositeEntitySchema from "../CompositeEntitySchema"
-import ObjectSchema from "../ObjectSchema"
+import EntitySchema from '../EntitySchema';
+import CompositeEntitySchema from '../CompositeEntitySchema';
+import ObjectSchema from '../ObjectSchema';
 
-var course = new EntitySchema("course")
-course.shape = new ObjectSchema({})
+var course = new EntitySchema({
+    name: 'course',
+    shape: new ObjectSchema({}),
+});
 
-var participant = new CompositeEntitySchema("participant", {
+var participant = new CompositeEntitySchema({
+    name: 'participant',
     shape: new ObjectSchema({}),
     compositeKeys: {
         course,
     },
-})
+});
 
-var dog = new CompositeEntitySchema("dog", {
+var dog = new CompositeEntitySchema({
+    name: 'dog',
     shape: new ObjectSchema({}),
     compositeKeys: {
         participant,
     },
-})
+});
 
 const derek = {
-    id: "123",
-    name: "Derek Tibbs",
+    id: '123',
+    name: 'Derek Tibbs',
     course: {
-        id: "spk456",
-        courseName: "Learn All The Things!",
+        id: 'spk456',
+        courseName: 'Learn All The Things!',
     },
-}
+};
 
-test("denormalize is the inverse of normalize", () => {
-    expect(participant.denormalize(participant.normalize(derek))).toEqual(derek)
-})
+test('denormalize is the inverse of normalize', () => {
+    expect(participant.denormalize(participant.normalize(derek))).toEqual(derek);
+});
 
-test("throw without a definition", () => {
-    expect(() =>
-        new CompositeEntitySchema("foo").normalize(derek, {}),
-    ).toThrow()
+test('throw without a definition', () => {
+    expect(() => new CompositeEntitySchema({name: 'foo'}).normalize(derek, {})).toThrow();
     // $FlowFixMe - deliberate missuse of types
     expect(() =>
-        new CompositeEntitySchema("foo", {shape: null}).normalize(derek, {}),
-    ).toThrow()
-})
+        new CompositeEntitySchema({name: 'foo', shape: null}).normalize(derek, {})
+    ).toThrow();
+});
 
-test("can hold CompositeEntitySchemas", () => {
+test('can hold CompositeEntitySchemas', () => {
     const aa = {
-        id: "lassie",
+        id: 'lassie',
         participant: {
-            id: "123",
-            name: "Derek Tibbs",
+            id: '123',
+            name: 'Derek Tibbs',
             course: {
-                id: "spk456",
-                courseName: "Learn All The Things!",
+                id: 'spk456',
+                courseName: 'Learn All The Things!',
             },
         },
-    }
+    };
 
-    const {entities, result} = dog.normalize(aa)
-    expect(entities.course).toBeTruthy()
-    expect(entities.participant).toBeTruthy()
-    expect(entities.dog).toBeTruthy()
-    expect(entities.dog).toBeTruthy()
-    expect(entities.participant).toBeTruthy()
-    expect(result).toBe("lassie-123-spk456")
-})
+    const {entities, result} = dog.normalize(aa);
+    expect(entities.course).toBeTruthy();
+    expect(entities.participant).toBeTruthy();
+    expect(entities.dog).toBeTruthy();
+    expect(entities.dog).toBeTruthy();
+    expect(entities.participant).toBeTruthy();
+    expect(result).toBe('lassie-123-spk456');
+});
 
-test("can defer their definition", () => {
-    var lateCourseParticipant = new CompositeEntitySchema("participant")
-    lateCourseParticipant.shape = new ObjectSchema({})
-    lateCourseParticipant.compositeKeys = {course}
-    expect(() => lateCourseParticipant.normalize(derek)).not.toThrow()
-})
+test('can defer their definition', () => {
+    var lateCourseParticipant = new CompositeEntitySchema({name: 'participant'});
+    lateCourseParticipant.shape = new ObjectSchema({});
+    lateCourseParticipant.compositeKeys = {course};
+    expect(() => lateCourseParticipant.normalize(derek)).not.toThrow();
+});
 
-test("compositeKeys will override defintion keys ", () => {
-    const owl = new EntitySchema("owl", {
+test('compositeKeys will override defintion keys ', () => {
+    const owl = new EntitySchema({
+        name: 'owl',
         shape: new ObjectSchema({}),
-    })
+    });
 
-    var cat = new CompositeEntitySchema("cat", {
+    var cat = new CompositeEntitySchema({
+        name: 'cat',
         shape: new ObjectSchema({friend: dog}),
         compositeKeys: {
             friend: owl,
         },
-    })
+    });
 
     const {entities} = cat.normalize({
-        id: "sparky",
+        id: 'sparky',
         friend: {
-            id: "hedwig",
+            id: 'hedwig',
         },
-    })
+    });
 
-    expect(entities.cat["sparky-hedwig"]).toBeTruthy()
-    expect(entities.dog).toBeFalsy()
-})
+    expect(entities.cat['sparky-hedwig']).toBeTruthy();
+    expect(entities.dog).toBeFalsy();
+});
 
-test("will not try to normalize null compositeKeys", () => {
-    expect(() => participant.normalize({id: "rad"})).not.toThrow()
-})
+test('will not try to normalize null compositeKeys', () => {
+    expect(() => participant.normalize({id: 'rad'})).not.toThrow();
+});
 
-test("will not try to denormalize null compositeKeys", () => {
-    const data = {id: "rad"}
-    expect(() =>
-        participant.denormalize(participant.normalize(data)),
-    ).not.toThrow()
-})
+test('will not try to denormalize null compositeKeys', () => {
+    const data = {id: 'rad'};
+    expect(() => participant.denormalize(participant.normalize(data))).not.toThrow();
+});
 
-it("will throw if compositeKey is structural", () => {
-    var badSchema = new CompositeEntitySchema("participant", {
+it('will throw if compositeKey is structural', () => {
+    var badSchema = new CompositeEntitySchema({
+        name: 'participant',
         shape: new ObjectSchema({}),
         compositeKeys: {
             course: new ObjectSchema({}),
         },
-    })
+    });
     const data = {
-        id: "steve",
-        course: {id: "electronics101"},
-    }
-    expect(() => badSchema.normalize(data, {})).toThrow(/participant/)
-})
+        id: 'steve',
+        course: {id: 'electronics101'},
+    };
+    expect(() => badSchema.normalize(data, {})).toThrow(/participant/);
+});
 
-it("can normalize the entity without any compositeKeys", () => {
+it('can normalize the entity without any compositeKeys', () => {
     const data = {
-        id: "steve",
-    }
-    expect(() => participant.normalize(data, {})).not.toThrow()
-})
+        id: 'steve',
+    };
+    expect(() => participant.normalize(data, {})).not.toThrow();
+});
+

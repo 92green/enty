@@ -1,65 +1,60 @@
+import EntitySchema from '../EntitySchema';
+import DynamicSchema from '../DynamicSchema';
+
+export type Entities = {
+    [key: string]: {
+        [key: string]: unknown;
+    };
+};
+
 export type NormalizeState = {
-    entities: Object
-    result: any
-    schemas: Object
-}
+    entities: Entities;
+    result: any;
+    schemas: Object;
+};
 
 export type DenormalizeState = {
-    entities: Object
-    result: any
-}
+    entities: Entities;
+    result: any;
+};
 
-export type StructuralSchemaOptions = {
-    create?: Create
-    merge?: Merge
-}
+//export type StructuralSchemaOptions<Create, Merge> = {
+//create?: Create
+//merge?: Merge
+//}
 
 export type EntitySchemaOptions<Shape> = {
-    readonly shape?: Shape
-    id?: (entity: Object) => string
-    merge?: Merge
-}
+    name: string;
+    shape?: Shape;
+    id?: (entity: Object) => string;
+};
 
-export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
-    shape?: Shape
-    id?: (entity: Object) => string
-    compositeKeys?: CompositeShape
-}
+//export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
+//shape?: Shape
+//id?: (entity: Object) => string
+//compositeKeys?: CompositeShape
+//}
 
-export type DynamicShape = (data: any) => Schema
+//export type DynamicShape = (data: any) => Schema
 
 //
 // Options
 
-export type Normalize = (data: unknown, entities: Object) => NormalizeState
-export type Denormalize = (
-    denormalizeState: DenormalizeState,
-    path: Array<unknown>,
-) => any
-export type Create = (data: any) => any
-export type Merge = (previous: any, next: any) => any
-export type IdAttribute = (data: any) => string
+export type Normalize = (data: unknown, entities: Object) => NormalizeState;
+export type Denormalize = (denormalizeState: DenormalizeState, path: Array<unknown>) => any;
+//export type Create = (data: any) => any
+//export type Merge = (previous: any, next: any) => any
+export type Id = (data: any) => string;
 
 //
 // Interfaces
 
-export interface EntitySchemaInterface<Shape> {
-    readonly normalize: Normalize
-    readonly denormalize: Denormalize
-    shape: Shape
-    name: string
-    id: (item: unknown) => string
-}
+export type Schema = ShapeSchema<any> | EntitySchema<any> | DynamicSchema<any>;
 
-export interface StructuralSchemaInterface<Shape> {
-    readonly normalize: Normalize
-    readonly denormalize: Denormalize
-    shape: Shape
-    create: Create
-    merge: Merge
-}
-
-export interface Schema {
-    readonly normalize: Normalize
-    readonly denormalize: Denormalize
+export interface ShapeSchema<Shape> {
+    normalize: Normalize;
+    denormalize: Denormalize;
+    shape: Shape;
+    create: Function;
+    merge: Function;
 }

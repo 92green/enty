@@ -1,38 +1,35 @@
-import {NormalizeState} from "./util/definitions"
-import {DenormalizeState} from "./util/definitions"
-import {DynamicShape} from "./util/definitions"
-import {Merge} from "./util/definitions"
-import {Create} from "./util/definitions"
+import {NormalizeState} from './util/definitions';
+import {DenormalizeState} from './util/definitions';
+import {ShapeSchema} from './util/definitions';
+import {Entities} from './util/definitions';
+import EntitySchema from './EntitySchema';
 
-export default class DynamicSchema {
-    shape: DynamicShape
-    create: Create
-    merge: Merge
+type DynamicShape<A> = (data: A) => ShapeSchema<any> | EntitySchema<any>;
 
-    constructor(shape: DynamicShape) {
-        this.shape = shape
+export default class DynamicSchema<A> {
+    shape: DynamicShape<A>;
+
+    constructor(shape: DynamicShape<A>) {
+        this.shape = shape;
     }
 
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
-        const schema = this.shape(data)
-        const result = schema.normalize(data, entities)
+    normalize(data: A, entities: Entities = {}): NormalizeState {
+        const schema = this.shape(data);
+        const result = schema.normalize(data, entities);
 
         return {
             entities,
             schemas: result.schemas,
             result: {
-                resultType: "dynamicSchemaResult",
+                resultType: 'dynamicSchemaResult',
                 result,
                 schema,
             },
-        }
+        };
     }
 
-    denormalize(
-        denormalizeState: DenormalizeState,
-        path: Array<any> = [],
-    ): any {
-        const {schema, result} = denormalizeState.result
-        return schema.denormalize(result, path)
+    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
+        const {schema, result} = denormalizeState.result;
+        return schema.denormalize(result, path);
     }
 }
