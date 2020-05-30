@@ -14,3 +14,4 @@ export {default as ObjectSchema} from './ObjectSchema';
 export {NormalizeState} from './util/definitions';
 export {DenormalizeState} from './util/definitions';
 export {ShapeSchema} from './util/definitions';
+export {default as REMOVED_ENTITY} from './util/RemovedEntity';
