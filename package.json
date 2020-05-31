@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
-    "build": "lerna run build --parallel --",
+    "build": "lerna run build",
     "test": "lerna run test --parallel --"
   },
   "devDependencies": {

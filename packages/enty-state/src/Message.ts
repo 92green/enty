@@ -1,6 +1,3 @@
-import get from 'unmutable/lib/get';
-import getIn from 'unmutable/lib/getIn';
-
 type Request = (payload?: unknown) => any;
 type RequestState = 'empty' | 'fetching' | 'refetching' | 'success' | 'error';
 
@@ -74,11 +71,19 @@ export default class Message {
     // Response Getters
 
     get(key: string, notFoundValue?: unknown): unknown {
-        return get(key, notFoundValue)(this.response || {});
+        const value = this.response?.[key];
+        return value === undefined ? notFoundValue : value;
     }
 
     getIn(path: string[], notFoundValue?: unknown): unknown {
-        return getIn(path, notFoundValue)(this.response || {});
+        let ii = this.response;
+        for (let key of path) {
+            ii = ii?.[key];
+            if (ii === undefined) {
+                return notFoundValue;
+            }
+        }
+        return ii;
     }
 
     //
@@ -146,4 +151,3 @@ export default class Message {
     errorMap = this._createMap('isError', Message.error);
     toError = () => Message.error(this);
 }
-
