@@ -1,4 +1,4 @@
-import {Schema} from 'enty/lib/util/definitions';
+import {Schema} from 'enty';
 
 export type Observable = {
     subscribe: Function;

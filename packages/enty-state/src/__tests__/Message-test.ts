@@ -43,8 +43,7 @@ it('will default to Empty', () => {
             response: null,
             responseKey: 'foo',
             request: Promise.resolve,
-            requestError: null,
-            requestState: 'empty'
+            requestError: null
         }).isEmpty
     ).toBe(true);
 });

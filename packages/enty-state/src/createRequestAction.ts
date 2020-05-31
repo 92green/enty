@@ -5,18 +5,18 @@ type Meta = {
     key: string;
 };
 
-export default function createRequestAction(
-    Store: EntityStore,
+export default function createRequestAction<A>(
+    store: EntityStore<A>,
     sideEffect: SideEffect,
     path: string[]
 ): Function {
     return <A>(requestPayload: A, meta: Meta) => {
         const {key} = meta;
-        const success = <D>(data: D) => Store.updateRequest(key, 'success', data);
-        const error = <D>(data: D) => Store.updateRequest(key, 'error', data);
+        const success = <D>(data: D) => store.updateRequest(key, 'success', data);
+        const error = <D>(data: D) => store.updateRequest(key, 'error', data);
 
-        Store.updateRequest(key, 'pending', {});
-        const pending: AsyncType = sideEffect(requestPayload, meta);
+        store.updateRequest(key, 'pending', {});
+        const pending: AsyncType = sideEffect(requestPayload, {key, store});
         if ('subscribe' in pending) {
             pending.subscribe({next: success, complete: success, error: error});
         } else if ('then' in pending) {

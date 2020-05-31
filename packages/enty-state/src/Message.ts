@@ -8,7 +8,7 @@ type MessageInput = {
     removeEntity: (type: string, id: string) => void;
     request: Request;
     requestError: any;
-    requestState: RequestState;
+    requestState?: RequestState;
     reset: () => void;
     response: any;
     responseKey: string;
