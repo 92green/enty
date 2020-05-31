@@ -1,22 +1,22 @@
-// @flow
-import type {Node} from 'react';
-import type {ComponentType} from 'react';
-import type Message from 'enty-state/lib/data/Message';
+import {ReactNode} from 'react';
+import {FunctionComponent} from 'react';
+import {ComponentType} from 'react';
+import {Message} from 'enty-state';
 
 import React from 'react';
 
 type Props = {
-    children: (response: mixed, {refetching: boolean}) => Node,
-    message: Message,
-    fallbackOnRefetch?: boolean,
-    fallback?: ComponentType<*>,
-    error?: ComponentType<*>,
-    empty?: ComponentType<*>
+    children: (response: unknown, arg1: {refetching: boolean}) => ReactNode;
+    message: Message;
+    fallbackOnRefetch?: boolean;
+    fallback?: ComponentType<any>;
+    error?: ComponentType<any>;
+    empty?: ComponentType<any>;
 };
 
 const NullRender = () => null;
 
-export default function LoadingBoundary(props: Props): Node {
+const LoadingBoundary: FunctionComponent<Props> = (props) => {
     // Config
     const {children} = props;
     const {message} = props;
@@ -29,7 +29,8 @@ export default function LoadingBoundary(props: Props): Node {
     const emptyState = () => <Empty />;
     const errorState = () => <Error error={message.requestError} />;
     const fallbackState = () => <Fallback />;
-    const renderState = () => children(message.response, {refetching: message.isRefetching === true});
+    const renderState = () =>
+        children(message.response, {refetching: message.isRefetching === true});
 
     // Render
     return message
@@ -37,7 +38,7 @@ export default function LoadingBoundary(props: Props): Node {
         .fetchingMap(fallbackState)
         .refetchingMap(fallbackOnRefetch ? fallbackState : renderState)
         .successMap(renderState)
-        .errorMap(errorState)
-        .value;
-}
+        .errorMap(errorState).value;
+};
 
+export default LoadingBoundary;

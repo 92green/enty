@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./lib/",
+    "jsx": "react",
     "noImplicitAny": false,
     "sourceMap": true,
     "module": "commonjs",
@@ -8,9 +9,15 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": [ "../../types", "./node_modules/@types"],
+    "typeRoots": [
+      "../../types",
+      "./node_modules/@types"
+    ],
     "allowJs": false
   },
-  "exclude": ["node_modules"],
-	"include": ["src"]
+  "exclude": ["node_modules", "typings"],
+	"include": [
+	  "src",
+	  "node_modules/jest-enzyme/lib/index.d.ts"
+	]
 }

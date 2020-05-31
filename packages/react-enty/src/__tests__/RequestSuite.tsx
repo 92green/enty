@@ -1,55 +1,73 @@
-// @flow
 import React from 'react';
 import EntityApi from '../EntityApi';
+import {mount} from 'enzyme';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
-
+import {ReactWrapper} from 'enzyme';
+import {Message, EntityStore} from 'enty-state';
 
 //
 // Test Bootstrap
 //
 
 function setupTests() {
-    const fooEntity = new EntitySchema('foo');
-    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi({
-        foo: (data = 'foo') => Promise.resolve({data}),
-        entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
-        badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
-        fooError: () => Promise.reject('ouch!'),
-        bar: (data = 'bar') => Promise.resolve({data}),
-        baz: (data = 'requested-baz') => Promise.resolve({data}),
-        obs: () => ({subscribe: () => {}})
-    }, new ObjectSchema({
-        foo: fooEntity
-    }));
+    const fooEntity = new EntitySchema({name: 'foo'});
+    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi(
+        {
+            foo: (data = 'foo') => Promise.resolve({data}),
+            entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
+            badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
+            fooError: () => Promise.reject('ouch!'),
+            bar: (data = 'bar') => Promise.resolve({data}),
+            baz: (data = 'requested-baz') => Promise.resolve({data}),
+            obs: () => ({subscribe: () => {}})
+        },
+        new ObjectSchema({
+            foo: fooEntity
+        })
+    );
 
-    function ExpectsMessage(props: Object) {
+    function ExpectsMessage(props: {
+        payload: any;
+        removeEntityPayload: [string, string];
+        message: Message;
+    }) {
         const {request, reset, removeEntity} = props.message;
         const {payload} = props;
         const {removeEntityPayload} = props;
-        return <>
-            <button className="request" onClick={() => request(payload)} />
-            <button className="reset" onClick={() => reset()} />
-            <button className="removeEntity" onClick={() => removeEntity(...removeEntityPayload)} />
-        </>;
+        return (
+            <>
+                <button className="request" onClick={() => request(payload)} />
+                <button className="reset" onClick={() => reset()} />
+                <button
+                    className="removeEntity"
+                    onClick={() => removeEntity(...removeEntityPayload)}
+                />
+            </>
+        );
     }
 
     return {
         ExpectsMessage,
         mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
             const Child = testFn(ExpectsMessage);
-            const SkipProvider = (props) => <Provider
-                initialState={{
-                    entities: {},
+            const SkipProvider: any = (props: any) => (
+                <Provider
+                    initialState={{
+                        entities: {},
 
-                    // Hashed key of 'baz'
-                    request: {
-                        '1379365508': {requestState: 'success', response: {data: 'initial-baz'}}
-                    }
-                }}
-                children={<Child {...props} />}
-            />;
+                        // Hashed key of 'baz'
+                        request: {
+                            '1379365508': {
+                                requestState: 'success',
+                                response: {data: 'initial-baz'}
+                            }
+                        }
+                    }}
+                    children={<Child {...props} />}
+                />
+            );
             return mount(<SkipProvider {...extraProps} />);
         },
         badEntity,
@@ -62,49 +80,77 @@ function setupTests() {
     };
 }
 
-export const {mountWithProvider, foo, bar, baz, obs, badEntity, entity, fooError, ExpectsMessage} = setupTests();
+export const {
+    mountWithProvider,
+    foo,
+    bar,
+    baz,
+    obs,
+    badEntity,
+    entity,
+    fooError,
+    ExpectsMessage
+} = setupTests();
 
-export function asyncUpdate(wrapper: Object) {
-    return (new Promise(resolve => setTimeout(resolve, 0)))
-        .then(() => wrapper.update());
+export async function asyncUpdate(wrapper: ReactWrapper) {
+    return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
 }
-
 
 //
 // Custom Message Matchers
 
+declare global {
+    namespace jest {
+        interface Matchers<R> {
+            toBeEmpty(): CustomMatcherResult;
+            toBeFetching(): CustomMatcherResult;
+            toBeRefetching(expected: any): CustomMatcherResult;
+            toBeSuccess(expected: any): CustomMatcherResult;
+            toBeError(expected: any): CustomMatcherResult;
+        }
+    }
+}
 
-expect.extend([
-    ['Empty', 'isEmpty'],
-    ['Fetching', 'isFetching'],
-    ['Refetching', 'isRefetching'],
-    ['Success', 'isSuccess'],
-    ['Error', 'isError']
-].reduce((rr, [expectedName, expectedState], index, input) => {
-    let name = `toBe${expectedName}`;
-    rr[name] = function(wrapper, expectedResponse) {
-        let {printReceived, printExpected} = this.utils;
-        let message = wrapper.find('ExpectsMessage').prop('message');
-        let {isError} = message;
-        let response = isError ? message.requestError : message.response;
+expect.extend(
+    [
+        ['Empty', 'isEmpty'],
+        ['Fetching', 'isFetching'],
+        ['Refetching', 'isRefetching'],
+        ['Success', 'isSuccess'],
+        ['Error', 'isError']
+    ].reduce((rr, [expectedName, expectedState], _, input) => {
+        let name = `toBe${expectedName}`;
+        rr[name] = function (wrapper: ReactWrapper, expectedResponse: any) {
+            let {printReceived, printExpected} = this.utils;
+            let message: Message = wrapper.find('ExpectsMessage').prop('message');
+            let {isError} = message;
+            let response = isError ? message.requestError : message.response;
 
-        let passType = message[expectedState];
-        let passResponse = equals(response)(expectedResponse);
-        let pass = passType && passResponse;
+            let passType = message[expectedState];
+            let passResponse = equals(response)(expectedResponse);
+            let pass = passType && passResponse;
 
-        let type = input.find(([, state]) => message[state]) || [];
-        return pass
-            ? {pass: true, message: () => `expect(wrapper).not.${name}()\n\n` +
-                `Received: ${printReceived(expectedName)}`}
-            : {pass: false, message: () => `expect(wrapper).${name}()\n\n` +
-                `Expected: ${printExpected(expectedName)}: ${printExpected(expectedResponse)}\n` +
-                `Received: ${printReceived(type[0])}: ${printReceived(response)}`}
-        ;
-    };
-    return rr;
-}, {}));
-
-
+            let type = input.find(([, state]) => message[state]) || [];
+            return pass
+                ? {
+                      pass: true,
+                      message: () =>
+                          `expect(wrapper).not.${name}()\n\n` +
+                          `Received: ${printReceived(expectedName)}`
+                  }
+                : {
+                      pass: false,
+                      message: () =>
+                          `expect(wrapper).${name}()\n\n` +
+                          `Expected: ${printExpected(expectedName)}: ${printExpected(
+                              expectedResponse
+                          )}\n` +
+                          `Received: ${printReceived(type[0])}: ${printReceived(response)}`
+                  };
+        };
+        return rr;
+    }, {})
+);
 
 //
 // Test Cases
@@ -143,8 +189,8 @@ export async function exisitingKey(testFn: Function) {
 
 export async function keyClash(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let first = wrapper.find('ExpectsMessage').at(0).prop('message');
-    let second = wrapper.find('ExpectsMessage').at(1).prop('message');
+    let first: Message = wrapper.find('ExpectsMessage').at(0).prop('message');
+    let second: Message = wrapper.find('ExpectsMessage').at(1).prop('message');
     expect(first.responseKey).not.toBe(second.responseKey);
 }
 
@@ -194,7 +240,6 @@ export async function removeEntity(testFn: Function) {
     expect(wrapper).toBeSuccess({});
 }
 
-
 export async function fetchOnPropChange(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
 
@@ -218,7 +263,6 @@ export async function fetchOnCallback(testFn: Function) {
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess({data: 'foo'});
 }
-
 
 export async function fetchSeries(testFn: Function) {
     let wrapper = mountWithProvider(testFn);

@@ -1,6 +1,7 @@
-// @flow
+import 'jest-enzyme';
 import React from 'react';
-import Message from 'enty-state/lib/data/Message';
+import {mount} from 'enzyme';
+import {Message} from 'enty-state';
 import LoadingBoundaryHoc from '../LoadingBoundaryHoc';
 
 const TestEmpty = () => null;
@@ -18,7 +19,6 @@ const messageInput = {
 };
 
 describe('Empty', () => {
-
     it('will render empty', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo',
@@ -27,11 +27,9 @@ describe('Empty', () => {
         const wrapper = mount(<Hoc foo={Message.empty(messageInput)} />);
         expect(wrapper).toContainMatchingElement('TestEmpty');
     });
-
 });
 
 describe('Fetching', () => {
-
     it('will render fallback', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo',
@@ -40,11 +38,9 @@ describe('Fetching', () => {
         const wrapper = mount(<Hoc foo={Message.fetching(messageInput)} />);
         expect(wrapper).toContainMatchingElement('TestFallback');
     });
-
 });
 
 describe('Refetching', () => {
-
     it('will render fallback on if fallbackOnRefetch is true', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo',
@@ -54,11 +50,9 @@ describe('Refetching', () => {
         const wrapper = mount(<Hoc foo={Message.refetching(messageInput)} />);
         expect(wrapper).toContainMatchingElement('TestFallback');
     });
-
 });
 
 describe('Success', () => {
-
     it('will render children with message at config.name', () => {
         const message = Message.success(messageInput);
         const Hoc = LoadingBoundaryHoc({
@@ -79,7 +73,6 @@ describe('Success', () => {
 });
 
 describe('Error', () => {
-
     it('will render error with requestError in props.error', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo',
@@ -89,11 +82,9 @@ describe('Error', () => {
         expect(wrapper).toContainMatchingElement('TestError');
         expect(wrapper.find('TestError')).toHaveProp('error', 'OUCH!');
     });
-
 });
 
 describe('SafeRendering', () => {
-
     it('will not render anything if not provided', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo'
@@ -105,5 +96,5 @@ describe('SafeRendering', () => {
         expect(fetching).toContainMatchingElement('NullRender');
         expect(error).toContainMatchingElement('NullRender');
     });
-
 });
+

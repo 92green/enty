@@ -41,7 +41,7 @@ export type EntitySchemaOptions<Shape> = {
 // Options
 
 export type Normalize = (data: unknown, entities: Object) => NormalizeState;
-export type Denormalize = (denormalizeState: DenormalizeState, path: Array<unknown>) => any;
+export type Denormalize = (denormalizeState: DenormalizeState, path?: Array<unknown>) => any;
 //export type Create = (data: any) => any
 //export type Merge = (previous: any, next: any) => any
 export type Id = (data: any) => string;
