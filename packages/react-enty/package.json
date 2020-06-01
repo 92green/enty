@@ -22,9 +22,7 @@
     "watch": "yarn build -w",
     "flow": "flow check",
     "flow-coverage": "blueflag-test flow-coverage -M",
-    "lint": "blueflag-test lint",
-    "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage"
+    "lint": "blueflag-test lint"
   },
   "peerDependencies": {
     "react": "^16.8.3"
@@ -32,6 +30,7 @@
   "devDependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
+    "@babel/runtime": "^7.10.1",
     "@testing-library/react-hooks": "^1.1.0",
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^1.0.1",

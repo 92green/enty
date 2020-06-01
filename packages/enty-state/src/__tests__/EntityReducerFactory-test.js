@@ -1,31 +1,33 @@
 //@flow
 import EntityReducerFactory from '../EntityReducerFactory';
-import {EntitySchema, ObjectSchema} from 'enty';
+import {EntitySchema, ObjectSchema, ArraySchema} from 'enty';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import {REMOVED_ENTITY} from 'enty';
 import resetAction from '../api/resetAction';
 
 //
 // Schemas
 //
 
-var author = new EntitySchema('author', {
-    idAtribute: get('fullnameId'),
-    shape: {}
+var author = new EntitySchema({
+    name: 'author',
+    id: get('fullnameId'),
 });
 
-var topListings = new EntitySchema('topListings', {
+var topListings = new EntitySchema({
+    name: 'topListings',
     id: get('fullnameId'),
-    shape: {author}
+    shape: new ObjectSchema({author})
 });
 
-var subreddit = new EntitySchema('subreddit', {
+var subreddit = new EntitySchema({
+    name: 'subreddit',
     id: get('fullnameId'),
-    shape: {
-        topListings: [topListings]
-    }
+    shape: new ObjectSchema({
+        topListings: new ArraySchema(topListings)
+    })
 });
 
 const schema = new ObjectSchema({
