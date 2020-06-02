@@ -1,4 +1,3 @@
-// @flow
 import Message from '../Message';
 
 const response = {name: 'foo'};
@@ -8,7 +7,14 @@ const requestError = 'ERROR!';
 const reset = () => {};
 const removeEntity = () => {};
 
-const messageInput = {response, responseKey, request, requestError, reset, removeEntity};
+const messageInput = {
+    response,
+    responseKey,
+    request,
+    requestError,
+    reset,
+    removeEntity
+};
 
 it('will let you set responseKey, response,, requestError, request', () => {
     const message = new Message({
@@ -29,25 +35,24 @@ it('will let you set responseKey, response,, requestError, request', () => {
     expect(message.request()).resolves.toBe('quux');
 });
 
-
 it('will default to Empty', () => {
-    expect(new Message({
-        reset,
-        removeEntity,
-        response: null,
-        responseKey: 'foo',
-        request: Promise.resolve,
-        requestError: null,
-        requestState: 'empty'
-    }).isEmpty).toBe(true);
+    expect(
+        new Message({
+            reset,
+            removeEntity,
+            response: null,
+            responseKey: 'foo',
+            request: Promise.resolve,
+            requestError: null
+        }).isEmpty
+    ).toBe(true);
 });
 
 it('will let you update the message', () => {
-    const newMessage = Message.empty(messageInput)
-        .update(message => ({
-            ...message,
-            response: 'bar'
-        }));
+    const newMessage = Message.empty(messageInput).update((message) => ({
+        ...message,
+        response: 'bar'
+    }));
 
     expect(newMessage.response).toBe('bar');
 });
@@ -77,11 +82,9 @@ describe('Message response methods', () => {
         expect(Message.empty(messageInput).get('blah', '!')).toBe('!');
         expect(Message.empty(messageInput).getIn(['bar', 'blah'], '!')).toBe('!');
     });
-
 });
 
 describe('Message methods', () => {
-
     it('will change with .to functions', () => {
         expect(Message.fetching().toEmpty().isEmpty).toBe(true);
         expect(Message.empty(messageInput).toFetching().isFetching).toBe(true);
@@ -89,7 +92,6 @@ describe('Message methods', () => {
         expect(Message.empty(messageInput).toSuccess().isSuccess).toBe(true);
         expect(Message.empty(messageInput).toError().isError).toBe(true);
     });
-
 });
 
 describe('Message Constructors', () => {
@@ -137,9 +139,7 @@ describe('Message Constructors', () => {
     });
 });
 
-
 describe('request states', () => {
-
     test('map functions will update values', () => {
         function value(state) {
             return state
@@ -147,8 +147,7 @@ describe('request states', () => {
                 .fetchingMap(() => 'fetching')
                 .refetchingMap(() => 'refetching')
                 .errorMap(() => 'error')
-                .successMap(() => 'success')
-                .value;
+                .successMap(() => 'success').value;
         }
         expect(value(Message.empty())).toBe('empty');
         expect(value(Message.fetching())).toBe('fetching');
@@ -197,7 +196,6 @@ describe('request states', () => {
     });
 
     test('variant apis', () => {
-
         function instance(state) {
             expect(state).toHaveProperty('value');
             expect(state).toHaveProperty('isEmpty');
@@ -233,3 +231,4 @@ describe('request states', () => {
         expect(isSuccess).toBe(true);
     });
 });
+

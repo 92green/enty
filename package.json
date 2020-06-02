@@ -5,10 +5,11 @@
   "private": true,
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
-    "build": "lerna run build --parallel --",
+    "build": "lerna run build",
     "test": "lerna run test --parallel --"
   },
   "devDependencies": {
+    "@types/jest": "^25.2.3",
     "lerna": "^3.4.3"
   }
 }

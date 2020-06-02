@@ -17,27 +17,18 @@
   "private": false,
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production yarn babel src --out-dir lib --ignore '**/__tests__/*.js'",
+    "build": "tsc -p .",
     "watch": "yarn build -w",
-    "flow": "flow check",
-    "flow-coverage": "blueflag-test flow-coverage -M",
-    "lint": "blueflag-test lint",
-    "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test"
+    "test": "yarn jest --maxWorkers=1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.4",
-    "@babel/runtime": "^7.10.1",
-    "babel-plugin-extract-flow-types": "^1.0.0",
-    "babel-preset-blueflag": "^1.0.1",
-    "blueflag-test": "^0.22.0",
-    "enty": "^1.0.0",
-    "flow-bin": "^0.104.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3"
   },
   "dependencies": {
-    "unmutable": "^0.46.0"
+    "enty": "^1.0.0"
   }
 }
