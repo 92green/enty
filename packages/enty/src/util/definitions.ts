@@ -1,6 +1,7 @@
 import EntitySchema from '../EntitySchema';
 import DynamicSchema from '../DynamicSchema';
 
+export type Schemas = {[key: string]: Schema};
 export type Entities = {
     [key: string]: {
         [key: string]: unknown;
@@ -10,7 +11,7 @@ export type Entities = {
 export type NormalizeState = {
     entities: Entities;
     result: any;
-    schemas: Object;
+    schemas: Schemas;
 };
 
 export type DenormalizeState = {

@@ -7,8 +7,7 @@ type Meta = {
 
 export default function createRequestAction<A>(
     store: EntityStore<A>,
-    sideEffect: SideEffect,
-    path: string[]
+    sideEffect: SideEffect
 ): Function {
     return <A>(requestPayload: A, meta: Meta) => {
         const {key} = meta;

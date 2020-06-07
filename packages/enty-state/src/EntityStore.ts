@@ -1,5 +1,4 @@
-import {Entities, Schema, ObjectSchema, REMOVED_ENTITY} from 'enty';
-import visitActionMap from './visitActionMap';
+import {Entities, Schema, Schemas, ObjectSchema, REMOVED_ENTITY} from 'enty';
 import createRequestAction from './createRequestAction';
 
 type RequestState = 'empty' | 'fetching' | 'refetching' | 'success' | 'error';
@@ -23,9 +22,9 @@ export default class EntityStore<A> {
     _responseCount: number;
     _entity: Entities;
     _request: Requests;
-    _api: A;
+    _api: any;
     _rootSchema: Schema;
-    _schema: {[key: string]: Schema};
+    _schema: Schemas;
 
     constructor(options: Options<A>) {
         this._callback = [];
@@ -34,9 +33,7 @@ export default class EntityStore<A> {
         this._schema = {};
         this._responseCount = 0;
         this._rootSchema = options.schema || new ObjectSchema({});
-        this._api = visitActionMap(options.api, (sideEffect, path) =>
-            createRequestAction(this, sideEffect, path)
-        );
+        this._api = this._recurseApi(options.api, []);
     }
 
     //
@@ -44,8 +41,25 @@ export default class EntityStore<A> {
     // Private Methods
     // ===============
 
+    _recurseApi(branch: unknown, path: Array<string>) {
+        return Object.keys(branch).reduce((reduction: any, key: string): any => {
+            const item = branch[key];
+            const nextPath = path.concat(key);
+            if (typeof item === 'function') {
+                reduction[key] = {
+                    path: nextPath,
+                    raw: item,
+                    request: createRequestAction(this, item)
+                };
+            } else {
+                reduction[key] = this._recurseApi(item, nextPath);
+            }
+            return reduction;
+        }, {});
+    }
+
     // Normalize a payload against the root schema
-    _normalizePayload(payload: Object) {
+    _normalizePayload(payload: any) {
         const {entities, result, schemas} = this._rootSchema.normalize(payload, this._entity);
         this._entity = entities;
         this._schema = schemas;
