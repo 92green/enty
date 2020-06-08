@@ -1,13 +1,10 @@
 // Api
 export {default as LoadingBoundary} from './LoadingBoundary';
 export {default as LoadingBoundaryHoc} from './LoadingBoundaryHoc';
-export {Message} from 'enty-state';
+export {default as useMessage} from './RequestHook';
+export {default as MessageHoc} from './RequestHoc';
 
 // Schemas
-export {ArraySchema} from 'enty';
-export {CompositeEntitySchema} from 'enty';
-export {DynamicSchema} from 'enty';
-export {EntitySchema} from 'enty';
-export {IdSchema} from 'enty';
-export {ObjectSchema} from 'enty';
+export * from 'enty';
+export * from 'enty-state';
 

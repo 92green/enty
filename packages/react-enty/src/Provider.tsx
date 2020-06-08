@@ -23,7 +23,6 @@ export default class Provider extends Component<Props, State> {
         };
     }
     updateStore(store: EntityStore<any>) {
-        if (this.props.debug) console.log(store);
         this.setState({store, count: store.normalizeCount});
     }
     render() {

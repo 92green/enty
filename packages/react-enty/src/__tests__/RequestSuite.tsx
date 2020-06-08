@@ -17,12 +17,10 @@ function setupTests() {
     const store = new EntityStore({
         api: {
             foo: (data = 'foo') => Promise.resolve({data}),
-            entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
-            badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
+            badEntity: () => Promise.resolve({foo: {name: 'foo'}}),
             fooError: () => Promise.reject('ouch!'),
-            bar: (data = 'bar') => Promise.resolve({data}),
-            baz: (data = 'requested-baz') => Promise.resolve({data}),
-            obs: () => ({subscribe: () => {}})
+            bar: (data) => Promise.resolve({data}),
+            baz: () => Promise.resolve({data: 'requested-baz'})
         },
         schema: new ObjectSchema({
             foo: fooEntity
@@ -33,7 +31,7 @@ function setupTests() {
     store.updateRequest('foo:clash', 'success', {data: 'foo'});
     store.updateRequest('bar:clash', 'success', {data: 'bar'});
 
-    const {foo, fooError, badEntity, bar, baz, obs, entity} = store.api;
+    const {foo, fooError, badEntity, bar, baz} = store.api;
 
     function ExpectsMessage(props: {
         payload: any;
@@ -58,11 +56,9 @@ function setupTests() {
             return mount(<SkipProvider {...extraProps} />);
         },
         badEntity,
-        entity,
         foo,
         bar,
         baz,
-        obs,
         fooError
     };
 }
@@ -73,16 +69,14 @@ export const {
     foo,
     bar,
     baz,
-    obs,
     badEntity,
-    entity,
     fooError,
     ExpectsMessage
 } = setupTests();
 
-export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>, amount = 0) {
+export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>) {
     await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, amount));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         wrapper.update();
     });
 }
@@ -121,23 +115,19 @@ expect.extend(
             let passResponse = equals(response)(expectedResponse);
             let pass = passType && passResponse;
 
-            let type = input.find(([, state]) => message[state]) || [];
-            return pass
-                ? {
-                      pass: true,
-                      message: () =>
-                          `expect(wrapper).not.${name}()\n\n` +
-                          `Received: ${printReceived(expectedName)}`
-                  }
-                : {
-                      pass: false,
-                      message: () =>
-                          `expect(wrapper).${name}()\n\n` +
-                          `Expected: ${printExpected(expectedName)}: ${printExpected(
-                              expectedResponse
-                          )}\n` +
-                          `Received: ${printReceived(type[0])}: ${printReceived(response)}`
-                  };
+            let type = input.find(([, state]) => message[state]);
+
+            /* istanbul ignore next */
+            const passMessage = () =>
+                `expect(wrapper).not.${name}()\n\n` + `Received: ${printReceived(expectedName)}`;
+
+            /* istanbul ignore next */
+            const failMessage = () =>
+                `expect(wrapper).${name}()\n\n` +
+                `Expected: ${printExpected(expectedName)}: ${printExpected(expectedResponse)}\n` +
+                `Received: ${printReceived(type[0])}: ${printReceived(response)}`;
+
+            return pass ? {pass: true, message: passMessage} : {pass: false, message: failMessage};
         };
         return rr;
     }, {})
@@ -201,34 +191,6 @@ export async function refetch(testFn: Function) {
     expect(wrapper).toBeSuccess({data: 'foo'});
     click();
     expect(wrapper).toBeRefetching({data: 'foo'});
-}
-
-export async function reset(testFn: Function) {
-    let wrapper = mountWithProvider(testFn);
-    let clickRequest = () => wrapper.find('.request').simulate('click');
-    let clickReset = () => wrapper.find('.reset').simulate('click');
-
-    expect(wrapper).toBeEmpty();
-    clickRequest();
-    expect(wrapper).toBeFetching();
-    await asyncUpdate(wrapper);
-    expect(wrapper).toBeSuccess({data: 'foo'});
-    clickReset();
-    expect(wrapper).toBeEmpty();
-}
-
-export async function removeEntity(testFn: Function) {
-    let wrapper = mountWithProvider(testFn);
-    let clickRequest = () => wrapper.find('.request').simulate('click');
-    let clickRemove = () => wrapper.find('.removeEntity').simulate('click');
-
-    expect(wrapper).toBeEmpty();
-    clickRequest();
-    expect(wrapper).toBeFetching();
-    await asyncUpdate(wrapper);
-    expect(wrapper).toBeSuccess({foo: {id: '123', name: 'foo'}});
-    clickRemove();
-    expect(wrapper).toBeSuccess({});
 }
 
 export async function fetchOnPropChange(testFn: Function) {
