@@ -1,34 +1,24 @@
 import Message from '../Message';
 
 const response = {name: 'foo'};
-const responseKey = 'FOO';
 const request = async () => response;
 const requestError = 'ERROR!';
-const reset = () => {};
-const removeEntity = () => {};
 
 const messageInput = {
     response,
-    responseKey,
     request,
-    requestError,
-    reset,
-    removeEntity
+    requestError
 };
 
-it('will let you set responseKey, response,, requestError, request', () => {
+it('will let you set response, requestError, request', () => {
     const message = new Message({
-        reset,
-        responseKey: 'foo',
         response: 'bar',
         requestState: 'success',
         value: 'baz',
         requestError: 'qux',
-        removeEntity,
         request: () => Promise.resolve('quux')
     });
 
-    expect(message.responseKey).toBe('foo');
     expect(message.response).toBe('bar');
     expect(message.value).toBe('baz');
     expect(message.requestError).toBe('qux');
@@ -38,10 +28,7 @@ it('will let you set responseKey, response,, requestError, request', () => {
 it('will default to Empty', () => {
     expect(
         new Message({
-            reset,
-            removeEntity,
             response: null,
-            responseKey: 'foo',
             request: Promise.resolve,
             requestError: null
         }).isEmpty
@@ -99,35 +86,30 @@ describe('Message Constructors', () => {
         const message = Message.empty(messageInput);
         expect(message.response).toBeUndefined();
         expect(message.isEmpty).toBe(true);
-        expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.fetching will create a fetching message without a response', () => {
         const message = Message.fetching(messageInput);
         expect(message.response).toBeUndefined();
         expect(message.isFetching).toBe(true);
-        expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.refetching will create a refetching message with a response', () => {
         const message = Message.refetching(messageInput);
         expect(message.response).toBe(response);
         expect(message.isRefetching).toBe(true);
-        expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.success will create a success message with a response', () => {
         const message = Message.success(messageInput);
         expect(message.response).toBe(response);
         expect(message.isSuccess).toBe(true);
-        expect(message.responseKey).toBe('FOO');
     });
 
     test('Message.error will create a error message with requestError', () => {
         const message = Message.error(messageInput);
         expect(message.requestError).toBe(requestError);
         expect(message.isError).toBe(true);
-        expect(message.responseKey).toBe('FOO');
     });
 
     it('will not break if nothing is passed to each constructor', () => {
@@ -231,4 +213,3 @@ describe('request states', () => {
         expect(isSuccess).toBe(true);
     });
 });
-

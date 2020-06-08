@@ -2,26 +2,20 @@ type Request = (payload?: unknown) => any;
 type RequestState = 'empty' | 'fetching' | 'refetching' | 'success' | 'error';
 
 type MessageInput = {
-    removeEntity: (type: string, id: string) => void;
     request: Request;
     requestError: any;
     requestState?: RequestState;
-    reset: () => void;
     response: any;
-    responseKey: string;
     value?: any;
 };
 
 export default class Message {
     // Data
-    responseKey: string;
     requestError: any;
 
     // Methods
     response: any;
     request: Request;
-    reset: () => void;
-    removeEntity: (type: string, id: string) => void;
 
     // RequestState
     value: any;
@@ -33,12 +27,9 @@ export default class Message {
     isError: boolean;
 
     constructor(props: MessageInput) {
-        this.responseKey = props.responseKey;
         this.response = props.response;
         this.requestError = props.requestError;
         this.request = props.request;
-        this.reset = props.reset;
-        this.removeEntity = props.removeEntity;
         this.value = props.value;
         this.requestState = props.requestState || 'empty';
 
@@ -95,7 +86,6 @@ export default class Message {
 
     _createMap = (bool: string, create: Function) => {
         return (fn: Function) => {
-            // $FlowFixMe
             if (this[bool]) {
                 let value = fn(this.value, this);
                 return value instanceof Message ? value : create({...this, value});
@@ -138,6 +128,7 @@ export default class Message {
     static success = (messageLike: any = {}) =>
         new Message({
             ...messageLike,
+            requestError: undefined,
             requestState: 'success'
         });
     successMap = this._createMap('isSuccess', Message.success);
