@@ -1,6 +1,7 @@
 import React from 'react';
-import EntityApi from '../EntityApi';
+import Provider from '../Provider';
 import {mount} from 'enzyme';
+import {act} from 'react-dom/test-utils';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
@@ -13,8 +14,8 @@ import {Message, EntityStore} from 'enty-state';
 
 function setupTests() {
     const fooEntity = new EntitySchema({name: 'foo'});
-    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi(
-        {
+    const store = new EntityStore({
+        api: {
             foo: (data = 'foo') => Promise.resolve({data}),
             entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
             badEntity: (foo = {name: 'foo'}) => Promise.resolve({foo}),
@@ -23,50 +24,36 @@ function setupTests() {
             baz: (data = 'requested-baz') => Promise.resolve({data}),
             obs: () => ({subscribe: () => {}})
         },
-        new ObjectSchema({
+        schema: new ObjectSchema({
             foo: fooEntity
         })
-    );
+    });
+
+    store.updateRequest('baz:initial-baz', 'success', {data: 'initial-baz'});
+    store.updateRequest('foo:clash', 'success', {data: 'foo'});
+    store.updateRequest('bar:clash', 'success', {data: 'bar'});
+
+    const {foo, fooError, badEntity, bar, baz, obs, entity} = store.api;
 
     function ExpectsMessage(props: {
         payload: any;
         removeEntityPayload: [string, string];
         message: Message;
     }) {
-        const {request, reset, removeEntity} = props.message;
+        const {request} = props.message;
         const {payload} = props;
-        const {removeEntityPayload} = props;
-        return (
-            <>
-                <button className="request" onClick={() => request(payload)} />
-                <button className="reset" onClick={() => reset()} />
-                <button
-                    className="removeEntity"
-                    onClick={() => removeEntity(...removeEntityPayload)}
-                />
-            </>
-        );
+        return <button className="request" onClick={() => request(payload)} />;
     }
 
     return {
+        store,
         ExpectsMessage,
         mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
             const Child = testFn(ExpectsMessage);
             const SkipProvider: any = (props: any) => (
-                <Provider
-                    initialState={{
-                        entities: {},
-
-                        // Hashed key of 'baz'
-                        request: {
-                            '1379365508': {
-                                requestState: 'success',
-                                response: {data: 'initial-baz'}
-                            }
-                        }
-                    }}
-                    children={<Child {...props} />}
-                />
+                <Provider store={store}>
+                    <Child {...props} />
+                </Provider>
             );
             return mount(<SkipProvider {...extraProps} />);
         },
@@ -81,6 +68,7 @@ function setupTests() {
 }
 
 export const {
+    store,
     mountWithProvider,
     foo,
     bar,
@@ -92,8 +80,11 @@ export const {
     ExpectsMessage
 } = setupTests();
 
-export async function asyncUpdate(wrapper: ReactWrapper) {
-    return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
+export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>, amount = 0) {
+    await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, amount));
+        wrapper.update();
+    });
 }
 
 //
@@ -191,7 +182,7 @@ export async function keyClash(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
     let first: Message = wrapper.find('ExpectsMessage').at(0).prop('message');
     let second: Message = wrapper.find('ExpectsMessage').at(1).prop('message');
-    expect(first.responseKey).not.toBe(second.responseKey);
+    expect(first.response).not.toEqual(second.response);
 }
 
 export async function nothing(testFn: Function) {
@@ -242,6 +233,7 @@ export async function removeEntity(testFn: Function) {
 
 export async function fetchOnPropChange(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
+    wrapper.setProps({id: 'foo'}).update();
 
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);

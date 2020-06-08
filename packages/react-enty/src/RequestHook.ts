@@ -1,72 +1,31 @@
-import {Message} from 'enty-state';
-import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
-import getIn from 'unmutable/getIn';
+import {Message, ApiRequest} from 'enty-state';
+import {useCallback, useRef, useMemo} from 'react';
+import {useStore} from './StoreContext';
 
 type RequestHookConfig = {
-    actionType: string;
-    requestAction: Function;
-    resetAction: Function;
-    removeEntityAction: Function;
-    generateResultKey: Function;
+    request: ApiRequest;
+    key: string;
 };
 
-type Config = {
-    key?: string;
-};
+export default function useMessage(config: RequestHookConfig) {
+    const apiItem = config.request;
+    const keyRef = useRef<string | null>(null);
+    const {store} = useStore();
+    if (!store) throw 'useMessage must be called in a provider';
+    keyRef.current = `${apiItem.path}:${config.key}`;
 
-export default function RequestHookFactory(context: any, config: RequestHookConfig) {
-    const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
+    let {error: requestError, state: requestState, response} = useMemo(() => {
+        return store.getRequest(keyRef.current);
+    }, [store.normalizeCount]);
 
-    return (config: Config = {}) => {
-        const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
-        const responseKey = config.key ? generateResultKey(config.key) : derivedResponseKey;
-        const store = useContext<[any, any]>(context);
-        if (!store) throw 'useRequest must be called in a provider';
-        const [state, dispatch] = store;
-        const responseRef = useRef();
-        const mounted = useRef(true);
-
-        let messageData = state.request[responseKey] || {};
-
-        useEffect(() => {
-            return () => {
-                mounted.current = false;
-            };
-        }, []);
-
-        let response = useMemo(() => {
-            const {baseSchema, request, entities} = state;
-            const result = getIn([responseKey, 'response'])(request);
-            if (baseSchema) {
-                return baseSchema.denormalize({entities, result});
-            }
-            return result;
-        }, [messageData.requestState, responseKey, state.stats.responseCount]);
-
-        responseRef.current = response;
-
-        let request = useCallback((payload, {returnResponse = false} = {}) => {
-            const responseKey = generateResultKey(config.key || payload);
-            setDerivedResponseKey(responseKey);
-            return dispatch(requestAction(payload, {responseKey, returnResponse}));
-        }, []);
-
-        let reset = useCallback(() => dispatch(resetAction(responseKey)), []);
-        let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)), []);
-
-        return useMemo(
-            () =>
-                new Message({
-                    ...messageData,
-                    removeEntity,
-                    request,
-                    requestError: getIn([responseKey, 'requestError'])(state.request),
-                    reset,
-                    response,
-                    responseKey
-                }),
-            [messageData.requestState, response]
-        );
-    };
+    return useMemo(
+        () =>
+            new Message({
+                requestError,
+                requestState,
+                request: (payload) => apiItem.request(payload, {key: keyRef.current}),
+                response
+            }),
+        [requestState]
+    );
 }
-
