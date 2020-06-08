@@ -17,9 +17,15 @@ type Requests = {
     };
 };
 
+export type ApiRequest = {
+    raw: Function;
+    path: string;
+    request: <A>(payload: A, meta: {key: string}) => void;
+};
+
 export default class EntityStore<A> {
     _callback: Array<Function>;
-    _responseCount: number;
+    _normalizeCount: number;
     _entity: Entities;
     _request: Requests;
     _api: any;
@@ -31,9 +37,9 @@ export default class EntityStore<A> {
         this._entity = {};
         this._request = {};
         this._schema = {};
-        this._responseCount = 0;
+        this._normalizeCount = 0;
         this._rootSchema = options.schema || new ObjectSchema({});
-        this._api = this._recurseApi(options.api, []);
+        this._api = this._recurseApi(options.api, '');
     }
 
     //
@@ -41,7 +47,7 @@ export default class EntityStore<A> {
     // Private Methods
     // ===============
 
-    _recurseApi(branch: unknown, path: Array<string>) {
+    _recurseApi(branch: unknown, path: string) {
         return Object.keys(branch).reduce((reduction: any, key: string): any => {
             const item = branch[key];
             const nextPath = path.concat(key);
@@ -72,6 +78,7 @@ export default class EntityStore<A> {
     // Call all callbacks to notify them of a change to the store.
     // Methods that mutate the store must also call this
     _notifiy() {
+        this._normalizeCount += 1;
         this._callback.forEach((fn) => fn(this));
     }
 
@@ -91,7 +98,11 @@ export default class EntityStore<A> {
     // 2. normalize payloads
     // 3. notify callbacks
     updateRequest(key: string, type: AsyncState, payload: Object) {
-        this._request[key] = this._request[key] || {state: 'empty', error: null, result: null};
+        this._request[key] = this._request[key] || {
+            state: 'empty',
+            error: undefined,
+            result: undefined
+        };
         const {result} = this._request[key];
         switch (type) {
             case 'pending':
@@ -121,7 +132,7 @@ export default class EntityStore<A> {
 
     // reset a request back to an empty state
     removeRequest(key: string) {
-        this._request[key] = {state: 'empty', result: null, error: null};
+        this._request[key] = {state: 'empty', result: undefined, error: undefined};
         this._notifiy();
     }
 
@@ -144,7 +155,7 @@ export default class EntityStore<A> {
         return {
             state: state || 'empty',
             error,
-            result: this._denormalize(result)
+            response: this._denormalize(result)
         };
     }
 
@@ -161,5 +172,9 @@ export default class EntityStore<A> {
     // Public api access
     get api() {
         return this._api;
+    }
+
+    get normalizeCount() {
+        return this._normalizeCount;
     }
 }

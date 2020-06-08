@@ -7,7 +7,7 @@ describe('constructor', () => {
             api: {}
         });
 
-        expect(store._responseCount).toBe(0);
+        expect(store._normalizeCount).toBe(0);
         expect(store._rootSchema instanceof ObjectSchema).toBeTruthy();
         expect(store._callback).toEqual([]);
     });
