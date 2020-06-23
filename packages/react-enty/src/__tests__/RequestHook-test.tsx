@@ -8,13 +8,11 @@ import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
 import {nothing} from './RequestSuite';
 import {refetch} from './RequestSuite';
-import {reset} from './RequestSuite';
 import {fetchOnPropChange} from './RequestSuite';
 import {fetchOnCallback} from './RequestSuite';
 import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
 import {fetchBadEntity} from './RequestSuite';
-import {removeEntity} from './RequestSuite';
 import {
     mountWithProvider,
     foo,
@@ -23,8 +21,6 @@ import {
     badEntity,
     bar,
     baz,
-    obs,
-    entity,
     keyClash
 } from './RequestSuite';
 

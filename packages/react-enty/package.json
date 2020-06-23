@@ -18,7 +18,7 @@
   "private": false,
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "tsc -p .",
+    "build": "tsc --declaration -p .",
     "watch": "yarn build -w",
     "test": "yarn jest --maxWorkers=1"
   },

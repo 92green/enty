@@ -41,7 +41,7 @@ describe('updateRequest', () => {
         expect(store.getRequest('123')).toEqual({
             state: 'refetching',
             error: 'ERROR',
-            result: {foo: 1}
+            response: {foo: 1}
         });
     });
 
@@ -55,15 +55,15 @@ describe('updateRequest', () => {
         store.updateRequest('123', 'success', {person: {id: 'foo', name: 'Derek'}});
         expect(store.getRequest('123')).toEqual({
             state: 'success',
-            error: null,
-            result: {person: {id: 'foo', name: 'Derek'}}
+            error: undefined,
+            response: {person: {id: 'foo', name: 'Derek'}}
         });
         store.updateRequest('123', 'error', 'ERR!');
         store.updateRequest('123', 'success', {person: {id: 'foo', age: 27}});
         expect(store.getRequest('123')).toEqual({
             state: 'success',
             error: 'ERR!',
-            result: {person: {id: 'foo', name: 'Derek', age: 27}}
+            response: {person: {id: 'foo', name: 'Derek', age: 27}}
         });
     });
 
@@ -77,14 +77,14 @@ describe('updateRequest', () => {
         store.updateRequest('123', 'success', {person: {id: 'foo', name: 'Derek'}});
         expect(store.getRequest('123')).toEqual({
             state: 'success',
-            error: null,
-            result: {person: {id: 'foo', name: 'Derek'}}
+            error: undefined,
+            response: {person: {id: 'foo', name: 'Derek'}}
         });
         store.updateRequest('123', 'error', 'ERR!');
         expect(store.getRequest('123')).toEqual({
             state: 'error',
             error: 'ERR!',
-            result: {person: {id: 'foo', name: 'Derek'}}
+            response: {person: {id: 'foo', name: 'Derek'}}
         });
     });
 
@@ -132,9 +132,13 @@ describe('removeRequest', () => {
             api: {}
         });
         store.updateRequest('123', 'error', 'ERR!');
-        expect(store.getRequest('123')).toEqual({state: 'error', result: null, error: 'ERR!'});
+        expect(store.getRequest('123')).toEqual({state: 'error', result: undefined, error: 'ERR!'});
         store.removeRequest('123');
-        expect(store.getRequest('123')).toEqual({state: 'empty', result: null, error: null});
+        expect(store.getRequest('123')).toEqual({
+            state: 'empty',
+            result: undefined,
+            error: undefined
+        });
     });
 
     it('will notify subscribers', () => ensureNotify('removeRequest', ['123']));
@@ -186,5 +190,10 @@ describe('getters', () => {
         const store = new EntityStore({api});
         expect(store.api).not.toBe(api);
         expect(store.api).toEqual(api);
+    });
+
+    it('returns the private normalize count', () => {
+        const store = new EntityStore({api: {}});
+        expect(store.normalizeCount).toEqual(store._normalizeCount);
     });
 });

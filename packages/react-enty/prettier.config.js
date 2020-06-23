@@ -5,4 +5,12 @@ module.exports = {
     semi: true,
     singleQuote: true,
     bracketSpacing: false,
+    overrides: [
+        {
+            files: '*.{json,yml}',
+            options: {
+                tabWidth: 2
+            }
+        }
+    ]
 };

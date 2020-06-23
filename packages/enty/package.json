@@ -9,7 +9,9 @@
     "type": "git",
     "url": "git+https://github.com/blueflag/enty.git"
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "bugs": {
     "url": "https://github.com/blueflag/enty/issues"
   },
