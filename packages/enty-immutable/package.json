@@ -18,26 +18,21 @@
   "private": false,
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production yarn babel src --out-dir lib --ignore '**/__tests__/*.js'",
+    "build": "rm -rf lib && tsc -p .",
     "watch": "yarn build -w",
-    "flow": "flow check",
-    "flow-coverage": "blueflag-test flow-coverage -M",
-    "lint": "blueflag-test lint",
     "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage"
+    "test-all": "yarn build && yarn test"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.4",
-    "babel-plugin-extract-flow-types": "^1.0.0",
-    "babel-preset-blueflag": "^1.0.1",
-    "blueflag-test": "^0.22.0",
+    "@types/jest": "^26.0.4",
     "enty": "^1.0.0",
-    "flow-bin": "^0.102.0",
-    "immutable": "^3.8.1"
+    "immutable": "^3.8.1",
+    "jest": "^26.1.0",
+    "ts-jest": "^26.1.1",
+    "typescript": "^3.9.6"
   },
   "peerDependencies": {
-    "enty": "^1.0.0-alpha.7",
+    "enty": "^1.0.0",
     "immutable": ">=3.8.1"
   }
 }

@@ -1,5 +1,14 @@
-// @flow
 module.exports = {
+    preset: 'ts-jest',
     collectCoverage: true,
-    coverageReporters: ["json", "lcov", "text-summary"]
+    testEnvironment: 'node',
+    testMatch: ['<rootDir>/src/**/__tests__/*.ts'],
+    collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+    coverageThreshold: {
+        global: {
+            branches: 100,
+            functions: 100,
+            lines: 100
+        }
+    }
 };
