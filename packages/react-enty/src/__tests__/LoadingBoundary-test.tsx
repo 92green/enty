@@ -1,3 +1,4 @@
+import {shallow, mount} from 'enzyme';
 import React from 'react';
 import Message from 'enty-state/lib/data/Message';
 import LoadingBoundary from '../LoadingBoundary';

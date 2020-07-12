@@ -3,6 +3,7 @@ import {DenormalizeState} from './util/definitions';
 import {DynamicShape} from './util/definitions';
 import {Merge} from './util/definitions';
 import {Create} from './util/definitions';
+import {Entities} from './util/definitions';
 
 export default class DynamicSchema {
     shape: DynamicShape;
@@ -13,7 +14,7 @@ export default class DynamicSchema {
         this.shape = shape;
     }
 
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: unknown, entities: Entities = {}): NormalizeState {
         const schema = this.shape(data);
         const result = schema.normalize(data, entities);
 

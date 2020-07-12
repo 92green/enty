@@ -1,15 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react",
     "module": "commonjs",
     "noImplicitAny": false,
-    "sourceMap": true,
-    "declaration": true,
     "outDir": "./lib",
+    "sourceMap": true,
     "strict": true,
-    "jsx": "react",
-    "allowSyntheticDefaultImports": true
+    "target": "es5"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "include": ["src"]
 }

@@ -1,3 +1,4 @@
+import {expect, it} from '@jest/globals';
 import ObjectSchema from '../ObjectSchema';
 import EntitySchema from '../EntitySchema';
 import REMOVED_ENTITY from '../util/RemovedEntity';
@@ -6,7 +7,7 @@ var foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
 });
 
-test('ObjectSchema can normalize objects', () => {
+it('ObjectSchema can normalize objects', () => {
     const schema = new ObjectSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: '1'}});
 
@@ -14,7 +15,7 @@ test('ObjectSchema can normalize objects', () => {
     expect(entities.foo['1']).toEqual({id: '1'});
 });
 
-test('ObjectSchema can normalize maps', () => {
+it('ObjectSchema can normalize maps', () => {
     const schema = new ObjectSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: '1'}});
 
@@ -22,14 +23,14 @@ test('ObjectSchema can normalize maps', () => {
     expect(entities.foo['1']).toEqual({id: '1'});
 });
 
-test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', () => {
+it('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', () => {
     const schema = new ObjectSchema({foo});
     const data = {foo: {id: '1'}};
     const output = schema.denormalize(schema.normalize(data));
     expect(data).toEqual(output);
 });
 
-test('ObjectSchema can normalize empty objects', () => {
+it('ObjectSchema can normalize empty objects', () => {
     const schema = new ObjectSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
 
@@ -37,7 +38,7 @@ test('ObjectSchema can normalize empty objects', () => {
     expect(result).toEqual({bar: {}});
 });
 
-test('ObjectSchema can denormalize objects', () => {
+it('ObjectSchema can denormalize objects', () => {
     const schema = new ObjectSchema({foo});
 
     const entities = {
@@ -51,7 +52,7 @@ test('ObjectSchema can denormalize objects', () => {
     });
 });
 
-test('ObjectSchema will not denormalize null values', () => {
+it('ObjectSchema will not denormalize null values', () => {
     const schema = new ObjectSchema({foo});
 
     const entities = {
@@ -63,7 +64,7 @@ test('ObjectSchema will not denormalize null values', () => {
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
 
-test('ObjectSchema will not denormalize unknown keys', () => {
+it('ObjectSchema will not denormalize unknown keys', () => {
     const schema = new ObjectSchema({foo});
 
     const entities = {
@@ -78,7 +79,7 @@ test('ObjectSchema will not denormalize unknown keys', () => {
     });
 });
 
-test('ObjectSchema will filter out REMOVED_ENTITY keys', () => {
+it('ObjectSchema will filter out REMOVED_ENTITY keys', () => {
     const schema = new ObjectSchema({foo});
 
     const entities = {
@@ -90,7 +91,7 @@ test('ObjectSchema will filter out REMOVED_ENTITY keys', () => {
     expect(schema.denormalize({result: {foo: '1'}, entities})).toEqual({});
 });
 
-test('ObjectSchema can denormalize objects without mutating', () => {
+it('ObjectSchema can denormalize objects without mutating', () => {
     const schema = new ObjectSchema({foo});
     const result = {foo: '1'};
     const originalResult = {...result};
@@ -104,15 +105,15 @@ test('ObjectSchema can denormalize objects without mutating', () => {
     expect(result).toEqual(originalResult);
 });
 
-test('ObjectSchema will not mutate input objects', () => {
+it('ObjectSchema will not mutate input objects', () => {
     const schema = new ObjectSchema({foo});
     const objectTest = {foo: {id: '1'}};
 
-    schema.normalize(objectTest, schema);
+    schema.normalize(objectTest, {});
     expect(objectTest).toEqual({foo: {id: '1'}});
 });
 
-test('ObjectSchemas can create objects', () => {
+it('ObjectSchemas can create objects', () => {
     class Foo {
         first: string;
         last: string;
@@ -128,7 +129,7 @@ test('ObjectSchemas can create objects', () => {
             create: (data) => new Foo(data)
         }
     );
-    const state = schema.normalize({first: 'foo', last: 'bar'}, schema);
+    const state = schema.normalize({first: 'foo', last: 'bar'}, {});
 
     expect(state.result).toBeInstanceOf(Foo);
 });
@@ -138,7 +139,7 @@ it('will not create extra keys if value is undefined', () => {
         foo: new EntitySchema('foo'),
         bar: new EntitySchema('bar')
     });
-    const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, schema));
+    const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, {}));
 
     expect(state).toHaveProperty('foo', {id: 'foo'});
     expect(state).not.toHaveProperty('bar');

@@ -5,6 +5,7 @@ import {StructuralSchemaInterface} from './util/definitions';
 import {Merge} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
 import {Schema} from './util/definitions';
+import {Entities} from './util/definitions';
 
 import REMOVED_ENTITY from './util/RemovedEntity';
 
@@ -15,11 +16,11 @@ export default class ArraySchema<A extends Schema> implements StructuralSchemaIn
 
     constructor(shape: A, options: StructuralSchemaOptions = {}) {
         this.shape = shape;
-        this.merge = options.merge || ((aa, bb) => bb);
+        this.merge = options.merge || ((_, bb) => bb);
         this.create = options.create || ((aa) => aa);
     }
 
-    normalize(data: any, entities: Object = {}): NormalizeState {
+    normalize(data: any, entities: Entities = {}): NormalizeState {
         let schemas = {};
         const result = data.map((item: any): any => {
             const {result, schemas: childSchemas} = this.shape.normalize(item, entities);

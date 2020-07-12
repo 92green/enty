@@ -1,3 +1,4 @@
+import {describe, expect, it, jest} from '@jest/globals';
 import EntitySchema from '../EntitySchema';
 import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
@@ -47,29 +48,29 @@ describe('configuration', () => {
 });
 
 describe('EntitySchema.normalize', () => {
-    test('can normalize entities', () => {
+    it('can normalize entities', () => {
         const {entities, result} = foo.normalize({id: '1'});
         expect(result).toBe('1');
         expect(entities.foo['1']).toEqual({id: '1'});
     });
 
-    test('will not mutate input objects', () => {
+    it('will not mutate input objects', () => {
         const entityTest = {id: '1'};
-        foo.normalize(entityTest, foo);
+        foo.normalize(entityTest, {});
         expect(entityTest).toEqual({id: '1'});
     });
 
-    test('will collect schemas that were used', () => {
+    it('will collect schemas that were used', () => {
         const entityTest = {id: '1', bar: {id: '2', foo: {id: '3'}}};
-        expect(Object.keys(baz.normalize(entityTest, baz).schemas)).toEqual(['foo', 'bar', 'baz']);
+        expect(Object.keys(baz.normalize(entityTest, {}).schemas)).toEqual(['foo', 'bar', 'baz']);
     });
 
-    test('will throw an error if an entity doesnt have and id', () => {
+    it('will throw an error if an entity doesnt have and id', () => {
         const schema = new EntitySchema('foo', {shape: new ObjectSchema({})});
-        expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo'));
+        expect(() => schema.normalize({}, {})).toThrow(UndefinedIdError('foo', undefined));
     });
 
-    test('will call merge on definition when an entity already exists', () => {
+    it('will call merge on definition when an entity already exists', () => {
         const merge = jest.fn();
         const entities = {foo: {a: {id: 'a', name: 'first'}}};
         const schema = new EntitySchema('foo', {

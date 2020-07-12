@@ -2,28 +2,26 @@ import RequestState from '../data/RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
-type Request = (payload: unknown) => any;
-
-type MessageInput<R, E> = {
-    removeEntity: (type: string, id: string) => void;
-    request: Request;
-    requestError: E;
-    requestState?: RequestState;
-    reset: () => void;
+type MessageShape<R, E> = {
     response: R;
+    requestError: E;
+    request: <A, B>(payload: A, meta: B) => void;
+    reset: () => void;
+    removeEntity: (type: string, id: string) => void;
     responseKey: string;
+    requestState?: RequestState;
 };
 
-export default class Message<R, E = void> {
-    response: R;
-    requestError: E;
-    request: Request;
+export default class Message<Res, Err> {
+    response: Res;
+    requestError: Err;
+    request: <A, B>(payload?: A, meta?: B) => void;
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
     responseKey: string;
     requestState: RequestState;
 
-    constructor(props: MessageInput<R, E>) {
+    constructor(props: MessageShape<Res, Err>) {
         this.responseKey = props.responseKey;
         this.response = props.response;
         this.requestState = props.requestState || RequestState.empty();
@@ -35,23 +33,24 @@ export default class Message<R, E = void> {
 
     //
     // Response Getters
-
-    get(key: string, notFoundValue: unknown): unknown {
+    get(key: string, notFoundValue?: unknown): unknown {
         return get(key, notFoundValue)(this.response || {});
     }
 
-    getIn(path: string[], notFoundValue: unknown): unknown {
+    getIn(path: string[], notFoundValue?: unknown): unknown {
         return getIn(path, notFoundValue)(this.response || {});
     }
 
     //
     // Updating Methods
-
-    update(updater: Function): Message<R, E> {
+    update<RR, EE>(updater: (message: Message<Res, Err>) => MessageShape<RR, EE>): Message<RR, EE> {
         return new Message(updater(this));
     }
 
-    updateRequestState(updater: Function, messageProps?: MessageInput<R, E>): Message<R, E> {
+    updateRequestState<A, B>(
+        updater: (requestState: RequestState) => RequestState,
+        messageProps?: Partial<MessageShape<A, B>>
+    ) {
         return new Message({
             ...this,
             ...(messageProps || {}),
@@ -61,8 +60,7 @@ export default class Message<R, E = void> {
 
     //
     // empty
-
-    static empty(messageProps: MessageInput<any, any>) {
+    static empty(messageProps: MessageShape<undefined, undefined>) {
         return new Message({
             ...messageProps,
             response: undefined,
@@ -70,60 +68,56 @@ export default class Message<R, E = void> {
             requestState: RequestState.empty()
         });
     }
-    toEmpty(): Message<R, E> {
-        return this.updateRequestState((_) => _.toEmpty(), {...this});
+    toEmpty(): Message<Res, Err> {
+        return this.updateRequestState((_) => _.toEmpty());
     }
 
     //
     // fetching
-
-    static fetching<E>(messageProps: MessageInput<undefined, E>): Message<undefined, E> {
+    static fetching<EE>(messageProps: MessageShape<undefined, EE>): Message<undefined, EE> {
         return new Message({
             ...(messageProps || {}),
             response: undefined,
             requestState: RequestState.fetching()
         });
     }
-    toFetching(): Message<R, E> {
-        return this.updateRequestState((_) => _.toFetching(), {...this});
+    toFetching() {
+        return this.updateRequestState((_) => _.toFetching());
     }
 
     //
     // refetching
-
-    static refetching<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
+    static refetching<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
         return new Message({
             ...messageProps,
             requestState: RequestState.refetching()
         });
     }
-    toRefetching(): Message<R, E> {
-        return this.updateRequestState((_) => _.toRefetching(), {...this});
+    toRefetching() {
+        return this.updateRequestState((_) => _.toRefetching());
     }
 
     //
     // success
-
-    static success<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
+    static success<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
         return new Message({
             ...messageProps,
             requestState: RequestState.success()
         });
     }
-    toSuccess(): Message<R, E> {
-        return this.updateRequestState((_) => _.toSuccess(), {...this});
+    toSuccess() {
+        return this.updateRequestState((_) => _.toSuccess());
     }
 
     //
     // Error
-
-    static error<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
+    static error<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
         return new Message({
             ...messageProps,
             requestState: RequestState.error()
         });
     }
-    toError(): Message<R, E> {
-        return this.updateRequestState((_) => _.toError(), {...this});
+    toError() {
+        return this.updateRequestState((_) => _.toError());
     }
 }

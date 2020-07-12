@@ -1,3 +1,4 @@
+import {expect, describe, it} from '@jest/globals';
 import {EntitySchema} from 'enty';
 import MapSchema from '../MapSchema';
 import {Map} from 'immutable';
@@ -6,14 +7,14 @@ import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 const foo = new EntitySchema('foo', {shape: new MapSchema({})});
 
 describe('MapSchema.options', () => {
-    test('constructor will return a map', () => {
+    it('constructor will return a map', () => {
         const data = {first: 'foo', last: 'bar'};
         const {result} = new MapSchema({}).normalize(data);
         expect(result).toBeInstanceOf(Map);
         expect(result.equals(Map(data))).toBe(true);
     });
 
-    test('merge will merge two maps', () => {
+    it('merge will merge two maps', () => {
         const schema = new EntitySchema('foo', {shape: new MapSchema({})});
         const stateA = schema.normalize({id: 'a', first: 'foo'}, {});
         const stateB = schema.normalize({id: 'a', last: 'bar'}, stateA.entities);
@@ -23,7 +24,7 @@ describe('MapSchema.options', () => {
 
 // Copy from Object Schema tests. Probably redundant.
 
-test('MapSchema can normalize objects', () => {
+it('MapSchema can normalize objects', () => {
     const schema = new MapSchema({foo});
     let {entities, result} = schema.normalize({foo: {id: '1'}});
 
@@ -31,7 +32,7 @@ test('MapSchema can normalize objects', () => {
     expect(entities.foo['1']).toEqual(Map({id: '1'}));
 });
 
-test('MapSchema can normalize maps', () => {
+it('MapSchema can normalize maps', () => {
     const schema = new MapSchema({foo});
     let {entities, result} = schema.normalize(Map({foo: {id: '1'}}));
 
@@ -39,14 +40,14 @@ test('MapSchema can normalize maps', () => {
     expect(entities.foo['1']).toEqual(Map({id: '1'}));
 });
 
-test('MapSchema.denormalize is the inverse of MapSchema.normalize', () => {
+it('MapSchema.denormalize is the inverse of MapSchema.normalize', () => {
     const schema = new MapSchema({foo});
     const data = Map({foo: Map({id: '1'})});
     const output = schema.denormalize(schema.normalize(data));
     expect(data.equals(output)).toBe(true);
 });
 
-test('MapSchema can normalize empty objects', () => {
+it('MapSchema can normalize empty objects', () => {
     const schema = new MapSchema({foo});
     let {entities, result} = schema.normalize({bar: {}});
 
@@ -54,7 +55,7 @@ test('MapSchema can normalize empty objects', () => {
     expect(result.toJS()).toEqual({bar: {}});
 });
 
-test('MapSchema can denormalize objects', () => {
+it('MapSchema can denormalize objects', () => {
     const schema = new MapSchema({foo});
 
     const entities = {
@@ -66,7 +67,7 @@ test('MapSchema can denormalize objects', () => {
     expect(schema.denormalize({result: Map({foo: '1'}), entities})).toEqual(Map({foo: {id: '1'}}));
 });
 
-test('MapSchema will not denormalize null values', () => {
+it('MapSchema will not denormalize null values', () => {
     const schema = new MapSchema({foo});
 
     const entities = {
@@ -78,7 +79,7 @@ test('MapSchema will not denormalize null values', () => {
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
 
-test('MapSchema will not denormalize unknown keys', () => {
+it('MapSchema will not denormalize unknown keys', () => {
     const schema = new MapSchema({foo});
 
     const entities = {
@@ -93,7 +94,7 @@ test('MapSchema will not denormalize unknown keys', () => {
     });
 });
 
-test('MapSchema will filter out REMOVED_ENTITY keys', () => {
+it('MapSchema will filter out REMOVED_ENTITY keys', () => {
     const schema = new MapSchema({foo});
 
     const entities = {
@@ -105,11 +106,11 @@ test('MapSchema will filter out REMOVED_ENTITY keys', () => {
     expect(schema.denormalize({result: Map({foo: '1'}), entities})).toEqual(Map());
 });
 
-test('MapSchema will not mutate input objects', () => {
+it('MapSchema will not mutate input objects', () => {
     const schema = new MapSchema({foo});
     const objectTest = {foo: {id: '1'}};
 
-    schema.normalize(objectTest, schema);
+    schema.normalize(objectTest, {});
 
     expect(objectTest).toEqual({foo: {id: '1'}});
 });

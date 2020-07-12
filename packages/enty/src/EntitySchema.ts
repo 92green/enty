@@ -5,6 +5,7 @@ import {EntitySchemaInterface} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {IdAttribute} from './util/definitions';
 import {Merge} from './util/definitions';
+import {Entities} from './util/definitions';
 
 import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
@@ -40,7 +41,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         this._shape = constructSchemaFromLiteral(shape);
     }
 
-    normalize(data: any, entities: Object = {}): NormalizeState {
+    normalize(data: any, entities: Entities = {}): NormalizeState {
         const {shape, name} = this;
 
         let id = this.id(data);

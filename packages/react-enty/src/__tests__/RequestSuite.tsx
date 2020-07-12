@@ -1,9 +1,13 @@
+import {mount} from 'enzyme';
 import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
 import RequestState from 'enty-state/lib/data/RequestState';
+import {ReactWrapper} from 'enzyme';
+import Message from 'enty-state/lib/data/Message';
+import {act} from 'react-dom/test-utils';
 
 //
 // Test Bootstrap
@@ -26,7 +30,11 @@ function setupTests() {
         })
     );
 
-    function ExpectsMessage(props: Object) {
+    function ExpectsMessage(props: {
+        payload?: any;
+        removeEntityPayload?: [string, string];
+        message: Message<any, any>;
+    }) {
         const {request, reset, removeEntity} = props.message;
         const {payload} = props;
         const {removeEntityPayload} = props;
@@ -36,7 +44,7 @@ function setupTests() {
                 <button className="reset" onClick={() => reset()} />
                 <button
                     className="removeEntity"
-                    onClick={() => removeEntity(...removeEntityPayload)}
+                    onClick={() => removeEntityPayload && removeEntity(...removeEntityPayload)}
                 />
             </>
         );
@@ -46,7 +54,7 @@ function setupTests() {
         ExpectsMessage,
         mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
             const Child = testFn(ExpectsMessage);
-            const SkipProvider = (props) => (
+            const SkipProvider: any = (props: any) => (
                 <Provider
                     initialState={{
                         entities: {},
@@ -82,12 +90,27 @@ export const {
     ExpectsMessage
 } = setupTests();
 
-export function asyncUpdate(wrapper: Object) {
+export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>) {
     return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
+    //await act(async () => {
+    //await new Promise((resolve) => setTimeout(resolve, 0));
+    //wrapper.update();
+    //});
 }
 
 //
 // Custom Message Matchers
+declare global {
+    namespace jest {
+        interface Matchers<R> {
+            toBeEmpty(): CustomMatcherResult;
+            toBeFetching(): CustomMatcherResult;
+            toBeRefetching(expected: any): CustomMatcherResult;
+            toBeSuccess(expected: any): CustomMatcherResult;
+            toBeError(expected: any): CustomMatcherResult;
+        }
+    }
+}
 
 expect.extend(
     [
@@ -96,14 +119,14 @@ expect.extend(
         ['Refetching', 'isRefetching'],
         ['Success', 'isSuccess'],
         ['Error', 'isError']
-    ].reduce((rr, [expectedName, expectedState], index, input) => {
+    ].reduce((rr, [expectedName, expectedState], _, input) => {
         let name = `toBe${expectedName}`;
-        rr[name] = function (wrapper, expectedResponse) {
-            let {printReceived, printExpected} = this.utils;
-            let message = wrapper.find('ExpectsMessage').prop('message');
+        rr[name] = function (wrapper: ReactWrapper, expectedResponse: any) {
+            type JestUtilFn = {utils: {printReceived: Function; printExpected: Function}};
+            let {printReceived, printExpected} = (this as JestUtilFn).utils;
+            let message: Message<any, any> = wrapper.find('ExpectsMessage').prop('message');
             let {requestState} = message;
             let response = requestState.isError ? message.requestError : message.response;
-
             let passType = requestState[expectedState];
             let passResponse = equals(response)(expectedResponse);
             let pass = passType && passResponse;
@@ -151,7 +174,7 @@ export async function fetchBadEntity(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
-    expect(wrapper).toBeError(UndefinedIdError('foo'));
+    expect(wrapper).toBeError(UndefinedIdError('foo', null));
 }
 
 export async function exisitingKey(testFn: Function) {
@@ -166,8 +189,8 @@ export async function exisitingKey(testFn: Function) {
 
 export async function keyClash(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let first = wrapper.find('ExpectsMessage').at(0).prop('message');
-    let second = wrapper.find('ExpectsMessage').at(1).prop('message');
+    let first: Message<any, any> = wrapper.find('ExpectsMessage').at(0).prop('message');
+    let second: Message<any, any> = wrapper.find('ExpectsMessage').at(1).prop('message');
     expect(first.responseKey).not.toBe(second.responseKey);
 }
 

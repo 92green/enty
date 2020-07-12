@@ -1,3 +1,4 @@
+import {shallow, mount} from 'enzyme';
 import React from 'react';
 import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
@@ -14,7 +15,7 @@ const expectContext = (testFn) => {
 
 describe('Factory', () => {
     it('returns a hock, component and context', () => {
-        expect(ProviderFactory({reducer: (aa) => aa})).toMatchObject({
+        expect(ProviderFactory({})).toMatchObject({
             Provider: expect.any(Function),
             ProviderHoc: expect.any(Function),
             Context: expect.any(Object)

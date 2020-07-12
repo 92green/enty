@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "declaration": true,
+    "esModuleInterop": true,
     "module": "commonjs",
     "noImplicitAny": false,
-    "sourceMap": true,
-    "declaration": true,
     "outDir": "./lib",
-    "strict": true
+    "sourceMap": true,
+    "strict": true,
+    "target": "es5"
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

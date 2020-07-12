@@ -1,3 +1,4 @@
+import {expect, it} from '@jest/globals';
 import EntitySchema from '../EntitySchema';
 import ObjectSchema from '../ObjectSchema';
 import IdSchema from '../IdSchema';
@@ -10,12 +11,12 @@ const fooValues = new ObjectSchema({
     foo: new IdSchema(foo)
 });
 
-test('denormalize is almost the inverse of normalize', () => {
+it('denormalize is almost the inverse of normalize', () => {
     const data = {foo: '1'};
     expect(data.foo).toEqual(fooValues.denormalize(fooValues.normalize(data)).foo.id);
 });
 
-test('normalize', () => {
+it('normalize', () => {
     const data = {id: '1'};
     const entities = {
         foo: {
@@ -26,7 +27,7 @@ test('normalize', () => {
     expect(data).toEqual(new IdSchema(foo).normalize('1', undefined).entities.foo['1']);
 });
 
-test('denormalize', () => {
+it('denormalize', () => {
     const fooValue = new IdSchema(foo);
     const data = {id: '1'};
     const entities = {

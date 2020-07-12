@@ -1,14 +1,15 @@
 module.exports = {
     preset: 'ts-jest',
     collectCoverage: true,
-    testEnvironment: 'node',
-    testMatch: ['<rootDir>/src/**/__tests__/*.ts'],
-    collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+    setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+    testMatch: ['<rootDir>/src/**/__tests__/*-test.(ts|tsx)'],
+    collectCoverageFrom: ['<rootDir>/src/**/*.(ts|tsx)'],
+    testEnvironment: 'enzyme',
     coverageThreshold: {
         global: {
-            branches: 100,
-            functions: 100,
-            lines: 100
+            branches: 80,
+            functions: 80,
+            lines: 80
         }
     }
 };

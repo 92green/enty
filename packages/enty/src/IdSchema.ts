@@ -4,6 +4,7 @@ import {EntitySchemaInterface} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {Create} from './util/definitions';
 import {Merge} from './util/definitions';
+import {Entities} from './util/definitions';
 
 /**
  * IdSchema
@@ -20,7 +21,7 @@ export default class IdSchema<A extends EntitySchemaInterface<any>>
         this.merge = options.merge || ((_, bb) => bb);
     }
 
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: unknown, entities: Entities = {}): NormalizeState {
         const {result, schemas} = this.shape.normalize(this.create(data), entities);
         return {result, schemas, entities};
     }

@@ -1,3 +1,4 @@
+import {expect, it} from '@jest/globals';
 import EntitySchema from '../EntitySchema';
 import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
@@ -7,7 +8,7 @@ const foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
 });
 
-test('ArraySchema can normalize arrays', () => {
+it('ArraySchema can normalize arrays', () => {
     const schema = new ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
 
@@ -16,7 +17,7 @@ test('ArraySchema can normalize arrays', () => {
     expect(result).toEqual(['1', '2']);
 });
 
-test('ArraySchema can normalize Lists', () => {
+it('ArraySchema can normalize Lists', () => {
     const schema = new ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
 
@@ -25,7 +26,7 @@ test('ArraySchema can normalize Lists', () => {
     expect(result).toEqual(['1', '2']);
 });
 
-test('ArraySchema can normalize nested things in arrays', () => {
+it('ArraySchema can normalize nested things in arrays', () => {
     const schema = new ArraySchema(new ObjectSchema({foo}));
     const {entities, result} = schema.normalize([{foo: {id: '1'}}]);
 
@@ -33,7 +34,7 @@ test('ArraySchema can normalize nested things in arrays', () => {
     expect(entities.foo['1']).toEqual({id: '1'});
 });
 
-test('ArraySchema can denormalize arrays', () => {
+it('ArraySchema can denormalize arrays', () => {
     const schema = new ArraySchema(foo);
     const entities = {
         foo: {
@@ -41,15 +42,12 @@ test('ArraySchema can denormalize arrays', () => {
             '2': {id: '2'}
         }
     };
-    expect(schema.denormalize({result: ['1', '2'], entities}).map((ii) => ii)).toEqual([
-        {id: '1'},
-        {id: '2'}
-    ]);
+    expect(schema.denormalize({result: ['1', '2'], entities})).toEqual([{id: '1'}, {id: '2'}]);
 
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
 
-test('ArraySchema will not return deleted entities', () => {
+it('ArraySchema will not return deleted entities', () => {
     const schema = new ArraySchema(foo);
     const entities = {
         foo: {
@@ -58,20 +56,17 @@ test('ArraySchema will not return deleted entities', () => {
             '3': REMOVED_ENTITY
         }
     };
-    expect(schema.denormalize({result: ['1', '2', '3'], entities}).map((ii) => ii)).toEqual([
-        {id: '1'},
-        {id: '2'}
-    ]);
+    expect(schema.denormalize({result: ['1', '2', '3'], entities})).toEqual([{id: '1'}, {id: '2'}]);
 
-    expect(schema.denormalize({result: null, entities})).toEqual(null);
+    expect(schema.denormalize({result: null, entities}, [])).toEqual(null);
 });
 
-test('ArraySchema will not try to denormalize null values', () => {
+it('ArraySchema will not try to denormalize null values', () => {
     const schema = new ArraySchema(foo);
     expect(schema.denormalize({result: null, entities: {}})).toEqual(null);
 });
 
-test('ArraySchema will not mutate input objects', () => {
+it('ArraySchema will not mutate input objects', () => {
     const schema = new ArraySchema(foo);
     const arrayTest = [{id: '1'}];
 
@@ -79,7 +74,7 @@ test('ArraySchema will not mutate input objects', () => {
     expect(arrayTest).toEqual([{id: '1'}]);
 });
 
-test('ArraySchemas can construct custom objects', () => {
+it('ArraySchemas can construct custom objects', () => {
     class Foo {
         data: Array<string>;
         constructor(data) {
@@ -93,7 +88,7 @@ test('ArraySchemas can construct custom objects', () => {
     const schema = new ArraySchema(new ObjectSchema({}), {
         create: (data) => new Foo(data)
     });
-    const state = schema.normalize([{foo: 1}, {bar: 2}], schema);
+    const state = schema.normalize([{foo: 1}, {bar: 2}], {});
     expect(state.result).toBeInstanceOf(Foo);
     expect(state.result.data[0]).toEqual({foo: 1});
 });

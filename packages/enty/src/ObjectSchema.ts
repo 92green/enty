@@ -4,6 +4,7 @@ import {StructuralSchemaInterface} from './util/definitions';
 import {Create} from './util/definitions';
 import {Merge} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
+import {Entities} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -26,9 +27,9 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: Object, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities: Entities = {}): NormalizeState {
         const {shape} = this;
-        const dataMap = {...data};
+        const dataMap = data;
         let schemas = {};
 
         const result = Object.keys(shape).reduce((result: Object, key: any): any => {

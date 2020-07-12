@@ -1,4 +1,5 @@
 import React from 'react';
+import {mount} from 'enzyme';
 import Message from 'enty-state/lib/data/Message';
 import LoadingBoundaryHoc from '../LoadingBoundaryHoc';
 

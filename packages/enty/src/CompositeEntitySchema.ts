@@ -2,6 +2,7 @@ import {NormalizeState} from './util/definitions';
 import {DenormalizeState} from './util/definitions';
 import {EntitySchemaOptions} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
+import {Entities} from './util/definitions';
 
 import map from 'unmutable/lib/map';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
@@ -22,7 +23,7 @@ export default class CompositeEntitySchema<
         this.compositeKeys = options.compositeKeys;
     }
 
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: unknown, entities: Entities = {}): NormalizeState {
         const {compositeKeys, name} = this;
         const adjustedData = Object.assign({}, data);
 
