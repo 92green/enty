@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
-    "build": "lerna run build --parallel --",
-    "watch": "lerna run watch --parallel --",
-    "test-all": "lerna run test-all --parallel --",
+    "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
+    "test-all": "yarn build && yarn test",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy",
     "format": "yarn prettier --write .",
     "format-quick": "yarn pretty-quick --staged"
