@@ -1,5 +1,4 @@
 import {ComponentType} from 'react';
-import {AbstractComponent} from 'react';
 import Message from 'enty-state/lib/data/Message';
 
 import React from 'react';
@@ -24,9 +23,9 @@ export default function LoadingBoundaryHoc(config: Config) {
     const {mapResponseToProps = returnObject, name, ...remainingConfig} = config;
 
     return function LoadingBoundaryApplier<R, E, Props extends {} & HocProps<R, E>>(
-        Component: AbstractComponent<Props>
-    ): AbstractComponent<Props> {
-        return (props) => {
+        Component: ComponentType<Props>
+    ) {
+        return (props: Props & HocProps<R, E>) => {
             const message: Message<R, E> = props[name];
             return (
                 <LoadingBoundary

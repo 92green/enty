@@ -33,14 +33,14 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         }
     }
 
-    get shape(): A {
+    get shape(): any {
         return this._shape;
     }
     set shape(shape: any) {
         this._shape = constructSchemaFromLiteral(shape);
     }
 
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: any, entities: Object = {}): NormalizeState {
         const {shape, name} = this;
 
         let id = this.id(data);

@@ -1,11 +1,10 @@
-import {Node} from 'react';
 import {ComponentType} from 'react';
 import Message from 'enty-state/lib/data/Message';
 
 import React from 'react';
 
 type Props<R, E> = {
-    children: (response: unknown, arg1: {refetching: boolean}) => Node;
+    children: (response: unknown, arg1: {refetching: boolean}) => any;
     message: Message<R, E>;
     fallbackOnRefetch?: boolean;
     fallback?: ComponentType<any>;
@@ -15,7 +14,7 @@ type Props<R, E> = {
 
 const NullRender = () => null;
 
-export default function LoadingBoundary<R, E>(props: Props<R, E>): Node {
+export default function LoadingBoundary<R, E>(props: Props<R, E>) {
     // Config
     const {children} = props;
     const {message} = props;

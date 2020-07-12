@@ -5,8 +5,7 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "./lib",
-    "strict": true
+    "outDir": "./lib"
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

@@ -30,7 +30,7 @@ export default class RequestState {
     //
     // Empty
 
-    static empty(value: any): RequestState {
+    static empty(value?: any): RequestState {
         return new RequestState(value, {isEmpty: true});
     }
     emptyFlatMap(fn: (arg0: any) => RequestState): RequestState {
@@ -46,7 +46,7 @@ export default class RequestState {
     //
     // Fetching
 
-    static fetching(value: any): RequestState {
+    static fetching(value?: any): RequestState {
         return new RequestState(value, {isFetching: true});
     }
     fetchingFlatMap(fn: (arg0: any) => RequestState): RequestState {
@@ -62,7 +62,7 @@ export default class RequestState {
     //
     // Refetching
 
-    static refetching(value: any): RequestState {
+    static refetching(value?: any): RequestState {
         return new RequestState(value, {isRefetching: true});
     }
     refetchingFlatMap(fn: (arg0: any) => RequestState): RequestState {
@@ -78,7 +78,7 @@ export default class RequestState {
     //
     // Success
 
-    static success(value: any): RequestState {
+    static success(value?: any): RequestState {
         return new RequestState(value, {isSuccess: true});
     }
     successFlatMap(fn: (arg0: any) => RequestState): RequestState {
@@ -94,7 +94,7 @@ export default class RequestState {
     //
     // Error
 
-    static error(value: any): RequestState {
+    static error(value?: any): RequestState {
         return new RequestState(value, {isError: true});
     }
     errorFlatMap(fn: (arg0: any) => RequestState): RequestState {

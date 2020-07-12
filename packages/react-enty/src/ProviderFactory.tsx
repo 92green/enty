@@ -1,28 +1,28 @@
 import {ComponentType} from 'react';
-import {Element} from 'react';
+import {ReactNode} from 'react';
 
 import React, {createContext, useMemo} from 'react';
 import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
 import LoggingReducer from 'enty-state/lib/util/LoggingReducer';
 import {Action} from 'enty-state/lib/util/definitions';
+import {State} from 'enty-state/lib/util/definitions';
 import {Schema} from 'enty/lib/util/definitions';
 
 type ProviderConfig = {
     schema?: Schema;
 };
 
+export type ProviderContext = React.Context<[State, Function] | null>;
+
 type ProviderFactoryReturn = {
-    Context: {
-        Provider: ComponentType<any>;
-        Consumer: ComponentType<any>;
-    };
+    Context: ProviderContext;
     Provider: ComponentType<any>;
     ProviderHoc: Function;
 };
 
 type ProviderProps = {
-    children: Element<any>;
+    children: ReactNode;
     debug?: string;
     initialState?: {};
 };
@@ -30,9 +30,9 @@ type ProviderProps = {
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
     const {schema} = config;
     const entityReducer = EntityReducerFactory({schema});
-    const Context = createContext();
+    const Context = createContext<[State, Function] | null>(null);
 
-    function Provider({children, initialState, debug}: ProviderProps): Element<any> {
+    function Provider({children, initialState, debug}: ProviderProps) {
         const firstState = {
             baseSchema: schema,
             schemas: {},

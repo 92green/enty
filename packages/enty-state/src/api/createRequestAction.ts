@@ -26,14 +26,14 @@ export default function createRequestAction(sideEffect: SideEffect): Function {
         const pending = sideEffect(requestPayload, sideEffectMeta);
 
         fetchAction(null);
-        if (typeof pending.subscribe === 'function') {
+        if ('subscribe' in pending) {
             // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
             pending.subscribe({
                 next: (data) => receiveAction(data),
                 complete: (data) => receiveAction(data),
                 error: (error) => errorAction(error)
             });
-        } else if (typeof pending.then === 'function') {
+        } else if ('then' in pending) {
             // $FlowFixMe - see above
             pending.then(receiveAction).catch((err) => {
                 errorAction(err);

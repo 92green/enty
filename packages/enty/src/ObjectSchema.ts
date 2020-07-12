@@ -17,7 +17,7 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
     merge: Merge;
     shape: A;
 
-    constructor(shape: A, options?: StructuralSchemaOptions = {}) {
+    constructor(shape: A, options: StructuralSchemaOptions = {}) {
         this.shape = shape;
         this.create = options.create || ((item) => ({...item}));
         this.merge = options.merge || ((previous, next) => ({...previous, ...next}));
@@ -26,9 +26,9 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: Object, entities: Object = {}): NormalizeState {
         const {shape} = this;
-        const dataMap = data;
+        const dataMap = {...data};
         let schemas = {};
 
         const result = Object.keys(shape).reduce((result: Object, key: any): any => {

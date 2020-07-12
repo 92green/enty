@@ -18,7 +18,7 @@ import RequestState from './data/RequestState';
 export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
 
-    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Action): State {
+    return function EntityReducer(previousState: State, {type, payload, meta}: Action): State {
         let state = previousState || {
             baseSchema: schema,
             schemas: {},

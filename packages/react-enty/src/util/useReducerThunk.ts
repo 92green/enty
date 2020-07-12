@@ -1,15 +1,15 @@
 import {useRef, useState} from 'react';
 
-export default function useThunkReducer(
+export default function useThunkReducer<State>(
     reducer: Function,
-    initialState: unknown
-): [unknown, Function] {
+    initialState: State
+): [State, Function] {
     const [hookState, setHookState] = useState(initialState);
 
     // State management.
     const state = useRef(hookState);
     const getState = () => state.current;
-    const setState = (newState) => {
+    const setState = (newState: State) => {
         state.current = newState;
         setHookState(newState);
     };

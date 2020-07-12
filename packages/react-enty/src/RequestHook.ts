@@ -1,6 +1,7 @@
 import Message from 'enty-state/lib/data/Message';
 import RequestState from 'enty-state/lib/data/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
+import {ProviderContext} from './ProviderFactory';
 
 type RequestHookConfig = {
     actionType: string;
@@ -11,10 +12,10 @@ type RequestHookConfig = {
 };
 
 type Config = {
-    key: string;
+    key?: string;
 };
 
-export default function RequestHookFactory(context: any, config: RequestHookConfig) {
+export default function RequestHookFactory(context: ProviderContext, config: RequestHookConfig) {
     const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
 
     return <R>(config: Config = {}) => {
@@ -50,10 +51,10 @@ export default function RequestHookFactory(context: any, config: RequestHookConf
             const responseKey = generateResultKey(config.key || payload);
             setDerivedResponseKey(responseKey);
             return dispatch(requestAction(payload, {responseKey, returnResponse}));
-        });
+        }, []);
 
-        let reset = useCallback(() => dispatch(resetAction(responseKey)));
-        let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)));
+        let reset = useCallback(() => dispatch(resetAction(responseKey)), [responseKey]);
+        let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)), []);
 
         return useMemo(
             () =>

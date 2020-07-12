@@ -51,9 +51,10 @@ export default class Message<R, E = void> {
         return new Message(updater(this));
     }
 
-    updateRequestState(updater: Function, messageProps?: MessageInput<R, E> = {}): Message<R, E> {
+    updateRequestState(updater: Function, messageProps?: MessageInput<R, E>): Message<R, E> {
         return new Message({
-            ...messageProps,
+            ...this,
+            ...(messageProps || {}),
             requestState: updater(this.requestState)
         });
     }
@@ -61,7 +62,7 @@ export default class Message<R, E = void> {
     //
     // empty
 
-    static empty(messageProps: MessageInput<R, E>): Message<R, E> {
+    static empty(messageProps: MessageInput<any, any>) {
         return new Message({
             ...messageProps,
             response: undefined,
@@ -76,9 +77,9 @@ export default class Message<R, E = void> {
     //
     // fetching
 
-    static fetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
+    static fetching<E>(messageProps: MessageInput<undefined, E>): Message<undefined, E> {
         return new Message({
-            ...messageProps,
+            ...(messageProps || {}),
             response: undefined,
             requestState: RequestState.fetching()
         });
@@ -90,7 +91,7 @@ export default class Message<R, E = void> {
     //
     // refetching
 
-    static refetching(messageProps: MessageInput<R, E> = {}): Message<R, E> {
+    static refetching<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
             requestState: RequestState.refetching()
@@ -103,7 +104,7 @@ export default class Message<R, E = void> {
     //
     // success
 
-    static success(messageProps: MessageInput<R, E> = {}): Message<R, E> {
+    static success<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
             requestState: RequestState.success()
@@ -116,7 +117,7 @@ export default class Message<R, E = void> {
     //
     // Error
 
-    static error(messageProps: MessageInput<R, E> = {}): Message<R, E> {
+    static error<R, E>(messageProps: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
             requestState: RequestState.error()

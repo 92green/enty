@@ -9,7 +9,7 @@ const groupEnd = () => console.groupEnd();
 /* eslint-enable no-console */
 
 export default function LoggingReducer(state: State, action: Action, debugName: string) {
-    const {type, meta = {}, payload} = action;
+    const {type, meta, payload} = action;
 
     group(`${debugName}: ${type}`);
 

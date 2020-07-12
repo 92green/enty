@@ -8,7 +8,7 @@ export type AsyncType = Promise<any> | Observable | AsyncGenerator<any, any, any
 export type SideEffect = (arg0: any, arg1: Object) => AsyncType;
 
 export type State = {
-    baseSchema: Schema;
+    baseSchema?: Schema;
     schemas: {
         [key: string]: Schema;
     };

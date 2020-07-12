@@ -17,12 +17,12 @@ export default class CompositeEntitySchema<
 > extends EntitySchema<A> {
     compositeKeys: B;
 
-    constructor(name: string, options: EntitySchemaOptions<A> & {compositeKeys: B} = {}) {
+    constructor(name: string, options: EntitySchemaOptions<A> & {compositeKeys?: B} = {}) {
         super(name, options);
         this.compositeKeys = options.compositeKeys;
     }
 
-    normalize(data: unknown, entities?: Object = {}): NormalizeState {
+    normalize(data: unknown, entities: Object = {}): NormalizeState {
         const {compositeKeys, name} = this;
         const adjustedData = Object.assign({}, data);
 
@@ -80,7 +80,7 @@ export default class CompositeEntitySchema<
     /**
      * CompositeEntitySchema.denormalize
      */
-    denormalize(denormalizeState: DenormalizeState, path?: Array<any> = []): any {
+    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
         const {shape, compositeKeys, name} = this;
         const {entities} = denormalizeState;
 
