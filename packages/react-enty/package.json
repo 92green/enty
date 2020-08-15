@@ -1,6 +1,6 @@
 {
   "name": "react-enty",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.0",
   "description": "React bindings for Enty",
   "main": "lib/index.js",
   "license": "MIT",
@@ -44,8 +44,8 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "enty": "^1.0.0",
-    "enty-state": "^1.0.0",
+    "enty": "^2.0.0-alpha.0",
+    "enty-state": "^2.0.0-alpha.0",
     "unmutable": "^0.48.0"
   }
 }

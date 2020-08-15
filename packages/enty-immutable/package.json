@@ -1,6 +1,6 @@
 {
   "name": "enty-immutable",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.0",
   "description": "Enty schemas for Immutable JS",
   "main": "lib/index.js",
   "license": "MIT",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.4",
-    "enty": "^1.0.0",
+    "enty": "^2.0.0-alpha.0",
     "immutable": "^3.8.1",
     "jest": "^26.1.0",
     "ts-jest": "^26.1.1",
