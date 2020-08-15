@@ -1,5 +1,7 @@
-// @flow
 module.exports = {
-    preset: 'blueflag-test',
-    testEnvironment: 'node'
+    preset: 'ts-jest',
+    collectCoverage: true,
+    testEnvironment: 'node',
+    testMatch: ['<rootDir>/src/**/__tests__/*.ts'],
+    collectCoverageFrom: ['<rootDir>/src/**/*.ts']
 };

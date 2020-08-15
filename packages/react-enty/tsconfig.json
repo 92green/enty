@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "outDir": "./lib",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es5",
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

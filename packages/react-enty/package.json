@@ -18,32 +18,34 @@
   "private": false,
   "scripts": {
     "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production yarn babel src --out-dir lib --ignore '**/__tests__/*.js'",
+    "build": "rm -rf lib && tsc -p .",
     "watch": "yarn build -w",
-    "flow": "flow check",
-    "flow-coverage": "blueflag-test flow-coverage -M",
-    "lint": "blueflag-test lint",
     "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test && yarn flow-coverage"
+    "test-all": "yarn build && yarn test"
   },
   "peerDependencies": {
     "react": "^16.8.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.4",
-    "@testing-library/react-hooks": "^1.1.0",
-    "babel-plugin-extract-flow-types": "^1.0.0",
-    "babel-preset-blueflag": "^1.0.1",
-    "blueflag-test": "^0.22.0",
-    "flow-bin": "^0.104.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-test-renderer": "^16.8.6"
+    "@testing-library/react-hooks": "^3.4.1",
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/jest": "^26.0.9",
+    "@types/react": "^16.9.46",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.3",
+    "jest": "^26.4.0",
+    "jest-environment-enzyme": "^7.1.2",
+    "jest-enzyme": "^7.1.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-test-renderer": "^16.13.1",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "enty": "^1.0.0",
     "enty-state": "^1.0.0",
-    "unmutable": "^0.46.0"
+    "unmutable": "^0.48.0"
   }
 }

@@ -5,12 +5,24 @@
   "private": true,
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
-    "build": "lerna run build --parallel --",
-    "watch": "lerna run watch --parallel --",
-    "test-all": "lerna run test-all --parallel --",
-    "deploy-docs": "yarn lerna --scope enty-docs run deploy"
+    "build": "lerna run build --stream",
+    "test": "lerna run test --stream",
+    "test-all": "yarn build && yarn test",
+    "deploy-docs": "yarn lerna --scope enty-docs run deploy",
+    "format": "yarn prettier --write .",
+    "format-quick": "yarn pretty-quick --staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn format-quick"
+    }
   },
   "devDependencies": {
     "lerna": "^3.4.3"
+  },
+  "dependencies": {
+    "husky": "^4.2.5",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1"
   }
 }
