@@ -9,6 +9,7 @@
     "test": "lerna run test --stream",
     "test-all": "yarn build && yarn test",
     "deploy-docs": "yarn lerna --scope enty-docs run deploy",
+    "prepublishOnly": "yarn build",
     "format": "yarn prettier --write .",
     "format-quick": "yarn pretty-quick --staged"
   },
