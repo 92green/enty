@@ -1,3 +1,4 @@
+import 'jest-enzyme';
 import {shallow, mount} from 'enzyme';
 import React from 'react';
 import Message from 'enty-state/lib/data/Message';
@@ -13,14 +14,16 @@ const messageInput = {
     reset: () => {},
     removeEntity: () => {},
     request: async () => 'FOO',
-    requestError: 'OUCH!'
+    requestError: new Error('OUCH!')
 };
+
+const emptyMessageInput = {...messageInput, response: undefined};
 
 describe('Empty', () => {
     it('will render empty', () => {
         const Component = shallow(
             <LoadingBoundary
-                message={Message.empty(messageInput)}
+                message={Message.empty(emptyMessageInput)}
                 empty={TestEmpty}
                 children={() => null}
             />
@@ -33,7 +36,7 @@ describe('Fetching', () => {
     it('will render fallback', () => {
         const wrapper = shallow(
             <LoadingBoundary
-                message={Message.fetching(messageInput)}
+                message={Message.fetching(emptyMessageInput)}
                 fallback={TestFallback}
                 children={() => null}
             />
@@ -94,17 +97,17 @@ describe('Error', () => {
             />
         );
         expect(wrapper).toContainMatchingElement('TestError');
-        expect(wrapper.find('TestError')).toHaveProp('error', 'OUCH!');
+        expect(wrapper.find('TestError')).toHaveProp('error', new Error('OUCH!'));
     });
 });
 
 describe('SafeRendering', () => {
     it('will not render anything if not provided', () => {
         const empty = mount(
-            <LoadingBoundary children={() => null} message={Message.empty(messageInput)} />
+            <LoadingBoundary children={() => null} message={Message.empty(emptyMessageInput)} />
         );
         const fetching = mount(
-            <LoadingBoundary children={() => null} message={Message.fetching(messageInput)} />
+            <LoadingBoundary children={() => null} message={Message.fetching(emptyMessageInput)} />
         );
         const error = mount(
             <LoadingBoundary children={() => null} message={Message.error(messageInput)} />

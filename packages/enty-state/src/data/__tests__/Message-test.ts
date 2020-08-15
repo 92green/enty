@@ -5,7 +5,7 @@ import RequestState from '../../data/RequestState';
 const response = {name: 'foo'};
 const responseKey = 'FOO';
 const request = async () => response;
-const requestError = 'ERROR!';
+const requestError = new Error('ERROR!');
 const reset = () => {};
 const removeEntity = () => {};
 
@@ -33,7 +33,7 @@ it('will let you set responseKey, response, requestState, requestError, request'
         responseKey: 'foo',
         response: 'bar',
         requestState: RequestState.success('baz'),
-        requestError: 'qux',
+        requestError: new Error('qux'),
         removeEntity,
         request: () => Promise.resolve('quux')
     });
@@ -41,7 +41,7 @@ it('will let you set responseKey, response, requestState, requestError, request'
     expect(message.responseKey).toBe('foo');
     expect(message.response).toBe('bar');
     expect(message.requestState.value()).toBe('baz');
-    expect(message.requestError).toBe('qux');
+    expect(message.requestError).toEqual(new Error('qux'));
     expect(message.request()).resolves.toBe('quux');
 });
 
@@ -52,8 +52,7 @@ it('will default requestState to Empty', () => {
             removeEntity,
             response: null,
             responseKey: 'foo',
-            request: Promise.resolve,
-            requestError: null
+            request: Promise.resolve
         }).requestState.isEmpty
     ).toBe(true);
 });

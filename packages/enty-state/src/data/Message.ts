@@ -2,9 +2,9 @@ import RequestState from '../data/RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
-type MessageShape<R, E> = {
+type MessageShape<R> = {
     response: R;
-    requestError: E;
+    requestError?: Error;
     request: <A, B>(payload: A, meta: B) => void;
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
@@ -12,16 +12,16 @@ type MessageShape<R, E> = {
     requestState?: RequestState;
 };
 
-export default class Message<Res, Err> {
+export default class Message<Res> {
     response: Res;
-    requestError: Err;
+    requestError?: Error;
     request: <A, B>(payload?: A, meta?: B) => void;
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
     responseKey: string;
     requestState: RequestState;
 
-    constructor(props: MessageShape<Res, Err>) {
+    constructor(props: MessageShape<Res>) {
         this.responseKey = props.responseKey;
         this.response = props.response;
         this.requestState = props.requestState || RequestState.empty();
@@ -43,13 +43,13 @@ export default class Message<Res, Err> {
 
     //
     // Updating Methods
-    update<RR, EE>(updater: (message: Message<Res, Err>) => MessageShape<RR, EE>): Message<RR, EE> {
+    update<RR>(updater: (message: Message<Res>) => MessageShape<RR>): Message<RR> {
         return new Message(updater(this));
     }
 
-    updateRequestState<A, B>(
+    updateRequestState<A>(
         updater: (requestState: RequestState) => RequestState,
-        messageProps?: Partial<MessageShape<A, B>>
+        messageProps?: Partial<MessageShape<A>>
     ) {
         return new Message({
             ...this,
@@ -60,7 +60,7 @@ export default class Message<Res, Err> {
 
     //
     // empty
-    static empty(messageProps: MessageShape<undefined, undefined>) {
+    static empty(messageProps: MessageShape<undefined>) {
         return new Message({
             ...messageProps,
             response: undefined,
@@ -68,13 +68,13 @@ export default class Message<Res, Err> {
             requestState: RequestState.empty()
         });
     }
-    toEmpty(): Message<Res, Err> {
+    toEmpty(): Message<Res> {
         return this.updateRequestState((_) => _.toEmpty());
     }
 
     //
     // fetching
-    static fetching<EE>(messageProps: MessageShape<undefined, EE>): Message<undefined, EE> {
+    static fetching(messageProps: MessageShape<undefined>): Message<undefined> {
         return new Message({
             ...(messageProps || {}),
             response: undefined,
@@ -87,7 +87,7 @@ export default class Message<Res, Err> {
 
     //
     // refetching
-    static refetching<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
+    static refetching<RR>(messageProps: MessageShape<RR>): Message<RR> {
         return new Message({
             ...messageProps,
             requestState: RequestState.refetching()
@@ -99,7 +99,7 @@ export default class Message<Res, Err> {
 
     //
     // success
-    static success<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
+    static success<RR>(messageProps: MessageShape<RR>): Message<RR> {
         return new Message({
             ...messageProps,
             requestState: RequestState.success()
@@ -111,7 +111,7 @@ export default class Message<Res, Err> {
 
     //
     // Error
-    static error<RR, EE>(messageProps: MessageShape<RR, EE>): Message<RR, EE> {
+    static error<RR>(messageProps: MessageShape<RR>): Message<RR> {
         return new Message({
             ...messageProps,
             requestState: RequestState.error()

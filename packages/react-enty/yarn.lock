@@ -1724,20 +1724,6 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.3.tgz#5c487e5742ab93c15abb5da22759b8590ec03b7f"
   integrity sha512-MyoZ0jgnLvB2X3Lg5HqpFmn1kybDiIfEQmKzTb5apr51Rb+T3KdmMiqa70T+bhGnyv7bQ6WMj2QMHpGMmlrUYQ==
 
-enty-state@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/enty-state/-/enty-state-1.0.0.tgz#3b15e879568801af11207c235391aa673ebd6b3c"
-  integrity sha512-Ymm83I4RDdfUxZcx2bXYNHJgYiNx78qtyv8XzNznbqBGrGlQx7/ue+sCJRkcJm/OJl4YfejBjbEr9mbFTT535A==
-  dependencies:
-    unmutable "^0.46.0"
-
-enty@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/enty/-/enty-1.0.0.tgz#2c914fbf219eb61d2492c6387550aaed9fe5d87f"
-  integrity sha512-YW34F8waeooDY/1/dTIo2XwbKRyRLXHErP6udA7Zc06GI6RIdebaBrzQ/GX7B91i6KJBxNLfUoJB6zPH5dx2Xw==
-  dependencies:
-    unmutable "^0.46.0"
-
 enzyme-adapter-react-16@^1.15.3:
   version "1.15.3"
   resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.15.3.tgz#90154055be3318d70a51df61ac89cfa22e3d5f60"
@@ -4729,9 +4715,10 @@ union-value@^1.0.0:
     is-extendable "^0.1.1"
     set-value "^2.0.1"
 
-unmutable@^0.46.0:
-  version "0.46.0"
-  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.0.tgz#c6688e002e07e7bd926a7e324509a106ef4cb414"
+unmutable@^0.48.0:
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.48.0.tgz#6f1d0c009d570fb7c67d8b127393ff4d0ecc9707"
+  integrity sha512-tZRpOAI6RAr3YQbVDUDP2ltmWiGhxgDT07CemY+lTf+IzIl+GSBu6SEneqRNGPkxdOQTUfWaG0YaiUb8AuKutw==
   dependencies:
     "@babel/runtime" "^7.1.5"
     fast-deep-equal "^1.0.0"

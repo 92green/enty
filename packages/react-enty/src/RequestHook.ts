@@ -18,7 +18,7 @@ type Config = {
 export default function RequestHookFactory(context: ProviderContext, config: RequestHookConfig) {
     const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
 
-    return <R, E>(config: Config = {}) => {
+    return <R>(config: Config = {}) => {
         const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
         const responseKey = config.key ? generateResultKey(config.key) : derivedResponseKey;
         const store = useContext(context);
@@ -58,7 +58,7 @@ export default function RequestHookFactory(context: ProviderContext, config: Req
 
         return useMemo(
             () =>
-                new Message<R, E>({
+                new Message<R>({
                     removeEntity,
                     request,
                     requestError: state.error[responseKey],

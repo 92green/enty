@@ -33,7 +33,7 @@ function setupTests() {
     function ExpectsMessage(props: {
         payload?: any;
         removeEntityPayload?: [string, string];
-        message: Message<any, any>;
+        message: Message<any>;
     }) {
         const {request, reset, removeEntity} = props.message;
         const {payload} = props;
@@ -52,7 +52,7 @@ function setupTests() {
 
     return {
         ExpectsMessage,
-        mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
+        mountWithProvider: (testFn: Function, extraProps: Object = {}): ReactWrapper => {
             const Child = testFn(ExpectsMessage);
             const SkipProvider: any = (props: any) => (
                 <Provider
@@ -90,12 +90,8 @@ export const {
     ExpectsMessage
 } = setupTests();
 
-export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>) {
+export async function asyncUpdate<P = {}>(wrapper: ReactWrapper<P>): Promise<any> {
     return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
-    //await act(async () => {
-    //await new Promise((resolve) => setTimeout(resolve, 0));
-    //wrapper.update();
-    //});
 }
 
 //
@@ -124,7 +120,7 @@ expect.extend(
         rr[name] = function (wrapper: ReactWrapper, expectedResponse: any) {
             type JestUtilFn = {utils: {printReceived: Function; printExpected: Function}};
             let {printReceived, printExpected} = (this as JestUtilFn).utils;
-            let message: Message<any, any> = wrapper.find('ExpectsMessage').prop('message');
+            let message: Message<any> = wrapper.find('ExpectsMessage').prop('message');
             let {requestState} = message;
             let response = requestState.isError ? message.requestError : message.response;
             let passType = requestState[expectedState];
@@ -189,8 +185,8 @@ export async function exisitingKey(testFn: Function) {
 
 export async function keyClash(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let first: Message<any, any> = wrapper.find('ExpectsMessage').at(0).prop('message');
-    let second: Message<any, any> = wrapper.find('ExpectsMessage').at(1).prop('message');
+    let first: Message<any> = wrapper.find('ExpectsMessage').at(0).prop('message');
+    let second: Message<any> = wrapper.find('ExpectsMessage').at(1).prop('message');
     expect(first.responseKey).not.toBe(second.responseKey);
 }
 

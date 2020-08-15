@@ -3,9 +3,9 @@ import Message from 'enty-state/lib/data/Message';
 
 import React from 'react';
 
-type Props<R, E> = {
+type Props<R> = {
     children: (response: unknown, arg1: {refetching: boolean}) => any;
-    message: Message<R, E>;
+    message: Message<R>;
     fallbackOnRefetch?: boolean;
     fallback?: ComponentType<any>;
     error?: ComponentType<any>;
@@ -14,7 +14,7 @@ type Props<R, E> = {
 
 const NullRender = () => null;
 
-export default function LoadingBoundary<R, E>(props: Props<R, E>) {
+export default function LoadingBoundary<R>(props: Props<R>) {
     // Config
     const {children} = props;
     const {message} = props;

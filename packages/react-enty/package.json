@@ -46,6 +46,6 @@
   "dependencies": {
     "enty": "^1.0.0",
     "enty-state": "^1.0.0",
-    "unmutable": "^0.46.0"
+    "unmutable": "^0.48.0"
   }
 }

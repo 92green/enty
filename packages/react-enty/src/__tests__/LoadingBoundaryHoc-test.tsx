@@ -14,8 +14,10 @@ const messageInput = {
     reset: () => {},
     removeEntity: () => {},
     request: async () => 'FOO',
-    requestError: 'OUCH!'
+    requestError: new Error('OUCH!')
 };
+
+const emptyMessageInput = {...messageInput, response: undefined};
 
 describe('Empty', () => {
     it('will render empty', () => {
@@ -23,7 +25,7 @@ describe('Empty', () => {
             name: 'foo',
             empty: TestEmpty
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.empty(messageInput)} />);
+        const wrapper = mount(<Hoc foo={Message.empty(emptyMessageInput)} />);
         expect(wrapper).toContainMatchingElement('TestEmpty');
     });
 });
@@ -34,7 +36,7 @@ describe('Fetching', () => {
             name: 'foo',
             fallback: TestFallback
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.fetching(messageInput)} />);
+        const wrapper = mount(<Hoc foo={Message.fetching(emptyMessageInput)} />);
         expect(wrapper).toContainMatchingElement('TestFallback');
     });
 });
@@ -79,7 +81,7 @@ describe('Error', () => {
         })(NullRender);
         const wrapper = mount(<Hoc foo={Message.error(messageInput)} />);
         expect(wrapper).toContainMatchingElement('TestError');
-        expect(wrapper.find('TestError')).toHaveProp('error', 'OUCH!');
+        expect(wrapper.find('TestError')).toHaveProp('error', new Error('OUCH!'));
     });
 });
 
@@ -88,8 +90,8 @@ describe('SafeRendering', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo'
         })(NullRender);
-        const empty = mount(<Hoc foo={Message.empty(messageInput)} />);
-        const fetching = mount(<Hoc foo={Message.fetching(messageInput)} />);
+        const empty = mount(<Hoc foo={Message.empty(emptyMessageInput)} />);
+        const fetching = mount(<Hoc foo={Message.fetching(emptyMessageInput)} />);
         const error = mount(<Hoc foo={Message.error(messageInput)} />);
         expect(empty).toContainMatchingElement('NullRender');
         expect(fetching).toContainMatchingElement('NullRender');
