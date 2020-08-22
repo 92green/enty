@@ -12,12 +12,11 @@ import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
 import REMOVED_ENTITY from './util/RemovedEntity';
 import ObjectSchema from './ObjectSchema';
-import constructSchemaFromLiteral from './util/constructSchemaFromLiteral';
 
 export default class EntitySchema<A extends StructuralSchemaInterface<any>>
     implements EntitySchemaInterface<A> {
     name: string;
-    _shape: A;
+    shape: A;
     id: IdAttribute;
     merge: Merge | null | undefined;
 
@@ -34,13 +33,6 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         }
     }
 
-    get shape(): any {
-        return this._shape;
-    }
-    set shape(shape: any) {
-        this._shape = constructSchemaFromLiteral(shape);
-    }
-
     normalize(data: any, entities: Entities = {}): NormalizeState {
         const {shape, name} = this;
 
@@ -49,9 +41,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         let schemas = {};
         let result;
 
-        if (id == null) {
-            throw UndefinedIdError(name, id);
-        }
+        if (id == null) throw UndefinedIdError(name, id);
         id = id.toString();
 
         entities[name] = entities[name] || {};
