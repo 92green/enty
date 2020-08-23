@@ -1,15 +1,11 @@
-import {NormalizeState} from './util/definitions';
-import {DenormalizeState} from './util/definitions';
+import {NormalizeParams, NormalizeReturn, DenormalizeParams} from './util/definitions';
 import {EntitySchemaOptions} from './util/definitions';
 import {EntitySchemaInterface} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {IdAttribute} from './util/definitions';
 import {Merge} from './util/definitions';
-import {Entities} from './util/definitions';
 
 import {UndefinedIdError} from './util/Error';
-import getIn from 'unmutable/lib/getIn';
-import get from 'unmutable/lib/get';
 import REMOVED_ENTITY from './util/RemovedEntity';
 import ObjectSchema from './ObjectSchema';
 
@@ -29,56 +25,56 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
             this.id = options.id || ((data) => '' + data);
         } else {
             this.shape = options.shape || new ObjectSchema({});
-            this.id = options.id || get('id');
+            this.id = options.id || ((data) => data?.id);
         }
     }
 
-    normalize(data: any, entities: Entities = {}): NormalizeState {
+    normalize({state, input, meta}: NormalizeParams): NormalizeReturn {
         const {shape, name} = this;
 
-        let id = this.id(data);
-        let previousEntity;
-        let schemas = {};
-        let result;
+        let id = this.id(input);
+        let previousEntity: any;
+        let schemasUsed = {};
+        let output: any;
 
         if (id == null) throw UndefinedIdError(name, id);
         id = id.toString();
 
-        entities[name] = entities[name] || {};
+        state[name] = state[name] || {};
 
         // only normalize if we have a defined shape
         if (shape == null) {
-            result = data;
+            output = input;
         } else {
-            let _ = shape.normalize(data, entities);
-            result = _.result;
-            schemas = _.schemas;
-            previousEntity = entities[name][id];
+            let _ = shape.normalize({input, state, meta});
+            output = _.output;
+            schemasUsed = _.schemasUsed;
+            previousEntity = state[name][id];
         }
 
         // list this schema as one that has been used
-        schemas[name] = this;
+        schemasUsed[name] = this;
 
-        entities[name][id] = previousEntity
-            ? (this.merge || shape.merge)(previousEntity, result)
-            : result;
+        state[name][id] = previousEntity
+            ? (this.merge || shape.merge)(previousEntity, output)
+            : output;
 
         return {
-            entities,
-            schemas,
-            result: id
+            state,
+            schemasUsed,
+            output: id
         };
     }
 
-    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
-        const {result, entities} = denormalizeState;
+    denormalize(params: DenormalizeParams): any {
+        const {output, state, path} = params;
         const {shape, name} = this;
-        const entity = getIn([name, result])(entities);
+        const entity = state?.[name]?.[output];
 
         if (entity == null || entity === REMOVED_ENTITY || shape == null) {
             return entity;
         }
 
-        return shape.denormalize({result: entity, entities}, path);
+        return shape.denormalize({output: entity, state, path});
     }
 }

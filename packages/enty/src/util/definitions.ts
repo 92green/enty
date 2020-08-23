@@ -1,14 +1,23 @@
-export type Entities = Record<string, Record<string, any>>;
+type Meta = Record<string, any>;
+type State = Record<string, Record<string, any>>;
+type SchemasUsed = Record<string, Schema>;
 
-export type NormalizeState = {
-    entities: Entities;
-    result: any;
-    schemas: Object;
+export type NormalizeParams = {
+    input: any;
+    state: State;
+    meta: Meta;
 };
 
-export type DenormalizeState = {
-    entities: Object;
-    result: any;
+export type NormalizeReturn = {
+    output: any;
+    state: State;
+    schemasUsed: SchemasUsed;
+};
+
+export type DenormalizeParams = {
+    output: any;
+    state: State;
+    path?: Array<unknown>;
 };
 
 export type StructuralSchemaOptions = {
@@ -33,8 +42,8 @@ export type DynamicShape = (data: any) => Schema;
 //
 // Options
 
-export type Normalize = (data: Object, entities: Entities) => NormalizeState;
-export type Denormalize = (denormalizeState: DenormalizeState, path?: Array<unknown>) => any;
+export type Normalize = (params: NormalizeParams) => NormalizeReturn;
+export type Denormalize = (params: DenormalizeParams) => any;
 export type Create = (data: any) => any;
 export type Merge = (previous: any, next: any) => any;
 export type IdAttribute = (data: any) => string;
