@@ -1,31 +1,31 @@
 import {describe, expect, it} from '@jest/globals';
 import EntityReducerFactory from '../EntityReducerFactory';
-import RequestState from '../data/RequestState';
-import {EntitySchema, ObjectSchema} from 'enty';
+import RequestState from '../RequestState';
+import {EntitySchema, ObjectSchema, ArraySchema} from '../../index';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
-import resetAction from '../api/resetAction';
+import REMOVED_ENTITY from '../../util/RemovedEntity';
+import resetAction from '../resetAction';
 
 //
 // Schemas
 
 var author = new EntitySchema('author', {
     id: get('fullnameId'),
-    shape: {}
+    shape: new ObjectSchema({})
 });
 
 var topListings = new EntitySchema('topListings', {
     id: get('fullnameId'),
-    shape: {author}
+    shape: new ObjectSchema({author})
 });
 
 var subreddit = new EntitySchema('subreddit', {
     id: get('fullnameId'),
-    shape: {
-        topListings: [topListings]
-    }
+    shape: new ObjectSchema({
+        topListings: new ArraySchema(topListings)
+    })
 });
 
 const schema = new ObjectSchema({

@@ -7,7 +7,7 @@ import {SideEffect} from './definitions';
 
 type ActionMap = Record<string, any>;
 
-type Visitor = (arg0: {
+export type Visitor = (arg0: {
     actionType: string;
     requestAction: Function;
     resetAction: Function;
