@@ -1,4 +1,4 @@
-import removeAction from 'enty-state/lib/api/removeAction';
+import removeAction from 'enty/lib/state/removeAction';
 import {Context} from 'react';
 import {useContext, useMemo} from 'react';
 import {ProviderContext} from './ProviderFactory';

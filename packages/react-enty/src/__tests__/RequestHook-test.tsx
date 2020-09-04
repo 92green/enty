@@ -1,7 +1,7 @@
 import React from 'react';
 import {mount} from 'enzyme';
 import {useEffect} from 'react';
-import Message from 'enty-state/lib/data/Message';
+import Message from 'enty/lib/state/Message';
 
 import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';

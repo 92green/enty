@@ -1,5 +1,5 @@
-import Message from 'enty-state/lib/data/Message';
-import RequestState from 'enty-state/lib/data/RequestState';
+import Message from 'enty/lib/state/Message';
+import RequestState from 'enty/lib/state/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
 import {ProviderContext} from './ProviderFactory';
 
@@ -40,7 +40,7 @@ export default function RequestHookFactory(context: ProviderContext, config: Req
             const result = state.response[responseKey];
             const entities = state.entities;
             if (schema) {
-                return schema.denormalize({entities, result});
+                return schema.denormalize({state: entities, output: result});
             }
             return result;
         }, [requestState, responseKey, state.stats.responseCount]);

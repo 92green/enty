@@ -1,7 +1,7 @@
 import 'jest-enzyme';
 import {shallow, mount} from 'enzyme';
 import React from 'react';
-import Message from 'enty-state/lib/data/Message';
+import Message from 'enty/lib/state/Message';
 import LoadingBoundary from '../LoadingBoundary';
 
 const TestEmpty = () => null;

@@ -1,5 +1,5 @@
 import {ComponentType} from 'react';
-import Message from 'enty-state/lib/data/Message';
+import Message from 'enty/lib/state/Message';
 
 import React from 'react';
 

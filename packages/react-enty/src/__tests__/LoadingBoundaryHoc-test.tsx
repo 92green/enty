@@ -1,6 +1,6 @@
 import React from 'react';
 import {mount} from 'enzyme';
-import Message from 'enty-state/lib/data/Message';
+import Message from 'enty/lib/state/Message';
 import LoadingBoundaryHoc from '../LoadingBoundaryHoc';
 
 const TestEmpty = () => null;
