@@ -8,70 +8,68 @@ const foo = new EntitySchema('foo', {
     shape: new ObjectSchema({})
 });
 
-it('ArraySchema can normalize arrays', () => {
+it('can normalize arrays', () => {
     const schema = new ArraySchema(foo);
-    const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
+    const {state, output} = schema.normalize({input: [{id: '1'}, {id: '2'}], state: {}, meta: {}});
 
-    expect(entities.foo['1']).toEqual({id: '1'});
-    expect(entities.foo['2']).toEqual({id: '2'});
-    expect(result).toEqual(['1', '2']);
+    expect(state.foo['1']).toEqual({id: '1'});
+    expect(state.foo['2']).toEqual({id: '2'});
+    expect(output).toEqual(['1', '2']);
 });
 
-it('ArraySchema can normalize Lists', () => {
+it('can normalize Lists', () => {
     const schema = new ArraySchema(foo);
-    const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
+    const {state, output} = schema.normalize({input: [{id: '1'}, {id: '2'}], state: {}, meta: {}});
 
-    expect(entities.foo['1']).toEqual({id: '1'});
-    expect(entities.foo['2']).toEqual({id: '2'});
-    expect(result).toEqual(['1', '2']);
+    expect(state.foo['1']).toEqual({id: '1'});
+    expect(state.foo['2']).toEqual({id: '2'});
+    expect(output).toEqual(['1', '2']);
 });
 
-it('ArraySchema can normalize nested things in arrays', () => {
+it('can normalize nested things in arrays', () => {
     const schema = new ArraySchema(new ObjectSchema({foo}));
-    const {entities, result} = schema.normalize([{foo: {id: '1'}}]);
+    const {state, output} = schema.normalize({state: {}, meta: {}, input: [{foo: {id: '1'}}]});
 
-    expect(result).toEqual([{foo: '1'}]);
-    expect(entities.foo['1']).toEqual({id: '1'});
+    expect(output).toEqual([{foo: '1'}]);
+    expect(state.foo['1']).toEqual({id: '1'});
 });
 
 it('ArraySchema can denormalize arrays', () => {
     const schema = new ArraySchema(foo);
-    const entities = {
+    const state = {
         foo: {
             '1': {id: '1'},
             '2': {id: '2'}
         }
     };
-    expect(schema.denormalize({result: ['1', '2'], entities})).toEqual([{id: '1'}, {id: '2'}]);
-
-    expect(schema.denormalize({result: null, entities})).toEqual(null);
+    expect(schema.denormalize({output: ['1', '2'], state})).toEqual([{id: '1'}, {id: '2'}]);
+    expect(schema.denormalize({output: null, state})).toEqual(null);
 });
 
-it('ArraySchema will not return deleted entities', () => {
+it('ArraySchema will not return deleted state', () => {
     const schema = new ArraySchema(foo);
-    const entities = {
+    const state = {
         foo: {
             '1': {id: '1'},
             '2': {id: '2'},
             '3': REMOVED_ENTITY
         }
     };
-    expect(schema.denormalize({result: ['1', '2', '3'], entities})).toEqual([{id: '1'}, {id: '2'}]);
-
-    expect(schema.denormalize({result: null, entities}, [])).toEqual(null);
+    expect(schema.denormalize({output: ['1', '2', '3'], state})).toEqual([{id: '1'}, {id: '2'}]);
+    expect(schema.denormalize({output: null, state, path: []})).toEqual(null);
 });
 
 it('ArraySchema will not try to denormalize null values', () => {
     const schema = new ArraySchema(foo);
-    expect(schema.denormalize({result: null, entities: {}})).toEqual(null);
+    expect(schema.denormalize({output: null, state: {}})).toEqual(null);
 });
 
 it('ArraySchema will not mutate input objects', () => {
     const schema = new ArraySchema(foo);
-    const arrayTest = [{id: '1'}];
+    const input = [{id: '1'}];
 
-    schema.normalize(arrayTest);
-    expect(arrayTest).toEqual([{id: '1'}]);
+    schema.normalize({input, state: {}, meta: {}});
+    expect(input).toEqual([{id: '1'}]);
 });
 
 it('ArraySchemas can construct custom objects', () => {
@@ -88,9 +86,9 @@ it('ArraySchemas can construct custom objects', () => {
     const schema = new ArraySchema(new ObjectSchema({}), {
         create: (data) => new Foo(data)
     });
-    const state = schema.normalize([{foo: 1}, {bar: 2}], {});
-    expect(state.result).toBeInstanceOf(Foo);
-    expect(state.result.data[0]).toEqual({foo: 1});
+    const state = schema.normalize({state: {}, meta: {}, input: [{foo: 1}, {bar: 2}]});
+    expect(state.output).toBeInstanceOf(Foo);
+    expect(state.output.data[0]).toEqual({foo: 1});
 });
 
 it('will default replace array on merge', () => {

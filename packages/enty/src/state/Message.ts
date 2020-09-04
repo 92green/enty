@@ -1,4 +1,4 @@
-import RequestState from '../data/RequestState';
+import RequestState from './RequestState';
 import get from 'unmutable/lib/get';
 import getIn from 'unmutable/lib/getIn';
 
@@ -76,7 +76,7 @@ export default class Message<Res> {
     // fetching
     static fetching(messageProps: MessageShape<undefined>): Message<undefined> {
         return new Message({
-            ...(messageProps || {}),
+            ...messageProps,
             response: undefined,
             requestState: RequestState.fetching()
         });

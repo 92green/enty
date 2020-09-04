@@ -1,10 +1,8 @@
-import {NormalizeState} from './util/definitions';
-import {DenormalizeState} from './util/definitions';
+import {NormalizeParams, NormalizeReturn, DenormalizeParams} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {Create} from './util/definitions';
 import {Merge} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
-import {Entities} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -27,46 +25,47 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: Object, entities: Entities = {}): NormalizeState {
+    normalize(params: NormalizeParams): NormalizeReturn {
         const {shape} = this;
-        const dataMap = data;
-        let schemas = {};
+        const {input, state, meta} = params;
+        let schemasUsed = {};
 
-        const result = Object.keys(shape).reduce((result: Object, key: any): any => {
-            const value = get(key)(dataMap);
+        const output = Object.keys(shape).reduce((output: Object, key: any): any => {
+            const value = get(key)(input);
             const schema = get(key)(shape);
             if (value) {
-                const {result: childResult, schemas: childSchemas} = schema.normalize(
-                    value,
-                    entities
-                );
-                Object.assign(schemas, childSchemas);
-                result = set(key, childResult)(result);
+                const {output: childOutput, schemasUsed: childSchemas} = schema.normalize({
+                    input: value,
+                    state,
+                    meta
+                });
+                Object.assign(schemasUsed, childSchemas);
+                output = set(key, childOutput)(output);
             }
 
-            return result;
-        }, dataMap);
+            return output;
+        }, input);
 
-        return {entities, schemas, result: this.create(result)};
+        return {state, schemasUsed, output: this.create(output)};
     }
 
     /**
      * ObjectSchema.denormalize
      */
-    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
-        const {result, entities} = denormalizeState;
+    denormalize(params: DenormalizeParams): any {
+        const {output, state, path = []} = params;
         const {shape} = this;
 
-        if (result == null || result === REMOVED_ENTITY) {
-            return result;
+        if (output == null || output === REMOVED_ENTITY) {
+            return output;
         }
 
-        // Map denormalize to the values of result, but only
+        // Map denormalize to the values of output, but only
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
         return pipeWith(
-            result,
+            output,
             clone(),
             (item: Object): Object => {
                 if (path.indexOf(this) !== -1) {
@@ -77,8 +76,8 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
 
                 for (let key of keys) {
                     const schema = get(key)(shape);
-                    const result = get(key)(item);
-                    const value = schema.denormalize({result, entities}, [...path, this]);
+                    const output = get(key)(item);
+                    const value = schema.denormalize({output, state, path: [...path, this]});
 
                     if (value !== REMOVED_ENTITY && value !== undefined) {
                         item = set(key, value)(item);

@@ -1,6 +1,6 @@
 import {describe, expect, it} from '@jest/globals';
 import Message from '../Message';
-import RequestState from '../../data/RequestState';
+import RequestState from '../RequestState';
 
 const response = {name: 'foo'};
 const responseKey = 'FOO';

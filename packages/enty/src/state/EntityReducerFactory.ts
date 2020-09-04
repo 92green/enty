@@ -1,5 +1,5 @@
-import {Schema} from 'enty/lib/util/definitions';
-import {State, Action} from './util/definitions';
+import {Schema} from '../util/definitions';
+import {State, Action} from './definitions';
 
 import clone from 'unmutable/lib/clone';
 import get from 'unmutable/lib/get';
@@ -11,9 +11,9 @@ import setIn from 'unmutable/lib/setIn';
 import hasIn from 'unmutable/lib/hasIn';
 import updateIn from 'unmutable/lib/updateIn';
 import deleteIn from 'unmutable/lib/deleteIn';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import REMOVED_ENTITY from '../util/RemovedEntity';
 
-import RequestState from './data/RequestState';
+import RequestState from './RequestState';
 
 export default function EntityReducerFactory(config: {schema?: Schema}): Function {
     const {schema} = config;
@@ -63,10 +63,15 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
 
                 if (payload) {
                     if (schema) {
-                        const {result, entities, schemas} = schema.normalize(
-                            payload,
-                            pipeWith(state, get('entities'), clone())
-                        );
+                        const {
+                            output: result,
+                            state: entities,
+                            schemasUsed: schemas
+                        } = schema.normalize({
+                            input: payload,
+                            state: pipeWith(state, get('entities'), clone()),
+                            meta: {}
+                        });
 
                         return pipeWith(
                             state,

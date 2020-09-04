@@ -1,15 +1,13 @@
-import Hash from './util/Hash';
-import visitActionMap from './api/visitActionMap';
-import createRequestAction from './api/createRequestAction';
-import resetAction from './api/resetAction';
-import removeEntityAction from './api/removeAction';
-import {SideEffect} from './util/definitions';
-
-console.log('!!!!', {createRequestAction, resetAction, removeEntityAction});
+import Hash from './Hash';
+import visitActionMap from './visitActionMap';
+import createRequestAction from './createRequestAction';
+import resetAction from './resetAction';
+import removeEntityAction from './removeAction';
+import {SideEffect} from './definitions';
 
 type ActionMap = Record<string, any>;
 
-type Visitor = (arg0: {
+export type Visitor = (arg0: {
     actionType: string;
     requestAction: Function;
     resetAction: Function;

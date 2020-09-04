@@ -1,7 +1,8 @@
-import EntityApiFactory from '../EntityApiFactory';
-import Hash from '../util/Hash';
+import {jest, describe, expect, it} from '@jest/globals';
+import EntityApiFactory, {Visitor} from '../EntityApiFactory';
+import Hash from '../Hash';
 
-jest.mock('../api/createRequestAction', () => () => 'REQUEST');
+type VisitorMock = jest.Mock<ReturnType<Visitor>, Parameters<Visitor>>;
 
 describe('EntityApiFactory', () => {
     it('visits every function provided', () => {
@@ -17,7 +18,7 @@ describe('EntityApiFactory', () => {
     });
 
     it('creates an action name based on the path', () => {
-        const visitor = jest.fn();
+        const visitor = (jest.fn() as unknown) as VisitorMock;
         const data = {
             foo: {
                 bar: () => null
@@ -28,7 +29,7 @@ describe('EntityApiFactory', () => {
     });
 
     it('creates a hash based on payload and action name', () => {
-        const visitor = jest.fn();
+        const visitor = (jest.fn() as unknown) as VisitorMock;
         const data = {
             foo: {
                 bar: () => null
@@ -40,7 +41,7 @@ describe('EntityApiFactory', () => {
     });
 
     it('creates requestAction with the sideEffect and action name', () => {
-        const visitor = jest.fn();
+        const visitor = (jest.fn() as unknown) as VisitorMock;
         const data = {
             foo: {
                 bar: () => null
@@ -48,6 +49,6 @@ describe('EntityApiFactory', () => {
         };
         EntityApiFactory(data, visitor);
         const {requestAction} = visitor.mock.calls[0][0];
-        expect(requestAction).toBe('REQUEST');
+        expect(typeof requestAction).toBe('function');
     });
 });

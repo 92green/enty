@@ -1,6 +1,6 @@
 import {Schema} from 'enty/lib/util/definitions';
 
-import EntityApiFactory from 'enty-state/lib/EntityApiFactory';
+import EntityApiFactory from 'enty/lib/state/EntityApiFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHoc from './RequestHoc';
 import RequestHook from './RequestHook';

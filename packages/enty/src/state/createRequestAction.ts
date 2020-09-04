@@ -1,4 +1,4 @@
-import {SideEffect} from '../util/definitions';
+import {SideEffect} from './definitions';
 
 type Meta = {
     responseKey: string;

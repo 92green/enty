@@ -4,9 +4,9 @@ import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
-import RequestState from 'enty-state/lib/data/RequestState';
+import RequestState from 'enty/lib/state/RequestState';
 import {ReactWrapper} from 'enzyme';
-import Message from 'enty-state/lib/data/Message';
+import Message from 'enty/lib/state/Message';
 import {act} from 'react-dom/test-utils';
 
 //
