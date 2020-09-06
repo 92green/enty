@@ -41,6 +41,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         id = id.toString();
 
         state[name] = state[name] || {};
+        state[name][id] = state[name][id] || [null, {}];
 
         // only normalize if we have a defined shape
         if (shape == null) {
@@ -49,15 +50,17 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
             let _ = shape.normalize({input, state, meta});
             output = _.output;
             schemasUsed = _.schemasUsed;
-            previousEntity = state[name][id];
+            previousEntity = state[name][id].entity;
         }
 
         // list this schema as one that has been used
         schemasUsed[name] = this;
 
-        state[name][id] = previousEntity
+        state[name][id][0] = previousEntity
             ? (this.merge || shape.merge)(previousEntity, output)
             : output;
+
+        Object.assign(state[name][id][1], meta);
 
         return {
             state,
@@ -69,7 +72,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
     denormalize(params: DenormalizeParams): any {
         const {output, state, path} = params;
         const {shape, name} = this;
-        const entity = state?.[name]?.[output];
+        const [entity] = state?.[name]?.[output] || [null, {}];
 
         if (entity == null || entity === REMOVED_ENTITY || shape == null) {
             return entity;

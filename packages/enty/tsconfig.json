@@ -5,8 +5,19 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "declaration": true,
-    "outDir": "./lib"
+    "outDir": "./lib",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
   },
-  "include": ["src"],
+  "include": ["src", "pages"],
   "exclude": ["**/__tests__/*"]
 }

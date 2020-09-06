@@ -1,6 +1,6 @@
-type Meta = Record<string, any>;
-type State = Record<string, Record<string, any>>;
-type SchemasUsed = Record<string, Schema>;
+export type Meta = Record<string, any>;
+export type State = Record<string, Record<string, any>>;
+export type SchemasUsed = Record<string, Schema>;
 
 export type NormalizeParams = {
     input: any;
