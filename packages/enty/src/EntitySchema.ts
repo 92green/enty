@@ -50,7 +50,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
             let _ = shape.normalize({input, state, meta});
             output = _.output;
             schemasUsed = _.schemasUsed;
-            previousEntity = state[name][id].entity;
+            previousEntity = state[name][id][0];
         }
 
         // list this schema as one that has been used

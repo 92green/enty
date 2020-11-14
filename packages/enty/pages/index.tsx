@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useLayoutEffect, useState, useCallback} from 'react';
 import {EntitySchema, ArraySchema, ObjectSchema} from '../src/index';
 import {State, Meta, SchemasUsed, NormalizeReturn} from '../src/util/definitions';
 
@@ -14,7 +14,7 @@ const post = async (query) => {
         body: JSON.stringify({query}),
         method: 'POST'
     });
-    return (await response.json()).data;
+    return await response.json();
 };
 
 //
@@ -28,6 +28,13 @@ type EntityRequestArgs = {
 };
 
 type Respond = (store: Store, args: EntityRequestArgs) => AsyncGenerator<NormalizeReturn>;
+
+type Meta = {
+    pending?: boolean;
+    success?: boolean;
+    error?: Error;
+    normalizeTime?: number;
+};
 
 class Store {
     _events: Record<string, Function[]>;
@@ -45,12 +52,20 @@ class Store {
         return this._state[schema.name]?.[id] || [null, {}];
     }
 
-    get(schema: EntitySchema<any>, id: string) {
+    get(schema: EntitySchema<any>, id: string): [any, Meta] {
         const entity = schema.denormalize({
             state: this._state,
             output: id
         });
         return [entity, this._getStateTuple(schema, id)[1]];
+    }
+
+    setMeta(schema: EntitySchema<any>, id: string, meta: Meta) {
+        const type = schema.name;
+        this._state[type] = this._state[type] || {};
+        this._state[type][id] = this._state[type][id] || [null, {}];
+        this._state[type][id][1] = {...this._state[type][id][1], ...meta};
+        return this;
     }
 
     update(schema: EntitySchema<any>, input: any, meta: Meta) {
@@ -80,16 +95,8 @@ class Store {
 }
 
 // Requesters
-function asyncRequest(config: {
-    args: EntityRequestArgs;
-    update: Function;
-    store: Store;
-    //request: (config: typeof config) => Promise<any>;
-    ttl: number;
-    verb?: string;
-    verbed?: string;
-}) {
-    const {store, args, ttl, verb = 'loading', verbed = 'loaded'} = config;
+function asyncRequest(config: {args: EntityRequestArgs; store: Store; ttl: number}) {
+    const {store, args, ttl} = config;
     const {schema, id} = args;
 
     return async function* (request: Function) {
@@ -97,15 +104,15 @@ function asyncRequest(config: {
 
         if (entity && Date.now() - meta.normalizeTime <= ttl * 1000) return yield;
 
-        yield store.update(schema, {id}, {[verb]: true, [verbed]: false});
+        yield store.setMeta(schema, id, {pending: true});
         try {
-            yield store.update(schema, await request(config), {
-                [verb]: false,
-                [verbed]: true,
+            const data = await request(config);
+            yield store.update(schema, data, {
+                pending: false,
                 normalizeTime: Date.now()
             });
         } catch (error) {
-            yield store.update(schema, {id}, {[verb]: false, [verbed]: true, error});
+            yield store.setMeta(schema, id, {pending: false, error});
         }
         return;
     };
@@ -123,8 +130,13 @@ const useStore = () => {
     return store;
 };
 
-function useEntity(config: {schema: EntitySchema<any>; id: string; loadVariables?: any}) {
-    const {schema, id, loadVariables = {}} = config;
+function useEntity(config: {
+    schema: EntitySchema<any>;
+    id: string;
+    loadVariables?: any;
+    shouldSubscribe?: boolean;
+}): [any, Meta, Function] {
+    const {schema, id, loadVariables = {}, shouldSubscribe = true} = config;
     const store = useStore();
     const [stateTuple, setState] = useState([null, {}]);
 
@@ -136,10 +148,11 @@ function useEntity(config: {schema: EntitySchema<any>; id: string; loadVariables
     );
 
     useEffect(() => {
+        if (!shouldSubscribe) return;
         return store.subscribe({schema, id, method: 'load', loadVariables}, setState);
-    }, [schema, id, JSON.stringify(loadVariables)]);
+    }, [schema, id, JSON.stringify(loadVariables), shouldSubscribe]);
 
-    return [...stateTuple, onSave];
+    return [stateTuple[0], stateTuple[1], onSave];
 }
 
 //
@@ -148,8 +161,8 @@ function useEntity(config: {schema: EntitySchema<any>; id: string; loadVariables
 
 // Schema Definitions
 const PersonSchema = new EntitySchema('person', {});
-const PlanetSchema = new EntitySchema('planet', {});
-const FilmSchema = new EntitySchema('film', {});
+const PlanetSchema = new EntitySchema('planet');
+const FilmSchema = new EntitySchema('film');
 
 PersonSchema.shape = new ObjectSchema({
     homeworld: PlanetSchema,
@@ -188,66 +201,72 @@ const personQuery = (id) => `{
 
 const myStore = new Store(async function* (update, args: EntityRequestArgs, store) {
     const {method, schema, id, loadVariables, saveVariables} = args;
-    const loadRequest = asyncRequest({store, args, ttl: 10});
-    const saveRequest = asyncRequest({store, args, verb: 'save', ttl: 10});
+    const loadRequest = asyncRequest({store, args, ttl: 0});
+    const saveRequest = asyncRequest({store, args, ttl: 10});
 
     switch (`${schema.name}.${method}`) {
         case 'person.load':
             return yield* loadRequest(async () => {
-                const data = await post(personQuery(id));
-                console.log(data);
+                await delay(1000);
+                const {data, errors} = await post(personQuery(id));
+                const error = errors?.[0]?.message;
+                if (error) throw new Error(error);
                 return data.person;
             });
 
         case 'person.save':
             return yield update(saveVariables);
-
-        case 'bar':
-            yield store.update(schema, data, meta);
-            yield [data, meta];
-            yield update(data);
-            yield update(data, meta);
-            yield store.update(schema, data, meta);
-            yield schema.normalize(store, data, meta);
-            yield schema.prepare(data, meta);
-            if (method === 'save') yield store.update(schema, saveVariables, {normalizeTime: null});
-            return yield* asyncRequester(10, () =>
-                delay(1000 * Math.random() + 500, {id, value: Math.random()})
-            );
     }
 });
+
+function PersonTable({person}) {
+    return (
+        <table>
+            <tbody>
+                <tr>
+                    <td>Name</td>
+                    <td>{person.name}</td>
+                </tr>
+                <tr>
+                    <td>Homeworld</td>
+                    <td>{person.homeworld.name}</td>
+                </tr>
+                <tr>
+                    <td>Born</td>
+                    <td>{person.birthYear}</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>{person.gender}</td>
+                </tr>
+                <tr>
+                    <td>Nickname (local)</td>
+                    <td>{person.nickname}</td>
+                </tr>
+            </tbody>
+        </table>
+    );
+}
+
+function Person({id}) {
+    const [person, meta] = useEntity({schema: PersonSchema, id});
+    if (meta.pending) return <div>loading...</div>;
+    if (meta.error) return <div>{meta.error.message}</div>;
+    if (!person) return <div>empty</div>;
+    return <PersonTable person={person} />;
+}
 
 function Load() {
     const [id, setId] = useState('cGVvcGxlOjE=');
     const [person, meta] = useEntity({schema: PersonSchema, id});
-    console.log(person);
 
-    if (!person) return <div>empty</div>;
-    if (meta.loading) return <div>loading...</div>;
+    if (meta.pending) return <div>loading...</div>;
     if (meta.error) return <div>{meta.error.message}</div>;
+    if (!person) return <div>empty</div>;
 
     return (
         <div>
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Name</td>
-                        <td>{person.name}</td>
-                    </tr>
-                    <tr>
-                        <td>Homeworld</td>
-                        <td>{person.homeworld.name}</td>
-                    </tr>
-                    <tr>
-                        <td>Born</td>
-                        <td>{person.birthYear}</td>
-                    </tr>
-                    <tr>
-                        <td>Gender</td>
-                        <td>{person.gender}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <Person id={id} />
             <button onClick={() => setId('cGVvcGxlOjE=')}>Luke</button>
             <button onClick={() => setId('cGVvcGxlOjIy')}>Bobba Fett</button>
             <button onClick={() => setId('cGVvcGxlOjIw')}>Yoda</button>
@@ -265,8 +284,9 @@ function Create() {
     useEffect(() => {
         updateForm(person);
     }, [person]);
+
     if (!person) return <div>empty</div>;
-    if (meta.loading) return <div>loading...</div>;
+    if (meta.pending) return <div>loading...</div>;
     if (meta.error) return <div>{meta.error.message}</div>;
     return (
         <div>
@@ -279,16 +299,22 @@ function Create() {
                         </td>
                     </tr>
                     <tr>
-                        <td>Homeworld</td>
-                        <td>{person.homeworld.name}</td>
-                    </tr>
-                    <tr>
                         <td>Born</td>
-                        <td>{person.birthYear}</td>
+                        <td>
+                            <input value={personForm.birthYear} onChange={onChange('birthYear')} />
+                        </td>
                     </tr>
                     <tr>
                         <td>Gender</td>
-                        <td>{person.gender}</td>
+                        <td>
+                            <input value={personForm.gender} onChange={onChange('gender')} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Nickname (local)</td>
+                        <td>
+                            <input value={personForm.nickname} onChange={onChange('nickname')} />
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -304,8 +330,35 @@ function Create() {
     );
 }
 
-function Update({id}) {
-    return null;
+function Parallel() {
+    return (
+        <div>
+            <Person id="cGVvcGxlOjIx" />
+            <Person id="cGVvcGxlOjI1" />
+        </div>
+    );
+}
+
+function Sequential() {
+    const [luke, lukeMeta] = useEntity({schema: PersonSchema, id: 'cGVvcGxlOjE='});
+    const [yoda, yodaMeta] = useEntity({
+        schema: PersonSchema,
+        id: 'cGVvcGxlOjIw',
+        shouldSubscribe: !!luke
+    });
+
+    if (lukeMeta.pending) return <div>loading luke...</div>;
+    if (yodaMeta.pending || !yoda) return <div>loading yoda...</div>;
+    if (lukeMeta.error) return <div>{lukeMeta.error.message}</div>;
+    if (yodaMeta.error) return <div>{yodaMeta.error.message}</div>;
+    if (!luke && !yoda) return <div>empty</div>;
+
+    return (
+        <div>
+            {luke && <PersonTable person={luke} />}
+            {yoda && <PersonTable person={yoda} />}
+        </div>
+    );
 }
 
 function Debug() {
@@ -325,24 +378,27 @@ function Debug() {
 - EnityApi shim
 
 
-- Fetch
-- Sequential
-- Parallel
+* Fetch
+* Sequential
+* Parallel
 - List
-- Update
+* Update
 - Create
 
 */
 
 export default function Layout() {
+    //<h1>Load</h1>
+    //<Load />
+    //<h1>Create / Update</h1>
+    //<Create />
     return (
         <Provider store={myStore}>
-            <h1>Load</h1>
-            <Load />
-            <h1>Create</h1>
-            <Create />
-            <h1>Update</h1>
-            <Update />
+            <h1>Sequential</h1>
+            <Sequential />
+            <h1>Parallel</h1>
+            <Parallel />
+            <Debug />
         </Provider>
     );
 }
