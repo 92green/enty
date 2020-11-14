@@ -8,6 +8,15 @@ function delay(ms, value) {
     return new Promise((resolve) => setTimeout(() => resolve(value), ms));
 }
 
+const post = async (query) => {
+    const response = await fetch('https://swapi-graphql.netlify.app/.netlify/functions/index', {
+        headers: {'content-type': 'application/json'},
+        body: JSON.stringify({query}),
+        method: 'POST'
+    });
+    return (await response.json()).data;
+};
+
 //
 // Enty State
 type EntityRequestArgs = {
@@ -52,8 +61,9 @@ class Store {
     }
 
     async trigger(args: EntityRequestArgs) {
+        const update = (data, meta) => this.update(args.schema, data, meta);
         const {schema, id} = args;
-        for await (let value of this._respond(this, args)) {
+        for await (const value of this._respond(update, args, this)) {
             this._events[schema.name + id].forEach((cb) => cb(this.get(schema, id)));
         }
     }
@@ -70,31 +80,35 @@ class Store {
 }
 
 // Requesters
-async function* asyncRequest(config: {
-    id: string;
-    request: (config: typeof config) => Promise<any>;
-    schema: EntitySchema<any>;
+function asyncRequest(config: {
+    args: EntityRequestArgs;
+    update: Function;
     store: Store;
+    //request: (config: typeof config) => Promise<any>;
     ttl: number;
     verb?: string;
     verbed?: string;
 }) {
-    const {store, schema, id, ttl, request, verb = 'loading', verbed = 'loaded'} = config;
-    const [entity, meta] = store.get(schema, id);
+    const {store, args, ttl, verb = 'loading', verbed = 'loaded'} = config;
+    const {schema, id} = args;
 
-    if (entity && Date.now() - meta.normalizeTime <= ttl * 1000) return yield;
+    return async function* (request: Function) {
+        const [entity, meta] = store.get(schema, id);
 
-    yield store.update(schema, {id}, {[verb]: true, [verbed]: false});
-    try {
-        yield store.update(schema, await request(config), {
-            [verb]: false,
-            [verbed]: true,
-            normalizeTime: Date.now()
-        });
-    } catch (error) {
-        yield store.update(schema, {id}, {[verb]: false, [verbed]: true, error});
-    }
-    return;
+        if (entity && Date.now() - meta.normalizeTime <= ttl * 1000) return yield;
+
+        yield store.update(schema, {id}, {[verb]: true, [verbed]: false});
+        try {
+            yield store.update(schema, await request(config), {
+                [verb]: false,
+                [verbed]: true,
+                normalizeTime: Date.now()
+            });
+        } catch (error) {
+            yield store.update(schema, {id}, {[verb]: false, [verbed]: true, error});
+        }
+        return;
+    };
 }
 
 //
@@ -167,41 +181,35 @@ const personQuery = (id) => `{
             name
           }
         }
-
       }
     }
   }
 }`;
 
-const myStore = new Store(async function* (store, args: EntityRequestArgs) {
+const myStore = new Store(async function* (update, args: EntityRequestArgs, store) {
     const {method, schema, id, loadVariables, saveVariables} = args;
-
-    const asyncRequester = (ttl, request) =>
-        asyncRequest({
-            request,
-            ttl,
-            store,
-            schema,
-            id
-        });
-
-    const post = async (query) => {
-        const response = await fetch('https://swapi-graphql.netlify.app/.netlify/functions/index', {
-            headers: {'content-type': 'application/json'},
-            body: JSON.stringify({query}),
-            method: 'POST'
-        });
-        return (await response.json()).data;
-    };
+    const loadRequest = asyncRequest({store, args, ttl: 10});
+    const saveRequest = asyncRequest({store, args, verb: 'save', ttl: 10});
 
     switch (`${schema.name}.${method}`) {
         case 'person.load':
-            return yield* asyncRequester(10, async () => {
+            return yield* loadRequest(async () => {
                 const data = await post(personQuery(id));
+                console.log(data);
                 return data.person;
             });
 
+        case 'person.save':
+            return yield update(saveVariables);
+
         case 'bar':
+            yield store.update(schema, data, meta);
+            yield [data, meta];
+            yield update(data);
+            yield update(data, meta);
+            yield store.update(schema, data, meta);
+            yield schema.normalize(store, data, meta);
+            yield schema.prepare(data, meta);
             if (method === 'save') yield store.update(schema, saveVariables, {normalizeTime: null});
             return yield* asyncRequester(10, () =>
                 delay(1000 * Math.random() + 500, {id, value: Math.random()})
@@ -248,7 +256,52 @@ function Load() {
 }
 
 function Create() {
-    return null;
+    const [id, setId] = useState('cGVvcGxlOjE=');
+    const [personForm, updateForm] = useState(null);
+    const [person, meta, savePerson] = useEntity({schema: PersonSchema, id});
+
+    const onChange = (key) => (ee) => updateForm({...personForm, [key]: ee.target.value});
+
+    useEffect(() => {
+        updateForm(person);
+    }, [person]);
+    if (!person) return <div>empty</div>;
+    if (meta.loading) return <div>loading...</div>;
+    if (meta.error) return <div>{meta.error.message}</div>;
+    return (
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>
+                            <input value={personForm.name} onChange={onChange('name')} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Homeworld</td>
+                        <td>{person.homeworld.name}</td>
+                    </tr>
+                    <tr>
+                        <td>Born</td>
+                        <td>{person.birthYear}</td>
+                    </tr>
+                    <tr>
+                        <td>Gender</td>
+                        <td>{person.gender}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button onClick={() => savePerson(personForm)}>save</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button onClick={() => setId('cGVvcGxlOjE=')}>Luke</button>
+            <button onClick={() => setId('cGVvcGxlOjIy')}>Bobba Fett</button>
+            <button onClick={() => setId('cGVvcGxlOjIw')}>Yoda</button>
+        </div>
+    );
 }
 
 function Update({id}) {
@@ -271,16 +324,25 @@ function Debug() {
 - denormalizing cache
 - EnityApi shim
 
+
+- Fetch
+- Sequential
+- Parallel
+- List
+- Update
+- Create
+
 */
 
 export default function Layout() {
     return (
         <Provider store={myStore}>
-            <div style={{display: 'flex'}}>
-                <Load />
-                <Create />
-                <Update />
-            </div>
+            <h1>Load</h1>
+            <Load />
+            <h1>Create</h1>
+            <Create />
+            <h1>Update</h1>
+            <Update />
         </Provider>
     );
 }
