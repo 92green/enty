@@ -23,11 +23,15 @@ type EntityRequestArgs = {
     schema: EntitySchema<any>;
     id: string;
     method: 'load' | 'save';
-    loadVariables?: any;
-    saveVariables?: any;
+    loadData?: any;
+    saveData?: any;
 };
 
-type Respond = (store: Store, args: EntityRequestArgs) => AsyncGenerator<NormalizeReturn>;
+type Respond = (
+    update: Function,
+    args: EntityRequestArgs,
+    store: Store
+) => AsyncGenerator<NormalizeReturn>;
 
 type Meta = {
     pending?: boolean;
@@ -78,12 +82,17 @@ class Store {
     async trigger(args: EntityRequestArgs) {
         const update = (data, meta) => this.update(args.schema, data, meta);
         const {schema, id} = args;
-        for await (const value of this._respond(update, args, this)) {
+        const name = schema.name;
+        for await (const _ of this._respond(update, args, this)) {
+            if (this._events[name]) {
+                const list = Object.keys(this._state[name]).map((id) => this.get(schema, id));
+                this._events[name].forEach((cb) => cb(list));
+            }
             this._events[schema.name + id].forEach((cb) => cb(this.get(schema, id)));
         }
     }
     subscribe(args: EntityRequestArgs, callback: Function) {
-        const {schema, id} = args;
+        const {schema, id = ''} = args;
         const key = schema.name + id;
         this._events[key] = this._events[key] || [];
         this._events[key].push(callback);
@@ -133,26 +142,36 @@ const useStore = () => {
 function useEntity(config: {
     schema: EntitySchema<any>;
     id: string;
-    loadVariables?: any;
+    loadData?: any;
     shouldSubscribe?: boolean;
 }): [any, Meta, Function] {
-    const {schema, id, loadVariables = {}, shouldSubscribe = true} = config;
+    const {schema, id, loadData = {}, shouldSubscribe = true} = config;
     const store = useStore();
     const [stateTuple, setState] = useState([null, {}]);
 
     const onSave = useCallback(
-        (saveVariables) => {
-            store.trigger({schema, id, method: 'save', saveVariables});
+        (saveData) => {
+            store.trigger({schema, id, method: 'save', saveData});
         },
         [schema, id]
     );
 
     useEffect(() => {
         if (!shouldSubscribe) return;
-        return store.subscribe({schema, id, method: 'load', loadVariables}, setState);
-    }, [schema, id, JSON.stringify(loadVariables), shouldSubscribe]);
+        return store.subscribe({schema, id, method: 'load', loadData}, setState);
+    }, [schema, id, JSON.stringify(loadData), shouldSubscribe]);
 
     return [stateTuple[0], stateTuple[1], onSave];
+}
+
+function useEntityList(config: {schema: EntitySchema<any>}): Array<[any, Meta]> {
+    const {schema} = config;
+    const store = useStore();
+    const [entityTupleList, setState] = useState([]);
+    useEffect(() => {
+        return store.subscribe({schema, method: 'list'}, setState);
+    }, [schema]);
+    return [entityTupleList];
 }
 
 //
@@ -200,14 +219,13 @@ const personQuery = (id) => `{
 }`;
 
 const myStore = new Store(async function* (update, args: EntityRequestArgs, store) {
-    const {method, schema, id, loadVariables, saveVariables} = args;
-    const loadRequest = asyncRequest({store, args, ttl: 0});
-    const saveRequest = asyncRequest({store, args, ttl: 10});
+    const {method, schema, id, loadData, saveData} = args;
+    const loadRequest = asyncRequest({store, args, ttl: 5});
+    //const saveRequest = asyncRequest({store, args, ttl: 10});
 
     switch (`${schema.name}.${method}`) {
         case 'person.load':
             return yield* loadRequest(async () => {
-                await delay(1000);
                 const {data, errors} = await post(personQuery(id));
                 const error = errors?.[0]?.message;
                 if (error) throw new Error(error);
@@ -215,7 +233,7 @@ const myStore = new Store(async function* (update, args: EntityRequestArgs, stor
             });
 
         case 'person.save':
-            return yield update(saveVariables);
+            return yield update(saveData);
     }
 });
 
@@ -258,18 +276,13 @@ function Person({id}) {
 
 function Load() {
     const [id, setId] = useState('cGVvcGxlOjE=');
-    const [person, meta] = useEntity({schema: PersonSchema, id});
-
-    if (meta.pending) return <div>loading...</div>;
-    if (meta.error) return <div>{meta.error.message}</div>;
-    if (!person) return <div>empty</div>;
 
     return (
         <div>
-            <Person id={id} />
             <button onClick={() => setId('cGVvcGxlOjE=')}>Luke</button>
             <button onClick={() => setId('cGVvcGxlOjIy')}>Bobba Fett</button>
             <button onClick={() => setId('cGVvcGxlOjIw')}>Yoda</button>
+            <Person id={id} />
         </div>
     );
 }
@@ -361,6 +374,25 @@ function Sequential() {
     );
 }
 
+function List() {
+    const [list] = useEntityList({schema: PersonSchema});
+    console.log(list);
+    return (
+        <ol>
+            {list.map(([person, {pending, error}]) => {
+                if (pending) return <li>loading...</li>;
+                if (error) return <li>{meta.error.message}</li>;
+                if (!person) return <li>empty</li>;
+                return (
+                    <li key={person.id}>
+                        {person.name} - {person.homeworld.name}
+                    </li>
+                );
+            })}
+        </ol>
+    );
+}
+
 function Debug() {
     const [person, meta] = useEntity({schema: PersonSchema, id: 'cGVvcGxlOjE='});
     const store = useStore();
@@ -384,6 +416,7 @@ function Debug() {
 - List
 * Update
 - Create
+- nested hooks causes loops
 
 */
 
@@ -394,11 +427,10 @@ export default function Layout() {
     //<Create />
     return (
         <Provider store={myStore}>
-            <h1>Sequential</h1>
-            <Sequential />
-            <h1>Parallel</h1>
-            <Parallel />
-            <Debug />
+            <h1>List</h1>
+            <List />
+            <h1>Load</h1>
+            <Load />
         </Provider>
     );
 }
