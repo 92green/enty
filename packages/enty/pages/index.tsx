@@ -375,19 +375,14 @@ function Sequential() {
 }
 
 function List() {
-    const [list] = useEntityList({schema: PersonSchema});
-    console.log(list);
+    const [list] = useEntityList({schema: PlanetSchema});
     return (
         <ol>
-            {list.map(([person, {pending, error}]) => {
+            {list.map(([planet, {pending, error}]) => {
                 if (pending) return <li>loading...</li>;
-                if (error) return <li>{meta.error.message}</li>;
-                if (!person) return <li>empty</li>;
-                return (
-                    <li key={person.id}>
-                        {person.name} - {person.homeworld.name}
-                    </li>
-                );
+                if (error) return <li>{error.message}</li>;
+                if (!planet) return <li>empty</li>;
+                return <li key={planet.id}>{person.name}</li>;
             })}
         </ol>
     );
@@ -405,7 +400,7 @@ function Debug() {
 - Request Hook performance
 - Update entities
 - Entities update each other
-- subscribe to list of entities
+* subscribe to list of entities
 - denormalizing cache
 - EnityApi shim
 
@@ -413,7 +408,7 @@ function Debug() {
 * Fetch
 * Sequential
 * Parallel
-- List
+* List
 * Update
 - Create
 - nested hooks causes loops
@@ -427,10 +422,12 @@ export default function Layout() {
     //<Create />
     return (
         <Provider store={myStore}>
-            <h1>List</h1>
+            <h1>Planets</h1>
             <List />
             <h1>Load</h1>
             <Load />
+
+            <Debug />
         </Provider>
     );
 }
