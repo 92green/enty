@@ -29,7 +29,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         }
     }
 
-    normalize({state, input, meta}: NormalizeParams): NormalizeReturn {
+    normalize({state, input, meta, changes = {}}: NormalizeParams): NormalizeReturn {
         const {shape, name} = this;
 
         let id = this.id(input);
@@ -41,13 +41,15 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         id = id.toString();
 
         state[name] = state[name] || {};
+        changes[name] = changes[name] || {};
         state[name][id] = state[name][id] || [null, {}];
+        changes[name][id] = changes[name][id] || [null, {}];
 
         // only normalize if we have a defined shape
         if (shape == null) {
             output = input;
         } else {
-            let _ = shape.normalize({input, state, meta});
+            let _ = shape.normalize({input, state, meta, changes});
             output = _.output;
             schemasUsed = _.schemasUsed;
             previousEntity = state[name][id][0];
@@ -56,14 +58,17 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         // list this schema as one that has been used
         schemasUsed[name] = this;
 
-        state[name][id][0] = previousEntity
-            ? (this.merge || shape.merge)(previousEntity, output)
-            : output;
+        const next = previousEntity ? (this.merge || shape.merge)(previousEntity, output) : output;
+
+        state[name][id][0] = next;
+        changes[name][id][0] = next;
 
         Object.assign(state[name][id][1], meta);
+        Object.assign(changes[name][id][1], meta);
 
         return {
             state,
+            changes,
             schemasUsed,
             output: id
         };

@@ -1,16 +1,19 @@
+import EntitySchema from '../EntitySchema';
 export type Meta = Record<string, any>;
 export type State = Record<string, Record<string, any>>;
-export type SchemasUsed = Record<string, Schema>;
+export type SchemasUsed = Record<string, EntitySchema<any>>;
 
 export type NormalizeParams = {
     input: any;
     state: State;
+    changes: State;
     meta: Meta;
 };
 
 export type NormalizeReturn = {
     output: any;
     state: State;
+    changes: State;
     schemasUsed: SchemasUsed;
 };
 

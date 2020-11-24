@@ -18,10 +18,11 @@ export default class ArraySchema<Shape extends Schema> implements StructuralSche
         this.create = options.create || ((aa) => aa);
     }
 
-    normalize({input, meta, state}: NormalizeParams): NormalizeReturn {
+    normalize({input, meta, state, changes}: NormalizeParams): NormalizeReturn {
         let schemasUsed = {};
         const output = input.map((item: any): any => {
             const {output, schemasUsed: childSchemas} = this.shape.normalize({
+                changes,
                 input: item,
                 meta,
                 state
@@ -30,7 +31,7 @@ export default class ArraySchema<Shape extends Schema> implements StructuralSche
             return output;
         });
 
-        return {state, schemasUsed, output: this.create(output)};
+        return {state, schemasUsed, changes, output: this.create(output)};
     }
 
     denormalize(params: DenormalizeParams): any {

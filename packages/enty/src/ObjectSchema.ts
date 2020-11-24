@@ -27,7 +27,7 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
      */
     normalize(params: NormalizeParams): NormalizeReturn {
         const {shape} = this;
-        const {input, state, meta} = params;
+        const {input, state, changes, meta} = params;
         let schemasUsed = {};
 
         const output = Object.keys(shape).reduce((output: Object, key: any): any => {
@@ -36,6 +36,7 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
             if (value) {
                 const {output: childOutput, schemasUsed: childSchemas} = schema.normalize({
                     input: value,
+                    changes,
                     state,
                     meta
                 });
@@ -46,7 +47,7 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
             return output;
         }, input);
 
-        return {state, schemasUsed, output: this.create(output)};
+        return {state, schemasUsed, changes, output: this.create(output)};
     }
 
     /**

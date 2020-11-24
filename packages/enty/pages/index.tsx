@@ -1,6 +1,7 @@
-import React, {useEffect, useLayoutEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {EntitySchema, ArraySchema, ObjectSchema} from '../src/index';
-import {State, Meta, SchemasUsed, NormalizeReturn} from '../src/util/definitions';
+import {EntityRequestArgs, Meta} from '../src/store/Store';
+import Store from '../src/store/Store';
 
 //
 // Utils
@@ -17,163 +18,10 @@ const post = async (query) => {
     return await response.json();
 };
 
-//
-// Enty State
-type EntityRequestArgs = {
-    schema: EntitySchema<any>;
-    id: string;
-    method: 'load' | 'save';
-    loadData?: any;
-    saveData?: any;
-};
-
-type Respond = (
-    update: Function,
-    args: EntityRequestArgs,
-    store: Store
-) => AsyncGenerator<NormalizeReturn>;
-
-type Meta = {
-    pending?: boolean;
-    success?: boolean;
-    error?: Error;
-    normalizeTime?: number;
-};
-
-class Store {
-    _events: Record<string, Function[]>;
-    _respond: Respond;
-    _state: State;
-    _schemasUsed: SchemasUsed;
-    constructor(respond: Respond, initialState: State = {}, schemasUsed: SchemasUsed = {}) {
-        this._events = {};
-        this._state = initialState;
-        this._schemasUsed = schemasUsed;
-        this._respond = respond;
-    }
-
-    _getStateTuple(schema: EntitySchema<any>, id: string): [any, Meta] {
-        return this._state[schema.name]?.[id] || [null, {}];
-    }
-
-    get(schema: EntitySchema<any>, id: string): [any, Meta] {
-        const entity = schema.denormalize({
-            state: this._state,
-            output: id
-        });
-        return [entity, this._getStateTuple(schema, id)[1]];
-    }
-
-    setMeta(schema: EntitySchema<any>, id: string, meta: Meta) {
-        const type = schema.name;
-        this._state[type] = this._state[type] || {};
-        this._state[type][id] = this._state[type][id] || [null, {}];
-        this._state[type][id][1] = {...this._state[type][id][1], ...meta};
-        return this;
-    }
-
-    update(schema: EntitySchema<any>, input: any, meta: Meta) {
-        const value = schema.normalize({state: this._state, input, meta});
-        this._state = value.state;
-        this._schemasUsed = value.schemasUsed;
-        return this;
-    }
-
-    async trigger(args: EntityRequestArgs) {
-        const update = (data, meta) => this.update(args.schema, data, meta);
-        const {schema, id} = args;
-        const name = schema.name;
-        for await (const _ of this._respond(update, args, this)) {
-            if (this._events[name]) {
-                const list = Object.keys(this._state[name]).map((id) => this.get(schema, id));
-                this._events[name].forEach((cb) => cb(list));
-            }
-            this._events[schema.name + id].forEach((cb) => cb(this.get(schema, id)));
-        }
-    }
-    subscribe(args: EntityRequestArgs, callback: Function) {
-        const {schema, id = ''} = args;
-        const key = schema.name + id;
-        this._events[key] = this._events[key] || [];
-        this._events[key].push(callback);
-        this.trigger(args);
-        return () => {
-            this._events[key] = this._events[key].filter((i) => i !== callback);
-        };
-    }
-}
-
 // Requesters
-function asyncRequest(config: {args: EntityRequestArgs; store: Store; ttl: number}) {
-    const {store, args, ttl} = config;
-    const {schema, id} = args;
-
-    return async function* (request: Function) {
-        const [entity, meta] = store.get(schema, id);
-
-        if (entity && Date.now() - meta.normalizeTime <= ttl * 1000) return yield;
-
-        yield store.setMeta(schema, id, {pending: true});
-        try {
-            const data = await request(config);
-            yield store.update(schema, data, {
-                pending: false,
-                normalizeTime: Date.now()
-            });
-        } catch (error) {
-            yield store.setMeta(schema, id, {pending: false, error});
-        }
-        return;
-    };
-}
 
 //
 // React Stuff
-const Context = React.createContext<Store | undefined>(undefined);
-const Provider = ({store, ...rest}: {store: Store}) => <Context.Provider value={store} {...rest} />;
-const useStore = () => {
-    const store: Store | undefined = React.useContext(Context);
-    if (!store) {
-        throw new Error('No Enty Provider found');
-    }
-    return store;
-};
-
-function useEntity(config: {
-    schema: EntitySchema<any>;
-    id: string;
-    loadData?: any;
-    shouldSubscribe?: boolean;
-}): [any, Meta, Function] {
-    const {schema, id, loadData = {}, shouldSubscribe = true} = config;
-    const store = useStore();
-    const [stateTuple, setState] = useState([null, {}]);
-
-    const onSave = useCallback(
-        (saveData) => {
-            store.trigger({schema, id, method: 'save', saveData});
-        },
-        [schema, id]
-    );
-
-    useEffect(() => {
-        if (!shouldSubscribe) return;
-        return store.subscribe({schema, id, method: 'load', loadData}, setState);
-    }, [schema, id, JSON.stringify(loadData), shouldSubscribe]);
-
-    return [stateTuple[0], stateTuple[1], onSave];
-}
-
-function useEntityList(config: {schema: EntitySchema<any>}): Array<[any, Meta]> {
-    const {schema} = config;
-    const store = useStore();
-    const [entityTupleList, setState] = useState([]);
-    useEffect(() => {
-        return store.subscribe({schema, method: 'list'}, setState);
-    }, [schema]);
-    return [entityTupleList];
-}
-
 //
 //
 // Implementation
@@ -218,9 +66,16 @@ const personQuery = (id) => `{
   }
 }`;
 
+const planetQuery = (id) => `{
+  planet(id: "${id}") {
+    id,
+    name
+  }
+}`;
+
 const myStore = new Store(async function* (update, args: EntityRequestArgs, store) {
     const {method, schema, id, loadData, saveData} = args;
-    const loadRequest = asyncRequest({store, args, ttl: 5});
+    const loadRequest = asyncRequest({store, args, ttl: 0});
     //const saveRequest = asyncRequest({store, args, ttl: 10});
 
     switch (`${schema.name}.${method}`) {
@@ -234,6 +89,14 @@ const myStore = new Store(async function* (update, args: EntityRequestArgs, stor
 
         case 'person.save':
             return yield update(saveData);
+
+        case 'planet.load':
+            return yield* loadRequest(async () => {
+                const {data, errors} = await post(planetQuery(id));
+                const error = errors?.[0]?.message;
+                if (error) throw new Error(error);
+                return data.planet;
+            });
     }
 });
 
@@ -268,6 +131,7 @@ function PersonTable({person}) {
 
 function Person({id}) {
     const [person, meta] = useEntity({schema: PersonSchema, id});
+
     if (meta.pending) return <div>loading...</div>;
     if (meta.error) return <div>{meta.error.message}</div>;
     if (!person) return <div>empty</div>;
@@ -275,7 +139,7 @@ function Person({id}) {
 }
 
 function Load() {
-    const [id, setId] = useState('cGVvcGxlOjE=');
+    const [id, setId] = useState('cGVvcGxlOjI1');
 
     return (
         <div>
@@ -376,15 +240,39 @@ function Sequential() {
 
 function List() {
     const [list] = useEntityList({schema: PlanetSchema});
+    const [unknown, unknownMeta] = useEntity({
+        schema: PlanetSchema,
+        id: 'cGxhbmV0czoyOA=='
+    });
+
+    console.log([unknown, unknownMeta]);
+
     return (
-        <ol>
-            {list.map(([planet, {pending, error}]) => {
-                if (pending) return <li>loading...</li>;
-                if (error) return <li>{error.message}</li>;
-                if (!planet) return <li>empty</li>;
-                return <li key={planet.id}>{person.name}</li>;
-            })}
-        </ol>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Planet</td>
+                    <td>{unknown && unknown.name}</td>
+                    <td>{unknownMeta.normalizeTime}</td>
+                </tr>
+                {list.map(([planet, {pending, error, normalizeTime}]) => {
+                    if (pending) return <li>loading...</li>;
+                    if (error) return <li>{error.message}</li>;
+                    if (!planet) return <li>empty</li>;
+                    const dd = new Date(normalizeTime);
+                    return (
+                        <tr key={planet.id}>
+                            <td>{planet.name}</td>
+                            <td>{planet.id}</td>
+                            <td>
+                                {dd.getHours()}:{String(dd.getMinutes()).padStart(2, '0')}:
+                                {String(dd.getSeconds()).padStart(2, '0')}
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
     );
 }
 
@@ -426,7 +314,6 @@ export default function Layout() {
             <List />
             <h1>Load</h1>
             <Load />
-
             <Debug />
         </Provider>
     );
