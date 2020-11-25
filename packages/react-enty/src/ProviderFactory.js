@@ -10,7 +10,8 @@ import type {Action} from 'enty-state/lib/util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
 type ProviderConfig = {
-    schema?: Schema
+    schema?: Schema,
+    results?: Array<{key: string, payload: any}>
 };
 
 type ProviderFactoryReturn = {
@@ -30,7 +31,7 @@ type ProviderProps = {
 
 
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
-    const {schema} = config;
+    const {schema, results = []} = config;
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext();
 
@@ -53,9 +54,16 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
             const reducer = debug
                 ? (state, action: Action) => LoggingReducer(entityReducer(state, action), action, debug)
                 : entityReducer;
+
+            const intialValue = [
+                {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}},
+                ...results.map(({key, payload}) => ({type: 'ENTY_RECEIVE', payload, meta: {responseKey: key}}))
+
+            ].reduce(reducer, firstState);
+
             return {
                 reducer,
-                intialValue: reducer(firstState, {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}})
+                intialValue
             };
         }, [debug, firstState]);
 

@@ -2,13 +2,18 @@
 import React from 'react';
 import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
+import {EntitySchema, ObjectSchema} from 'enty';
 
-const expectContext = (testFn) => {
+const getContext = (testFn) => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
-    return expect(mount(<Component />).find('ExpectsContext').prop('context'));
-
+    return mount(<Component />).find('ExpectsContext').prop('context');
 };
+
+const expectContext = (testFn) => {
+    return expect(getContext(testFn));
+};
+
 
 
 describe('Factory', () => {
@@ -45,6 +50,32 @@ describe('Component', () => {
             stats: {responseCount: 0}
         }, expect.any(Function)]);
 
+    });
+
+    it('will reduce results into the initial state', () => {
+        const foo = new EntitySchema('foo');
+        const bar = new EntitySchema('bar');
+        const schema = new ObjectSchema({foo, bar});
+        const results = [
+            {key: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}},
+            {key: 'b', payload: {bar: {id: 'bar1', name: 'barrr'}}}
+        ];
+        const {Provider, Context} = ProviderFactory({schema, results});
+
+        const [state] = getContext((Child) => () => {
+            return <Provider>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        });
+
+        expect(state.requestState.a.isSuccess).toBe(true);
+        expect(state.response.a.foo).toBe('foo1');
+        expect(state.entities.foo.foo1.name).toBe('foooo');
+        expect(state.requestState.b.isSuccess).toBe(true);
+        expect(state.response.b.bar).toBe('bar1');
+        expect(state.entities.bar.bar1.name).toBe('barrr');
     });
 });
 
