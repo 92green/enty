@@ -14,7 +14,7 @@ type ActionMap = {
 };
 
 
-export default function EntityApi(actionMap: ActionMap, schema?: Schema, results?: Array<{key: string, payload: any}>): Object {
+export default function EntityApi(actionMap: ActionMap, schema?: Schema, results?: Array<{responseKey: string, payload: any}>): Object {
 
     const {Provider, ProviderHoc, Context} = ProviderFactory({schema, results});
 

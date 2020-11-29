@@ -12,7 +12,8 @@ type RequestHookConfig = {
 };
 
 type Config = {
-    key: string
+    key?: string,
+    responseKey?: string
 };
 
 export default function RequestHookFactory(context: *, config: RequestHookConfig) {
@@ -20,7 +21,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
 
     return <R>(config: Config = {}) => {
         const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
-        const responseKey = config.key ? generateResultKey(config.key) : derivedResponseKey;
+        const responseKey = config.responseKey || (config.key ? generateResultKey(config.key) : derivedResponseKey);
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
         const [state, dispatch] = store;
@@ -49,7 +50,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         responseRef.current = response;
 
         let request = useCallback((payload, {returnResponse = false} = {}) => {
-            const responseKey = generateResultKey(config.key || payload);
+            const responseKey = config.responseKey || generateResultKey(config.key || payload);
             setDerivedResponseKey(responseKey);
             return dispatch(requestAction(payload, {responseKey, returnResponse}));
         });
