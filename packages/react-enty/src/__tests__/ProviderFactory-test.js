@@ -57,8 +57,8 @@ describe('Component', () => {
         const bar = new EntitySchema('bar');
         const schema = new ObjectSchema({foo, bar});
         const results = [
-            {key: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}},
-            {key: 'b', payload: {bar: {id: 'bar1', name: 'barrr'}}}
+            {responseKey: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}},
+            {responseKey: 'b', payload: {bar: {id: 'bar1', name: 'barrr'}}}
         ];
         const {Provider, Context} = ProviderFactory({schema, results});
 

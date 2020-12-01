@@ -11,7 +11,7 @@ import type {Schema} from 'enty/lib/util/definitions';
 
 type ProviderConfig = {
     schema?: Schema,
-    results?: Array<{key: string, payload: any}>
+    results?: Array<{responseKey: string, payload: any}>
 };
 
 type ProviderFactoryReturn = {
@@ -57,7 +57,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
 
             const intialValue = [
                 {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}},
-                ...results.map(({key, payload}) => ({type: 'ENTY_RECEIVE', payload, meta: {responseKey: key}}))
+                ...results.map(({responseKey, payload}) => ({type: 'ENTY_RECEIVE', payload, meta: {responseKey}}))
 
             ].reduce(reducer, firstState);
 
@@ -65,7 +65,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                 reducer,
                 intialValue
             };
-        }, [debug, firstState]);
+        }, [debug, initialState]);
 
         const storeValue = useReducerThunk(reducer, intialValue);
 
