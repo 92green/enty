@@ -65,7 +65,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                 reducer,
                 intialValue
             };
-        }, [debug, firstState]);
+        }, [debug, initialState]);
 
         const storeValue = useReducerThunk(reducer, intialValue);
 
