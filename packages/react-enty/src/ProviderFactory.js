@@ -9,9 +9,13 @@ import LoggingReducer from 'enty-state/lib/util/LoggingReducer';
 import type {Action} from 'enty-state/lib/util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
-type ProviderConfig = {
+export type ProviderConfig = {
     schema?: Schema,
-    results?: Array<{responseKey: string, payload: any}>
+    results?: Array<{
+        responseKey: string,
+        payload: any,
+        type?: 'ENTY_RECEIVE' | 'ENTY_ERROR' | 'ENTY_FETCH'
+    }>
 };
 
 type ProviderFactoryReturn = {
@@ -57,7 +61,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
 
             const intialValue = [
                 {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}},
-                ...results.map(({responseKey, payload}) => ({type: 'ENTY_RECEIVE', payload, meta: {responseKey}}))
+                ...results.map(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({type, payload, meta: {responseKey}}))
 
             ].reduce(reducer, firstState);
 
