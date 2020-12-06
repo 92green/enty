@@ -1,6 +1,6 @@
 {
   "name": "enty-immutable",
-  "version": "1.1.0-alpha.1",
+  "version": "1.1.0-alpha.2",
   "description": "Enty schemas for Immutable JS",
   "main": "lib/index.js",
   "license": "MIT",
@@ -32,7 +32,7 @@
     "babel-plugin-extract-flow-types": "^1.0.0",
     "babel-preset-blueflag": "^1.0.1",
     "blueflag-test": "^0.22.0",
-    "enty": "^1.1.0-alpha.1",
+    "enty": "^1.1.0-alpha.2",
     "flow-bin": "^0.102.0",
     "immutable": "^3.8.1"
   },
