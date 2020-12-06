@@ -1,5 +1,6 @@
 //@flow
 import type {Schema} from 'enty/lib/util/definitions';
+import type {ProviderConfig} from './ProviderFactory';
 
 import EntityApiFactory from 'enty-state/lib/EntityApiFactory';
 import ProviderFactory from './ProviderFactory';
@@ -14,7 +15,7 @@ type ActionMap = {
 };
 
 
-export default function EntityApi(actionMap: ActionMap, schema?: Schema, results?: Array<{responseKey: string, payload: any}>): Object {
+export default function EntityApi(actionMap: ActionMap, schema?: Schema, results?: $PropertyType<ProviderConfig, 'results'>): Object {
 
     const {Provider, ProviderHoc, Context} = ProviderFactory({schema, results});
 

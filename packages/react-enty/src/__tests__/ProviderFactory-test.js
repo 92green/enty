@@ -77,6 +77,26 @@ describe('Component', () => {
         expect(state.response.b.bar).toBe('bar1');
         expect(state.entities.bar.bar1.name).toBe('barrr');
     });
+
+    it('will apply types of initial actions', () => {
+        const foo = new EntitySchema('foo');
+        const schema = new ObjectSchema({foo});
+        const results = [
+            {type: 'ENTY_ERROR', responseKey: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}}
+        ];
+        const {Provider, Context} = ProviderFactory({schema, results});
+
+        const [state] = getContext((Child) => () => {
+            return <Provider>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        });
+
+        expect(state.requestState.a.isError).toBe(true);
+        expect(state.requestState.a.isSuccess).toBeUndefined();
+    });
 });
 
 describe('Hoc', () => {
