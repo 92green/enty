@@ -103,6 +103,19 @@ describe('Message requestState methods', () => {
         expect(Message.empty(messageInput).toError().requestState.isError).toBe(true);
     });
 
+    it('will provide getters for the requestState', () => {
+        expect(Message.empty().isEmpty).toBe(true);
+        expect(Message.fetching().isFetching).toBe(true);
+        expect(Message.refetching().isRefetching).toBe(true);
+        expect(Message.success().isSuccess).toBe(true);
+        expect(Message.error().isError).toBe(true);
+
+        expect(Message.empty().isFetching).toBe(undefined);
+        expect(Message.empty().isRefetching).toBe(undefined);
+        expect(Message.empty().isSuccess).toBe(undefined);
+        expect(Message.empty().isError).toBe(undefined);
+    });
+
 
 });
 
