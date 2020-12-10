@@ -1,6 +1,6 @@
 {
   "name": "react-enty",
-  "version": "1.1.0-alpha.2",
+  "version": "1.1.0-alpha.3",
   "description": "React bindings for Enty",
   "main": "lib/index.js",
   "license": "MIT",
@@ -42,8 +42,8 @@
     "react-test-renderer": "^16.8.6"
   },
   "dependencies": {
-    "enty": "^1.1.0-alpha.2",
-    "enty-state": "^1.1.0-alpha.2",
+    "enty": "^1.1.0-alpha.3",
+    "enty-state": "^1.1.0-alpha.3",
     "unmutable": "^0.46.0"
   }
 }
