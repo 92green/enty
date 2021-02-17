@@ -52,7 +52,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         let request = useCallback((payload, {returnResponse = false} = {}) => {
             const responseKey = config.responseKey || generateResultKey(config.key || payload);
             setDerivedResponseKey(responseKey);
-            return dispatch(requestAction(payload, {responseKey, returnResponse}));
+            return dispatch(requestAction(payload, {...state.baseMeta, responseKey, returnResponse}));
         });
 
         let reset = useCallback(() => dispatch(resetAction(responseKey)));

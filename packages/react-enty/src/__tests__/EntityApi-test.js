@@ -97,3 +97,24 @@ it('can log reducer cycles', async () => {
     expect(wrapper).toBeSuccess('FOO!');
 });
 
+it.only('will merge provider meta with api function meta', async () => {
+    const baseMeta = {foo: 'bar!'};
+    const {foo, Provider} = EntityApi({
+        foo: (_, meta) => Promise.resolve(meta.foo)
+    });
+
+    const Child = () => {
+        const message = foo.useRequest();
+        useEffect(() => {
+            message.request();
+        }, []);
+        return <ExpectsMessage message={message} />;
+    };
+
+    const wrapper = mount(<Provider meta={baseMeta}><Child/></Provider>);
+    expect(wrapper).toBeFetching();
+    await asyncUpdate(wrapper);
+    expect(wrapper).toBeSuccess('bar!');
+});
+
+

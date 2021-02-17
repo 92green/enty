@@ -83,7 +83,7 @@ export default class Message<R, E = void> {
     //
     // empty
 
-    static empty(messageProps: MessageInput<R, E>): Message<R, E> {
+    static empty(messageProps?: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
             response: undefined,

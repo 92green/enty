@@ -30,7 +30,8 @@ type ProviderFactoryReturn = {
 type ProviderProps = {
     children: Element<any>,
     debug?: string,
-    initialState?: {}
+    initialState?: {},
+    meta?: {}
 };
 
 
@@ -39,9 +40,10 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext();
 
-    function Provider({children, initialState, debug}: ProviderProps): Element<any> {
+    function Provider({children, initialState, debug, meta}: ProviderProps): Element<any> {
 
         const firstState = {
+            baseMeta: meta,
             baseSchema: schema,
             schemas: {},
             response: {},
@@ -60,8 +62,8 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                 : entityReducer;
 
             const intialValue = [
-                {type: 'ENTY_INIT', payload: null, meta: {responseKey: 'Unknown'}},
-                ...results.map(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({type, payload, meta: {responseKey}}))
+                {type: 'ENTY_INIT', payload: null, meta: {...meta, responseKey: 'Unknown'}},
+                ...results.map(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({type, payload, meta: {...meta, responseKey}}))
 
             ].reduce(reducer, firstState);
 

@@ -52,6 +52,27 @@ describe('Component', () => {
 
     });
 
+    it('applies the meta to the context', () => {
+        const {Provider, Context} = ProviderFactory({});
+
+        expectContext((Child) => () => {
+            return <Provider meta={{foo: 'bar'}}>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        }).toMatchObject([{
+            baseMeta: {foo: 'bar'},
+            baseSchema: undefined,
+            error: {},
+            requestState: {},
+            response: {},
+            schemas: {},
+            stats: {responseCount: 0}
+        }, expect.any(Function)]);
+
+    });
+
     it('will reduce results into the initial state', () => {
         const foo = new EntitySchema('foo');
         const bar = new EntitySchema('bar');
