@@ -43,7 +43,6 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     function Provider({children, initialState, debug, meta}: ProviderProps): Element<any> {
 
         const firstState = {
-            baseMeta: meta,
             baseSchema: schema,
             schemas: {},
             response: {},
@@ -73,8 +72,8 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
             };
         }, [debug, initialState, meta]);
 
-        const storeValue = useReducerThunk(reducer, intialValue);
 
+        const storeValue = useReducerThunk(reducer, intialValue, meta);
 
         return <Context.Provider
             value={storeValue}

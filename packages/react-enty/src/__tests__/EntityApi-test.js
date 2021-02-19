@@ -97,7 +97,7 @@ it('can log reducer cycles', async () => {
     expect(wrapper).toBeSuccess('FOO!');
 });
 
-it.only('will merge provider meta with api function meta', async () => {
+it('will merge provider meta with api function meta', async () => {
     const baseMeta = {foo: 'bar!'};
     const {foo, Provider} = EntityApi({
         foo: (_, meta) => Promise.resolve(meta.foo)

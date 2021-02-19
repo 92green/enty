@@ -24,7 +24,7 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         const responseKey = config.responseKey || (config.key ? generateResultKey(config.key) : derivedResponseKey);
         const store = useContext(context);
         if(!store) throw 'useRequest must be called in a provider';
-        const [state, dispatch] = store;
+        const [state, dispatch, baseMeta] = store;
         const responseRef = useRef();
         const mounted = useRef(true);
 
@@ -52,8 +52,8 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
         let request = useCallback((payload, {returnResponse = false} = {}) => {
             const responseKey = config.responseKey || generateResultKey(config.key || payload);
             setDerivedResponseKey(responseKey);
-            return dispatch(requestAction(payload, {...state.baseMeta, responseKey, returnResponse}));
-        });
+            return dispatch(requestAction(payload, {...baseMeta, responseKey, returnResponse}));
+        }, [baseMeta]);
 
         let reset = useCallback(() => dispatch(resetAction(responseKey)));
         let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)));
