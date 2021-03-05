@@ -53,11 +53,10 @@ export default function RequestHookFactory(context: *, config: RequestHookConfig
             const responseKey = config.responseKey || generateResultKey(config.key || payload);
             setDerivedResponseKey(responseKey);
             return dispatch(requestAction(payload, {...baseMeta, responseKey, returnResponse}));
-        }, [baseMeta]);
+        }, [baseMeta, JSON.stringify(config)]);
 
         let reset = useCallback(() => dispatch(resetAction(responseKey)));
         let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)));
-
 
         return useMemo(() => new Message<R>({
             removeEntity,
