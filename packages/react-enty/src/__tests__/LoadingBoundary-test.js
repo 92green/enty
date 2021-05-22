@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import Message from 'enty-state/lib/data/Message';
+import Message from '../data/Message';
 import LoadingBoundary from '../LoadingBoundary';
 
 const TestEmpty = () => null;

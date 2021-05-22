@@ -2,7 +2,7 @@
 import type {Schema} from 'enty/lib/util/definitions';
 import type {ProviderConfig} from './ProviderFactory';
 
-import EntityApiFactory from 'enty-state/lib/EntityApiFactory';
+import EntityApiFactory from './EntityApiFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHoc from './RequestHoc';
 import RequestHook from './RequestHook';

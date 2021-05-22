@@ -4,9 +4,9 @@ import type {Element} from 'react';
 
 import React, {createContext, useMemo} from 'react';
 import useReducerThunk from './util/useReducerThunk';
-import EntityReducerFactory from 'enty-state/lib/EntityReducerFactory';
-import LoggingReducer from 'enty-state/lib/util/LoggingReducer';
-import type {Action} from 'enty-state/lib/util/definitions';
+import EntityReducerFactory from './EntityReducerFactory';
+import LoggingReducer from './util/LoggingReducer';
+import type {Action} from './util/definitions';
 import type {Schema} from 'enty/lib/util/definitions';
 
 export type ProviderConfig = {

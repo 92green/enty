@@ -4,7 +4,7 @@ import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
-import RequestState from 'enty-state/lib/data/RequestState';
+import RequestState from '../data/RequestState';
 
 
 //

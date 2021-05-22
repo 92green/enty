@@ -2043,6 +2043,13 @@ entities@^1.1.1, entities@~1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
 
+enty@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-1.1.0.tgz#a222ca4ac599c15acbe38a9f66bcb1ca9e04ed8f"
+  integrity sha512-GzyOwuJwEuTTthfaBL0bW6tKjZ/tuHRb2a2kHHqt9+boMbAlk6sJuhrr6ZzC8kyFRRDU8HpHAcM1lHhGfealcQ==
+  dependencies:
+    unmutable "^0.46.0"
+
 enzyme-adapter-react-16@^1.1.1:
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.14.0.tgz#204722b769172bcf096cb250d33e6795c1f1858f"

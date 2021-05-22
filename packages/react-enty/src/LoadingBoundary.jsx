@@ -1,7 +1,7 @@
 // @flow
 import type {Node} from 'react';
 import type {ComponentType} from 'react';
-import type Message from 'enty-state/lib/data/Message';
+import type Message from './data/Message';
 
 import React from 'react';
 

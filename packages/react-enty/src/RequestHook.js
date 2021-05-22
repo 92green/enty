@@ -1,6 +1,6 @@
 // @flow
-import Message from 'enty-state/lib/data/Message';
-import RequestState from 'enty-state/lib/data/RequestState';
+import Message from './data/Message';
+import RequestState from './data/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef} from 'react';
 
 type RequestHookConfig = {

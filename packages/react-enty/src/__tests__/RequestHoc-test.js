@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect} from 'react';
 import composeWith from'unmutable/composeWith';
-import Message from 'enty-state/lib/data/Message';
+import Message from '../data/Message';
 
 import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
