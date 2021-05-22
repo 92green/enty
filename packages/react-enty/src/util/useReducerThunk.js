@@ -1,7 +1,7 @@
 // @flow
 import {useRef, useState} from 'react';
 
-export default function useThunkReducer(reducer: Function, initialState: mixed): [mixed, Function] {
+export default function useThunkReducer(reducer: Function, initialState: mixed, meta: mixed): [mixed, Function, mixed] {
     const [hookState, setHookState] = useState(initialState);
 
     // State management.
@@ -19,6 +19,6 @@ export default function useThunkReducer(reducer: Function, initialState: mixed):
         : setState(reduce(action))
     ;
 
-    return [hookState, dispatch];
+    return [hookState, dispatch, meta];
 }
 

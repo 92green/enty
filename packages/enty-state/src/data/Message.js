@@ -36,6 +36,22 @@ export default class Message<R, E = void> {
         this.removeEntity = props.removeEntity;
     }
 
+    get isEmpty() {
+        return this.requestState.isEmpty;
+    }
+    get isFetching() {
+        return this.requestState.isFetching;
+    }
+    get isRefetching() {
+        return this.requestState.isRefetching;
+    }
+    get isError() {
+        return this.requestState.isError;
+    }
+    get isSuccess() {
+        return this.requestState.isSuccess;
+    }
+
 
     //
     // Response Getters
@@ -67,7 +83,7 @@ export default class Message<R, E = void> {
     //
     // empty
 
-    static empty(messageProps: MessageInput<R, E>): Message<R, E> {
+    static empty(messageProps?: MessageInput<R, E>): Message<R, E> {
         return new Message({
             ...messageProps,
             response: undefined,

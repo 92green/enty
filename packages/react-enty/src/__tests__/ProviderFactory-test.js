@@ -2,13 +2,18 @@
 import React from 'react';
 import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
+import {EntitySchema, ObjectSchema} from 'enty';
 
-const expectContext = (testFn) => {
+const getContext = (testFn) => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
-    return expect(mount(<Component />).find('ExpectsContext').prop('context'));
-
+    return mount(<Component />).find('ExpectsContext').prop('context');
 };
+
+const expectContext = (testFn) => {
+    return expect(getContext(testFn));
+};
+
 
 
 describe('Factory', () => {
@@ -43,8 +48,75 @@ describe('Component', () => {
             response: {},
             schemas: {},
             stats: {responseCount: 0}
-        }, expect.any(Function)]);
+        }, expect.any(Function), undefined]);
 
+    });
+
+    it('applies the meta to the context', () => {
+        const {Provider, Context} = ProviderFactory({});
+
+        expectContext((Child) => () => {
+            return <Provider meta={{foo: 'bar'}}>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        }).toMatchObject([{
+            //baseMeta: {foo: 'bar'},
+            baseSchema: undefined,
+            error: {},
+            requestState: {},
+            response: {},
+            schemas: {},
+            stats: {responseCount: 0}
+        }, expect.any(Function), {foo: 'bar'}]);
+
+    });
+
+    it('will reduce results into the initial state', () => {
+        const foo = new EntitySchema('foo');
+        const bar = new EntitySchema('bar');
+        const schema = new ObjectSchema({foo, bar});
+        const results = [
+            {responseKey: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}},
+            {responseKey: 'b', payload: {bar: {id: 'bar1', name: 'barrr'}}}
+        ];
+        const {Provider, Context} = ProviderFactory({schema, results});
+
+        const [state] = getContext((Child) => () => {
+            return <Provider>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        });
+
+        expect(state.requestState.a.isSuccess).toBe(true);
+        expect(state.response.a.foo).toBe('foo1');
+        expect(state.entities.foo.foo1.name).toBe('foooo');
+        expect(state.requestState.b.isSuccess).toBe(true);
+        expect(state.response.b.bar).toBe('bar1');
+        expect(state.entities.bar.bar1.name).toBe('barrr');
+    });
+
+    it('will apply types of initial actions', () => {
+        const foo = new EntitySchema('foo');
+        const schema = new ObjectSchema({foo});
+        const results = [
+            {type: 'ENTY_ERROR', responseKey: 'a', payload: {foo: {id: 'foo1', name: 'foooo'}}}
+        ];
+        const {Provider, Context} = ProviderFactory({schema, results});
+
+        const [state] = getContext((Child) => () => {
+            return <Provider>
+                <Context.Consumer
+                    children={(context) => <Child context={context}/>}
+                />
+            </Provider>;
+        });
+
+        expect(state.requestState.a.isError).toBe(true);
+        expect(state.requestState.a.isSuccess).toBeUndefined();
     });
 });
 
@@ -69,7 +141,7 @@ describe('Hoc', () => {
             response: {},
             schemas: {},
             stats: {responseCount: 0}
-        }, expect.any(Function)]);
+        }, expect.any(Function), undefined]);
 
 
     });
