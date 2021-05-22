@@ -48,7 +48,7 @@ describe('Component', () => {
             response: {},
             schemas: {},
             stats: {responseCount: 0}
-        }, expect.any(Function)]);
+        }, expect.any(Function), undefined]);
 
     });
 
@@ -62,14 +62,14 @@ describe('Component', () => {
                 />
             </Provider>;
         }).toMatchObject([{
-            baseMeta: {foo: 'bar'},
+            //baseMeta: {foo: 'bar'},
             baseSchema: undefined,
             error: {},
             requestState: {},
             response: {},
             schemas: {},
             stats: {responseCount: 0}
-        }, expect.any(Function)]);
+        }, expect.any(Function), {foo: 'bar'}]);
 
     });
 
@@ -141,7 +141,7 @@ describe('Hoc', () => {
             response: {},
             schemas: {},
             stats: {responseCount: 0}
-        }, expect.any(Function)]);
+        }, expect.any(Function), undefined]);
 
 
     });
