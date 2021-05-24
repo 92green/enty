@@ -1,11 +1,11 @@
 export type NormalizeState = {
-    entities: Object;
+    entities: Entities;
     result: any;
     schemas: Object;
 };
 
 export type DenormalizeState = {
-    entities: Object;
+    entities: Entities;
     result: any;
 };
 
@@ -31,6 +31,7 @@ export type DynamicShape = (data: any) => Schema;
 //
 // Options
 
+export type Entities = Record<string, Record<string, any>>;
 export type Normalize = (data: unknown, entities: Object) => NormalizeState;
 export type Denormalize = (denormalizeState: DenormalizeState, path: Array<unknown>) => any;
 export type Create = (data: any) => any;

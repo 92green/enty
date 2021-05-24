@@ -5,19 +5,18 @@ import {EntitySchemaInterface} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {IdAttribute} from './util/definitions';
 import {Merge} from './util/definitions';
+import {Entities} from './util/definitions';
 
 import {UndefinedIdError} from './util/Error';
 import getIn from 'unmutable/lib/getIn';
 import get from 'unmutable/lib/get';
 import REMOVED_ENTITY from './util/RemovedEntity';
 import ObjectSchema from './ObjectSchema';
-import constructSchemaFromLiteral from './util/constructSchemaFromLiteral';
 
 export default class EntitySchema<A extends StructuralSchemaInterface<any>>
-    implements EntitySchemaInterface<A>
-{
+    implements EntitySchemaInterface<A> {
     name: string;
-    _shape: A;
+    shape: A;
     id: IdAttribute;
     merge: Merge | null | undefined;
 
@@ -27,21 +26,14 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
 
         if (options.shape === null) {
             this.shape = null;
-            this.id = options.id || ((data) => '' + data);
+            this.id = options.id || (data => '' + data);
         } else {
             this.shape = options.shape || new ObjectSchema({});
             this.id = options.id || get('id');
         }
     }
 
-    get shape(): A {
-        return this._shape;
-    }
-    set shape(shape: any) {
-        this._shape = constructSchemaFromLiteral(shape);
-    }
-
-    normalize(data: unknown, entities: Object = {}): NormalizeState {
+    normalize(data: unknown, entities: Entities = {}): NormalizeState {
         const {shape, name} = this;
 
         let id = this.id(data);

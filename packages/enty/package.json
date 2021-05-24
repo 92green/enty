@@ -2,7 +2,7 @@
   "name": "enty",
   "version": "1.1.0",
   "description": "An opinionated set of redux tools to cut down on boilerplate",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "author": "Allan Hortle",
   "repository": {
@@ -10,22 +10,23 @@
     "url": "git+https://github.com/blueflag/enty.git"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "bugs": {
     "url": "https://github.com/blueflag/enty/issues"
   },
   "private": false,
   "scripts": {
+    "build": "yarn tsdx build",
+    "lint": "yarn tsdx lint src",
     "prepublishOnly": "yarn build",
-    "build": "rm -rf lib && NODE_ENV=production yarn babel src --out-dir lib --ignore '**/__tests__/*.js'",
-    "watch": "yarn build -w",
-    "flow": "flow check",
-    "lint": "blueflag-test lint",
-    "test": "yarn jest --maxWorkers=1",
-    "test-all": "yarn lint && yarn flow && yarn test"
+    "test": "yarn jest",
+    "test-all": "yarn lint && yarn  && yarn test",
+    "watch": "yarn tsdx watch"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.0",
     "tsdx": "^0.14.1"
   },
   "dependencies": {

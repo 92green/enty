@@ -1,3 +1,4 @@
+import {test, expect} from '@jest/globals';
 import ObjectSchema from '../ObjectSchema';
 import EntitySchema from '../EntitySchema';
 import REMOVED_ENTITY from '../util/RemovedEntity';
@@ -108,7 +109,7 @@ test('ObjectSchema will not mutate input objects', () => {
     const schema = new ObjectSchema({foo});
     const objectTest = {foo: {id: '1'}};
 
-    schema.normalize(objectTest, schema);
+    schema.normalize(objectTest, {});
     expect(objectTest).toEqual({foo: {id: '1'}});
 });
 
@@ -125,10 +126,10 @@ test('ObjectSchemas can create objects', () => {
     const schema = new ObjectSchema(
         {},
         {
-            create: (data) => new Foo(data)
+            create: data => new Foo(data)
         }
     );
-    const state = schema.normalize({first: 'foo', last: 'bar'}, schema);
+    const state = schema.normalize({first: 'foo', last: 'bar'}, {});
 
     expect(state.result).toBeInstanceOf(Foo);
 });
@@ -138,7 +139,7 @@ it('will not create extra keys if value is undefined', () => {
         foo: new EntitySchema('foo'),
         bar: new EntitySchema('bar')
     });
-    const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, schema));
+    const state = schema.denormalize(schema.normalize({foo: {id: 'foo'}}, {}));
 
     expect(state).toHaveProperty('foo', {id: 'foo'});
     expect(state).not.toHaveProperty('bar');

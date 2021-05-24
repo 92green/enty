@@ -4,7 +4,7 @@ export function CompositeKeysMustBeEntitiesError(name: string, type: string): Er
     );
 }
 
-export function UndefinedIdError(name: string, value: any): Error {
+export function UndefinedIdError(name: string, value?: any): Error {
     return new Error(
         `${name}.id() returned ${String(
             value

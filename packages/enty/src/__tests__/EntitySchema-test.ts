@@ -19,14 +19,6 @@ describe('configuration', () => {
         expect(schema.shape).toBe(shape);
     });
 
-    it('will auto construct object and array schemas when shape is set', () => {
-        let schemaA = new EntitySchema('foo', {shape: []});
-        let schemaB = new EntitySchema('foo');
-        schemaB.shape = {};
-        expect(schemaA.shape).toBeInstanceOf(ArraySchema);
-        expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
-    });
-
     it('will default to a ObjectSchema shape', () => {
         let schemaB = new EntitySchema('foo');
         expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
@@ -55,13 +47,13 @@ describe('EntitySchema.normalize', () => {
 
     test('will not mutate input objects', () => {
         const entityTest = {id: '1'};
-        foo.normalize(entityTest, foo);
+        foo.normalize(entityTest, {});
         expect(entityTest).toEqual({id: '1'});
     });
 
     test('will collect schemas that were used', () => {
         const entityTest = {id: '1', bar: {id: '2', foo: {id: '3'}}};
-        expect(Object.keys(baz.normalize(entityTest, baz).schemas)).toEqual(['foo', 'bar', 'baz']);
+        expect(Object.keys(baz.normalize(entityTest, {}).schemas)).toEqual(['foo', 'bar', 'baz']);
     });
 
     test('will throw an error if an entity doesnt have and id', () => {
@@ -88,7 +80,7 @@ describe('EntitySchema.normalize', () => {
     it('will treat null shapes like an Id schema', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
             shape: null,
-            id: (data) => `${data}-foo`
+            id: data => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(state.entities.foo['2-foo']).toBe(2);
@@ -149,7 +141,7 @@ describe('EntitySchema.denormalize', () => {
     it('can denormalize null shapes', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
             shape: null,
-            id: (data) => `${data}-foo`
+            id: data => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(NullSchemaEntity.denormalize(state)).toBe(2);

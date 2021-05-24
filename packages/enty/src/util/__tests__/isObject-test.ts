@@ -13,7 +13,7 @@ it('should return `false` if the object is not created by the `Object` construct
     }
 
     expect(isObject(/foo/)).toBe(false);
-    expect(isObject(function () {})).toBe(false);
+    expect(isObject(function() {})).toBe(false);
     expect(isObject(1)).toBe(false);
     expect(isObject(['foo', 'bar'])).toBe(false);
     expect(isObject([])).toBe(false);
