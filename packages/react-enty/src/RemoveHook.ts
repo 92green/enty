@@ -1,9 +1,10 @@
 import removeAction from './api/removeAction';
-import {useContext, useMemo} from 'react';
+import {useContext, useMemo, Context} from 'react';
+import {ProviderContextType} from './util/definitions';
 
-export default function RemoveHookFactory(context: any) {
+export default function RemoveHookFactory(context: Context<ProviderContextType>) {
     return () => {
-        const store = useContext(context);
+        const store = useContext<ProviderContextType | null>(context);
         if (!store) throw 'useRemove must be called in a provider';
         const [state, dispatch] = store;
 

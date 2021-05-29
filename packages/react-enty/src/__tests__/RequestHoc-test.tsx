@@ -24,13 +24,14 @@ describe('config', () => {
 
     describe('config.name and message', () => {
         test('will throw an error if config.name is not supplied', () => {
+            // @ts-ignore - intentionally bad types
             expect(() => foo.requestHoc({})).toThrow('requestHoc must be given a name');
         });
 
         it('will give a Message to props.[name]', () => {
             expect.assertions(1);
             mountWithProvider(() =>
-                composeWith(foo.requestHoc({name: 'bar'}), (props) => {
+                composeWith(foo.requestHoc({name: 'bar'}), props => {
                     expect(props.bar).toBeInstanceOf(Message);
                     return null;
                 })
@@ -222,7 +223,7 @@ describe('usage', () => {
         return exisitingKey(
             baz.requestHoc({
                 name: 'message',
-                key: (props) => {
+                key: props => {
                     expect(props).toEqual({});
                     return 'baz';
                 }
@@ -249,11 +250,11 @@ describe('usage', () => {
     });
 
     it('can fetch multiples in series', async () => {
-        return fetchSeries((ExpectsMessage) => {
+        return fetchSeries(ExpectsMessage => {
             return composeWith(
                 foo.requestHoc({name: 'aa'}),
                 foo.requestHoc({name: 'bb'}),
-                (props) => {
+                props => {
                     const {aa, bb} = props;
 
                     useEffect(() => {
@@ -277,7 +278,7 @@ describe('usage', () => {
     });
 
     it('can fetch multiples in parallel', async () => {
-        return fetchParallel((ExpectsMessage) => {
+        return fetchParallel(ExpectsMessage => {
             return composeWith(
                 foo.requestHoc({
                     name: 'aa',
@@ -289,7 +290,7 @@ describe('usage', () => {
                     auto: true,
                     payloadCreator: () => 'second'
                 }),
-                (props) => {
+                props => {
                     const {aa, bb} = props;
                     return (
                         <div>

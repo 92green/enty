@@ -5,15 +5,14 @@ const css = 'color: #7E488B;';
 const log = (first: string, ...rest: unknown[]) => console.log(`%c${first}`, css, ...rest);
 const group = (name: string) => console.group(`%c[${name}]`, css);
 const groupEnd = () => console.groupEnd();
-
 /* eslint-enable no-console */
 
 export default function LoggingReducer(state: State, action: Action, debugName: string) {
-    const {type, meta = {}, payload} = action;
+    const {type, meta, payload} = action;
 
     group(`${debugName}: ${type}`);
 
-    const {responseKey} = meta;
+    const responseKey = meta?.responseKey;
     const requestState = state.requestState[responseKey];
     const requestStateType =
         requestState &&

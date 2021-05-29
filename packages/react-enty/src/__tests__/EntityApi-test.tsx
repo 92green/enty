@@ -3,6 +3,7 @@ import EntityApi from '../EntityApi';
 import {ObjectSchema} from 'enty';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
+import {mount} from 'enzyme';
 
 describe('exports', () => {
     const api = EntityApi(
@@ -91,6 +92,8 @@ it('can request and render without a schema', async () => {
 });
 
 it('can log reducer cycles', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+
     const {foo, Provider} = EntityApi({
         foo: () => Promise.resolve('FOO!')
     });
@@ -111,13 +114,15 @@ it('can log reducer cycles', async () => {
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess('FOO!');
+    log.mockReset();
 });
 
 it('will merge provider meta with api function meta', async () => {
     const baseMeta = {foo: 'bar!'};
-    const {foo, Provider} = EntityApi({
-        foo: (_, meta) => Promise.resolve(meta.foo)
+    const api = EntityApi({
+        foo: async (_, meta) => meta.foo
     });
+    const {foo, Provider} = api;
 
     const Child = () => {
         const message = foo.useRequest();

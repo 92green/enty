@@ -4,8 +4,11 @@ export type Observable = {
     subscribe: Function;
 };
 
+export type GetState = () => State;
+export type Dispatch = (action: Action | ((dispatch: Dispatch, getState: GetState))) => State;
 export type AsyncType = Promise<any> | Observable | AsyncGenerator<any, any, any>;
 export type SideEffect = (arg0: any, arg1: Object) => AsyncType;
+export type ProviderContextType = [State, Dispatch, Record<string, any>];
 
 export type State = {
     baseSchema: Schema;
@@ -32,7 +35,9 @@ export type State = {
 export type Action = {
     type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_RESET' | 'ENTY_INIT';
     payload: any;
+    payload?: any;
     meta: {
         responseKey: string;
+        returnResponse?: boolean;
     };
 };

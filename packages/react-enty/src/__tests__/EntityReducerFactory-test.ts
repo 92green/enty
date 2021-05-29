@@ -2,6 +2,7 @@ import EntityReducerFactory from '../EntityReducerFactory';
 import RequestState from '../data/RequestState';
 import {EntitySchema, ObjectSchema} from 'enty';
 import get from 'unmutable/lib/get';
+import {State} from '../util/definitions';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
 import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
@@ -10,6 +11,18 @@ import resetAction from '../api/resetAction';
 //
 // Schemas
 //
+
+const baseState = {
+    baseSchema: new ObjectSchema({}),
+    schemas: {},
+    response: {},
+    error: {},
+    requestState: {},
+    entities: {},
+    stats: {
+        responseCount: 0
+    }
+};
 
 var author = new EntitySchema('author', {
     idAtribute: get('fullnameId'),
@@ -37,6 +50,7 @@ const EntityReducer = EntityReducerFactory({schema});
 // Mock data
 
 const INITIAL_STATE = {
+    ...baseState,
     thing: {
         abc: '123'
     }
@@ -55,7 +69,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
     };
 
     const exampleReceiveAction = {
-        type: 'ENTY_RECEIVE',
+        type: 'ENTY_RECEIVE' as const,
         meta: {responseKey: 'TEST'},
         payload: examplePayload
     };
@@ -71,7 +85,8 @@ describe('EntityReducer requestState', () => {
     test('requestState is Fetching when action is _FETCH', () => {
         const data = pipeWith(
             EntityReducer(undefined, {
-                type: 'ENTY_FETCH',
+                type: 'ENTY_FETCH' as const,
+                payload: null,
                 meta: {responseKey: 'TEST'}
             }),
             getIn(['requestState', 'TEST'])
@@ -83,10 +98,11 @@ describe('EntityReducer requestState', () => {
         const data = pipeWith(
             EntityReducer(
                 {
+                    ...baseState,
                     requestState: {TEST: RequestState.fetching()},
                     response: {TEST: {}}
                 },
-                {type: 'ENTY_FETCH', meta: {responseKey: 'TEST'}}
+                {type: 'ENTY_FETCH' as const, payload: null, meta: {responseKey: 'TEST'}}
             ),
             getIn(['requestState', 'TEST'])
         );
@@ -94,9 +110,14 @@ describe('EntityReducer requestState', () => {
     });
 
     test('requestState will not be refecthing if two fetching fire in a row', () => {
-        let stateA = EntityReducer({}, {type: 'ENTY_FETCH', meta: {responseKey: 'foo'}});
+        let stateA = EntityReducer(null, {
+            type: 'ENTY_FETCH' as const,
+            payload: null,
+            meta: {responseKey: 'foo'}
+        });
         let stateB = EntityReducer(stateA, {
-            type: 'ENTY_FETCH',
+            type: 'ENTY_FETCH' as const,
+            payload: null,
             meta: {responseKey: 'foo'}
         });
         expect(stateB.requestState.foo.isRefetching).toBe(undefined);
@@ -106,7 +127,9 @@ describe('EntityReducer requestState', () => {
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
         return pipeWith(
             EntityReducer(undefined, {
+                // @ts-ignore - intentionally bad types
                 type: 'nothing',
+                payload: null,
                 meta: {responseKey: 'nothing'}
             }),
             getIn(['requestState', 'nothing']),
@@ -131,30 +154,40 @@ describe('EntityReducer requestState', () => {
 });
 
 describe('EntityReducer Config', () => {
+<<<<<<< HEAD
     const action = (type) => ({type, meta: {responseKey: type}});
+=======
+    const action = type => ({type, payload: null, meta: {responseKey: type}} as const);
+>>>>>>> 93842a5 (WIP - missing react test)
     test('the supplied schema is not mutated when reducing', () => {
+        // @ts-ignore - intentionally bad types
         expect(EntityReducer(undefined, action('nothing')).baseSchema).toBe(schema);
     });
 
     test('response starts with an empty object', () => {
+        // @ts-ignore - intentionally bad types
         expect(EntityReducer(undefined, action('nothing')).response).toEqual({});
     });
 
     test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {
         const state = {foo: 'bar'};
+        // @ts-ignore - intentionally bad types
         const reducedState = EntityReducer(state, action('nothing'));
         expect(reducedState).toBe(state);
 
-        expect(EntityReducer(INITIAL_STATE, action('FOO'))).toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, action('FOO_FETCH_BLAH'))).toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE as State, action('FOO'))).toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE as State, action('FOO_FETCH_BLAH'))).toBe(INITIAL_STATE);
 
         // check the reverse
-        expect(EntityReducer(INITIAL_STATE, action('ENTY_FETCH'))).not.toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, action('ENTY_ERROR'))).not.toBe(INITIAL_STATE);
-        expect(EntityReducer(INITIAL_STATE, action('ENTY_RECEIVE'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE as State, action('ENTY_FETCH'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE as State, action('ENTY_ERROR'))).not.toBe(INITIAL_STATE);
+        expect(EntityReducer(INITIAL_STATE as State, action('ENTY_RECEIVE'))).not.toBe(
+            INITIAL_STATE
+        );
     });
 
     test('does not have to be called with meta', () => {
+        // @ts-ignore - initially bad types
         expect(() => EntityReducer(undefined, {})).not.toThrow();
     });
 });
@@ -170,7 +203,7 @@ describe('EntityReducer Normalizing', () => {
                     other: 'foo'
                 }
             }
-        };
+        } as const;
 
         return pipeWith(
             EntityReducer(undefined, action),
@@ -189,7 +222,7 @@ describe('EntityReducer Normalizing', () => {
                     other: 'foo'
                 }
             }
-        };
+        } as const;
 
         return pipeWith(
             EntityReducer(undefined, action),
@@ -208,7 +241,7 @@ describe('EntityReducer Normalizing', () => {
                     topListings: [{fullnameId: 'FOO'}, {fullnameId: 'BAR'}]
                 }
             }
-        };
+        } as const;
 
         return pipeWith(
             EntityReducer(undefined, action),
@@ -218,11 +251,20 @@ describe('EntityReducer Normalizing', () => {
     });
 
     test('it can merge two normalizations correctly', () => {
+<<<<<<< HEAD
         const action = (payload) => ({
             type: 'ENTY_RECEIVE',
             meta: {responseKey: 'TEST'},
             payload
         });
+=======
+        const action = payload =>
+            ({
+                type: 'ENTY_RECEIVE',
+                meta: {responseKey: 'TEST'},
+                payload
+            } as const);
+>>>>>>> 93842a5 (WIP - missing react test)
 
         const payloadA = {
             subreddit: {
@@ -313,6 +355,7 @@ describe('no schema reducer', () => {
 describe('remove entity', () => {
     it('will replace a removed entity with REMOVED_ENTITY sentinel', () => {
         const initialState = {
+            ...baseState,
             entities: {
                 foo: {bar: 'ENTITY'},
                 baz: {qux: 'ENTITY'}
@@ -320,8 +363,9 @@ describe('remove entity', () => {
         };
         const reducer = EntityReducerFactory({});
         const state = reducer(initialState, {
-            type: 'ENTY_REMOVE',
-            payload: ['foo', 'bar']
+            type: 'ENTY_REMOVE' as const,
+            payload: ['foo', 'bar'],
+            meta: {responseKey: ''}
         });
         expect(state.entities.foo.bar).toBe(REMOVED_ENTITY);
         expect(state.entities.baz.qux).not.toBe(REMOVED_ENTITY);

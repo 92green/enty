@@ -15,10 +15,13 @@ import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
 
 import RequestState from './data/RequestState';
 
-export default function EntityReducerFactory(config: {schema?: Schema}): Function {
+export default function EntityReducerFactory(config: {schema?: Schema}) {
     const {schema} = config;
 
-    return function EntityReducer(previousState: State, {type, payload, meta = {}}: Action): State {
+    return function EntityReducer(
+        previousState: State | null,
+        {type, payload, meta = {responseKey: ''}}: Action
+    ): State {
         let state = previousState || {
             baseSchema: schema,
             schemas: {},
@@ -35,7 +38,7 @@ export default function EntityReducerFactory(config: {schema?: Schema}): Functio
         const requestStatePath = ['requestState', responseKey];
         const responsePath = ['response', responseKey];
         const errorPath = ['error', responseKey];
-        const incrementResponseCount = updateIn(['stats', 'responseCount'], (count) => count + 1);
+        const incrementResponseCount = updateIn(['stats', 'responseCount'], count => count + 1);
 
         switch (type) {
             case 'ENTY_FETCH': {

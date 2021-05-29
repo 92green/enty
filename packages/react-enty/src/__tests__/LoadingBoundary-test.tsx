@@ -1,6 +1,7 @@
 import React from 'react';
 import Message from '../data/Message';
 import LoadingBoundary from '../LoadingBoundary';
+import {shallow, mount} from 'enzyme';
 
 const TestEmpty = () => null;
 const TestError = () => null;
@@ -24,7 +25,7 @@ describe('Empty', () => {
                 children={() => null}
             />
         );
-        expect(Component).toContainMatchingElement('TestEmpty');
+        expect(Component.find('TestEmpty').length).toBeGreaterThan(0);
     });
 });
 
@@ -37,7 +38,7 @@ describe('Fetching', () => {
                 children={() => null}
             />
         );
-        expect(wrapper).toContainMatchingElement('TestFallback');
+        expect(wrapper.find('TestFallback').length).toBeGreaterThan(0);
     });
 });
 
@@ -64,7 +65,7 @@ describe('Refetching', () => {
                 children={() => null}
             />
         );
-        expect(wrapper).toContainMatchingElement('TestFallback');
+        expect(wrapper.find('TestFallback')).toHaveLength(1);
     });
 });
 
@@ -92,8 +93,8 @@ describe('Error', () => {
                 children={() => null}
             />
         );
-        expect(wrapper).toContainMatchingElement('TestError');
-        expect(wrapper.find('TestError')).toHaveProp('error', 'OUCH!');
+        expect(wrapper.find('TestError')).toHaveLength(1);
+        expect(wrapper.find('TestError')[0].props.error).toBe('OUCH!');
     });
 });
 
@@ -108,8 +109,8 @@ describe('SafeRendering', () => {
         const error = mount(
             <LoadingBoundary children={() => null} message={Message.error(messageInput)} />
         );
-        expect(empty).toContainMatchingElement('NullRender');
-        expect(fetching).toContainMatchingElement('NullRender');
-        expect(error).toContainMatchingElement('NullRender');
+        expect(empty.find('NullRender')).toHaveLength(1);
+        expect(fetching.find('NullRender')).toHaveLength(1);
+        expect(error.find('NullRender')).toHaveLength(1);
     });
 });

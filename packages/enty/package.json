@@ -21,7 +21,7 @@
     "lint": "yarn tsdx lint src",
     "prepublishOnly": "yarn build",
     "test": "yarn jest",
-    "test-all": "yarn lint && yarn  && yarn test",
+    "test-all": "yarn lint && yarn test && yarn build",
     "watch": "yarn tsdx watch"
   },
   "devDependencies": {

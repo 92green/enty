@@ -1,11 +1,9 @@
-type RemoveAction = {
-    type: string;
-    meta: {responseKey: string};
-};
+import {Action} from '../util/definitions';
 
-export default function resetAction(responseKey: string): RemoveAction {
+export default function resetAction(responseKey: string): Action {
     return {
         type: 'ENTY_RESET',
+        payload: null,
         meta: {responseKey}
     };
 }

@@ -1,13 +1,13 @@
-import {SideEffect} from '../util/definitions';
+import {SideEffect, Dispatch, State, Action} from '../util/definitions';
 
 type Meta = {
     responseKey: string;
     returnResponse?: boolean;
 };
 
-export default function createRequestAction(sideEffect: SideEffect): Function {
-    return (requestPayload, meta: Meta) => (dispatch: Function, getState: Function) => {
-        const makeAction = (type) => (payload) =>
+export default function createRequestAction(sideEffect: SideEffect) {
+    return <P>(requestPayload: P, meta: Meta) => (dispatch: Dispatch, getState: () => State) => {
+        const makeAction = (type: Action['type']) => (payload: P) =>
             dispatch({
                 type,
                 payload,
@@ -26,23 +26,20 @@ export default function createRequestAction(sideEffect: SideEffect): Function {
         const pending = sideEffect(requestPayload, sideEffectMeta);
 
         fetchAction(null);
-        if (typeof pending.subscribe === 'function') {
-            // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
+        if ('subscribe' in pending) {
             pending.subscribe({
-                next: (data) => receiveAction(data),
-                complete: (data) => receiveAction(data),
-                error: (error) => errorAction(error)
+                next: data => receiveAction(data),
+                complete: data => receiveAction(data),
+                error: error => errorAction(error)
             });
-        } else if (typeof pending.then === 'function') {
-            // $FlowFixMe - see above
-            pending.then(receiveAction).catch((err) => {
+        } else if ('then' in pending) {
+            pending.then(receiveAction).catch(err => {
                 errorAction(err);
                 return meta.returnResponse ? Promise.reject(err) : undefined;
             });
         } else {
             (async () => {
                 try {
-                    // $FlowFixMe - flow can't do a proper disjoint union between promises and other things
                     for await (const data of pending) {
                         receiveAction(data);
                     }

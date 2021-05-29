@@ -4,6 +4,8 @@ import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty/lib/util/Error';
 import RequestState from '../data/RequestState';
+import Message from '../data/Message';
+import {mount} from 'enzyme';
 
 //
 // Test Bootstrap
@@ -11,7 +13,8 @@ import RequestState from '../data/RequestState';
 
 function setupTests() {
     const fooEntity = new EntitySchema('foo');
-    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi(
+    //const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi(
+    const api = EntityApi(
         {
             foo: (data = 'foo') => Promise.resolve({data}),
             entity: (foo = {id: '123', name: 'foo'}) => Promise.resolve({foo}),
@@ -25,8 +28,13 @@ function setupTests() {
             foo: fooEntity
         })
     );
+    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = api;
 
-    function ExpectsMessage(props: Object) {
+    function ExpectsMessage(props: {
+        message: Message<any>;
+        payload?: any;
+        removeEntityPayload?: [string, string];
+    }) {
         const {request, reset, removeEntity} = props.message;
         const {payload} = props;
         const {removeEntityPayload} = props;
@@ -46,7 +54,7 @@ function setupTests() {
         ExpectsMessage,
         mountWithProvider: (testFn: Function, extraProps: Object = {}) => {
             const Child = testFn(ExpectsMessage);
-            const SkipProvider = (props) => (
+            const SkipProvider = props => (
                 <Provider
                     initialState={{
                         entities: {},
@@ -70,11 +78,20 @@ function setupTests() {
     };
 }
 
-export const {mountWithProvider, foo, bar, baz, obs, badEntity, entity, fooError, ExpectsMessage} =
-    setupTests();
+export const {
+    mountWithProvider,
+    foo,
+    bar,
+    baz,
+    obs,
+    badEntity,
+    entity,
+    fooError,
+    ExpectsMessage
+} = setupTests();
 
-export function asyncUpdate(wrapper: Object) {
-    return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
+export function asyncUpdate(wrapper) {
+    return new Promise(resolve => setTimeout(resolve, 0)).then(() => wrapper.update());
 }
 
 //
@@ -89,7 +106,7 @@ expect.extend(
         ['Error', 'isError']
     ].reduce((rr, [expectedName, expectedState], index, input) => {
         let name = `toBe${expectedName}`;
-        rr[name] = function (wrapper, expectedResponse) {
+        rr[name] = function(wrapper, expectedResponse) {
             let {printReceived, printExpected} = this.utils;
             let message = wrapper.find('ExpectsMessage').prop('message');
             let {requestState} = message;
@@ -157,8 +174,14 @@ export async function exisitingKey(testFn: Function) {
 
 export async function keyClash(testFn: Function) {
     let wrapper = mountWithProvider(testFn);
-    let first = wrapper.find('ExpectsMessage').at(0).prop('message');
-    let second = wrapper.find('ExpectsMessage').at(1).prop('message');
+    let first: Message<any> = wrapper
+        .find('ExpectsMessage')
+        .at(0)
+        .prop('message');
+    let second: Message<any> = wrapper
+        .find('ExpectsMessage')
+        .at(1)
+        .prop('message');
     expect(first.responseKey).not.toBe(second.responseKey);
 }
 

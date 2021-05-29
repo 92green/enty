@@ -1,11 +1,11 @@
 import {ComponentType} from 'react';
-import {Element} from 'react';
+import {ReactNode} from 'react';
 
-import React, {createContext, useMemo} from 'react';
+import React, {createContext, useMemo, Context} from 'react';
 import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from './EntityReducerFactory';
 import LoggingReducer from './util/LoggingReducer';
-import {Action} from './util/definitions';
+import {State, Action, ProviderContextType} from './util/definitions';
 import {Schema} from 'enty/lib/util/definitions';
 
 export type ProviderConfig = {
@@ -18,16 +18,13 @@ export type ProviderConfig = {
 };
 
 type ProviderFactoryReturn = {
-    Context: {
-        Provider: ComponentType<any>;
-        Consumer: ComponentType<any>;
-    };
+    Context: Context<ProviderContextType>;
     Provider: ComponentType<any>;
     ProviderHoc: Function;
 };
 
 type ProviderProps = {
-    children: Element<any>;
+    children: ReactNode;
     debug?: string;
     initialState?: {};
     meta?: {};
@@ -36,9 +33,9 @@ type ProviderProps = {
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
     const {schema, results = []} = config;
     const entityReducer = EntityReducerFactory({schema});
-    const Context = createContext();
+    const Context = createContext<ProviderContextType | null>(null);
 
-    function Provider({children, initialState, debug, meta}: ProviderProps): Element<any> {
+    function Provider({children, initialState, debug, meta}: ProviderProps) {
         const firstState = {
             baseSchema: schema,
             schemas: {},
@@ -54,7 +51,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
 
         const {reducer, intialValue} = useMemo(() => {
             const reducer = debug
-                ? (state, action: Action) =>
+                ? (state: State, action: Action) =>
                       LoggingReducer(entityReducer(state, action), action, debug)
                 : entityReducer;
 
@@ -82,15 +79,14 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
         return <Context.Provider value={storeValue} children={children} />;
     }
 
-    const ProviderHoc =
-        () =>
-        (Component) =>
-        ({initialState, ...rest}: ProviderProps) =>
-            (
-                <Provider initialState={initialState}>
-                    <Component {...rest} />
-                </Provider>
-            );
+    const ProviderHoc = () => (Component: ComponentType<any>) => ({
+        initialState,
+        ...rest
+    }: ProviderProps) => (
+        <Provider initialState={initialState}>
+            <Component {...rest} />
+        </Provider>
+    );
 
     return {
         Provider,

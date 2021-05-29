@@ -2,8 +2,9 @@ import React from 'react';
 import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
 import {EntitySchema, ObjectSchema} from 'enty';
+import {mount} from 'enzyme';
 
-const getContext = (testFn) => {
+const getContext = testFn => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
     return mount(<Component />)
@@ -11,13 +12,13 @@ const getContext = (testFn) => {
         .prop('context');
 };
 
-const expectContext = (testFn) => {
+const expectContext = testFn => {
     return expect(getContext(testFn));
 };
 
 describe('Factory', () => {
     it('returns a hock, component and context', () => {
-        expect(ProviderFactory({reducer: (aa) => aa})).toMatchObject({
+        expect(ProviderFactory({reducer: aa => aa})).toMatchObject({
             Provider: expect.any(Function),
             ProviderHoc: expect.any(Function),
             Context: expect.any(Object)
@@ -29,10 +30,10 @@ describe('Component', () => {
     it('applies the intial state to a context', () => {
         const {Provider, Context} = ProviderFactory({});
 
-        expectContext((Child) => () => {
+        expectContext(Child => () => {
             return (
                 <Provider initialState={{entities: {foo: 'component'}}}>
-                    <Context.Consumer children={(context) => <Child context={context} />} />
+                    <Context.Consumer children={context => <Child context={context} />} />
                 </Provider>
             );
         }).toMatchObject([
@@ -53,10 +54,10 @@ describe('Component', () => {
     it('applies the meta to the context', () => {
         const {Provider, Context} = ProviderFactory({});
 
-        expectContext((Child) => () => {
+        expectContext(Child => () => {
             return (
                 <Provider meta={{foo: 'bar'}}>
-                    <Context.Consumer children={(context) => <Child context={context} />} />
+                    <Context.Consumer children={context => <Child context={context} />} />
                 </Provider>
             );
         }).toMatchObject([
@@ -84,10 +85,10 @@ describe('Component', () => {
         ];
         const {Provider, Context} = ProviderFactory({schema, results});
 
-        const [state] = getContext((Child) => () => {
+        const [state] = getContext(Child => () => {
             return (
                 <Provider>
-                    <Context.Consumer children={(context) => <Child context={context} />} />
+                    <Context.Consumer children={context => <Child context={context} />} />
                 </Provider>
             );
         });
@@ -112,10 +113,10 @@ describe('Component', () => {
         ];
         const {Provider, Context} = ProviderFactory({schema, results});
 
-        const [state] = getContext((Child) => () => {
+        const [state] = getContext(Child => () => {
             return (
                 <Provider>
-                    <Context.Consumer children={(context) => <Child context={context} />} />
+                    <Context.Consumer children={context => <Child context={context} />} />
                 </Provider>
             );
         });
@@ -129,13 +130,14 @@ describe('Hoc', () => {
     it('returns a config => component => props function', () => {
         const {ProviderHoc, Context} = ProviderFactory({});
 
-        expectContext((Child) =>
+        expectContext(Child =>
             composeWith(
-                (Component) => (props) =>
-                    <Component {...props} initialState={{entities: {foo: 'hoc'}}} />,
+                Component => props => (
+                    <Component {...props} initialState={{entities: {foo: 'hoc'}}} />
+                ),
                 ProviderHoc(),
                 () => {
-                    return <Context.Consumer children={(context) => <Child context={context} />} />;
+                    return <Context.Consumer children={context => <Child context={context} />} />;
                 }
             )
         ).toMatchObject([
