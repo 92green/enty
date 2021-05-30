@@ -1,5 +1,5 @@
 import React from 'react';
-import Message from '../data/Message';
+import {BaseMessage} from '../data/Message';
 import LoadingBoundary from '../LoadingBoundary';
 import {shallow, mount} from 'enzyme';
 
@@ -13,14 +13,14 @@ const messageInput = {
     reset: () => {},
     removeEntity: () => {},
     request: async () => 'FOO',
-    requestError: 'OUCH!'
+    requestError: new Error('OUCH!')
 };
 
 describe('Empty', () => {
     it('will render empty', () => {
         const Component = shallow(
             <LoadingBoundary
-                message={Message.empty(messageInput)}
+                message={BaseMessage.empty(messageInput)}
                 empty={TestEmpty}
                 children={() => null}
             />
@@ -33,7 +33,7 @@ describe('Fetching', () => {
     it('will render fallback', () => {
         const wrapper = shallow(
             <LoadingBoundary
-                message={Message.fetching(messageInput)}
+                message={BaseMessage.fetching(messageInput)}
                 fallback={TestFallback}
                 children={() => null}
             />
@@ -46,7 +46,7 @@ describe('Refetching', () => {
     it('will render children with response and extra boolean', () => {
         shallow(
             <LoadingBoundary
-                message={Message.refetching(messageInput)}
+                message={BaseMessage.refetching(messageInput)}
                 children={(response, {refetching}) => {
                     expect(response).toBe('RESPONSE');
                     expect(refetching).toBe(true);
@@ -59,7 +59,7 @@ describe('Refetching', () => {
     it('will render fallback on if fallbackOnRefetch is true', () => {
         const wrapper = shallow(
             <LoadingBoundary
-                message={Message.refetching(messageInput)}
+                message={BaseMessage.refetching(messageInput)}
                 fallback={TestFallback}
                 fallbackOnRefetch={true}
                 children={() => null}
@@ -73,7 +73,7 @@ describe('Success', () => {
     it('will render children with response', () => {
         shallow(
             <LoadingBoundary
-                message={Message.success(messageInput)}
+                message={BaseMessage.success(messageInput)}
                 children={(response, {refetching}) => {
                     expect(response).toBe('RESPONSE');
                     expect(refetching).toBe(false);
@@ -88,26 +88,27 @@ describe('Error', () => {
     it('will render error with requestError in props.error', () => {
         const wrapper = shallow(
             <LoadingBoundary
-                message={Message.error(messageInput)}
+                message={BaseMessage.error(messageInput)}
                 error={TestError}
                 children={() => null}
             />
         );
         expect(wrapper.find('TestError')).toHaveLength(1);
-        expect(wrapper.find('TestError')[0].props.error).toBe('OUCH!');
+        // @ts-ignore
+        expect(wrapper.find('TestError').props().error).toBe('Error: OUCH!');
     });
 });
 
 describe('SafeRendering', () => {
     it('will not render anything if not provided', () => {
         const empty = mount(
-            <LoadingBoundary children={() => null} message={Message.empty(messageInput)} />
+            <LoadingBoundary children={() => null} message={BaseMessage.empty(messageInput)} />
         );
         const fetching = mount(
-            <LoadingBoundary children={() => null} message={Message.fetching(messageInput)} />
+            <LoadingBoundary children={() => null} message={BaseMessage.fetching(messageInput)} />
         );
         const error = mount(
-            <LoadingBoundary children={() => null} message={Message.error(messageInput)} />
+            <LoadingBoundary children={() => null} message={BaseMessage.error(messageInput)} />
         );
         expect(empty.find('NullRender')).toHaveLength(1);
         expect(fetching.find('NullRender')).toHaveLength(1);

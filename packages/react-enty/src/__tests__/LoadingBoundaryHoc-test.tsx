@@ -1,5 +1,5 @@
 import React from 'react';
-import Message from '../data/Message';
+import {BaseMessage} from '../data/Message';
 import LoadingBoundaryHoc from '../LoadingBoundaryHoc';
 import {mount} from 'enzyme';
 
@@ -14,7 +14,7 @@ const messageInput = {
     reset: () => {},
     removeEntity: () => {},
     request: async () => 'FOO',
-    requestError: 'OUCH!'
+    requestError: new Error('OUCH!')
 };
 
 describe('Empty', () => {
@@ -23,7 +23,7 @@ describe('Empty', () => {
             name: 'foo',
             empty: TestEmpty
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.empty(messageInput)} />);
+        const wrapper = mount(<Hoc foo={BaseMessage.empty(messageInput)} />);
         expect(wrapper.find('TestEmpty')).toHaveLength(1);
     });
 });
@@ -34,7 +34,7 @@ describe('Fetching', () => {
             name: 'foo',
             fallback: TestFallback
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.fetching(messageInput)} />);
+        const wrapper = mount(<Hoc foo={BaseMessage.fetching(messageInput)} />);
         expect(wrapper.find('TestFallback')).toHaveLength(1);
     });
 });
@@ -46,19 +46,20 @@ describe('Refetching', () => {
             fallback: TestFallback,
             fallbackOnRefetch: true
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.refetching(messageInput)} />);
+        const wrapper = mount(<Hoc foo={BaseMessage.refetching(messageInput)} />);
         expect(wrapper.find('TestFallback')).toHaveLength(1);
     });
 });
 
 describe('Success', () => {
     it('will render children with message at config.name', () => {
-        const message = Message.success(messageInput);
+        const message = BaseMessage.success(messageInput);
         const Hoc = LoadingBoundaryHoc({
             name: 'foo'
         })(NullRender);
         const wrapper = mount(<Hoc foo={message} />);
-        expect(wrapper.find('NullRender')[0].props.foo).toBe(message);
+        // @ts-ignore
+        expect(wrapper.find('NullRender').props().foo).toBe(message);
     });
 
     it('will allow response to be mapped to props', () => {
@@ -66,8 +67,9 @@ describe('Success', () => {
             name: 'foo',
             mapResponseToProps: response => ({baz: response})
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.success(messageInput)} />);
-        expect(wrapper.find('NullRender')[0].props.baz).toBe('RESPONSE');
+        const wrapper = mount(<Hoc foo={BaseMessage.success(messageInput)} />);
+        // @ts-ignore
+        expect(wrapper.find('NullRender').props().baz).toBe('RESPONSE');
     });
 });
 
@@ -77,9 +79,11 @@ describe('Error', () => {
             name: 'foo',
             error: TestError
         })(NullRender);
-        const wrapper = mount(<Hoc foo={Message.error(messageInput)} />);
+        const wrapper = mount(<Hoc foo={BaseMessage.error(messageInput)} />);
+
         expect(wrapper.find('TestError')).toHaveLength(1);
-        expect(wrapper.find('TestError')[0].props.error).toBe('Ouch!');
+        // @ts-ignore
+        expect(wrapper.find('TestError').props().error).toBe('Error: OUCH!');
     });
 });
 
@@ -88,9 +92,9 @@ describe('SafeRendering', () => {
         const Hoc = LoadingBoundaryHoc({
             name: 'foo'
         })(NullRender);
-        const empty = mount(<Hoc foo={Message.empty(messageInput)} />);
-        const fetching = mount(<Hoc foo={Message.fetching(messageInput)} />);
-        const error = mount(<Hoc foo={Message.error(messageInput)} />);
+        const empty = mount(<Hoc foo={BaseMessage.empty(messageInput)} />);
+        const fetching = mount(<Hoc foo={BaseMessage.fetching(messageInput)} />);
+        const error = mount(<Hoc foo={BaseMessage.error(messageInput)} />);
         expect(empty.find('NullRender')).toHaveLength(1);
         expect(fetching.find('NullRender')).toHaveLength(1);
         expect(error.find('NullRender')).toHaveLength(1);

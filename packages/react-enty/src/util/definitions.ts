@@ -1,4 +1,4 @@
-import {Schema} from 'enty/lib/util/definitions';
+import {Schema} from 'enty';
 
 export type Observable = {
     subscribe: Function;
@@ -34,7 +34,6 @@ export type State = {
 
 export type Action = {
     type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_RESET' | 'ENTY_INIT';
-    payload: any;
     payload?: any;
     meta: {
         responseKey: string;

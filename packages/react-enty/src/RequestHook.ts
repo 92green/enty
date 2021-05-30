@@ -1,4 +1,4 @@
-import Message from './data/Message';
+import {unknownMessage} from './data/Message';
 import RequestState from './data/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef, Context} from 'react';
 import {ProviderContextType} from './util/definitions';
@@ -67,12 +67,12 @@ export default function RequestHookFactory(
             [baseMeta, JSON.stringify(config)]
         );
 
-        let reset = useCallback(() => dispatch(resetAction(responseKey)), []);
+        let reset = useCallback(() => dispatch(resetAction(responseKey)), [responseKey]);
         let removeEntity = useCallback((type, id) => dispatch(removeEntityAction(type, id)), []);
 
         return useMemo(
             () =>
-                new Message<R>({
+                unknownMessage<R>({
                     removeEntity,
                     request,
                     requestError: state.error[responseKey],

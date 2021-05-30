@@ -1,11 +1,11 @@
 import EntityReducerFactory from '../EntityReducerFactory';
 import RequestState from '../data/RequestState';
-import {EntitySchema, ObjectSchema} from 'enty';
 import get from 'unmutable/lib/get';
 import {State} from '../util/definitions';
+import {EntitySchema, ObjectSchema, ArraySchema} from 'enty';
 import getIn from 'unmutable/lib/getIn';
 import pipeWith from 'unmutable/lib/util/pipeWith';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import {REMOVED_ENTITY} from 'enty';
 import resetAction from '../api/resetAction';
 
 //
@@ -25,20 +25,20 @@ const baseState = {
 };
 
 var author = new EntitySchema('author', {
-    idAtribute: get('fullnameId'),
-    shape: {}
+    id: ii => ii?.fullnameId,
+    shape: new ObjectSchema({})
 });
 
 var topListings = new EntitySchema('topListings', {
-    id: get('fullnameId'),
-    shape: {author}
+    id: ii => ii?.fullnameId,
+    shape: new ObjectSchema({author})
 });
 
 var subreddit = new EntitySchema('subreddit', {
-    id: get('fullnameId'),
-    shape: {
-        topListings: [topListings]
-    }
+    id: ii => ii?.fullnameId,
+    shape: new ObjectSchema({
+        topListings: new ArraySchema(topListings)
+    })
 });
 
 const schema = new ObjectSchema({
@@ -133,7 +133,7 @@ describe('EntityReducer requestState', () => {
                 meta: {responseKey: 'nothing'}
             }),
             getIn(['requestState', 'nothing']),
-            (value) => expect(value).toBe(undefined)
+            value => expect(value).toBe(undefined)
         );
     });
 
@@ -147,18 +147,14 @@ describe('EntityReducer requestState', () => {
                 meta: {responseKey: 'TEST'}
             }),
             getIn(['requestState', 'TEST']),
-            (_) => _.value(),
-            (value) => expect(value).toBe('errorPayload')
+            _ => _.value(),
+            value => expect(value).toBe('errorPayload')
         );
     });
 });
 
 describe('EntityReducer Config', () => {
-<<<<<<< HEAD
-    const action = (type) => ({type, meta: {responseKey: type}});
-=======
     const action = type => ({type, payload: null, meta: {responseKey: type}} as const);
->>>>>>> 93842a5 (WIP - missing react test)
     test('the supplied schema is not mutated when reducing', () => {
         // @ts-ignore - intentionally bad types
         expect(EntityReducer(undefined, action('nothing')).baseSchema).toBe(schema);
@@ -208,7 +204,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['response', 'TEST', 'subreddit']),
-            (key) => expect(key).toBe('MK')
+            key => expect(key).toBe('MK')
         );
     });
 
@@ -227,7 +223,7 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['entities', 'subreddit', 'MK']),
-            (data) => expect(data).toEqual(action.payload.subreddit)
+            data => expect(data).toEqual(action.payload.subreddit)
         );
     });
 
@@ -246,25 +242,17 @@ describe('EntityReducer Normalizing', () => {
         return pipeWith(
             EntityReducer(undefined, action),
             getIn(['entities', 'topListings', 'FOO']),
-            (data) => expect(data).toEqual({fullnameId: 'FOO'})
+            data => expect(data).toEqual({fullnameId: 'FOO'})
         );
     });
 
     test('it can merge two normalizations correctly', () => {
-<<<<<<< HEAD
-        const action = (payload) => ({
-            type: 'ENTY_RECEIVE',
-            meta: {responseKey: 'TEST'},
-            payload
-        });
-=======
         const action = payload =>
             ({
                 type: 'ENTY_RECEIVE',
                 meta: {responseKey: 'TEST'},
                 payload
             } as const);
->>>>>>> 93842a5 (WIP - missing react test)
 
         const payloadA = {
             subreddit: {

@@ -6,7 +6,7 @@ import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from './EntityReducerFactory';
 import LoggingReducer from './util/LoggingReducer';
 import {State, Action, ProviderContextType} from './util/definitions';
-import {Schema} from 'enty/lib/util/definitions';
+import {Schema} from 'enty';
 
 export type ProviderConfig = {
     schema?: Schema;

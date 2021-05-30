@@ -2,7 +2,7 @@ import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
 import equals from 'unmutable/equals';
-import {UndefinedIdError} from 'enty/lib/util/Error';
+import {UndefinedIdError} from 'enty';
 import RequestState from '../data/RequestState';
 import Message from '../data/Message';
 import {mount} from 'enzyme';

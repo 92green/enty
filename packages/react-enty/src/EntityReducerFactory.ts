@@ -1,4 +1,4 @@
-import {Schema} from 'enty/lib/util/definitions';
+import {Schema} from 'enty';
 import {State, Action} from './util/definitions';
 
 import clone from 'unmutable/lib/clone';
@@ -11,7 +11,7 @@ import setIn from 'unmutable/lib/setIn';
 import hasIn from 'unmutable/lib/hasIn';
 import updateIn from 'unmutable/lib/updateIn';
 import deleteIn from 'unmutable/lib/deleteIn';
-import REMOVED_ENTITY from 'enty/lib/util/RemovedEntity';
+import {REMOVED_ENTITY} from 'enty';
 
 import RequestState from './data/RequestState';
 
@@ -38,7 +38,10 @@ export default function EntityReducerFactory(config: {schema?: Schema}) {
         const requestStatePath = ['requestState', responseKey];
         const responsePath = ['response', responseKey];
         const errorPath = ['error', responseKey];
-        const incrementResponseCount = updateIn(['stats', 'responseCount'], count => count + 1);
+        const incrementResponseCount = updateIn(
+            ['stats', 'responseCount'],
+            (count: number) => count + 1
+        );
 
         switch (type) {
             case 'ENTY_FETCH': {

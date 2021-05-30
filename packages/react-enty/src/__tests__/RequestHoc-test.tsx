@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import composeWith from 'unmutable/composeWith';
-import Message from '../data/Message';
+import {BaseMessage} from '../data/Message';
 
 import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
@@ -22,21 +22,14 @@ describe('config', () => {
         expect(typeof foo.requestHoc({name: 'foo'})).toBe('function');
     });
 
-    describe('config.name and message', () => {
-        test('will throw an error if config.name is not supplied', () => {
-            // @ts-ignore - intentionally bad types
-            expect(() => foo.requestHoc({})).toThrow('requestHoc must be given a name');
-        });
-
-        it('will give a Message to props.[name]', () => {
-            expect.assertions(1);
-            mountWithProvider(() =>
-                composeWith(foo.requestHoc({name: 'bar'}), props => {
-                    expect(props.bar).toBeInstanceOf(Message);
-                    return null;
-                })
-            );
-        });
+    it('will give a Message to props.[name]', () => {
+        expect.assertions(1);
+        mountWithProvider(() =>
+            composeWith(foo.requestHoc({name: 'bar'}), props => {
+                expect(props.bar).toBeInstanceOf(BaseMessage);
+                return null;
+            })
+        );
     });
 
     describe('config.auto', () => {
@@ -258,10 +251,10 @@ describe('usage', () => {
                     const {aa, bb} = props;
 
                     useEffect(() => {
-                        if (aa.requestState.isEmpty) {
+                        if (aa.isEmpty) {
                             aa.request('first');
                         }
-                        if (aa.requestState.isSuccess) {
+                        if (aa.isSuccess) {
                             bb.request('second');
                         }
                     }, [aa.requestState]);

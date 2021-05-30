@@ -1,7 +1,7 @@
-import {Schema} from 'enty/lib/util/definitions';
+import {Schema} from 'enty';
 import {ProviderConfig} from './ProviderFactory';
 
-import Message from './data/Message';
+import type {Message} from './data/Message';
 import EntityApiFactory from './EntityApiFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHoc from './RequestHoc';

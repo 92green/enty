@@ -3,8 +3,9 @@ import ProviderFactory from '../ProviderFactory';
 import composeWith from 'unmutable/composeWith';
 import {EntitySchema, ObjectSchema} from 'enty';
 import {mount} from 'enzyme';
+import {ProviderContextType} from '../util/definitions';
 
-const getContext = testFn => {
+const getContext = (testFn): ProviderContextType => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
     return mount(<Component />)
@@ -18,7 +19,7 @@ const expectContext = testFn => {
 
 describe('Factory', () => {
     it('returns a hock, component and context', () => {
-        expect(ProviderFactory({reducer: aa => aa})).toMatchObject({
+        expect(ProviderFactory({})).toMatchObject({
             Provider: expect.any(Function),
             ProviderHoc: expect.any(Function),
             Context: expect.any(Object)
@@ -106,7 +107,7 @@ describe('Component', () => {
         const schema = new ObjectSchema({foo});
         const results = [
             {
-                type: 'ENTY_ERROR',
+                type: 'ENTY_ERROR' as const,
                 responseKey: 'a',
                 payload: {foo: {id: 'foo1', name: 'foooo'}}
             }

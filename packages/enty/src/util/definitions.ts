@@ -16,13 +16,13 @@ export type StructuralSchemaOptions = {
 
 export type EntitySchemaOptions<Shape> = {
     readonly shape?: Shape;
-    id?: (entity: Object) => string;
+    id?: (entity: any) => string;
     merge?: Merge;
 };
 
 export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
     shape?: Shape;
-    id?: (entity: Object) => string;
+    id?: (entity: any) => string;
     compositeKeys?: CompositeShape;
 };
 
@@ -33,7 +33,7 @@ export type DynamicShape = (data: any) => Schema;
 
 export type Entities = Record<string, Record<string, any>>;
 export type Normalize = (data: unknown, entities: Object) => NormalizeState;
-export type Denormalize = (denormalizeState: DenormalizeState, path: Array<unknown>) => any;
+export type Denormalize = (denormalizeState: DenormalizeState, path?: Array<unknown>) => any;
 export type Create = (data: any) => any;
 export type Merge = (previous: any, next: any) => any;
 export type IdAttribute = (data: any) => string;

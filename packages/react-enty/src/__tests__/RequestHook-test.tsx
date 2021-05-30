@@ -1,6 +1,6 @@
 import React from 'react';
 import {useEffect} from 'react';
-import Message from '../data/Message';
+import {BaseMessage} from '../data/Message';
 import {mount} from 'enzyme';
 
 import {fetchOnLoad} from './RequestSuite';
@@ -32,18 +32,22 @@ describe('config', () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
             const message = foo.useRequest();
-            expect(message).toBeInstanceOf(Message);
+            expect(message).toBeInstanceOf(BaseMessage);
             return null;
         });
     });
 
     it('will throw if not in a provider', () => {
+        const spy = jest.spyOn(console, 'error');
+        spy.mockImplementation(() => {});
+
         const Child = () => {
             foo.useRequest();
             return null;
         };
 
         expect(() => mount(<Child />)).toThrow();
+        spy.mockRestore();
     });
 
     it('request will return undefined for promises', async () => {
