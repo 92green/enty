@@ -61,7 +61,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                     payload: null,
                     meta: {...meta, responseKey: 'Unknown'}
                 },
-                ...results.map(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({
+                ...results.map<Action>(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({
                     type,
                     payload,
                     meta: {...meta, responseKey}

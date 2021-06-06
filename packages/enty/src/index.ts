@@ -9,7 +9,7 @@ export {default as IdSchema} from './IdSchema';
 export {default as ObjectSchema} from './ObjectSchema';
 
 export {default as REMOVED_ENTITY} from './util/RemovedEntity';
-export {UndefinedIdError} from './util/error';
+export {UndefinedIdError} from './util/Error';
 
 //
 // Supporting Types
