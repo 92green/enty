@@ -7,7 +7,7 @@
     "prep": "yarn && yarn lerna bootstrap",
     "build": "lerna run build",
     "watch": "lerna run watch --parallel --",
-    "test-all": "lerna run test-all --parallel --",
+    "test-all": "lerna run test-all",
     "format": "yarn prettier --write .",
     "format-quick": "yarn pretty-quick --staged"
   },

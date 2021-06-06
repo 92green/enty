@@ -2,18 +2,30 @@
   "name": "react-enty",
   "version": "1.1.0",
   "description": "React bindings for Enty",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/react-enty.esm.js",
   "license": "MIT",
   "author": "Allan Hortle",
+  "size-limit": [
+    {
+      "path": "dist/react-enty.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-enty.esm.js",
+      "limit": "10 KB"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blueflag/enty.git"
+    "url": "git+https://github.com/92green/enty.git"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "bugs": {
-    "url": "https://github.com/blueflag/enty/issues"
+    "url": "https://github.com/92green/enty/issues"
   },
   "private": false,
   "scripts": {
@@ -22,12 +34,14 @@
     "prepublishOnly": "yarn build",
     "test": "yarn jest",
     "test-all": "yarn test && yarn build",
-    "watch": "yarn tsdx watch"
+    "watch": "yarn tsdx watch",
+    "size": "size-limit"
   },
   "peerDependencies": {
     "react": "^16.x.x"
   },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^4.11.0",
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/react-hooks": "^6.0.0",
@@ -36,12 +50,15 @@
     "@types/node": "^15.6.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.1",
     "enzyme": "^3.11.0",
+    "jest": "^26.6.3",
     "jest-enzyme": "^7.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "size-limit": "^4.11.0",
+    "ts-jest": "^26.5.6",
     "tsdx": "^0.14.1",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.6"
+    "tslib": "^2.2.0",
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "enty": "^1.1.0",
