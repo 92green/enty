@@ -73,7 +73,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
     denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
         const {result, entities} = denormalizeState;
         const {shape, name} = this;
-        const entity = entities[name][result];
+        const entity = entities?.[name]?.[result];
 
         if (entity == null || entity === REMOVED_ENTITY || shape == null) {
             return entity;
