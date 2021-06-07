@@ -8,11 +8,11 @@
   "size-limit": [
     {
       "path": "dist/enty.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "5 KB"
     },
     {
       "path": "dist/enty.esm.js",
-      "limit": "10 KB"
+      "limit": "5 KB"
     }
   ],
   "license": "MIT",

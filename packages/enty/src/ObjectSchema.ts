@@ -6,11 +6,6 @@ import {Merge} from './util/definitions';
 import {Entities} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
 
-import clone from 'unmutable/lib/clone';
-import get from 'unmutable/lib/get';
-import del from 'unmutable/lib/delete';
-import set from 'unmutable/lib/set';
-import pipeWith from 'unmutable/lib/util/pipeWith';
 import REMOVED_ENTITY from './util/RemovedEntity';
 
 export default class ObjectSchema<A extends {}> implements StructuralSchemaInterface<A> {
@@ -33,15 +28,15 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
         let schemas = {};
 
         const result = Object.keys(shape).reduce((result: Object, key: any): any => {
-            const value = get(key)(dataMap);
-            const schema = get(key)(shape);
+            const value = dataMap[key];
+            const schema = shape[key];
             if (value) {
                 const {result: childResult, schemas: childSchemas} = schema.normalize(
                     value,
                     entities
                 );
                 Object.assign(schemas, childSchemas);
-                result = set(key, childResult)(result);
+                result = {...result, [key]: childResult};
             }
 
             return result;
@@ -65,30 +60,25 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
         // if they have a corresponding schema. Otherwise return the plain value.
         // Then filter out deleted keys, keeping track of ones deleted
         // Then Pump the filtered object through `denormalizeFilter`
-        return pipeWith(
-            result,
-            clone(),
-            (item: Object): Object => {
-                if (path.indexOf(this) !== -1) {
-                    return item;
-                }
+        let item = {...result};
+        if (path.indexOf(this) !== -1) {
+            return item;
+        }
 
-                const keys = Object.keys(shape);
+        const keys = Object.keys(shape);
 
-                for (let key of keys) {
-                    const schema = get(key)(shape);
-                    const result = get(key)(item);
-                    const value = schema.denormalize({result, entities}, [...path, this]);
+        for (let key of keys) {
+            const schema = shape[key];
+            const result = item[key];
+            const value = schema.denormalize({result, entities}, [...path, this]);
 
-                    if (value !== REMOVED_ENTITY && value !== undefined) {
-                        item = set(key, value)(item);
-                    } else {
-                        item = del(key)(item);
-                    }
-                }
-
-                return item;
+            if (value !== REMOVED_ENTITY && value !== undefined) {
+                item[key] = value;
+            } else {
+                delete item[key];
             }
-        );
+        }
+
+        return item;
     }
 }
