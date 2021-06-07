@@ -1,8 +1,5 @@
 import React, {useMemo} from 'react';
 import {useEffect} from 'react';
-import getIn from 'unmutable/getIn';
-import identity from 'unmutable/identity';
-import pipeWith from 'unmutable/pipeWith';
 
 type Config = {
     useRequest: Function;
@@ -19,12 +16,13 @@ type HockConfig = {
 
 const returnTrue: (payload?: unknown) => boolean = () => true;
 const returnObject: (payload?: unknown) => unknown = () => {};
+const identity = (x: any) => x;
 
 export default function RequestHocFactory({useRequest}: Config) {
     return (hockConfig: HockConfig) => {
         const {name} = hockConfig;
         const {auto = false} = hockConfig;
-        const {payloadCreator = auto ? returnObject : identity()} = hockConfig;
+        const {payloadCreator = auto ? returnObject : identity} = hockConfig;
         const {shouldComponentAutoRequest = returnTrue} = hockConfig;
 
         if (!name) {
@@ -46,7 +44,7 @@ export default function RequestHocFactory({useRequest}: Config) {
             }, [message]);
 
             const autoValues = (typeof auto === 'boolean' ? [] : auto).map(path =>
-                pipeWith(props, getIn(path.split('.')), value => JSON.stringify(value))
+                JSON.stringify(path.split('.').reduce((rr, ii) => rr?.[ii], props))
             );
 
             useEffect(() => {

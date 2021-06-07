@@ -1,6 +1,4 @@
 import RequestState from '../data/RequestState';
-import get from 'unmutable/lib/get';
-import getIn from 'unmutable/lib/getIn';
 
 type Request = (payload?: unknown, config?: {returnResponse: boolean}) => any;
 
@@ -52,7 +50,8 @@ export abstract class BaseMessage<R = void, E extends Error = Error> {
     // Response Getters
 
     get<K extends keyof R, N = undefined>(key: K, notSetValue?: N): R[K] | N {
-        return get(key, notSetValue)(this.response || {});
+        if (!(key in (this.response || {}))) return notSetValue;
+        return this.response?.[key];
     }
 
     getIn<K1 extends keyof R, K2 extends keyof R[K1], K3 extends keyof R[K1][K2]>(
@@ -61,7 +60,10 @@ export abstract class BaseMessage<R = void, E extends Error = Error> {
     getIn<K1 extends keyof R, K2 extends keyof R[K1]>(path: [K1, K2]): R[K1][K2];
     getIn<K1 extends keyof R>(path: [K1]): R[K1];
     getIn(path: string[], notSetValue?: any): any {
-        return getIn(path, notSetValue)(this.response || {});
+        return path.reduce((value, key) => {
+            if (value === Object(value) && key in value) return value[key];
+            return notSetValue;
+        }, this.response || {});
     }
 
     //
