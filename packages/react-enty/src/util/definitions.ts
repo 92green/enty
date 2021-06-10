@@ -12,21 +12,11 @@ export type ProviderContextType = [State, Dispatch, Record<string, any>];
 
 export type State = {
     baseSchema: Schema;
-    schemas: {
-        [key: string]: Schema;
-    };
-    response: {
-        [key: string]: any;
-    };
-    error: {
-        [key: string]: any;
-    };
-    requestState: {
-        [key: string]: any;
-    };
-    entities: {
-        [key: string]: any;
-    };
+    schemas: Record<string, Schema>;
+    response: Record<string, any>;
+    error: Record<string, any>;
+    requestState: Record<string, any>;
+    entities: Record<string, any>;
     stats: {
         responseCount: number;
     };
