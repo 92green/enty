@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import composeWith from 'unmutable/composeWith';
 import {BaseMessage} from '../data/Message';
 
 import {fetchOnLoad} from './RequestSuite';
@@ -25,7 +24,7 @@ describe('config', () => {
     it('will give a Message to props.[name]', () => {
         expect.assertions(1);
         mountWithProvider(() =>
-            composeWith(foo.requestHoc({name: 'bar'}), props => {
+            foo.requestHoc({name: 'bar'})(props => {
                 expect(props.bar).toBeInstanceOf(BaseMessage);
                 return null;
             })
@@ -244,10 +243,8 @@ describe('usage', () => {
 
     it('can fetch multiples in series', async () => {
         return fetchSeries(ExpectsMessage => {
-            return composeWith(
-                foo.requestHoc({name: 'aa'}),
-                foo.requestHoc({name: 'bb'}),
-                props => {
+            return foo.requestHoc({name: 'aa'})(
+                foo.requestHoc({name: 'bb'})(props => {
                     const {aa, bb} = props;
 
                     useEffect(() => {
@@ -265,25 +262,23 @@ describe('usage', () => {
                             <ExpectsMessage message={bb} />
                         </div>
                     );
-                }
+                })
             );
         });
     });
 
     it('can fetch multiples in parallel', async () => {
         return fetchParallel(ExpectsMessage => {
-            return composeWith(
-                foo.requestHoc({
-                    name: 'aa',
-                    auto: true,
-                    payloadCreator: () => 'first'
-                }),
+            return foo.requestHoc({
+                name: 'aa',
+                auto: true,
+                payloadCreator: () => 'first'
+            })(
                 foo.requestHoc({
                     name: 'bb',
                     auto: true,
                     payloadCreator: () => 'second'
-                }),
-                props => {
+                })(props => {
                     const {aa, bb} = props;
                     return (
                         <div>
@@ -291,7 +286,7 @@ describe('usage', () => {
                             <ExpectsMessage message={bb} />
                         </div>
                     );
-                }
+                })
             );
         });
     });

@@ -23,7 +23,7 @@ export type Request<T> = {
         payloadCreator?: (props) => any;
         optimistic?: boolean;
         updateResultKey?: (resultKey: string, props: any) => string;
-    }) => React.ComponentType<any>;
+    }) => (component: React.ComponentType<any>) => React.ComponentType<any>;
 };
 
 type RequestFunction = (variables?: any, meta?: any) => Promise<any> | {subscribe: Function};

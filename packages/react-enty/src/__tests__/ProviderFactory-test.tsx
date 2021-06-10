@@ -1,6 +1,5 @@
 import React from 'react';
 import ProviderFactory from '../ProviderFactory';
-import composeWith from 'unmutable/composeWith';
 import {EntitySchema, ObjectSchema} from 'enty';
 import {mount} from 'enzyme';
 import {ProviderContextType} from '../util/definitions';
@@ -131,17 +130,17 @@ describe('Hoc', () => {
     it('returns a config => component => props function', () => {
         const {ProviderHoc, Context} = ProviderFactory({});
 
-        expectContext(Child =>
-            composeWith(
-                Component => props => (
-                    <Component {...props} initialState={{entities: {foo: 'hoc'}}} />
-                ),
-                ProviderHoc(),
-                () => {
-                    return <Context.Consumer children={context => <Child context={context} />} />;
-                }
-            )
-        ).toMatchObject([
+        expectContext(Child => {
+            const withInitialState = Component => props => (
+                <Component {...props} initialState={{entities: {foo: 'hoc'}}} />
+            );
+            const withProvider = ProviderHoc();
+            return withInitialState(
+                withProvider(() => (
+                    <Context.Consumer children={context => <Child context={context} />} />
+                ))
+            );
+        }).toMatchObject([
             {
                 baseSchema: undefined,
                 entities: {foo: 'hoc'},
