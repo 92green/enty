@@ -4,7 +4,6 @@ import {EntitySchemaOptions} from './util/definitions';
 import {StructuralSchemaInterface} from './util/definitions';
 import {Entities} from './util/definitions';
 
-import map from 'unmutable/lib/map';
 import {CompositeKeysMustBeEntitiesError} from './util/Error';
 import EntitySchema from './EntitySchema';
 
@@ -29,7 +28,7 @@ export default class CompositeEntitySchema<
 
         let idList = [];
 
-        const compositeResults = map((schema, key) => {
+        const compositeResults = Object.keys(compositeKeys).reduce((rr, key) => {
             if (!isEntitySchema(compositeKeys[key])) {
                 throw CompositeKeysMustBeEntitiesError(
                     `${name}.${key}`,
@@ -52,8 +51,9 @@ export default class CompositeEntitySchema<
             // store its id
             idList.push(compositeResult);
 
-            return compositeResult;
-        })(compositeKeys);
+            rr[key] = compositeResult;
+            return rr;
+        }, {});
 
         // recurse into the main shape
         let {schemas, result: mainResult} = super.normalize(adjustedData, entities);
@@ -90,9 +90,12 @@ export default class CompositeEntitySchema<
 
         const mainDenormalizedState = super.denormalize({result: result[name], entities}, path);
 
-        const compositeDenormalizedState = map((schema, key) =>
-            schema.denormalize({result: result[key], entities}, path)
-        )(compositeKeys);
+        const compositeDenormalizedState = Object.keys(compositeKeys).reduce((rr, key) => {
+            if (result[key]) {
+                rr[key] = compositeKeys[key].denormalize({result: result[key], entities}, path);
+            }
+            return rr;
+        }, {});
 
         return shape.merge(mainDenormalizedState, compositeDenormalizedState);
     }

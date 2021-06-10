@@ -1,7 +1,6 @@
 import React from 'react';
 import EntityApi from '../EntityApi';
 import {ObjectSchema, EntitySchema} from 'enty';
-import equals from 'unmutable/equals';
 import {UndefinedIdError} from 'enty';
 import RequestState from '../data/RequestState';
 import Message from '../data/Message';
@@ -113,7 +112,7 @@ expect.extend(
             let response = requestState.isError ? message.requestError : message.response;
 
             let passType = requestState[expectedState];
-            let passResponse = equals(response)(expectedResponse);
+            let passResponse = JSON.stringify(response) === JSON.stringify(expectedResponse);
             let pass = passType && passResponse;
             let type = input.find(([, state]) => requestState[state]) || [];
             return pass

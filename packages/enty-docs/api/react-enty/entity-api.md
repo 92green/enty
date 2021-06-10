@@ -112,20 +112,6 @@ export default function MainView() {
 }
 ```
 
-### ProviderHoc
-The ProviderHoc wraps the Provider in a hoc. This is useful if your 
-
-```jsx
-import Api from './EntityApi';
-import ThemeProviderHoc from './ThemeProviderHoc';
-import composeWith from 'unmutable/composeWith';
-
-export default composeWith(
-    Api.ProviderHoc(),
-    ThemeProviderHoc(),
-    AppComponent
-);
-```
 
 ### useRemove
 Returns a side-effect that will remove an entity from the store.

@@ -871,7 +871,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.5", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
   version "7.14.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
   integrity sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA==
@@ -3830,13 +3830,6 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
-enty@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/enty/-/enty-1.1.0.tgz#a222ca4ac599c15acbe38a9f66bcb1ca9e04ed8f"
-  integrity sha512-GzyOwuJwEuTTthfaBL0bW6tKjZ/tuHRb2a2kHHqt9+boMbAlk6sJuhrr6ZzC8kyFRRDU8HpHAcM1lHhGfealcQ==
-  dependencies:
-    unmutable "^0.46.0"
-
 enzyme-matchers@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-7.1.2.tgz#d80530a61f22d28bb993dd7588abba38bd4de282"
@@ -4398,11 +4391,6 @@ extsprintf@^1.2.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
-
-fast-deep-equal@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.1.0.tgz#c053477817c86b51daa853c81e059b733d023614"
-  integrity sha1-wFNHeBfIa1HaqFPIHgWbcz0CNhQ=
 
 fast-deep-equal@^3.1.1:
   version "3.1.3"
@@ -6795,11 +6783,6 @@ lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
-
-lodash.range@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
-  integrity sha1-9GHliPZmg/fq3q3lE+OKaaVloV0=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -9905,16 +9888,6 @@ universalify@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-2.0.0.tgz#75a4984efedc4b08975c5aeb73f530d02df25717"
   integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
-
-unmutable@^0.46.0:
-  version "0.46.1"
-  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.1.tgz#af1e4c5bec4905bd8d288be45bd215f7e4d5ccb1"
-  integrity sha512-rd1q64OKPXUWkJOt2N619zHwu7FdRNgtmyNdi3mzH/TmT52/QmoJShjvU+7X3CwIfElmlOEVl2dapxMHhJ49dw==
-  dependencies:
-    "@babel/runtime" "^7.1.5"
-    fast-deep-equal "^1.0.0"
-    is-plain-object "^2.0.4"
-    lodash.range "^3.2.0"
 
 unset-value@^1.0.0:
   version "1.0.0"

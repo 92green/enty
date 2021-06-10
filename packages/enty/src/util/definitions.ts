@@ -1,7 +1,7 @@
 export type NormalizeState = {
     entities: Entities;
     result: any;
-    schemas: Object;
+    schemas: Record<string, Schema>;
 };
 
 export type DenormalizeState = {
