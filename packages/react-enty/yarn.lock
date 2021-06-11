@@ -3830,6 +3830,11 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
+enty@^2.0.0-alpha.1:
+  version "2.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-2.0.0-alpha.1.tgz#405faf0601374935096a51f3150feee5b2948bec"
+  integrity sha512-SmBWSYX+/6Kd1DqYOoxGWPJDDyObxR9VeZwl76MlC1KM355rs4izV1sVBabsVVR7F5z2SKomkHC8ce3/frgbVQ==
+
 enzyme-matchers@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-7.1.2.tgz#d80530a61f22d28bb993dd7588abba38bd4de282"
