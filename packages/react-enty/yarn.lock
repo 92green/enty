@@ -2043,6 +2043,20 @@ entities@^1.1.1, entities@~1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
 
+enty-state@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty-state/-/enty-state-1.1.0.tgz#f0d65ecce0abfa91f68599f1cd51b89a8a8b7276"
+  integrity sha512-6BlUOkeM0MpuaDZDPVpiGA/9ZL2bW5uN/oHT05dpJHua2CB8OAJVfhEyLUHTnAm15/mVDOCqyGm9vQTUMSp4pQ==
+  dependencies:
+    unmutable "^0.46.0"
+
+enty@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-1.1.0.tgz#a222ca4ac599c15acbe38a9f66bcb1ca9e04ed8f"
+  integrity sha512-GzyOwuJwEuTTthfaBL0bW6tKjZ/tuHRb2a2kHHqt9+boMbAlk6sJuhrr6ZzC8kyFRRDU8HpHAcM1lHhGfealcQ==
+  dependencies:
+    unmutable "^0.46.0"
+
 enzyme-adapter-react-16@^1.1.1:
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/enzyme-adapter-react-16/-/enzyme-adapter-react-16-1.14.0.tgz#204722b769172bcf096cb250d33e6795c1f1858f"
@@ -4687,8 +4701,9 @@ path-key@^2.0.0, path-key@^2.0.1:
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
 path-parse@^1.0.5, path-parse@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
+  integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
 path-type@^1.0.0:
   version "1.1.0"
