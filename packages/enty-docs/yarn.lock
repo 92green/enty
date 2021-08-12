@@ -3249,6 +3249,18 @@ entities@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
 
+enty-state@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty-state/-/enty-state-1.1.0.tgz#f0d65ecce0abfa91f68599f1cd51b89a8a8b7276"
+  dependencies:
+    unmutable "^0.46.0"
+
+enty@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-1.1.0.tgz#a222ca4ac599c15acbe38a9f66bcb1ca9e04ed8f"
+  dependencies:
+    unmutable "^0.46.0"
+
 envinfo@^5.8.1:
   version "5.12.1"
   resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-5.12.1.tgz#83068c33e0972eb657d6bc69a6df30badefb46ef"
@@ -7051,8 +7063,8 @@ path-key@^2.0.0, path-key@^2.0.1:
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-2.0.1.tgz#411cadb574c5a140d3a4b1910d40d80cc9f40b40"
 
 path-parse@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
 
 path-to-regexp@0.1.7:
   version "0.1.7"
@@ -7720,6 +7732,14 @@ react-dom@^16.8.6:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.13.6"
+
+react-enty@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-enty/-/react-enty-1.1.0.tgz#ebc335381713d1b9a00c809674e20be2655e7e7c"
+  dependencies:
+    enty "^1.1.0"
+    enty-state "^1.1.0"
+    unmutable "^0.46.0"
 
 react-error-overlay@^3.0.0:
   version "3.0.0"
