@@ -706,6 +706,12 @@
     pirates "^4.0.0"
     source-map-support "^0.5.9"
 
+"@babel/runtime@^7.1.5":
+  version "7.15.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.2.0":
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.5.4.tgz#cb7d1ad7c6d65676e66b47186577930465b5271b"
@@ -2002,6 +2008,12 @@ end-of-stream@^1.1.0:
 entities@^1.1.1, entities@~1.1.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"
+
+enty@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-1.1.0.tgz#a222ca4ac599c15acbe38a9f66bcb1ca9e04ed8f"
+  dependencies:
+    unmutable "^0.46.0"
 
 enzyme-adapter-react-16@^1.1.1:
   version "1.14.0"
@@ -4053,6 +4065,10 @@ lodash.keys@^3.0.0:
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
 
+lodash.range@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
+
 lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
@@ -4992,6 +5008,10 @@ regenerator-runtime@^0.13.2:
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
 
+regenerator-runtime@^0.13.4:
+  version "0.13.9"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
+
 regenerator-transform@^0.14.0:
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.0.tgz#2ca9aaf7a2c239dd32e4761218425b8c7a86ecaf"
@@ -5677,8 +5697,8 @@ tmp@^0.0.33:
     os-tmpdir "~1.0.2"
 
 tmpl@1.0.x:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.5.tgz#8683e0b902bb9c20c4f726e3c0b69f36518c07cc"
 
 to-fast-properties@^1.0.3:
   version "1.0.3"
@@ -5808,6 +5828,15 @@ union-value@^1.0.0:
 universalify@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.2.tgz#b646f69be3942dabcecc9d6639c80dc105efaa66"
+
+unmutable@^0.46.0:
+  version "0.46.1"
+  resolved "https://registry.yarnpkg.com/unmutable/-/unmutable-0.46.1.tgz#af1e4c5bec4905bd8d288be45bd215f7e4d5ccb1"
+  dependencies:
+    "@babel/runtime" "^7.1.5"
+    fast-deep-equal "^1.0.0"
+    is-plain-object "^2.0.4"
+    lodash.range "^3.2.0"
 
 unset-value@^1.0.0:
   version "1.0.0"
