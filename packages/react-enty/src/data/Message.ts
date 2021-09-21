@@ -2,20 +2,20 @@ import RequestState from '../data/RequestState';
 
 type Request = (payload?: unknown, config?: {returnResponse: boolean}) => any;
 
-type MessageInput<R, E extends Error = Error> = {
-    requestError?: E;
+type MessageInput<R> = {
+    requestError?: Error;
     response?: R;
-    removeEntity: (type: string, id: string) => void;
-    request: Request;
-    reset: () => void;
-    responseKey: string;
+    removeEntity?: (type: string, id: string) => void;
+    request?: Request;
+    reset?: () => void;
+    responseKey?: string;
 };
 
 //}
 
-export abstract class BaseMessage<R = void, E extends Error = Error> {
+export abstract class BaseMessage<R = void> {
     response?: R;
-    requestError?: E;
+    requestError?: Error;
     request: Request;
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
@@ -29,13 +29,13 @@ export abstract class BaseMessage<R = void, E extends Error = Error> {
     abstract readonly isError: boolean;
     abstract readonly requestState: RequestState;
 
-    constructor(props: MessageInput<R, E>) {
-        this.responseKey = props.responseKey;
+    constructor(props: MessageInput<R>) {
+        this.responseKey = props.responseKey || '';
         this.response = props.response;
         this.requestError = props.requestError;
-        this.request = props.request;
-        this.reset = props.reset;
-        this.removeEntity = props.removeEntity;
+        this.request = props.request || (() => {});
+        this.reset = props.reset || (() => {});
+        this.removeEntity = props.removeEntity || (() => {});
     }
 
     get data() {
@@ -83,9 +83,6 @@ export abstract class BaseMessage<R = void, E extends Error = Error> {
             requestError: undefined
         });
     }
-    toEmpty(): EmptyMessage {
-        return BaseMessage.empty({...(this as MessageInput<R>)});
-    }
 
     static fetching<R>(messageProps?: MessageInput<R>) {
         return new FetchingMessage({
@@ -93,29 +90,17 @@ export abstract class BaseMessage<R = void, E extends Error = Error> {
             response: undefined
         });
     }
-    toFetching(): Message<R, E> {
-        return BaseMessage.fetching({...(this as MessageInput<R>)});
-    }
 
     static refetching<R>(messageProps?: MessageInput<R>) {
         return new RefetchingMessage({...messageProps});
-    }
-    toRefetching(): Message<R, E> {
-        return BaseMessage.refetching({...(this as MessageInput<R>)});
     }
 
     static success<R>(messageProps?: MessageInput<R>) {
         return new SuccessMessage({...messageProps});
     }
-    toSuccess(): Message<R, E> {
-        return BaseMessage.success({...(this as MessageInput<R>)});
-    }
 
     static error<R>(messageProps?: MessageInput<R>) {
         return new ErrorMessage({...messageProps});
-    }
-    toError() {
-        return BaseMessage.error({...(this as MessageInput<R, E>)});
     }
 }
 
@@ -173,8 +158,7 @@ export class SuccessMessage<T> extends BaseMessage<T> {
     }
 }
 
-export class ErrorMessage<T, E extends Error> extends BaseMessage<T, E> {
-    requestError: E;
+export class ErrorMessage<T> extends BaseMessage<T> {
     readonly state = 'success';
     readonly requestState = RequestState.error();
     readonly isEmpty = false;
@@ -183,20 +167,20 @@ export class ErrorMessage<T, E extends Error> extends BaseMessage<T, E> {
     readonly isPending = false;
     readonly isSuccess = false;
     readonly isError = true;
-    constructor(input: MessageInput<T, E>) {
+    constructor(input: MessageInput<T>) {
         super(input);
         this.requestError = input.requestError;
     }
 }
 
-export type Message<T, E extends Error = Error> =
+export type Message<T> =
     | EmptyMessage
     | FetchingMessage
     | RefetchingMessage<T>
     | SuccessMessage<T>
-    | ErrorMessage<T, E>;
+    | ErrorMessage<T>;
 
-export function unknownMessage<T, E extends Error = Error>(input: any): Message<T, E> {
+export function unknownMessage<T>(input: any): Message<T> {
     let message;
     if (input.requestState.isEmpty) message = EmptyMessage;
     if (input.requestState.isFetching) message = FetchingMessage;

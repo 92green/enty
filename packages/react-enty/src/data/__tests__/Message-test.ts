@@ -85,14 +85,6 @@ describe('Message response methods', () => {
 });
 
 describe('Message requestState methods', () => {
-    it('will change requestState with .to functions', () => {
-        expect(BaseMessage.fetching().toEmpty().requestState.isEmpty).toBe(true);
-        expect(BaseMessage.empty(messageInput).toFetching().requestState.isFetching).toBe(true);
-        expect(BaseMessage.empty(messageInput).toRefetching().requestState.isRefetching).toBe(true);
-        expect(BaseMessage.empty(messageInput).toSuccess().requestState.isSuccess).toBe(true);
-        expect(BaseMessage.empty(messageInput).toError().requestState.isError).toBe(true);
-    });
-
     it('will provide getters for the requestState', () => {
         expect(BaseMessage.empty(messageInput).isEmpty).toBe(true);
         expect(BaseMessage.fetching().isFetching).toBe(true);
