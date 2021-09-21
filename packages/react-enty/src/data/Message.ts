@@ -11,9 +11,7 @@ type MessageInput<R> = {
     responseKey?: string;
 };
 
-//}
-
-export abstract class BaseMessage<R = void> {
+export abstract class BaseMessage<R> {
     response?: R;
     requestError?: Error;
     request: Request;
@@ -75,36 +73,9 @@ export abstract class BaseMessage<R = void> {
 
     //
     // empty
-
-    static empty<R>(messageProps: MessageInput<R>) {
-        return new EmptyMessage({
-            ...messageProps,
-            response: undefined,
-            requestError: undefined
-        });
-    }
-
-    static fetching<R>(messageProps?: MessageInput<R>) {
-        return new FetchingMessage({
-            ...messageProps,
-            response: undefined
-        });
-    }
-
-    static refetching<R>(messageProps?: MessageInput<R>) {
-        return new RefetchingMessage({...messageProps});
-    }
-
-    static success<R>(messageProps?: MessageInput<R>) {
-        return new SuccessMessage({...messageProps});
-    }
-
-    static error<R>(messageProps?: MessageInput<R>) {
-        return new ErrorMessage({...messageProps});
-    }
 }
 
-export class EmptyMessage extends BaseMessage {
+export class EmptyMessage extends BaseMessage<undefined> {
     readonly state = 'empty';
     readonly requestState = RequestState.empty();
     readonly isEmpty = true;
@@ -115,7 +86,7 @@ export class EmptyMessage extends BaseMessage {
     readonly isError = false;
 }
 
-export class FetchingMessage extends BaseMessage {
+export class FetchingMessage extends BaseMessage<undefined> {
     readonly state = 'fetching';
     readonly requestState = RequestState.fetching();
     readonly isEmpty = false;
@@ -199,3 +170,32 @@ export function unknownMessage<T>(input: any): Message<T> {
 }
 
 export default Message;
+
+export const MessageFactory = {
+    empty<R>(messageProps: MessageInput<R>) {
+        return new EmptyMessage({
+            ...messageProps,
+            response: undefined,
+            requestError: undefined
+        });
+    },
+
+    fetching<R>(messageProps?: MessageInput<R>) {
+        return new FetchingMessage({
+            ...messageProps,
+            response: undefined
+        });
+    },
+
+    refetching<R>(messageProps?: MessageInput<R>) {
+        return new RefetchingMessage({...messageProps});
+    },
+
+    success<R>(messageProps?: MessageInput<R>) {
+        return new SuccessMessage({...messageProps});
+    },
+
+    error<R>(messageProps?: MessageInput<R>) {
+        return new ErrorMessage({...messageProps});
+    }
+};
