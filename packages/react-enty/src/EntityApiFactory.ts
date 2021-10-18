@@ -17,7 +17,7 @@ type Visitor = (arg0: {
 }) => any;
 
 export default function EntityApiFactory(actionMap: ActionMap, visitor: Visitor) {
-    return visitActionMap(actionMap, (sideEffect, path) => {
+    return visitActionMap(actionMap, (sideEffect: () => Promise<any>, path: string[]) => {
         const actionType = path.join('_').toUpperCase();
         const requestAction = createRequestAction(sideEffect);
 
@@ -26,7 +26,7 @@ export default function EntityApiFactory(actionMap: ActionMap, visitor: Visitor)
             requestAction,
             resetAction,
             removeEntityAction,
-            generateResultKey: (payload) => Hash({payload, actionType})
+            generateResultKey: (payload: any) => Hash({payload, actionType})
         });
     });
 }

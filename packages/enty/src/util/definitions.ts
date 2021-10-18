@@ -32,7 +32,7 @@ export type DynamicShape = (data: any) => Schema;
 // Options
 
 export type Entities = Record<string, Record<string, any>>;
-export type Normalize = (data: unknown, entities: Object) => NormalizeState;
+export type Normalize = (data: unknown, entities: Entities) => NormalizeState;
 export type Denormalize = (denormalizeState: DenormalizeState, path?: Array<unknown>) => any;
 export type Create = (data: any) => any;
 export type Merge = (previous: any, next: any) => any;
@@ -44,7 +44,7 @@ export type IdAttribute = (data: any) => string;
 export interface EntitySchemaInterface<Shape> {
     readonly normalize: Normalize;
     readonly denormalize: Denormalize;
-    shape: Shape;
+    shape: Shape | null;
     name: string;
     id: (item: unknown) => string;
 }

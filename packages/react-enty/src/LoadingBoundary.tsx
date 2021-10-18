@@ -26,7 +26,7 @@ export default function LoadingBoundary<R>(props: Props<R>) {
 
     // Possible States
     const emptyState = () => <Empty />;
-    const errorState = () => <Error error={message.requestError.toString()} />;
+    const errorState = () => <Error error={message.requestError?.toString()} />;
     const fallbackState = () => <Fallback />;
     const renderState = () =>
         children(message.response, {

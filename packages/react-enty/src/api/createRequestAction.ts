@@ -7,7 +7,7 @@ type Meta = {
 
 export default function createRequestAction(sideEffect: SideEffect) {
     return <P>(requestPayload: P, meta: Meta) => (dispatch: Dispatch, getState: () => State) => {
-        const makeAction = (type: Action['type']) => (payload: P) =>
+        const makeAction = <T>(type: Action['type']) => (payload: T) =>
             dispatch({
                 type,
                 payload,
@@ -20,17 +20,17 @@ export default function createRequestAction(sideEffect: SideEffect) {
             getState
         };
 
-        const fetchAction = makeAction(`ENTY_FETCH`);
-        const receiveAction = makeAction(`ENTY_RECEIVE`);
-        const errorAction = makeAction(`ENTY_ERROR`);
+        const fetchAction = makeAction<null>(`ENTY_FETCH`);
+        const receiveAction = makeAction<P>(`ENTY_RECEIVE`);
+        const errorAction = makeAction<unknown>(`ENTY_ERROR`);
         const pending = sideEffect(requestPayload, sideEffectMeta);
 
         fetchAction(null);
         if ('subscribe' in pending) {
             pending.subscribe({
-                next: data => receiveAction(data),
-                complete: data => receiveAction(data),
-                error: error => errorAction(error)
+                next: (data: P) => receiveAction(data),
+                complete: (data: P) => receiveAction(data),
+                error: (error: Error) => errorAction(error)
             });
         } else if ('then' in pending) {
             pending.then(receiveAction).catch(err => {

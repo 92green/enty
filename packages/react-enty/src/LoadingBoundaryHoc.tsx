@@ -32,7 +32,7 @@ export default function LoadingBoundaryHoc(config: Config) {
                     {...remainingConfig}
                     message={message}
                     children={response => {
-                        let childProps = mapResponseToProps(response);
+                        let childProps: Record<string, any> = mapResponseToProps(response);
                         childProps[name] = message;
                         return <Component {...props} {...childProps} />;
                     }}

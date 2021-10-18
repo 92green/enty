@@ -14,7 +14,7 @@ import ObjectSchema from './ObjectSchema';
 export default class EntitySchema<A extends StructuralSchemaInterface<any>>
     implements EntitySchemaInterface<A> {
     name: string;
-    shape: A;
+    shape: A | null;
     id: IdAttribute;
     merge: Merge | null | undefined;
 
@@ -36,7 +36,7 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
 
         let id = this.id(data);
         let previousEntity;
-        let schemas = {};
+        let schemas: Record<string, any> = {};
         let result;
 
         if (id == null) {
@@ -59,9 +59,8 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
         // list this schema as one that has been used
         schemas[name] = this;
 
-        entities[name][id] = previousEntity
-            ? (this.merge || shape.merge)(previousEntity, result)
-            : result;
+        entities[name][id] =
+            previousEntity && shape ? (this.merge || shape.merge)(previousEntity, result) : result;
 
         return {
             entities,

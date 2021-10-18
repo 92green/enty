@@ -6,6 +6,7 @@ import {Merge} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
 import {Schema} from './util/definitions';
 import {Entities} from './util/definitions';
+import EntitySchema from './EntitySchema';
 
 import REMOVED_ENTITY from './util/RemovedEntity';
 
@@ -43,6 +44,6 @@ export default class ArraySchema<A extends Schema> implements StructuralSchemaIn
             .map((item: any): any => {
                 return this.shape.denormalize({result: item, entities}, path);
             })
-            .filter(ii => ii !== REMOVED_ENTITY);
+            .filter((ii: any) => ii !== REMOVED_ENTITY);
     }
 }

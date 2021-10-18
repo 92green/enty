@@ -18,9 +18,9 @@ export type Request<T> = {
     requestHoc: (options: {
         name: string;
         auto?: boolean | string[];
-        key?: (any) => any;
-        shouldComponentAutoRequest?: (props) => boolean;
-        payloadCreator?: (props) => any;
+        key?: (a: any) => any;
+        shouldComponentAutoRequest?: (props: any) => boolean;
+        payloadCreator?: (props: any) => any;
         optimistic?: boolean;
         updateResultKey?: (resultKey: string, props: any) => string;
     }) => (component: React.ComponentType<any>) => React.ComponentType<any>;
@@ -29,11 +29,9 @@ export type Request<T> = {
 type RequestFunction = (variables?: any, meta?: any) => Promise<any> | {subscribe: Function};
 
 type MappedTransform<T> = {
-    //[K in keyof T]?: T[K] extends Function ? Request<ReturnType<T[K]>> : MappedTransform<T[K]>;
     [K in keyof T]?: T[K] extends RequestFunction
         ? Request<ReturnType<T[K]>>
         : MappedTransform<T[K]>;
-    //[K in keyof T]?: T[K] extends object ? MappedTransform<T[K]> : Request<ReturnType<T[K]>>;
 };
 
 type Extras = {

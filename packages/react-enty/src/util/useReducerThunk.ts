@@ -1,10 +1,10 @@
-import {Dispatch, State, GetState, Action} from './definitions';
+import {Dispatch, State, Action} from './definitions';
 import {useRef, useState} from 'react';
 
 export default function useThunkReducer<T extends State, M>(
     reducer: (state: T, action: Action) => T,
     initialState: T,
-    meta?: M
+    meta: M
 ): [State, Dispatch, M] {
     const [hookState, setHookState] = useState<T>(initialState);
 

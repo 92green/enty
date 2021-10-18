@@ -3,14 +3,14 @@ import {State, Action} from './util/definitions';
 import {REMOVED_ENTITY} from 'enty';
 import RequestState from './data/RequestState';
 
-export default function EntityReducerFactory(config: {schema?: Schema}) {
+export default function EntityReducerFactory(config: {schema: Schema}) {
     const {schema} = config;
 
     return function EntityReducer(
         previousState: State | null,
         {type, payload, meta = {responseKey: ''}}: Action
     ): State {
-        let state = previousState || {
+        let state: State = previousState || {
             baseSchema: schema,
             schemas: {},
             response: {},

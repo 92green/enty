@@ -6,7 +6,7 @@ import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from './EntityReducerFactory';
 import LoggingReducer from './util/LoggingReducer';
 import {State, Action, ProviderContextType} from './util/definitions';
-import {Schema} from 'enty';
+import {Schema, ObjectSchema} from 'enty';
 
 export type ProviderConfig = {
     schema?: Schema;
@@ -18,7 +18,7 @@ export type ProviderConfig = {
 };
 
 type ProviderFactoryReturn = {
-    Context: Context<ProviderContextType>;
+    Context: Context<ProviderContextType | null>;
     Provider: ComponentType<any>;
     ProviderHoc: Function;
 };
@@ -31,12 +31,12 @@ type ProviderProps = {
 };
 
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
-    const {schema, results = []} = config;
+    const {schema = new ObjectSchema({}), results = []} = config;
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext<ProviderContextType | null>(null);
 
-    function Provider({children, initialState, debug, meta}: ProviderProps) {
-        const firstState = {
+    function Provider({children, initialState, debug, meta = {}}: ProviderProps) {
+        const firstState: State = {
             baseSchema: schema,
             schemas: {},
             response: {},
@@ -55,18 +55,18 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
                       LoggingReducer(entityReducer(state, action), action, debug)
                 : entityReducer;
 
-            const intialValue = [
+            const intialValue: State = [
                 {
                     type: 'ENTY_INIT',
                     payload: null,
                     meta: {...meta, responseKey: 'Unknown'}
-                },
+                } as Action,
                 ...results.map<Action>(({responseKey, payload, type = 'ENTY_RECEIVE'}) => ({
                     type,
                     payload,
                     meta: {...meta, responseKey}
                 }))
-            ].reduce(reducer, firstState);
+            ].reduce<State>(reducer, firstState);
 
             return {
                 reducer,

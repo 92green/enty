@@ -4,11 +4,13 @@ import {StructuralSchemaInterface} from './util/definitions';
 import {Create} from './util/definitions';
 import {Merge} from './util/definitions';
 import {Entities} from './util/definitions';
+import {Schema} from './util/definitions';
 import {StructuralSchemaOptions} from './util/definitions';
 
 import REMOVED_ENTITY from './util/RemovedEntity';
 
-export default class ObjectSchema<A extends {}> implements StructuralSchemaInterface<A> {
+export default class ObjectSchema<A extends Record<string, Schema>>
+    implements StructuralSchemaInterface<A> {
     create: Create;
     merge: Merge;
     shape: A;
@@ -22,7 +24,7 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
     /**
      * ObjectSchema.normalize
      */
-    normalize(data: unknown, entities: Entities = {}): NormalizeState {
+    normalize(data: any, entities: Entities = {}): NormalizeState {
         const {shape} = this;
         const dataMap = data;
         let schemas = {};

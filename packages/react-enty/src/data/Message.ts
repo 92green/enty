@@ -47,7 +47,7 @@ export abstract class BaseMessage<R> {
     //
     // Response Getters
 
-    get<K extends keyof R, N = undefined>(key: K, notSetValue?: N): R[K] | N {
+    get<K extends keyof R, N = undefined>(key: K, notSetValue?: N): R[K] | N | undefined {
         if (!(key in (this.response || {}))) return notSetValue;
         return this.response?.[key];
     }
@@ -58,7 +58,7 @@ export abstract class BaseMessage<R> {
     getIn<K1 extends keyof R, K2 extends keyof R[K1]>(path: [K1, K2]): R[K1][K2];
     getIn<K1 extends keyof R>(path: [K1]): R[K1];
     getIn(path: string[], notSetValue?: any): any {
-        return path.reduce((value, key) => {
+        return path.reduce<Record<string, any>>((value, key) => {
             if (value === Object(value) && key in value) return value[key];
             return notSetValue;
         }, this.response || {});
@@ -67,8 +67,10 @@ export abstract class BaseMessage<R> {
     //
     // Updating Methods
 
-    update<B>(updater): Message<B> {
-        return unknownMessage(updater({...this, requestState: this.requestState}));
+    update<B extends MessageInput<any>>(
+        updater: (a: BaseMessage<any>) => B
+    ): Message<B['response']> {
+        return unknownMessage(updater({...this}));
     }
 
     //
@@ -107,7 +109,7 @@ export class RefetchingMessage<T> extends BaseMessage<T> {
     readonly isPending = true;
     readonly isSuccess = false;
     readonly isError = false;
-    constructor(input: MessageInput<T>) {
+    constructor(input: MessageInput<T> & {response: T}) {
         super(input);
         this.response = input.response;
     }
@@ -123,7 +125,7 @@ export class SuccessMessage<T> extends BaseMessage<T> {
     readonly isPending = false;
     readonly isSuccess = true;
     readonly isError = false;
-    constructor(input: MessageInput<T>) {
+    constructor(input: MessageInput<T> & {response: T}) {
         super(input);
         this.response = input.response;
     }
@@ -152,14 +154,13 @@ export type Message<T> =
     | ErrorMessage<T>;
 
 export function unknownMessage<T>(input: any): Message<T> {
-    let message;
-    if (input.requestState.isEmpty) message = EmptyMessage;
-    if (input.requestState.isFetching) message = FetchingMessage;
-    if (input.requestState.isRefetching) message = RefetchingMessage;
-    if (input.requestState.isSuccess) message = SuccessMessage;
-    if (input.requestState.isError) message = ErrorMessage;
+    let UnknownMessage: any = EmptyMessage;
+    if (input.requestState.isFetching) UnknownMessage = FetchingMessage;
+    if (input.requestState.isRefetching) UnknownMessage = RefetchingMessage;
+    if (input.requestState.isSuccess) UnknownMessage = SuccessMessage;
+    if (input.requestState.isError) UnknownMessage = ErrorMessage;
 
-    return new message({
+    return new UnknownMessage({
         removeEntity: input.removeEntity,
         request: input.request,
         requestError: input.requestError,
@@ -187,11 +188,11 @@ export const MessageFactory = {
         });
     },
 
-    refetching<R>(messageProps?: MessageInput<R>) {
+    refetching<R>(messageProps: MessageInput<R> & {response: R}) {
         return new RefetchingMessage({...messageProps});
     },
 
-    success<R>(messageProps?: MessageInput<R>) {
+    success<R>(messageProps: MessageInput<R> & {response: R}) {
         return new SuccessMessage({...messageProps});
     },
 

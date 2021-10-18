@@ -36,10 +36,11 @@ export default function RequestHocFactory({useRequest}: Config) {
             });
 
             message = useMemo(() => {
-                return message.update(message => ({
+                return message.update((message: any) => ({
                     ...message,
                     // attach payload creator to message
-                    request: (payload, ...rest) => message.request(payloadCreator(payload), ...rest)
+                    request: (payload: any, ...rest: any[]) =>
+                        message.request(payloadCreator(payload), ...rest)
                 }));
             }, [message]);
 

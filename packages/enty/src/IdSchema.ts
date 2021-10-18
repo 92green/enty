@@ -18,6 +18,7 @@ export default class IdSchema<A extends EntitySchemaInterface<any>>
     constructor(shape: A, options: {create?: Create} = {}) {
         this.shape = shape;
         this.create = options.create || (id => ({id}));
+        this.merge = (_, bb: A) => bb;
     }
 
     normalize(data: unknown, entities: Entities = {}): NormalizeState {
