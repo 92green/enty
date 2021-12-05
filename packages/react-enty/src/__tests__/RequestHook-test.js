@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {useEffect} from 'react';
-import Message from 'enty-state/lib/data/Message';
+import Message from '../state/data/Message';
 
 import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
@@ -14,12 +14,20 @@ import {fetchSeries} from './RequestSuite';
 import {fetchParallel} from './RequestSuite';
 import {fetchBadEntity} from './RequestSuite';
 import {removeEntity} from './RequestSuite';
-import {mountWithProvider, foo, fooError, exisitingKey, keyClash, badEntity, bar, baz, obs, entity} from './RequestSuite';
-
-
+import {
+    mountWithProvider,
+    foo,
+    fooError,
+    exisitingKey,
+    keyClash,
+    badEntity,
+    bar,
+    baz,
+    obs,
+    entity
+} from './RequestSuite';
 
 describe('config', () => {
-
     it('will return a message', () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
@@ -35,7 +43,7 @@ describe('config', () => {
             return null;
         };
 
-        expect(() => mount(<Child/>)).toThrow();
+        expect(() => mount(<Child />)).toThrow();
     });
 
     it('request will return undefined for promises', async () => {
@@ -63,11 +71,9 @@ describe('config', () => {
             return null;
         });
     });
-
 });
 
 describe('usage', () => {
-
     it('can fetch on load', async () => {
         return fetchOnLoad((ExpectsMessage) => () => {
             const message = foo.useRequest();
@@ -127,13 +133,14 @@ describe('usage', () => {
             const aa = baz.useRequest({key: 'baz'});
             const bb = foo.useRequest({key: 'baz'});
 
-            return <div>
-                <ExpectsMessage message={aa} />
-                <ExpectsMessage message={bb} />
-            </div>;
+            return (
+                <div>
+                    <ExpectsMessage message={aa} />
+                    <ExpectsMessage message={bb} />
+                </div>
+            );
         });
     });
-
 
     it('can fetch if props change', async () => {
         return fetchOnPropChange((ExpectsMessage) => (props: {id: string}) => {
@@ -157,18 +164,20 @@ describe('usage', () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
-                if(aa.requestState.isEmpty) {
+                if (aa.requestState.isEmpty) {
                     aa.request('first');
                 }
-                if(aa.requestState.isSuccess) {
+                if (aa.requestState.isSuccess) {
                     bb.request('second');
                 }
             }, [aa]);
 
-            return <div>
-                <ExpectsMessage message={aa} />
-                <ExpectsMessage message={bb} />
-            </div>;
+            return (
+                <div>
+                    <ExpectsMessage message={aa} />
+                    <ExpectsMessage message={bb} />
+                </div>
+            );
         });
     });
 
@@ -181,41 +190,35 @@ describe('usage', () => {
                 bb.request('second');
             }, []);
 
-            return <div>
-                <ExpectsMessage message={aa} />
-                <ExpectsMessage message={bb} />
-            </div>;
+            return (
+                <div>
+                    <ExpectsMessage message={aa} />
+                    <ExpectsMessage message={bb} />
+                </div>
+            );
         });
     });
-
-
 });
 
 describe('Message.reset', () => {
-
     it('can reset a request', () => {
         return reset((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });
     });
-
 });
 
 describe('Message.removeEntity', () => {
-
     it('can remove entities', () => {
         return removeEntity((ExpectsMessage) => () => {
             const message = entity.useRequest();
             return <ExpectsMessage message={message} removeEntityPayload={['foo', '123']} />;
         });
     });
-
 });
 
-
 describe('Message.request', () => {
-
     it('request will return response if config.returnResponse is true', async () => {
         expect.assertions(1);
         mountWithProvider(() => () => {
@@ -228,5 +231,4 @@ describe('Message.request', () => {
             return null;
         });
     });
-
 });

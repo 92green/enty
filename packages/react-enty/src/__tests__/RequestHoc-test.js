@@ -1,7 +1,7 @@
 // @flow
 import React, {useEffect} from 'react';
-import composeWith from'unmutable/composeWith';
-import Message from 'enty-state/lib/data/Message';
+import composeWith from 'unmutable/composeWith';
+import Message from '../state/data/Message';
 
 import {fetchOnLoad} from './RequestSuite';
 import {errorOnLoad} from './RequestSuite';
@@ -18,41 +18,36 @@ import {fooError} from './RequestSuite';
 import {mountWithProvider} from './RequestSuite';
 import {asyncUpdate} from './RequestSuite';
 
-
 describe('config', () => {
-
     it('will return a function', () => {
         expect(typeof foo.requestHoc({name: 'foo'})).toBe('function');
     });
 
     describe('config.name and message', () => {
-
         test('will throw an error if config.name is not supplied', () => {
             expect(() => foo.requestHoc({})).toThrow('requestHoc must be given a name');
         });
 
         it('will give a Message to props.[name]', () => {
             expect.assertions(1);
-            mountWithProvider(() => composeWith(
-                foo.requestHoc({name: 'bar'}),
-                (props) => {
+            mountWithProvider(() =>
+                composeWith(foo.requestHoc({name: 'bar'}), (props) => {
                     expect(props.bar).toBeInstanceOf(Message);
                     return null;
-                }
-            ));
+                })
+            );
         });
-
     });
 
     describe('config.auto', () => {
-
         it('will fetch if any auto prop path changes', async () => {
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: ['foo', 'bar.baz'],
-                payloadCreator: () => '!!!'
-            }));
-
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: ['foo', 'bar.baz'],
+                    payloadCreator: () => '!!!'
+                })
+            );
 
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
@@ -72,12 +67,13 @@ describe('config', () => {
         });
 
         it('will do deep checks and not update', async () => {
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: ['foo', 'bar'],
-                payloadCreator: () => '!!!'
-            }));
-
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: ['foo', 'bar'],
+                    payloadCreator: () => '!!!'
+                })
+            );
 
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
@@ -99,18 +95,17 @@ describe('config', () => {
             wrapper.setProps({bar: {baz: '!'}}).update();
             expect(wrapper).toBeSuccess({data: '!!!'});
         });
-
-
     });
 
     describe('config.shouldComponentAutoRequest', () => {
-
         it('will not request if shouldComponentAutoRequest returns false', () => {
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: true,
-                shouldComponentAutoRequest: () => false
-            }));
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: true,
+                    shouldComponentAutoRequest: () => false
+                })
+            );
 
             expect(wrapper).not.toBeFetching();
             expect(wrapper).toBeEmpty();
@@ -118,23 +113,27 @@ describe('config', () => {
 
         it('will call shouldComponentAutoRequest with props', () => {
             let shouldComponentAutoRequest = jest.fn();
-            mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: true,
-                shouldComponentAutoRequest
-            }), {foo: 'bar'});
+            mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: true,
+                    shouldComponentAutoRequest
+                }),
+                {foo: 'bar'}
+            );
 
             expect(shouldComponentAutoRequest).toHaveBeenCalledWith({foo: 'bar'});
         });
-
     });
 
     describe('config.payloadCreator', () => {
-
         test('config.payloadCreator will default to an identity if config.auto is falsy', async () => {
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message'
-            }), {payload: '!!!'});
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message'
+                }),
+                {payload: '!!!'}
+            );
 
             wrapper.find('.request').simulate('click');
             expect(wrapper).toBeFetching();
@@ -143,10 +142,12 @@ describe('config', () => {
         });
 
         test('config.payloadCreator will by default return an empty object if config.auto is truthy', async () => {
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: true
-            }));
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: true
+                })
+            );
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
             expect(wrapper).toBeSuccess({data: 'foo'});
@@ -154,11 +155,13 @@ describe('config', () => {
 
         test('config.payloadCreator will create the payload', async () => {
             expect.hasAssertions();
-            let wrapper = mountWithProvider(foo.requestHoc({
-                name: 'message',
-                auto: true,
-                payloadCreator: () => 'blah!'
-            }));
+            let wrapper = mountWithProvider(
+                foo.requestHoc({
+                    name: 'message',
+                    auto: true,
+                    payloadCreator: () => 'blah!'
+                })
+            );
             expect(wrapper).toBeFetching();
             await asyncUpdate(wrapper);
             expect(wrapper).toBeSuccess({data: 'blah!'});
@@ -166,70 +169,82 @@ describe('config', () => {
 
         it('will pass .request() payload through payloadCreator', async () => {
             const payloadCreator = jest.fn();
-            await fetchOnCallback(foo.requestHoc({
-                name: 'message',
-                payloadCreator
-            }));
+            await fetchOnCallback(
+                foo.requestHoc({
+                    name: 'message',
+                    payloadCreator
+                })
+            );
             expect(payloadCreator).toHaveBeenCalled();
         });
-
     });
-
 });
 
-
 describe('usage', () => {
-
     it('can fetch on load', async () => {
-        return fetchOnLoad(foo.requestHoc({
-            name: 'message',
-            payloadCreator: () => 'foo',
-            auto: true
-        }));
+        return fetchOnLoad(
+            foo.requestHoc({
+                name: 'message',
+                payloadCreator: () => 'foo',
+                auto: true
+            })
+        );
     });
 
     it('can catch rejected requests', async () => {
-        return errorOnLoad(fooError.requestHoc({
-            name: 'message',
-            payloadCreator: () => 'foo',
-            auto: true
-        }));
+        return errorOnLoad(
+            fooError.requestHoc({
+                name: 'message',
+                payloadCreator: () => 'foo',
+                auto: true
+            })
+        );
     });
 
     it('can do nothing', async () => {
-        return nothing(foo.requestHoc({
-            name: 'message'
-        }));
+        return nothing(
+            foo.requestHoc({
+                name: 'message'
+            })
+        );
     });
 
     it('can refetch content', async () => {
-        return refetch(foo.requestHoc({
-            name: 'message'
-        }));
+        return refetch(
+            foo.requestHoc({
+                name: 'message'
+            })
+        );
     });
 
     it('can use an exising key', async () => {
-        return exisitingKey(baz.requestHoc({
-            name: 'message',
-            key: (props) => {
-                expect(props).toEqual({});
-                return 'baz';
-            }
-        }));
+        return exisitingKey(
+            baz.requestHoc({
+                name: 'message',
+                key: (props) => {
+                    expect(props).toEqual({});
+                    return 'baz';
+                }
+            })
+        );
     });
 
     it('can fetch if props change', async () => {
-        return fetchOnPropChange(foo.requestHoc({
-            name: 'message',
-            payloadCreator: ({id}) => id,
-            auto: ['id']
-        }));
+        return fetchOnPropChange(
+            foo.requestHoc({
+                name: 'message',
+                payloadCreator: ({id}) => id,
+                auto: ['id']
+            })
+        );
     });
 
     it('can fetch from a callback', async () => {
-        return fetchOnCallback(foo.requestHoc({
-            name: 'message'
-        }));
+        return fetchOnCallback(
+            foo.requestHoc({
+                name: 'message'
+            })
+        );
     });
 
     it('can fetch multiples in series', async () => {
@@ -241,18 +256,20 @@ describe('usage', () => {
                     const {aa, bb} = props;
 
                     useEffect(() => {
-                        if(aa.requestState.isEmpty) {
+                        if (aa.requestState.isEmpty) {
                             aa.request('first');
                         }
-                        if(aa.requestState.isSuccess) {
+                        if (aa.requestState.isSuccess) {
                             bb.request('second');
                         }
                     }, [aa.requestState]);
 
-                    return <div>
-                        <ExpectsMessage message={aa} />
-                        <ExpectsMessage message={bb} />
-                    </div>;
+                    return (
+                        <div>
+                            <ExpectsMessage message={aa} />
+                            <ExpectsMessage message={bb} />
+                        </div>
+                    );
                 }
             );
         });
@@ -265,14 +282,14 @@ describe('usage', () => {
                 foo.requestHoc({name: 'bb', auto: true, payloadCreator: () => 'second'}),
                 (props) => {
                     const {aa, bb} = props;
-                    return <div>
-                        <ExpectsMessage message={aa} />
-                        <ExpectsMessage message={bb} />
-                    </div>;
+                    return (
+                        <div>
+                            <ExpectsMessage message={aa} />
+                            <ExpectsMessage message={bb} />
+                        </div>
+                    );
                 }
             );
         });
     });
-
-
 });

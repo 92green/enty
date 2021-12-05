@@ -1,7 +1,7 @@
 // @flow
 import type {Node} from 'react';
 import type {ComponentType} from 'react';
-import type Message from 'enty-state/lib/data/Message';
+import type Message from './state/data/Message';
 
 import React from 'react';
 
@@ -29,9 +29,10 @@ export default function LoadingBoundary<R, E>(props: Props<R, E>): Node {
     const emptyState = () => <Empty />;
     const errorState = () => <Error error={message.requestError} />;
     const fallbackState = () => <Fallback />;
-    const renderState = () => children(message.response, {
-        refetching: message.requestState.isRefetching === true
-    });
+    const renderState = () =>
+        children(message.response, {
+            refetching: message.requestState.isRefetching === true
+        });
 
     // Render
     return message.requestState
@@ -42,4 +43,3 @@ export default function LoadingBoundary<R, E>(props: Props<R, E>): Node {
         .errorMap(errorState)
         .value();
 }
-

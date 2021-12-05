@@ -1,7 +1,7 @@
 // @flow
 import type {ComponentType} from 'react';
 import type {AbstractComponent} from 'react';
-import type Message from 'enty-state/lib/data/Message';
+import type Message from './state/data/Message';
 
 import React from 'react';
 import LoadingBoundary from './LoadingBoundary';

@@ -1,5 +1,5 @@
 // @flow
-import removeAction from 'enty-state/lib/api/removeAction';
+import removeAction from './state/api/removeAction';
 import {useContext, useMemo} from 'react';
 
 

@@ -1,5 +1,5 @@
 // @flow
-import type {Schema} from 'enty/lib/util/definitions';
+import type {Schema} from './schema/util/definitions';
 
 export type Observable = {
     subscribe: Function

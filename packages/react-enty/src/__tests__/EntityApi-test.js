@@ -1,18 +1,20 @@
 // @flow
 import React from 'react';
 import EntityApi from '../EntityApi';
-import {ObjectSchema} from 'enty';
+import {ObjectSchema} from '../schema';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
 
 describe('exports', () => {
-
-    const api = EntityApi({
-        foo: () => Promise.resolve(),
-        bar: {
-            baz: () => Promise.resolve()
-        }
-    }, new ObjectSchema({}));
+    const api = EntityApi(
+        {
+            foo: () => Promise.resolve(),
+            bar: {
+                baz: () => Promise.resolve()
+            }
+        },
+        new ObjectSchema({})
+    );
 
     it('will export the api shape', () => {
         const requestHoc = expect.any(Function);
@@ -35,28 +37,35 @@ describe('exports', () => {
             }
         });
     });
-
 });
 
 describe('Provider', () => {
-
     it('will transparently stack providers', () => {
-        const A = EntityApi({
-            foo: () => Promise.resolve()
-        }, new ObjectSchema({}));
+        const A = EntityApi(
+            {
+                foo: () => Promise.resolve()
+            },
+            new ObjectSchema({})
+        );
 
-        const B = EntityApi({
-            foo: () => Promise.resolve()
-        }, new ObjectSchema({}));
+        const B = EntityApi(
+            {
+                foo: () => Promise.resolve()
+            },
+            new ObjectSchema({})
+        );
         const Child = () => null;
 
-        expect(() => mount(<A.Provider>
-            <B.Provider>
-                <Child/>
-            </B.Provider>
-        </A.Provider>)).not.toThrow();
+        expect(() =>
+            mount(
+                <A.Provider>
+                    <B.Provider>
+                        <Child />
+                    </B.Provider>
+                </A.Provider>
+            )
+        ).not.toThrow();
     });
-
 });
 
 it('can request and render without a schema', async () => {
@@ -72,7 +81,11 @@ it('can request and render without a schema', async () => {
         return <ExpectsMessage message={message} />;
     };
 
-    const wrapper = mount(<Provider><Child/></Provider>);
+    const wrapper = mount(
+        <Provider>
+            <Child />
+        </Provider>
+    );
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess('FOO!');
@@ -91,7 +104,11 @@ it('can log reducer cycles', async () => {
         return <ExpectsMessage message={message} />;
     };
 
-    const wrapper = mount(<Provider debug={true}><Child/></Provider>);
+    const wrapper = mount(
+        <Provider debug={true}>
+            <Child />
+        </Provider>
+    );
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess('FOO!');
@@ -111,10 +128,12 @@ it('will merge provider meta with api function meta', async () => {
         return <ExpectsMessage message={message} />;
     };
 
-    const wrapper = mount(<Provider meta={baseMeta}><Child/></Provider>);
+    const wrapper = mount(
+        <Provider meta={baseMeta}>
+            <Child />
+        </Provider>
+    );
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess('bar!');
 });
-
-
