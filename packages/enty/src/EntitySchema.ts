@@ -46,6 +46,9 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
 
         entities[name] = entities[name] || {};
 
+        //entities[name][id] = data;
+        //return {entities, result: data};
+
         // only normalize if we have a defined shape
         if (shape == null) {
             result = data;
@@ -55,18 +58,23 @@ export default class EntitySchema<A extends StructuralSchemaInterface<any>>
             schemas = _.schemas;
             previousEntity = entities[name][id];
         }
+        //console.log('normalize', {id, result, previousEntity});
 
         // list this schema as one that has been used
         schemas[name] = this;
 
-        entities[name][id] = previousEntity
-            ? (this.merge || shape.merge)(previousEntity, result)
-            : result;
+        if (previousEntity) {
+            Object.assign(entities[name][id], (this.merge || shape.merge)(previousEntity, result));
+        } else {
+            entities[name][id] = result;
+        }
 
         return {
             entities,
             schemas,
-            result: id
+            name,
+            id,
+            result: entities[name][id]
         };
     }
 

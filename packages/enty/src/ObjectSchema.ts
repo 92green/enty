@@ -31,11 +31,13 @@ export default class ObjectSchema<A extends {}> implements StructuralSchemaInter
             const value = dataMap[key];
             const schema = shape[key];
             if (value) {
-                const {result: childResult, schemas: childSchemas} = schema.normalize(
+                const {result: childResult, schemas: childSchemas, name, id} = schema.normalize(
                     value,
                     entities
                 );
                 Object.assign(schemas, childSchemas);
+                //console.log('object', key, {name, id});
+                //result[key] = entities[name][id];
                 result = {...result, [key]: childResult};
             }
 

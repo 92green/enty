@@ -11,6 +11,18 @@ foo.shape = new ObjectSchema({});
 baz.shape = new ObjectSchema({bar});
 bar.shape = new ObjectSchema({foo});
 
+it.only('can update by reference', () => {
+    const person = new EntitySchema('person', {merge: (aa, bb) => bb});
+    person.shape = new ObjectSchema({friend: person}, {create: ii => ii});
+    let entities = {};
+    entities = person.normalize({id: 'a', friend: {id: 'b'}}, entities).entities;
+    console.log(JSON.stringify(entities, null, 4));
+    //entities.person.b.name = 'foo';
+    entities = person.normalize({id: 'b', name: 'josh'}, entities).entities;
+
+    console.log(JSON.stringify(entities, null, 4));
+});
+
 describe('configuration', () => {
     it('can mutate its shape', () => {
         var schema = new EntitySchema('foo');
