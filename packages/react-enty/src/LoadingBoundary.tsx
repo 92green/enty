@@ -4,9 +4,9 @@ import Message from './data/Message';
 
 import React from 'react';
 
-type Props<R> = {
-    children: (response: unknown, arg1: {refetching: boolean}) => ReactNode;
-    message: Message<R>;
+type Props = {
+    children: (response: any, arg1: {refetching: boolean}) => ReactNode;
+    message: Message<any, any>;
     fallbackOnRefetch?: boolean;
     fallback?: ComponentType<any>;
     error?: ComponentType<any>;
@@ -15,7 +15,7 @@ type Props<R> = {
 
 const NullRender = () => null;
 
-export default function LoadingBoundary<R>(props: Props<R>) {
+export default function LoadingBoundary(props: Props) {
     // Config
     const {children} = props;
     const {message} = props;

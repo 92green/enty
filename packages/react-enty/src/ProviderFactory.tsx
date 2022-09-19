@@ -79,14 +79,15 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
         return <Context.Provider value={storeValue} children={children} />;
     }
 
-    const ProviderHoc = () => (Component: ComponentType<any>) => ({
-        initialState,
-        ...rest
-    }: ProviderProps) => (
-        <Provider initialState={initialState}>
-            <Component {...rest} />
-        </Provider>
-    );
+    const ProviderHoc =
+        () =>
+        (Component: ComponentType<any>) =>
+        ({initialState, ...rest}: ProviderProps) =>
+            (
+                <Provider initialState={initialState}>
+                    <Component {...rest} />
+                </Provider>
+            );
 
     return {
         Provider,

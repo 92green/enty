@@ -22,7 +22,7 @@ export default function RequestHookFactory(
 ) {
     const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
 
-    return <R>(config: Config = {}) => {
+    return <R, V>(config: Config = {}) => {
         const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
         const responseKey =
             config.responseKey || (config.key ? generateResultKey(config.key) : derivedResponseKey);
@@ -72,7 +72,7 @@ export default function RequestHookFactory(
 
         return useMemo(
             () =>
-                unknownMessage<R>({
+                unknownMessage<R, V>({
                     removeEntity,
                     request,
                     requestError: state.error[responseKey],

@@ -1,4 +1,4 @@
-import {Schema} from 'enty';
+import {Schema, ObjectSchema} from 'enty';
 
 export type Observable = {
     subscribe: Function;
@@ -11,7 +11,7 @@ export type SideEffect = (arg0: any, arg1: Object) => AsyncType;
 export type ProviderContextType = [State, Dispatch, Record<string, any>];
 
 export type State = {
-    baseSchema: Schema;
+    baseSchema: Schema | ObjectSchema<any>;
     schemas: Record<string, Schema>;
     response: Record<string, any>;
     error: Record<string, any>;

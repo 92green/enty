@@ -9,12 +9,8 @@ import RequestHook from './RequestHook';
 import RemoveHook from './RemoveHook';
 import RemoveHoc from './RemoveHoc';
 
-export type Request<T> = {
-    //_messageType: Message<T, E>;
-    useRequest: <U = void>(options?: {
-        key?: string | null;
-        responseKey?: string;
-    }) => Message<U extends void ? T : U>;
+export type Request<T, V> = {
+    useRequest: (options?: {key?: string | null; responseKey?: string}) => Message<T, V>;
     requestHoc: (options: {
         name: string;
         auto?: boolean | string[];
@@ -29,8 +25,8 @@ export type Request<T> = {
 type RequestFunction = (variables?: any, meta?: any) => Promise<any> | {subscribe: Function};
 
 type MappedTransform<T> = {
-    [K in keyof T]?: T[K] extends RequestFunction
-        ? Request<ReturnType<T[K]>>
+    [K in keyof T]: T[K] extends RequestFunction
+        ? Request<Awaited<ReturnType<T[K]>>, Parameters<T[K]>[0]>
         : MappedTransform<T[K]>;
 };
 
@@ -41,7 +37,9 @@ type Extras = {
     RemoveHoc: any;
 };
 
-export default function EntityApi<A>(
+interface ActionMap extends Record<string, ActionMap | RequestFunction> {}
+
+export default function EntityApi<A extends ActionMap>(
     actionMap: A,
     schema?: Schema,
     results?: ProviderConfig['results']
@@ -51,7 +49,7 @@ export default function EntityApi<A>(
         results
     });
 
-    let api = EntityApiFactory(actionMap, actionConfig => {
+    let api = EntityApiFactory(actionMap, (actionConfig) => {
         const useRequest = RequestHook(Context, actionConfig);
         return {
             useRequest,

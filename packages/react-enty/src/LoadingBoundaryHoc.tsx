@@ -14,7 +14,7 @@ type Config = {
 };
 
 type HocProps<R> = {
-    [name: string]: Message<R>;
+    [name: string]: Message<R, any>;
 };
 
 const returnObject: (payload?: unknown) => Object = () => ({});
@@ -25,13 +25,13 @@ export default function LoadingBoundaryHoc(config: Config) {
     return function LoadingBoundaryApplier<R, Props extends {} & HocProps<R>>(
         Component: ComponentType<Props>
     ): ComponentType<Props & HocProps<R>> {
-        return props => {
-            const message: Message<R> = props[name];
+        return (props) => {
+            const message: Message<R, any> = props[name];
             return (
                 <LoadingBoundary
                     {...remainingConfig}
                     message={message}
-                    children={response => {
+                    children={(response) => {
                         let childProps: Record<string, any> = mapResponseToProps(response);
                         childProps[name] = message;
                         return <Component {...props} {...childProps} />;

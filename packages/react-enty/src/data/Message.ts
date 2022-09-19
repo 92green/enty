@@ -1,20 +1,24 @@
 import RequestState from '../data/RequestState';
 
-type Request = (payload?: unknown, config?: {returnResponse: boolean}) => any;
-
-type MessageInput<R> = {
+type MessageInput<T, V> = {
     requestError?: Error;
-    response?: R;
+    response?: T;
     removeEntity?: (type: string, id: string) => void;
-    request?: Request;
+    request:
+        | ((payload: V, config?: {returnResponse: true}) => Promise<V>)
+        | ((payload: V, config?: {returnResponse: false}) => void);
     reset?: () => void;
     responseKey?: string;
 };
 
-export abstract class BaseMessage<R> {
-    response?: R;
+export abstract class BaseMessage<T, V> {
+    response?: T;
+    data?: T;
     requestError?: Error;
-    request: Request;
+    error?: Error;
+    request:
+        | ((payload: V, config?: {returnResponse: true}) => Promise<V>)
+        | ((payload: V, config?: {returnResponse: false}) => void);
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
     responseKey: string;
@@ -23,137 +27,111 @@ export abstract class BaseMessage<R> {
     abstract readonly isFetching: boolean;
     abstract readonly isRefetching: boolean;
     abstract readonly isPending: boolean;
+    abstract readonly isLoading: boolean;
     abstract readonly isSuccess: boolean;
     abstract readonly isError: boolean;
     abstract readonly requestState: RequestState;
 
-    constructor(props: MessageInput<R>) {
+    constructor(props: MessageInput<T, V>) {
         this.responseKey = props.responseKey || '';
         this.response = props.response;
         this.requestError = props.requestError;
+        this.error = props.requestError;
         this.request = props.request || (() => {});
         this.reset = props.reset || (() => {});
         this.removeEntity = props.removeEntity || (() => {});
     }
-
-    get data() {
-        return this.response;
-    }
-
-    get error() {
-        return this.requestError;
-    }
-
-    //
-    // Response Getters
-
-    get<K extends keyof R, N = undefined>(key: K, notSetValue?: N): R[K] | N | undefined {
-        if (!(key in (this.response || {}))) return notSetValue;
-        return this.response?.[key];
-    }
-
-    getIn<K1 extends keyof R, K2 extends keyof R[K1], K3 extends keyof R[K1][K2]>(
-        path: [K1, K2, K3]
-    ): R[K1][K2][K3];
-    getIn<K1 extends keyof R, K2 extends keyof R[K1]>(path: [K1, K2]): R[K1][K2];
-    getIn<K1 extends keyof R>(path: [K1]): R[K1];
-    getIn(path: string[], notSetValue?: any): any {
-        return path.reduce<Record<string, any>>((value, key) => {
-            if (value === Object(value) && key in value) return value[key];
-            return notSetValue;
-        }, this.response || {});
-    }
-
-    //
-    // Updating Methods
-
-    update<B extends MessageInput<any>>(
-        updater: (a: BaseMessage<any>) => B
-    ): Message<B['response']> {
-        return unknownMessage(updater({...this}));
-    }
-
-    //
-    // empty
 }
 
-export class EmptyMessage extends BaseMessage<undefined> {
+export class EmptyMessage<V> extends BaseMessage<undefined, V> {
     readonly state = 'empty';
     readonly requestState = RequestState.empty();
     readonly isEmpty = true;
     readonly isFetching = false;
     readonly isRefetching = false;
     readonly isPending = false;
+    readonly isLoading = false;
     readonly isSuccess = false;
     readonly isError = false;
 }
 
-export class FetchingMessage extends BaseMessage<undefined> {
+export class FetchingMessage<V> extends BaseMessage<undefined, V> {
     readonly state = 'fetching';
     readonly requestState = RequestState.fetching();
     readonly isEmpty = false;
     readonly isFetching = true;
     readonly isRefetching = false;
     readonly isPending = true;
+    readonly isLoading = true;
     readonly isSuccess = false;
     readonly isError = false;
 }
 
-export class RefetchingMessage<T> extends BaseMessage<T> {
-    response: T;
+export class RefetchingMessage<T, V> extends BaseMessage<T, V> {
+    declare response: T;
+    declare data: T;
     readonly state = 'refetching';
     readonly requestState = RequestState.refetching();
     readonly isEmpty = false;
     readonly isFetching = false;
     readonly isRefetching = true;
     readonly isPending = true;
+    readonly isLoading = true;
     readonly isSuccess = false;
     readonly isError = false;
-    constructor(input: MessageInput<T> & {response: T}) {
+    constructor(input: MessageInput<T, V> & {response: T}) {
         super(input);
         this.response = input.response;
+        this.data = input.response;
     }
 }
 
-export class SuccessMessage<T> extends BaseMessage<T> {
-    response: T;
+export class SuccessMessage<T, V> extends BaseMessage<T, V> {
+    declare response: T;
+    declare data: T;
     readonly state = 'success';
     readonly requestState = RequestState.success();
     readonly isEmpty = false;
     readonly isFetching = false;
     readonly isRefetching = false;
     readonly isPending = false;
+    readonly isLoading = false;
     readonly isSuccess = true;
     readonly isError = false;
-    constructor(input: MessageInput<T> & {response: T}) {
+    constructor(input: MessageInput<T, V> & {response: T}) {
         super(input);
         this.response = input.response;
+        this.data = input.response;
     }
 }
 
-export class ErrorMessage<T> extends BaseMessage<T> {
+export class ErrorMessage<T, V> extends BaseMessage<T, V> {
     readonly state = 'success';
     readonly requestState = RequestState.error();
     readonly isEmpty = false;
     readonly isFetching = false;
     readonly isRefetching = false;
     readonly isPending = false;
+    readonly isLoading = false;
     readonly isSuccess = false;
     readonly isError = true;
-    constructor(input: MessageInput<T>) {
+    declare requestError: Error;
+    declare error: Error;
+    constructor(input: MessageInput<T, V> & {requestError: Error}) {
         super(input);
         this.requestError = input.requestError;
+        this.error = input.requestError;
     }
 }
 
-export type Message<T> =
-    | EmptyMessage
-    | FetchingMessage
-    | RefetchingMessage<T>
-    | SuccessMessage<T>
-    | ErrorMessage<T>;
+export type Message<T, V> =
+    | EmptyMessage<V>
+    | FetchingMessage<V>
+    | RefetchingMessage<T, V>
+    | SuccessMessage<T, V>
+    | ErrorMessage<T, V>;
 
-export function unknownMessage<T>(input: any): Message<T> {
+export function unknownMessage<T, V>(input: any): Message<T, V> {
     let UnknownMessage: any = EmptyMessage;
     if (input.requestState.isFetching) UnknownMessage = FetchingMessage;
     if (input.requestState.isRefetching) UnknownMessage = RefetchingMessage;
@@ -173,7 +151,7 @@ export function unknownMessage<T>(input: any): Message<T> {
 export default Message;
 
 export const MessageFactory = {
-    empty<R>(messageProps: MessageInput<R>) {
+    empty<R>(messageProps: MessageInput<R, undefined>) {
         return new EmptyMessage({
             ...messageProps,
             response: undefined,
@@ -181,22 +159,22 @@ export const MessageFactory = {
         });
     },
 
-    fetching<R>(messageProps?: MessageInput<R>) {
+    fetching<R>(messageProps: MessageInput<R, undefined>) {
         return new FetchingMessage({
             ...messageProps,
             response: undefined
         });
     },
 
-    refetching<R>(messageProps: MessageInput<R> & {response: R}) {
+    refetching<R>(messageProps: MessageInput<R, undefined> & {response: R}) {
         return new RefetchingMessage({...messageProps});
     },
 
-    success<R>(messageProps: MessageInput<R> & {response: R}) {
+    success<R>(messageProps: MessageInput<R, undefined> & {response: R}) {
         return new SuccessMessage({...messageProps});
     },
 
-    error<R>(messageProps?: MessageInput<R>) {
+    error<R>(messageProps: MessageInput<R, undefined> & {requestError: Error}) {
         return new ErrorMessage({...messageProps});
     }
 };
