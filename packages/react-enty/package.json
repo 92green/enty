@@ -1,6 +1,6 @@
 {
   "name": "react-enty",
-  "version": "2.0.0-alpha.5",
+  "version": "2.0.0-alpha.6",
   "description": "React bindings for Enty",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -60,7 +60,7 @@
     "typescript": "^4.8.3"
   },
   "dependencies": {
-    "enty": "^2.0.0-alpha.5"
+    "enty": "^2.0.0-alpha.6"
   },
   "resolutions": {
     "**/typescript": "^4.8.3"
