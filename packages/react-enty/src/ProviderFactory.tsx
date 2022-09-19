@@ -6,7 +6,7 @@ import useReducerThunk from './util/useReducerThunk';
 import EntityReducerFactory from './EntityReducerFactory';
 import LoggingReducer from './util/LoggingReducer';
 import {State, Action, ProviderContextType} from './util/definitions';
-import {Schema, ObjectSchema} from 'enty';
+import {Schema} from 'enty';
 
 export type ProviderConfig = {
     schema?: Schema;
@@ -31,7 +31,7 @@ type ProviderProps = {
 };
 
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
-    const {schema = new ObjectSchema({}), results = []} = config;
+    const {schema, results = []} = config;
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext<ProviderContextType | null>(null);
 

@@ -3,7 +3,7 @@ import {State, Action} from './util/definitions';
 import {REMOVED_ENTITY} from 'enty';
 import RequestState from './data/RequestState';
 
-export default function EntityReducerFactory(config: {schema: Schema | ObjectSchema<any>}) {
+export default function EntityReducerFactory(config: {schema?: Schema | ObjectSchema<any>}) {
     const {schema} = config;
 
     return function EntityReducer(
