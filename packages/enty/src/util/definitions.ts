@@ -58,6 +58,7 @@ export interface StructuralSchemaInterface<Shape> {
 }
 
 export interface Schema {
+    name?: string;
     readonly normalize: Normalize;
     readonly denormalize: Denormalize;
 }

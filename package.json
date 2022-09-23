@@ -6,6 +6,8 @@
   "scripts": {
     "prep": "yarn && yarn lerna bootstrap",
     "build": "lerna run build",
+    "pub": "yarn build && yarn lerna publish",
+    "pub-next": "yarn build && yarn lerna publish --npm-tag=next",
     "watch": "lerna run watch --parallel --",
     "test-all": "lerna run test-all",
     "format": "yarn prettier --write .",
