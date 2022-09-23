@@ -1,16 +1,12 @@
 import {State, Action} from './definitions';
 const css = 'color: #7E488B;';
 
-/* eslint-disable no-console */
 const log = (first: string, ...rest: unknown[]) => console.log(`%c${first}`, css, ...rest);
-const group = (name: string) => console.group(`%c[${name}]`, css);
+const group = (name: string) => console.groupCollapsed(`%c${name}`, css);
 const groupEnd = () => console.groupEnd();
-/* eslint-enable no-console */
 
-export default function LoggingReducer(state: State, action: Action, debugName: string) {
+export default function LoggingReducer(state: State, action: Action) {
     const {type, meta, payload} = action;
-
-    group(`${debugName}: ${type}`);
 
     const responseKey = meta?.responseKey;
     const requestState = state.requestState[responseKey];
@@ -24,21 +20,31 @@ export default function LoggingReducer(state: State, action: Action, debugName: 
             .successMap(() => 'success')
             .value();
 
+    if (type === 'ENTY_INIT') {
+        group('Enty Debug');
+    } else {
+        group(
+            `api.${action.meta.path?.join(
+                '.'
+            )}<${requestStateType}> (key: ${responseKey}, schema: ${
+                action.meta.schema?.name || 'apiSchema'
+            })`
+        );
+    }
+
     if (type === 'ENTY_FETCH') {
-        log('responseKey:', responseKey, requestStateType);
+        log('state:', state);
     } else if (type === 'ENTY_RECEIVE') {
-        log('responseKey:', responseKey, requestStateType);
-        log('stats.responseCount', state.stats.responseCount);
         log('payload:', payload);
         log('response:', state.response[responseKey]);
-        log('entities:', state.entities);
+        log('state:', state);
     } else if (type === 'ENTY_ERROR') {
-        log('responseKey:', responseKey, requestStateType);
         log('error:', state.error[responseKey]);
+        log('state:', state);
     } else if (type === 'ENTY_REMOVE') {
-        log('stats.responseCount', state.stats.responseCount);
         log('remove:', payload.join && payload.join('.'));
         log(`entities.${payload[0]}:`, state.entities[payload[0]]);
+        log('state:', state);
     }
     groupEnd();
     return state;
