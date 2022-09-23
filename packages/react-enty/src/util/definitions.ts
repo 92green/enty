@@ -26,6 +26,8 @@ export type Action = {
     type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_RESET' | 'ENTY_INIT';
     payload?: any;
     meta: {
+        path?: string[];
+        schema?: Schema;
         responseKey: string;
         returnResponse?: boolean;
     };

@@ -4,14 +4,12 @@ import {REMOVED_ENTITY} from 'enty';
 import RequestState from './data/RequestState';
 
 export default function EntityReducerFactory(config: {schema?: Schema | ObjectSchema<any>}) {
-    const {schema} = config;
-
     return function EntityReducer(
         previousState: State | null,
         {type, payload, meta = {responseKey: ''}}: Action
     ): State {
         let state: State = previousState || {
-            baseSchema: schema,
+            baseSchema: config.schema,
             schemas: {},
             response: {},
             error: {},
@@ -28,6 +26,8 @@ export default function EntityReducerFactory(config: {schema?: Schema | ObjectSc
         function update(key: keyof State, subKey: string, value: any) {
             return {...state, [key]: {...state[key], [subKey]: value}};
         }
+
+        const schema = meta.schema || config.schema;
 
         switch (type) {
             case 'ENTY_FETCH': {

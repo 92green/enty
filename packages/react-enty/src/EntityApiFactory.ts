@@ -8,7 +8,8 @@ type ActionMap = {
     [key: string]: any;
 };
 
-type Visitor = (arg0: {
+type Visitor = (config: {
+    path: string[];
     actionType: string;
     requestAction: Function;
     resetAction: Function;
@@ -22,6 +23,7 @@ export default function EntityApiFactory(actionMap: ActionMap, visitor: Visitor)
         const requestAction = createRequestAction(sideEffect);
 
         return visitor({
+            path,
             actionType,
             requestAction,
             resetAction,

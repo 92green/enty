@@ -2,8 +2,10 @@ import {unknownMessage} from './data/Message';
 import RequestState from './data/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef, Context} from 'react';
 import {ProviderContextType} from './util/definitions';
+import {Schema} from 'enty';
 
 type RequestHookConfig = {
+    path: string[];
     actionType: string;
     requestAction: Function;
     resetAction: Function;
@@ -14,13 +16,15 @@ type RequestHookConfig = {
 type Config = {
     key?: string;
     responseKey?: string;
+    schema?: Schema;
+    path?: string[];
 };
 
 export default function RequestHookFactory(
     context: Context<ProviderContextType | null>,
     config: RequestHookConfig
 ) {
-    const {requestAction, resetAction, removeEntityAction, generateResultKey} = config;
+    const {requestAction, resetAction, removeEntityAction, generateResultKey, path} = config;
 
     return <R, V>(config: Config = {}) => {
         const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
@@ -41,7 +45,7 @@ export default function RequestHookFactory(
         }, []);
 
         let response = useMemo(() => {
-            const schema = state.baseSchema;
+            const schema = config.schema || state.baseSchema;
             const result = state.response[responseKey];
             const entities = state.entities;
             if (schema) {
@@ -59,6 +63,8 @@ export default function RequestHookFactory(
                 return dispatch(
                     requestAction(payload, {
                         ...baseMeta,
+                        schema: config.schema,
+                        path,
                         responseKey,
                         returnResponse
                     })
