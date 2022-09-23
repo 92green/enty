@@ -25,7 +25,7 @@ type ProviderFactoryReturn = {
 
 type ProviderProps = {
     children: ReactNode;
-    debug?: string;
+    debug?: boolean;
     initialState?: {};
     meta?: {};
 };
@@ -35,7 +35,13 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
     const entityReducer = EntityReducerFactory({schema});
     const Context = createContext<ProviderContextType | null>(null);
 
-    function Provider({children, initialState, debug, meta = {}}: ProviderProps) {
+    function Provider(props: ProviderProps) {
+        const {children, initialState, debug} = props;
+
+        const meta = useMemo(() => {
+            return {...props.meta};
+        }, [props.meta]);
+
         const firstState: State = {
             baseSchema: schema,
             schemas: {},
@@ -52,7 +58,7 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
         const {reducer, intialValue} = useMemo(() => {
             const reducer = debug
                 ? (state: State, action: Action) =>
-                      LoggingReducer(entityReducer(state, action), action, debug)
+                      LoggingReducer(entityReducer(state, action), action)
                 : entityReducer;
 
             const intialValue: State = [
