@@ -1,12 +1,13 @@
 import RequestState from '../data/RequestState';
 
-type MessageInput<T, V> = {
+export type MessageInput<T, V> = {
     requestError?: Error;
     response?: T;
     removeEntity?: (type: string, id: string) => void;
-    request:
-        | ((payload: V, config?: {returnResponse: true}) => Promise<V>)
-        | ((payload: V, config?: {returnResponse: false}) => void);
+    request: <R extends boolean>(
+        payload: V,
+        config?: {returnResponse: R}
+    ) => R extends true ? Promise<T> : void;
     reset?: () => void;
     responseKey?: string;
 };
@@ -16,9 +17,10 @@ export abstract class BaseMessage<T, V> {
     data?: T;
     requestError?: Error;
     error?: Error;
-    request:
-        | ((payload: V, config?: {returnResponse: true}) => Promise<V>)
-        | ((payload: V, config?: {returnResponse: false}) => void);
+    request: <R extends boolean>(
+        payload: V,
+        config?: {returnResponse: R}
+    ) => R extends true ? Promise<T> : void;
     reset: () => void;
     removeEntity: (type: string, id: string) => void;
     responseKey: string;
@@ -37,7 +39,7 @@ export abstract class BaseMessage<T, V> {
         this.response = props.response;
         this.requestError = props.requestError;
         this.error = props.requestError;
-        this.request = props.request || (() => {});
+        this.request = props.request || ((_: any) => {});
         this.reset = props.reset || (() => {});
         this.removeEntity = props.removeEntity || (() => {});
     }
@@ -151,7 +153,7 @@ export function unknownMessage<T, V>(input: any): Message<T, V> {
 export default Message;
 
 export const MessageFactory = {
-    empty<R>(messageProps: MessageInput<R, undefined>) {
+    empty(messageProps: MessageInput<any, any>) {
         return new EmptyMessage({
             ...messageProps,
             response: undefined,
@@ -159,22 +161,22 @@ export const MessageFactory = {
         });
     },
 
-    fetching<R>(messageProps: MessageInput<R, undefined>) {
+    fetching(messageProps: MessageInput<any, any>) {
         return new FetchingMessage({
             ...messageProps,
             response: undefined
         });
     },
 
-    refetching<R>(messageProps: MessageInput<R, undefined> & {response: R}) {
+    refetching<R, P>(messageProps: MessageInput<R, P> & {response: R}) {
         return new RefetchingMessage({...messageProps});
     },
 
-    success<R>(messageProps: MessageInput<R, undefined> & {response: R}) {
+    success<R, P>(messageProps: MessageInput<R, P> & {response: R}) {
         return new SuccessMessage({...messageProps});
     },
 
-    error<R>(messageProps: MessageInput<R, undefined> & {requestError: Error}) {
+    error<R, P>(messageProps: MessageInput<R, P> & {requestError: Error}) {
         return new ErrorMessage({...messageProps});
     }
 };

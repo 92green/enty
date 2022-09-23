@@ -4,7 +4,7 @@ const payload = 'PAYLOAD';
 const meta = {responseKey: 'foo'};
 
 describe('observable support', () => {
-    const observable = fn => ({
+    const observable = (fn: any) => ({
         subscribe: fn
     });
     const payload = 'PAYLOAD';
@@ -36,7 +36,7 @@ describe('observable support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() =>
-            observable(sub => {
+            observable((sub: any) => {
                 sub.next('1');
                 sub.next('2');
             })
@@ -59,7 +59,7 @@ describe('observable support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() =>
-            observable(sub => {
+            observable((sub: any) => {
                 sub.error('ERROR');
             })
         );
@@ -75,7 +75,7 @@ describe('observable support', () => {
     it('will trigger receive action via complete', () => {
         const dispatch = jest.fn();
         const request = createRequestAction(() =>
-            observable(sub => {
+            observable((sub: any) => {
                 sub.complete('1');
             })
         );
@@ -135,7 +135,7 @@ describe('async generators', () => {
     it('will auto trigger fetching action', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
-        const request = createRequestAction(async function*() {});
+        const request = createRequestAction(async function* () {});
         request(payload, meta)(dispatch, getState);
         expect(dispatch).toHaveBeenCalledWith({
             meta,
@@ -147,12 +147,12 @@ describe('async generators', () => {
     it('can trigger success action via yielding data', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
-        const request = createRequestAction(async function*() {
+        const request = createRequestAction(async function* () {
             yield 'foo';
             yield 'bar';
         });
         request(payload, meta)(dispatch, getState);
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         expect(dispatch).toHaveBeenNthCalledWith(1, {
             meta,
             payload: null,
@@ -173,12 +173,12 @@ describe('async generators', () => {
     it('can trigger error action via throwing in the generator', async () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
-        const request = createRequestAction(async function*() {
+        const request = createRequestAction(async function* () {
             yield 'foo';
             throw 'bar';
         });
         request(payload, meta)(dispatch, getState);
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         expect(dispatch).toHaveBeenNthCalledWith(1, {
             meta,
             payload: null,

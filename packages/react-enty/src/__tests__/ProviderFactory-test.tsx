@@ -4,7 +4,8 @@ import {EntitySchema, ObjectSchema} from 'enty';
 import {mount} from 'enzyme';
 import {ProviderContextType} from '../util/definitions';
 
-const getContext = (testFn): ProviderContextType => {
+type TestFn = (child: (props: {context: ProviderContextType | null}) => null) => any;
+const getContext = (testFn: TestFn): ProviderContextType => {
     const ExpectsContext = () => null;
     const Component = testFn(ExpectsContext);
     return mount(<Component />)
@@ -12,7 +13,7 @@ const getContext = (testFn): ProviderContextType => {
         .prop('context');
 };
 
-const expectContext = testFn => {
+const expectContext = (testFn: TestFn) => {
     return expect(getContext(testFn));
 };
 
@@ -30,10 +31,10 @@ describe('Component', () => {
     it('applies the intial state to a context', () => {
         const {Provider, Context} = ProviderFactory({});
 
-        expectContext(Child => () => {
+        expectContext((Child) => () => {
             return (
                 <Provider initialState={{entities: {foo: 'component'}}}>
-                    <Context.Consumer children={context => <Child context={context} />} />
+                    <Context.Consumer children={(context) => <Child context={context} />} />
                 </Provider>
             );
         }).toMatchObject([
@@ -47,17 +48,17 @@ describe('Component', () => {
                 stats: {responseCount: 0}
             },
             expect.any(Function),
-            undefined
+            {}
         ]);
     });
 
     it('applies the meta to the context', () => {
         const {Provider, Context} = ProviderFactory({});
 
-        expectContext(Child => () => {
+        expectContext((Child) => () => {
             return (
                 <Provider meta={{foo: 'bar'}}>
-                    <Context.Consumer children={context => <Child context={context} />} />
+                    <Context.Consumer children={(context) => <Child context={context} />} />
                 </Provider>
             );
         }).toMatchObject([
@@ -85,10 +86,10 @@ describe('Component', () => {
         ];
         const {Provider, Context} = ProviderFactory({schema, results});
 
-        const [state] = getContext(Child => () => {
+        const [state] = getContext((Child) => () => {
             return (
                 <Provider>
-                    <Context.Consumer children={context => <Child context={context} />} />
+                    <Context.Consumer children={(context) => <Child context={context} />} />
                 </Provider>
             );
         });
@@ -113,10 +114,10 @@ describe('Component', () => {
         ];
         const {Provider, Context} = ProviderFactory({schema, results});
 
-        const [state] = getContext(Child => () => {
+        const [state] = getContext((Child) => () => {
             return (
                 <Provider>
-                    <Context.Consumer children={context => <Child context={context} />} />
+                    <Context.Consumer children={(context) => <Child context={context} />} />
                 </Provider>
             );
         });
@@ -130,14 +131,13 @@ describe('Hoc', () => {
     it('returns a config => component => props function', () => {
         const {ProviderHoc, Context} = ProviderFactory({});
 
-        expectContext(Child => {
-            const withInitialState = Component => props => (
-                <Component {...props} initialState={{entities: {foo: 'hoc'}}} />
-            );
+        expectContext((Child) => {
+            const withInitialState = (Component: any) => (props: any) =>
+                <Component {...props} initialState={{entities: {foo: 'hoc'}}} />;
             const withProvider = ProviderHoc();
             return withInitialState(
                 withProvider(() => (
-                    <Context.Consumer children={context => <Child context={context} />} />
+                    <Context.Consumer children={(context) => <Child context={context} />} />
                 ))
             );
         }).toMatchObject([
@@ -151,14 +151,14 @@ describe('Hoc', () => {
                 stats: {responseCount: 0}
             },
             expect.any(Function),
-            undefined
+            {}
         ]);
     });
 });
 
 describe('Debugging', () => {
     it('will log reducer state if debug prop is provided', () => {
-        const group = jest.spyOn(console, 'group').mockImplementation(() => {});
+        const group = jest.spyOn(console, 'groupCollapsed').mockImplementation(() => {});
         const groupEnd = jest.spyOn(console, 'groupEnd').mockImplementation(() => {});
         const {Provider} = ProviderFactory({});
         mount(<Provider debug="Foo" />);

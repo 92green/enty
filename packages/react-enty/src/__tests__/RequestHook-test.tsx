@@ -68,7 +68,7 @@ describe('config', () => {
         mountWithProvider(() => () => {
             const message = obs.useRequest();
             useEffect(() => {
-                var pending = message.request('first');
+                var pending = message.request();
                 expect(pending).toBeUndefined();
             }, []);
 
@@ -79,10 +79,10 @@ describe('config', () => {
 
 describe('usage', () => {
     it('can fetch on load', async () => {
-        return fetchOnLoad(ExpectsMessage => () => {
+        return fetchOnLoad((ExpectsMessage) => () => {
             const message = foo.useRequest();
             useEffect(() => {
-                message.request();
+                message.request(undefined);
             }, []);
 
             return <ExpectsMessage message={message} />;
@@ -90,20 +90,20 @@ describe('usage', () => {
     });
 
     it('can catch rejected requests', async () => {
-        return errorOnLoad(ExpectsMessage => () => {
+        return errorOnLoad((ExpectsMessage) => () => {
             const message = fooError.useRequest();
             useEffect(() => {
-                message.request();
+                message.request(undefined);
             }, []);
             return <ExpectsMessage message={message} />;
         });
     });
 
     it('can catch errors in the reducer', async () => {
-        return fetchBadEntity(ExpectsMessage => () => {
+        return fetchBadEntity((ExpectsMessage) => () => {
             const message = badEntity.useRequest();
             useEffect(() => {
-                message.request();
+                message.request(undefined);
             }, []);
 
             return <ExpectsMessage message={message} />;
@@ -111,21 +111,21 @@ describe('usage', () => {
     });
 
     it('can do nothing', async () => {
-        return nothing(ExpectsMessage => () => {
+        return nothing((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });
     });
 
     it('can refetch content', async () => {
-        return refetch(ExpectsMessage => () => {
+        return refetch((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });
     });
 
     it('can predefine a responseKey', async () => {
-        return exisitingKey(ExpectsMessage => () => {
+        return exisitingKey((ExpectsMessage) => () => {
             const message = baz.useRequest({key: 'baz'});
 
             return <ExpectsMessage message={message} />;
@@ -133,7 +133,7 @@ describe('usage', () => {
     });
 
     it('will not clash keys', async () => {
-        return keyClash(ExpectsMessage => () => {
+        return keyClash((ExpectsMessage) => () => {
             const aa = baz.useRequest({key: 'baz'});
             const bb = foo.useRequest({key: 'baz'});
 
@@ -147,7 +147,7 @@ describe('usage', () => {
     });
 
     it('can fetch if props change', async () => {
-        return fetchOnPropChange(ExpectsMessage => (props: {id: string}) => {
+        return fetchOnPropChange((ExpectsMessage) => (props: {id: string}) => {
             const message = foo.useRequest();
             useEffect(() => {
                 message.request(props.id);
@@ -157,14 +157,14 @@ describe('usage', () => {
     });
 
     it('can fetch from a callback', async () => {
-        return fetchOnCallback(ExpectsMessage => () => {
+        return fetchOnCallback((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });
     });
 
     it('can fetch multiples in series', async () => {
-        return fetchSeries(ExpectsMessage => () => {
+        return fetchSeries((ExpectsMessage) => () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
@@ -186,7 +186,7 @@ describe('usage', () => {
     });
 
     it('can fetch multiples in parallel', async () => {
-        return fetchParallel(ExpectsMessage => () => {
+        return fetchParallel((ExpectsMessage) => () => {
             const aa = foo.useRequest();
             const bb = bar.useRequest();
             useEffect(() => {
@@ -206,7 +206,7 @@ describe('usage', () => {
 
 describe('Message.reset', () => {
     it('can reset a request', () => {
-        return reset(ExpectsMessage => () => {
+        return reset((ExpectsMessage) => () => {
             const message = foo.useRequest();
             return <ExpectsMessage message={message} />;
         });
@@ -215,7 +215,7 @@ describe('Message.reset', () => {
 
 describe('Message.removeEntity', () => {
     it('can remove entities', () => {
-        return removeEntity(ExpectsMessage => () => {
+        return removeEntity((ExpectsMessage) => () => {
             const message = entity.useRequest();
             return <ExpectsMessage message={message} removeEntityPayload={['foo', '123']} />;
         });

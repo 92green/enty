@@ -2,7 +2,7 @@ import RequestState from '../RequestState';
 
 describe('RequestState', () => {
     test('map functions will update values', () => {
-        function value(state) {
+        function value(state: RequestState) {
             return state
                 .emptyMap(() => 'empty')
                 .fetchingMap(() => 'fetching')
@@ -63,7 +63,7 @@ describe('RequestState', () => {
     });
 
     test('variant apis', () => {
-        function instance(state) {
+        function instance(state: RequestState) {
             expect(state).toHaveProperty('value');
             expect(state).toHaveProperty('isEmpty');
             expect(state).toHaveProperty('isFetching');

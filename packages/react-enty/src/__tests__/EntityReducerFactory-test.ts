@@ -1,6 +1,6 @@
 import EntityReducerFactory from '../EntityReducerFactory';
 import RequestState from '../data/RequestState';
-import {State} from '../util/definitions';
+import {State, Action} from '../util/definitions';
 import {EntitySchema, ObjectSchema, ArraySchema} from 'enty';
 import {REMOVED_ENTITY} from 'enty';
 import resetAction from '../api/resetAction';
@@ -22,17 +22,17 @@ const baseState = {
 };
 
 var author = new EntitySchema('author', {
-    id: ii => ii?.fullnameId,
+    id: (ii) => ii?.fullnameId,
     shape: new ObjectSchema({})
 });
 
 var topListings = new EntitySchema('topListings', {
-    id: ii => ii?.fullnameId,
+    id: (ii) => ii?.fullnameId,
     shape: new ObjectSchema({author})
 });
 
 var subreddit = new EntitySchema('subreddit', {
-    id: ii => ii?.fullnameId,
+    id: (ii) => ii?.fullnameId,
     shape: new ObjectSchema({
         topListings: new ArraySchema(topListings)
     })
@@ -71,13 +71,13 @@ test('EntityReducerFactory normalizes a reuslt', () => {
         payload: examplePayload
     };
 
-    const state = EntityReducer(undefined, exampleReceiveAction);
+    const state = EntityReducer(null, exampleReceiveAction);
     expect(state.entities.subreddit.MK.fullnameId).toBe(examplePayload.subreddit.fullnameId);
 });
 
 describe('EntityReducer requestState', () => {
     test('requestState is Fetching when action is _FETCH', () => {
-        const data = EntityReducer(undefined, {
+        const data = EntityReducer(null, {
             type: 'ENTY_FETCH' as const,
             payload: null,
             meta: {responseKey: 'TEST'}
@@ -114,7 +114,7 @@ describe('EntityReducer requestState', () => {
 
     test('will not be set if action type does not match _(FETCH|ERROR|RECIEVE)', () => {
         return expect(
-            EntityReducer(undefined, {
+            EntityReducer(null, {
                 // @ts-ignore - intentionally bad types
                 type: 'nothing',
                 payload: null,
@@ -127,7 +127,7 @@ describe('EntityReducer requestState', () => {
     // The reducer should not infer result keys from the action type
     test('will be set to payload if the action matches  _ERROR', () => {
         return expect(
-            EntityReducer(undefined, {
+            EntityReducer(null, {
                 type: 'ENTY_ERROR',
                 payload: 'errorPayload',
                 meta: {responseKey: 'TEST'}
@@ -137,15 +137,16 @@ describe('EntityReducer requestState', () => {
 });
 
 describe('EntityReducer Config', () => {
-    const action = type => ({type, payload: null, meta: {responseKey: type}} as const);
+    const action = (type: Action['type']) =>
+        ({type, payload: null, meta: {responseKey: type}} as const);
     test('the supplied schema is not mutated when reducing', () => {
         // @ts-ignore - intentionally bad types
-        expect(EntityReducer(undefined, action('nothing')).baseSchema).toBe(schema);
+        expect(EntityReducer(null, action('nothing')).baseSchema).toBe(schema);
     });
 
     test('response starts with an empty object', () => {
         // @ts-ignore - intentionally bad types
-        expect(EntityReducer(undefined, action('nothing')).response).toEqual({});
+        expect(EntityReducer(null, action('nothing')).response).toEqual({});
     });
 
     test('will not change state if actions do not match _(FETCH|RECIEVE|ERROR)', () => {
@@ -153,7 +154,9 @@ describe('EntityReducer Config', () => {
         const reducedState = EntityReducer(baseState, action('nothing'));
         expect(reducedState).toBe(baseState);
 
+        // @ts-ignore - intentionally bad types
         expect(EntityReducer(INITIAL_STATE as State, action('FOO'))).toBe(INITIAL_STATE);
+        // @ts-ignore - intentionally bad types
         expect(EntityReducer(INITIAL_STATE as State, action('FOO_FETCH_BLAH'))).toBe(INITIAL_STATE);
 
         // check the reverse
@@ -183,7 +186,7 @@ describe('EntityReducer Normalizing', () => {
             }
         } as const;
 
-        return expect(EntityReducer(undefined, action).response.TEST.subreddit).toBe('MK');
+        return expect(EntityReducer(null, action).response.TEST.subreddit).toBe('MK');
     });
 
     test('it will store normalized data on _entities.type.id', () => {
@@ -198,7 +201,7 @@ describe('EntityReducer Normalizing', () => {
             }
         } as const;
 
-        return expect(EntityReducer(undefined, action).entities.subreddit.MK).toEqual(
+        return expect(EntityReducer(null, action).entities.subreddit.MK).toEqual(
             action.payload.subreddit
         );
     });
@@ -215,13 +218,13 @@ describe('EntityReducer Normalizing', () => {
             }
         } as const;
 
-        return expect(EntityReducer(undefined, action).entities.topListings.FOO).toEqual({
+        return expect(EntityReducer(null, action).entities.topListings.FOO).toEqual({
             fullnameId: 'FOO'
         });
     });
 
     test('it can merge two normalizations correctly', () => {
-        const action = payload =>
+        const action = (payload: any) =>
             ({
                 type: 'ENTY_RECEIVE',
                 meta: {responseKey: 'TEST'},
@@ -265,7 +268,7 @@ describe('EntityReducer Normalizing', () => {
             }
         };
 
-        const mergeStateOne = EntityReducer(undefined, action(payloadA));
+        const mergeStateOne = EntityReducer(null, action(payloadA));
         const mergeStateTwo = EntityReducer(mergeStateOne, action(payloadB));
 
         expect(mergeStateTwo.entities.subreddit.MK.name).toBe(payloadB.subreddit.name);
@@ -280,7 +283,7 @@ describe('EntityReducer Normalizing', () => {
 describe('no schema reducer', () => {
     it('will not normalize if a schema is not provided', () => {
         const reducer = EntityReducerFactory({});
-        const stateA = reducer(undefined, {
+        const stateA = reducer(null, {
             type: 'ENTY_RECEIVE',
             payload: 'FOO',
             meta: {responseKey: '123'}
@@ -326,7 +329,7 @@ describe('ENTY_RESET', () => {
     it('will delete response and set requestState to empty', () => {
         const reducer = EntityReducerFactory({});
 
-        const stateA = reducer(undefined, {
+        const stateA = reducer(null, {
             type: 'ENTY_RECEIVE',
             payload: 'FOO',
             meta: {responseKey: '123'}
