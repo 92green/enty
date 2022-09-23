@@ -2,10 +2,14 @@ import {Schema} from 'enty';
 import {ProviderConfig} from './ProviderFactory';
 
 import type {Message} from './data/Message';
-import EntityApiFactory from './EntityApiFactory';
 import ProviderFactory from './ProviderFactory';
 import RequestHook from './RequestHook';
 import RemoveHook from './RemoveHook';
+import Hash from './util/Hash';
+import visitActionMap from './api/visitActionMap';
+import createRequestAction from './api/createRequestAction';
+import resetAction from './api/resetAction';
+import removeEntityAction from './api/removeAction';
 
 export type Request<T, V> = {
     useRequest: (options?: {key?: string | null; responseKey?: string}) => Message<T, V>;
@@ -40,8 +44,15 @@ export default function EntityApi<A extends ActionMap>(
         results
     });
 
-    let api = EntityApiFactory(actionMap, (actionConfig) => {
-        const useRequest = RequestHook(Context, actionConfig);
+    let api = visitActionMap(actionMap, (sideEffect: () => Promise<any>, path: string[]) => {
+        const requestAction = createRequestAction(sideEffect);
+        const useRequest = RequestHook(Context, {
+            path,
+            requestAction,
+            resetAction,
+            removeEntityAction,
+            generateResultKey: (payload: unknown) => Hash({payload, path})
+        });
         return {
             useRequest
         };

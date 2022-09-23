@@ -4,6 +4,7 @@ import {ObjectSchema} from 'enty';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
 import {mount} from 'enzyme';
+import Hash from '../util/Hash';
 
 describe('exports', () => {
     const api = EntityApi(
@@ -137,4 +138,37 @@ it('will merge provider meta with api function meta', async () => {
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
     expect(wrapper).toBeSuccess('bar!');
+});
+
+it('responseKeys will be different based on path', async () => {
+    const baseMeta = {foo: 'bar!'};
+
+    // set responses keys from meta
+    let fooResponseKey = null;
+    let barResponseKey = null;
+    const Api = EntityApi({
+        foo: async (_: undefined, meta) => (fooResponseKey = meta.responseKey),
+        bar: async (_: undefined, meta) => (barResponseKey = meta.responseKey)
+    });
+
+    // Even though the keys are the same their responses should be different
+    const Child = () => {
+        const fooMessage = Api.foo.useRequest({key: 'same'});
+        const barMessage = Api.bar.useRequest({key: 'same'});
+        useEffect(() => {
+            fooMessage.request();
+            barMessage.request();
+        }, []);
+        return null;
+    };
+
+    const wrapper = mount(
+        <Api.Provider meta={baseMeta}>
+            <Child />
+        </Api.Provider>
+    );
+    await asyncUpdate(wrapper);
+
+    // Response keys should not be the same
+    expect(fooResponseKey).not.toBe(barResponseKey);
 });

@@ -6,7 +6,6 @@ import {Schema} from 'enty';
 
 type RequestHookConfig = {
     path: string[];
-    actionType: string;
     requestAction: Function;
     resetAction: Function;
     removeEntityAction: Function;

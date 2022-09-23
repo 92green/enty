@@ -60,8 +60,8 @@ function setupTests() {
                         entities: {},
 
                         // Hashed key of 'baz'
-                        response: {'1379365508': {data: 'initial-baz'}},
-                        requestState: {'1379365508': RequestState.success()}
+                        response: {baz: {data: 'initial-baz'}},
+                        requestState: {baz: RequestState.success()}
                     }}
                     children={<Child {...props} />}
                 />

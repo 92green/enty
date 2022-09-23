@@ -126,7 +126,7 @@ describe('usage', () => {
 
     it('can predefine a responseKey', async () => {
         return exisitingKey((ExpectsMessage) => () => {
-            const message = baz.useRequest({key: 'baz'});
+            const message = baz.useRequest({responseKey: 'baz'});
 
             return <ExpectsMessage message={message} />;
         });
