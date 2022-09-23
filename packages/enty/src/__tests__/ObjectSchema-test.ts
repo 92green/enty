@@ -117,7 +117,6 @@ test('ObjectSchemas can create objects', () => {
     class Foo {
         first: string;
         last: string;
-        name: string;
         constructor(data: {first: string; last: string}) {
             this.first = data.first;
             this.last = data.last;
@@ -126,7 +125,7 @@ test('ObjectSchemas can create objects', () => {
     const schema = new ObjectSchema(
         {},
         {
-            create: data => new Foo(data)
+            create: (data) => new Foo(data)
         }
     );
     const state = schema.normalize({first: 'foo', last: 'bar'}, {});

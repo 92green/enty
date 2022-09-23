@@ -41,10 +41,7 @@ test('ArraySchema can denormalize arrays', () => {
             '2': {id: '2'}
         }
     };
-    expect(schema.denormalize({result: ['1', '2'], entities}).map(ii => ii)).toEqual([
-        {id: '1'},
-        {id: '2'}
-    ]);
+    expect(schema.denormalize({result: ['1', '2'], entities})).toEqual([{id: '1'}, {id: '2'}]);
 
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
@@ -58,10 +55,7 @@ test('ArraySchema will not return deleted entities', () => {
             '3': REMOVED_ENTITY
         }
     };
-    expect(schema.denormalize({result: ['1', '2', '3'], entities}).map(ii => ii)).toEqual([
-        {id: '1'},
-        {id: '2'}
-    ]);
+    expect(schema.denormalize({result: ['1', '2', '3'], entities})).toEqual([{id: '1'}, {id: '2'}]);
 
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
@@ -81,17 +75,17 @@ test('ArraySchema will not mutate input objects', () => {
 
 test('ArraySchemas can construct custom objects', () => {
     class Foo {
-        data: Array<string>;
-        constructor(data) {
+        data: string[];
+        constructor(data: string[]) {
             this.data = data;
         }
-        map(fn) {
+        map(fn: (x: string) => string) {
             this.data = this.data.map(fn);
             return this;
         }
     }
     const schema = new ArraySchema(new ObjectSchema({}), {
-        create: data => new Foo(data)
+        create: (data) => new Foo(data)
     });
     const state = schema.normalize([{foo: 1}, {bar: 2}], {});
     expect(state.result).toBeInstanceOf(Foo);

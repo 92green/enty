@@ -20,14 +20,6 @@ export type EntitySchemaOptions<Shape> = {
     merge?: Merge;
 };
 
-export type CompositeEntitySchemaOptions<Shape, CompositeShape> = {
-    shape?: Shape;
-    id?: (entity: any) => string;
-    compositeKeys?: CompositeShape;
-};
-
-export type DynamicShape = (data: any) => Schema;
-
 //
 // Options
 
