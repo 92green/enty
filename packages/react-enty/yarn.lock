@@ -3825,10 +3825,10 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
-enty@^2.0.0-alpha.5:
-  version "2.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/enty/-/enty-2.0.0-alpha.5.tgz#deb5b17613d3afd793e6eef197b79724a22ebb29"
-  integrity sha512-stMWkKFfMPd1J0faKOLjyuH83CJggPAxltTclxA+SWRL11rr1S90k/de+imDxSK+68qkeSDOW2lxuEN0fhKU4g==
+enty@^2.0.0-alpha.9:
+  version "2.0.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-2.0.0-alpha.9.tgz#fdb403876f1ed4a5a15f101e4fd43fedc244e18e"
+  integrity sha512-xhO9w8vjrWHhhD2csq5UYr6vVx9Pi380+8oV3xHG2ZNxkH/3oc0jSKYtttuWUDl0vIDuKkGf3sBIBtLvOQ95/A==
 
 enzyme-matchers@^7.1.2:
   version "7.1.2"

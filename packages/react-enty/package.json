@@ -10,11 +10,11 @@
   "size-limit": [
     {
       "path": "dist/react-enty.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "8 KB"
     },
     {
       "path": "dist/react-enty.esm.js",
-      "limit": "10 KB"
+      "limit": "8 KB"
     }
   ],
   "repository": {
