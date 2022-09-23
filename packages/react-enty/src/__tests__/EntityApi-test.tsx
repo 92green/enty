@@ -17,7 +17,6 @@ describe('exports', () => {
     );
 
     it('will export the api shape', () => {
-        const requestHoc = expect.any(Function);
         const useRequest = expect.any(Function);
         const Provider = expect.any(Function);
         const ProviderHoc = expect.any(Function);
@@ -26,12 +25,10 @@ describe('exports', () => {
             Provider,
             ProviderHoc,
             foo: {
-                requestHoc,
                 useRequest
             },
             bar: {
                 baz: {
-                    requestHoc,
                     useRequest
                 }
             }
@@ -120,7 +117,7 @@ it('can log reducer cycles', async () => {
 it('will merge provider meta with api function meta', async () => {
     const baseMeta = {foo: 'bar!'};
     const api = EntityApi({
-        foo: async (_, meta) => meta.foo
+        foo: async (_: undefined, meta) => meta.foo
     });
     const {foo, Provider} = api;
 

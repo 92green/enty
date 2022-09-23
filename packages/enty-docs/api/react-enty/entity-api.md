@@ -83,7 +83,6 @@ const api = EntityApi({
 });
 
 export const getUserHook = api.user.get.useRequest;
-export const createCourseHoc = api.course.create.requestHoc;
 ```
 
 ### useRequest
@@ -125,22 +124,6 @@ export default function RemoveUser(props) {
     return <button onClick={() => remove('user', props.id)}>Remove User</button>;
 }
 ```
-
-### RemoveHoc
-Hocs a component with a `useRemove` hook and provides the side-effect to `config.name`
-
-```jsx
-// RemoveUser.jsx
-import api from './EntityApi';
-
-function RemoveUser({onRemove, id}) {
-    return <button onClick={() => onRemove('user', id)}>Remove User</button>;
-}
-
-export default api.RemoveHoc({name: 'onRemove'})(RemoveUser);
-```
-
-
 
 
 
