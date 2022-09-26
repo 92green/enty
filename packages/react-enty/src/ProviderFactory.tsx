@@ -27,7 +27,7 @@ type ProviderProps = {
     children: ReactNode;
     debug?: boolean;
     initialState?: {};
-    meta?: {};
+    meta?: any; //@todo
 };
 
 export default function ProviderFactory(config: ProviderConfig): ProviderFactoryReturn {
@@ -43,7 +43,6 @@ export default function ProviderFactory(config: ProviderConfig): ProviderFactory
         }, [props.meta]);
 
         const firstState: State = {
-            baseSchema: schema,
             schemas: {},
             response: {},
             error: {},

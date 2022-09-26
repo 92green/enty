@@ -1,12 +1,7 @@
 import {SideEffect, Dispatch, State, Action} from '../util/definitions';
 
-type Meta = {
-    responseKey: string;
-    returnResponse?: boolean;
-};
-
 export default function createRequestAction(sideEffect: SideEffect) {
-    return <P>(requestPayload: P, meta: Meta) =>
+    return <P>(requestPayload: P, meta: Action['meta']) =>
         (dispatch: Dispatch, getState: () => State) => {
             const makeAction =
                 <T>(type: Action['type']) =>

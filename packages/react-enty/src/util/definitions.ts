@@ -1,17 +1,18 @@
-import {Schema, ObjectSchema} from 'enty';
+import {Schema} from 'enty';
 
 export type Observable = {
     subscribe: Function;
 };
 
 export type GetState = () => State;
-export type Dispatch = (action: Action | ((dispatch: Dispatch, getState: GetState))) => State;
+export type Dispatch = (
+    action: Action | ((dispatch: Dispatch, getState: GetState) => void)
+) => void;
 export type AsyncType = Promise<any> | Observable | AsyncGenerator<any, any, any>;
-export type SideEffect = (arg0: any, arg1: Object) => AsyncType;
+export type SideEffect = (variables: any, meta: Object) => AsyncType;
 export type ProviderContextType = [State, Dispatch, Record<string, any>];
 
 export type State = {
-    baseSchema?: Schema | ObjectSchema<any>;
     schemas: Record<string, Schema>;
     response: Record<string, any>;
     error: Record<string, any>;
@@ -26,7 +27,7 @@ export type Action = {
     type: 'ENTY_FETCH' | 'ENTY_ERROR' | 'ENTY_RECEIVE' | 'ENTY_REMOVE' | 'ENTY_RESET' | 'ENTY_INIT';
     payload?: any;
     meta: {
-        path?: string[];
+        name: string;
         schema?: Schema;
         responseKey: string;
         returnResponse?: boolean;

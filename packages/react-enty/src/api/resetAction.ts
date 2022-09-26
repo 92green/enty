@@ -4,6 +4,6 @@ export default function resetAction(responseKey: string): Action {
     return {
         type: 'ENTY_RESET',
         payload: null,
-        meta: {responseKey}
+        meta: {name: 'reset', responseKey}
     };
 }

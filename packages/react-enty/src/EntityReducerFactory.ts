@@ -6,10 +6,9 @@ import RequestState from './data/RequestState';
 export default function EntityReducerFactory(config: {schema?: Schema | ObjectSchema<any>}) {
     return function EntityReducer(
         previousState: State | null,
-        {type, payload, meta = {responseKey: ''}}: Action
+        {type, payload, meta = {responseKey: '', name: 'unknown'}}: Action
     ): State {
         let state: State = previousState || {
-            baseSchema: config.schema,
             schemas: {},
             response: {},
             error: {},

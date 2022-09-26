@@ -5,11 +5,8 @@ import type {Message} from './data/Message';
 import ProviderFactory from './ProviderFactory';
 import RequestHook from './RequestHook';
 import RemoveHook from './RemoveHook';
-import Hash from './util/Hash';
 import visitActionMap from './api/visitActionMap';
 import createRequestAction from './api/createRequestAction';
-import resetAction from './api/resetAction';
-import removeEntityAction from './api/removeAction';
 
 export type Request<T, V> = {
     useRequest: (options?: {key?: string | null; responseKey?: string}) => Message<T, V>;
@@ -30,6 +27,18 @@ type Extras = {
     Provider: any;
     ProviderHoc: any;
     useRemove: any;
+
+    createRequestHook: <R extends (...args: any[]) => Promise<any>>(config: {
+        name: string;
+        request: R;
+        schema?: Schema;
+    }) => (options?: {
+        key?: string;
+        responseKey?: string;
+    }) => Message<
+        Awaited<ReturnType<R>>,
+        Parameters<R>[0] extends undefined ? void : Parameters<R>[0]
+    >;
 };
 
 interface ActionMap extends Record<string, ActionMap | RequestFunction> {}
@@ -38,31 +47,38 @@ export default function EntityApi<A extends ActionMap>(
     actionMap: A,
     schema?: Schema,
     results?: ProviderConfig['results']
-): MappedTransform<A> & Extras {
+) {
     const {Provider, ProviderHoc, Context} = ProviderFactory({
         schema,
         results
     });
 
-    let api = visitActionMap(actionMap, (sideEffect: () => Promise<any>, path: string[]) => {
-        const requestAction = createRequestAction(sideEffect);
-        const useRequest = RequestHook(Context, {
-            path,
-            requestAction,
-            resetAction,
-            removeEntityAction,
-            generateResultKey: (payload: unknown) => Hash({payload, path})
-        });
-        return {
-            useRequest
-        };
-    });
+    let api: Extras & MappedTransform<A> = visitActionMap(
+        actionMap,
+        (sideEffect: () => Promise<any>, path: string[]) => {
+            const requestAction = createRequestAction(sideEffect);
+            const useRequest = RequestHook(Context, {
+                schema,
+                name: `api.${path.join('.')}`,
+                requestAction
+            });
+            return {
+                useRequest
+            };
+        }
+    );
 
     const useRemove = RemoveHook(Context);
 
     api.Provider = Provider;
     api.ProviderHoc = ProviderHoc;
     api.useRemove = useRemove;
+    api.createRequestHook = (config) =>
+        RequestHook(Context, {
+            name: config.name,
+            schema: config.schema,
+            requestAction: createRequestAction(config.request)
+        });
 
     return api;
 }

@@ -13,3 +13,16 @@ export {ErrorMessage} from './data/Message';
 export {ArraySchema} from 'enty';
 export {EntitySchema} from 'enty';
 export {ObjectSchema} from 'enty';
+
+// Singletons
+import EntityApi from './EntityApi';
+let createRequestHook = null as unknown as ReturnType<typeof EntityApi>['createRequestHook'];
+let EntyProvider = null as unknown as ReturnType<typeof EntityApi>['Provider'];
+
+if (createRequestHook === null || EntyProvider === null) {
+    const Api = EntityApi({});
+    createRequestHook = Api.createRequestHook;
+    EntyProvider = Api.Provider;
+}
+
+export {createRequestHook, EntyProvider};

@@ -21,15 +21,11 @@ export default function LoggingReducer(state: State, action: Action) {
             .value();
 
     if (type === 'ENTY_INIT') {
-        group('Enty Debug');
+        log('Enty Debug');
+    } else if (type === 'ENTY_RESET') {
+        log(`reset response ${responseKey}`);
     } else {
-        group(
-            `api.${action.meta.path?.join(
-                '.'
-            )}<${requestStateType}> (key: ${responseKey}, schema: ${
-                action.meta.schema?.name || 'apiSchema'
-            })`
-        );
+        group(`${action.meta.name}<${requestStateType}> (key: ${responseKey})`);
     }
 
     if (type === 'ENTY_FETCH') {

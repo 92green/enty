@@ -3,29 +3,29 @@ import RequestState from './data/RequestState';
 import {useState, useEffect, useContext, useCallback, useMemo, useRef, Context} from 'react';
 import {ProviderContextType} from './util/definitions';
 import {Schema} from 'enty';
+import resetAction from './api/resetAction';
+import removeEntityAction from './api/removeAction';
+import Hash from './util/Hash';
 
 type RequestHookConfig = {
-    path: string[];
+    name: string;
     requestAction: Function;
-    resetAction: Function;
-    removeEntityAction: Function;
-    generateResultKey: Function;
+    schema?: Schema;
 };
 
 type Config = {
     key?: string;
     responseKey?: string;
-    schema?: Schema;
-    path?: string[];
 };
 
-export default function RequestHookFactory(
+export default function RequestHookFactory<R, V>(
     context: Context<ProviderContextType | null>,
-    config: RequestHookConfig
+    factoryConfig: RequestHookConfig
 ) {
-    const {requestAction, resetAction, removeEntityAction, generateResultKey, path} = config;
+    const {requestAction, name, schema} = factoryConfig;
+    const generateResultKey = (payload: unknown) => Hash({payload, name});
 
-    return <R, V>(config: Config = {}) => {
+    return (config: Config = {}) => {
         const [derivedResponseKey, setDerivedResponseKey] = useState('Unknown');
         const responseKey =
             config.responseKey || (config.key ? generateResultKey(config.key) : derivedResponseKey);
@@ -44,7 +44,6 @@ export default function RequestHookFactory(
         }, []);
 
         let response = useMemo(() => {
-            const schema = config.schema || state.baseSchema;
             const result = state.response[responseKey];
             const entities = state.entities;
             if (schema) {
@@ -62,8 +61,8 @@ export default function RequestHookFactory(
                 return dispatch(
                     requestAction(payload, {
                         ...baseMeta,
-                        schema: config.schema,
-                        path,
+                        schema,
+                        name,
                         responseKey,
                         returnResponse
                     })
