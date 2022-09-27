@@ -1,7 +1,7 @@
 import RequestState from '../data/RequestState';
 
 export type MessageInput<T, V> = {
-    requestError?: Error;
+    requestError?: any;
     response?: T;
     removeEntity?: (type: string, id: string) => void;
     request: <R extends boolean>(
@@ -15,8 +15,8 @@ export type MessageInput<T, V> = {
 export abstract class BaseMessage<T, V> {
     response?: T;
     data?: T;
-    requestError?: Error;
-    error?: Error;
+    requestError?: any;
+    error?: any;
     request: <R extends boolean>(
         payload: V,
         config?: {returnResponse: R}
@@ -117,8 +117,8 @@ export class ErrorMessage<T, V> extends BaseMessage<T, V> {
     readonly isLoading = false;
     readonly isSuccess = false;
     readonly isError = true;
-    declare requestError: Error;
-    declare error: Error;
+    declare requestError: any;
+    declare error: any;
     constructor(input: MessageInput<T, V> & {requestError: Error}) {
         super(input);
         this.requestError = input.requestError;

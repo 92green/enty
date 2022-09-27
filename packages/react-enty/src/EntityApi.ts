@@ -12,7 +12,7 @@ export type Request<T, V> = {
     useRequest: (options?: {key?: string | null; responseKey?: string}) => Message<T, V>;
 };
 
-type RequestFunction = (variables?: any, meta?: any) => Promise<any> | {subscribe: Function};
+type RequestFunction = (variables?: any, meta?: any) => Promise<any> | AsyncIterator<any>;
 
 type MappedTransform<T> = {
     [K in keyof T]: T[K] extends RequestFunction
