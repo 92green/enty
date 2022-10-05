@@ -8,8 +8,10 @@ export type GetState = () => State;
 export type Dispatch = (
     action: Action | ((dispatch: Dispatch, getState: GetState) => void)
 ) => void;
-export type AsyncType = Promise<any> | Observable | AsyncGenerator<any, any, any>;
-export type SideEffect = (variables: any, meta: Object) => AsyncType;
+export type SideEffect = (
+    variables: any,
+    meta: any
+) => Promise<any> | Observable | AsyncGenerator<any, any, any>;
 export type ProviderContextType = [State, Dispatch, Record<string, any>];
 
 export type State = {

@@ -7,6 +7,7 @@ import RequestHook from './RequestHook';
 import RemoveHook from './RemoveHook';
 import visitActionMap from './api/visitActionMap';
 import createRequestAction from './api/createRequestAction';
+import {SideEffect} from './util/definitions';
 
 export type Request<T, V> = {
     useRequest: (options?: {key?: string | null; responseKey?: string}) => Message<T, V>;
@@ -28,7 +29,7 @@ type Extras = {
     ProviderHoc: any;
     useRemove: any;
 
-    createRequestHook: <R extends (...args: any[]) => Promise<any>>(config: {
+    createRequestHook: <R extends SideEffect>(config: {
         name: string;
         request: R;
         schema?: Schema;
