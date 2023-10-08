@@ -2867,9 +2867,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001219:
-  version "1.0.30001402"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001402.tgz"
-  integrity sha512-Mx4MlhXO5NwuvXGgVb+hg65HZ+bhUYsz8QtDGDo2QmaJS2GBX47Xfi2koL86lc8K+l+htXeTEB/Aeqvezoo6Ew==
+  version "1.0.30001546"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001546.tgz"
+  integrity sha512-zvtSJwuQFpewSyRrI3AsftF6rM0X80mZkChIt1spBGEvRglCrjTniXvinc8JKRoqTwXAgvqTImaN9igfSMtUBw==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -3825,10 +3825,10 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
-enty@^2.0.0-alpha.13:
-  version "2.0.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/enty/-/enty-2.0.0-alpha.13.tgz#64f480e748c0037cb559e32068996d913ac88df4"
-  integrity sha512-pvtmAdOJh/BDZByKuOMpfFQZ4dTXBFin8QfTOvWMDH5DUhbIqrZxBFzXuI8tezoN6ozF7NdKaVdH1H8h/c8KeQ==
+enty@^2.0.0-alpha.16:
+  version "2.0.0-alpha.16"
+  resolved "https://registry.yarnpkg.com/enty/-/enty-2.0.0-alpha.16.tgz#4dc2185466d1732a119f7b1463a5bdf6c706c183"
+  integrity sha512-huWNHs30cRrDvg1+j3gGOMHth2QayssZLYHwhnBCfHLr14AOKirlkAvqdBKq6FbBvbb2qROjtW23zukqL8SwhQ==
 
 enzyme-matchers@^7.1.2:
   version "7.1.2"

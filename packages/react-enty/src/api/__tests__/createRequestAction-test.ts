@@ -1,7 +1,7 @@
 import createRequestAction from '../createRequestAction';
 
 const payload = 'PAYLOAD';
-const meta = {responseKey: 'foo'};
+const meta = {responseKey: 'foo', name: 'foo'};
 
 describe('observable support', () => {
     const observable = (fn: any) => ({
@@ -118,7 +118,7 @@ describe('promise support', () => {
         const dispatch = jest.fn();
         const getState = jest.fn();
         const request = createRequestAction(() => Promise.reject('BORKD'));
-        const meta = {responseKey: '123'};
+        const meta = {responseKey: '123', name: 'foo'};
         try {
             await request(payload, meta)(dispatch, getState);
         } catch (e) {
@@ -200,7 +200,7 @@ describe('async generators', () => {
 describe('general', () => {
     it('returns a function accepts payload/meta that returns a redux thunk', () => {
         const payloadFunction = createRequestAction(() => Promise.resolve());
-        const thunk = payloadFunction('bar', {responseKey: '123'});
+        const thunk = payloadFunction('bar', {responseKey: '123', name: 'foo'});
 
         expect(typeof payloadFunction).toBe('function');
         expect(typeof thunk).toBe('function');
@@ -212,11 +212,11 @@ describe('general', () => {
         const getState = jest.fn();
 
         const payload = createRequestAction(async () => 'foo');
-        const payloadA = payload('foo', {responseKey: '', returnResponse: true})(
+        const payloadA = payload('foo', {responseKey: '', name: 'foo', returnResponse: true})(
             dispatch,
             getState
         );
-        const payloadB = payload('foo', {responseKey: '', returnResponse: false})(
+        const payloadB = payload('foo', {responseKey: '', name: 'foo', returnResponse: false})(
             dispatch,
             getState
         );

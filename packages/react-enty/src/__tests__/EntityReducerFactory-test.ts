@@ -10,7 +10,6 @@ import resetAction from '../api/resetAction';
 //
 
 const baseState = {
-    baseSchema: new ObjectSchema({}),
     schemas: {},
     response: {},
     error: {},
@@ -67,7 +66,7 @@ test('EntityReducerFactory normalizes a reuslt', () => {
 
     const exampleReceiveAction = {
         type: 'ENTY_RECEIVE' as const,
-        meta: {responseKey: 'TEST'},
+        meta: {responseKey: 'TEST', name: 'foo'},
         payload: examplePayload
     };
 
@@ -80,7 +79,7 @@ describe('EntityReducer requestState', () => {
         const data = EntityReducer(null, {
             type: 'ENTY_FETCH' as const,
             payload: null,
-            meta: {responseKey: 'TEST'}
+            meta: {responseKey: 'TEST', name: 'foo'}
         }).requestState.TEST;
         expect(data.isFetching).toBe(true);
     });
@@ -92,7 +91,7 @@ describe('EntityReducer requestState', () => {
                 requestState: {TEST: RequestState.fetching()},
                 response: {TEST: {}}
             },
-            {type: 'ENTY_FETCH' as const, payload: null, meta: {responseKey: 'TEST'}}
+            {type: 'ENTY_FETCH' as const, payload: null, meta: {responseKey: 'TEST', name: 'foo'}}
         ).requestState.TEST;
         expect(data.isRefetching).toBe(true);
     });
@@ -101,12 +100,12 @@ describe('EntityReducer requestState', () => {
         let stateA = EntityReducer(null, {
             type: 'ENTY_FETCH' as const,
             payload: null,
-            meta: {responseKey: 'foo'}
+            meta: {responseKey: 'foo', name: 'foo'}
         });
         let stateB = EntityReducer(stateA, {
             type: 'ENTY_FETCH' as const,
             payload: null,
-            meta: {responseKey: 'foo'}
+            meta: {responseKey: 'foo', name: 'foo'}
         });
         expect(stateB.requestState.foo.isRefetching).toBe(undefined);
         expect(stateB.requestState.foo.isFetching).toBe(true);
@@ -118,7 +117,7 @@ describe('EntityReducer requestState', () => {
                 // @ts-ignore - intentionally bad types
                 type: 'nothing',
                 payload: null,
-                meta: {responseKey: 'nothing'}
+                meta: {responseKey: 'nothing', name: 'foo'}
             }).requestState.nothing
         ).toBeUndefined();
     });
@@ -130,7 +129,7 @@ describe('EntityReducer requestState', () => {
             EntityReducer(null, {
                 type: 'ENTY_ERROR',
                 payload: 'errorPayload',
-                meta: {responseKey: 'TEST'}
+                meta: {responseKey: 'TEST', name: 'foo'}
             }).requestState.TEST.value()
         ).toBe('errorPayload');
     });
@@ -138,11 +137,7 @@ describe('EntityReducer requestState', () => {
 
 describe('EntityReducer Config', () => {
     const action = (type: Action['type']) =>
-        ({type, payload: null, meta: {responseKey: type}} as const);
-    test('the supplied schema is not mutated when reducing', () => {
-        // @ts-ignore - intentionally bad types
-        expect(EntityReducer(null, action('nothing')).baseSchema).toBe(schema);
-    });
+        ({type, payload: null, meta: {responseKey: type, name: 'foo'}} as const);
 
     test('response starts with an empty object', () => {
         // @ts-ignore - intentionally bad types
@@ -177,7 +172,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store normalized results on _result.responseKey', () => {
         const action = {
             type: 'ENTY_RECEIVE',
-            meta: {responseKey: 'TEST'},
+            meta: {responseKey: 'TEST', name: 'foo'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -192,7 +187,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store normalized data on _entities.type.id', () => {
         const action = {
             type: 'ENTY_RECEIVE',
-            meta: {responseKey: 'TEST'},
+            meta: {responseKey: 'TEST', name: 'foo'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -209,7 +204,7 @@ describe('EntityReducer Normalizing', () => {
     test('it will store deep entities', () => {
         const action = {
             type: 'ENTY_RECEIVE',
-            meta: {responseKey: 'TEST'},
+            meta: {responseKey: 'TEST', name: 'foo'},
             payload: {
                 subreddit: {
                     fullnameId: 'MK',
@@ -227,7 +222,7 @@ describe('EntityReducer Normalizing', () => {
         const action = (payload: any) =>
             ({
                 type: 'ENTY_RECEIVE',
-                meta: {responseKey: 'TEST'},
+                meta: {responseKey: 'TEST', name: 'foo'},
                 payload
             } as const);
 
@@ -286,7 +281,7 @@ describe('no schema reducer', () => {
         const stateA = reducer(null, {
             type: 'ENTY_RECEIVE',
             payload: 'FOO',
-            meta: {responseKey: '123'}
+            meta: {responseKey: '123', name: 'foo'}
         });
 
         expect(stateA.entities).toEqual({});
@@ -297,7 +292,7 @@ describe('no schema reducer', () => {
         const stateB = reducer(stateA, {
             type: 'ENTY_RECEIVE',
             payload: 'BAR',
-            meta: {responseKey: '456'}
+            meta: {responseKey: '456', name: 'foo'}
         });
         expect(stateB.response['123']).toBe('FOO');
         expect(stateB.response['456']).toBe('BAR');
@@ -318,7 +313,7 @@ describe('remove entity', () => {
         const state = reducer(initialState, {
             type: 'ENTY_REMOVE' as const,
             payload: ['foo', 'bar'],
-            meta: {responseKey: ''}
+            meta: {responseKey: '', name: 'foo'}
         });
         expect(state.entities.foo.bar).toBe(REMOVED_ENTITY);
         expect(state.entities.baz.qux).not.toBe(REMOVED_ENTITY);
@@ -332,7 +327,7 @@ describe('ENTY_RESET', () => {
         const stateA = reducer(null, {
             type: 'ENTY_RECEIVE',
             payload: 'FOO',
-            meta: {responseKey: '123'}
+            meta: {responseKey: '123', name: 'foo'}
         });
         expect(stateA.response['123']).toBe('FOO');
         expect(stateA.requestState['123'].isSuccess).toBe(true);

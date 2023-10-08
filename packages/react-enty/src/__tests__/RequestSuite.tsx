@@ -12,23 +12,22 @@ import {mount} from 'enzyme';
 
 function setupTests() {
     const fooEntity = new EntitySchema('foo');
-    //const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = EntityApi(
     const api = EntityApi(
         {
-            foo: (data: string = 'foo') => Promise.resolve({data}),
-            entity: (foo: {id: string; name: string} = {id: '123', name: 'foo'}) =>
-                Promise.resolve({foo}),
-            badEntity: (foo: {name: string} = {name: 'foo'}) => Promise.resolve({foo}),
-            fooError: () => Promise.reject('ouch!'),
-            bar: (data: string = 'bar') => Promise.resolve({data}),
-            baz: (data: string = 'requested-baz') => Promise.resolve({data}),
-            obs: () => ({subscribe: () => {}})
+            foo: async (data: string = 'foo') => ({data}),
+            entity: async (foo: {id: string; name: string} = {id: '123', name: 'foo'}) => ({foo}),
+            badEntity: async (foo: {name: string} = {name: 'foo'}) => ({foo}),
+            fooError: async () => {
+                throw new Error('ouch!');
+            },
+            bar: async (data: string = 'bar') => ({data}),
+            baz: async (data: string = 'requested-baz') => ({data})
         },
         new ObjectSchema({
             foo: fooEntity
         })
     );
-    const {Provider, foo, fooError, badEntity, bar, baz, obs, entity} = api;
+    const {Provider, foo, fooError, badEntity, bar, baz, entity} = api;
 
     function ExpectsMessage(props: {
         message: Message<any, any>;
@@ -73,15 +72,14 @@ function setupTests() {
         foo,
         bar,
         baz,
-        obs,
         fooError
     };
 }
 
-export const {mountWithProvider, foo, bar, baz, obs, badEntity, entity, fooError, ExpectsMessage} =
+export const {mountWithProvider, foo, bar, baz, badEntity, entity, fooError, ExpectsMessage} =
     setupTests();
 
-export function asyncUpdate(wrapper: any) {
+export async function asyncUpdate(wrapper: any) {
     return new Promise((resolve) => setTimeout(resolve, 0)).then(() => wrapper.update());
 }
 
@@ -145,7 +143,7 @@ export async function errorOnLoad(testFn: TestFn) {
     let wrapper = mountWithProvider(testFn);
     expect(wrapper).toBeFetching();
     await asyncUpdate(wrapper);
-    expect(wrapper).toBeError('ouch!');
+    expect(wrapper).toBeError(new Error('ouch!'));
 }
 
 export async function fetchBadEntity(testFn: TestFn) {

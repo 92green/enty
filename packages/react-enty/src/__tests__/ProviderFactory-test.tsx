@@ -39,7 +39,6 @@ describe('Component', () => {
             );
         }).toMatchObject([
             {
-                baseSchema: undefined,
                 entities: {foo: 'component'},
                 error: {},
                 requestState: {},
@@ -63,8 +62,6 @@ describe('Component', () => {
             );
         }).toMatchObject([
             {
-                //baseMeta: {foo: 'bar'},
-                baseSchema: undefined,
                 error: {},
                 requestState: {},
                 response: {},
@@ -142,7 +139,6 @@ describe('Hoc', () => {
             );
         }).toMatchObject([
             {
-                baseSchema: undefined,
                 entities: {foo: 'hoc'},
                 error: {},
                 requestState: {},
@@ -158,15 +154,12 @@ describe('Hoc', () => {
 
 describe('Debugging', () => {
     it('will log reducer state if debug prop is provided', () => {
-        const group = jest.spyOn(console, 'groupCollapsed').mockImplementation(() => {});
-        const groupEnd = jest.spyOn(console, 'groupEnd').mockImplementation(() => {});
+        const log = jest.spyOn(console, 'log').mockImplementation(() => {});
         const {Provider} = ProviderFactory({});
-        mount(<Provider debug="Foo" />);
+        mount(<Provider debug />);
 
-        expect(group).toHaveBeenCalled();
-        expect(groupEnd).toHaveBeenCalled();
+        expect(log).toHaveBeenCalled();
 
-        group.mockRestore();
-        groupEnd.mockRestore();
+        log.mockRestore();
     });
 });

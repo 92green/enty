@@ -16,7 +16,7 @@ export type Request<T, V> = {
 type RequestFunction = (variables?: any, meta?: any) => Promise<any> | AsyncIterator<any>;
 
 type MappedTransform<T> = {
-    [K in keyof T]: T[K] extends RequestFunction
+    [K in keyof T]: T[K] extends SideEffect
         ? Request<
               Awaited<ReturnType<T[K]>>,
               Parameters<T[K]>[0] extends undefined ? void : Parameters<T[K]>[0]

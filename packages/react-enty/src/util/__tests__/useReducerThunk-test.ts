@@ -3,7 +3,7 @@ import {act, renderHook} from '@testing-library/react-hooks';
 import {ObjectSchema} from 'enty';
 
 const action = <T>(payload: T) => {
-    return {type: 'ENTY_RECEIVE', payload, meta: {responseKey: ''}} as const;
+    return {type: 'ENTY_RECEIVE', payload, meta: {name: 'foo', responseKey: ''}} as const;
 };
 const initialState = {
     baseSchema: new ObjectSchema({}),

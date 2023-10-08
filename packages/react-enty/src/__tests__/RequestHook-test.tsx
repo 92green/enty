@@ -23,7 +23,6 @@ import {
     badEntity,
     bar,
     baz,
-    obs,
     entity
 } from './RequestSuite';
 
@@ -56,19 +55,6 @@ describe('config', () => {
             const message = foo.useRequest();
             useEffect(() => {
                 var pending = message.request('first');
-                expect(pending).toBeUndefined();
-            }, []);
-
-            return null;
-        });
-    });
-
-    it('request will return undefined for observables', async () => {
-        expect.assertions(1);
-        mountWithProvider(() => () => {
-            const message = obs.useRequest();
-            useEffect(() => {
-                var pending = message.request();
                 expect(pending).toBeUndefined();
             }, []);
 

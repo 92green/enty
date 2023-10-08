@@ -4,7 +4,6 @@ import {ObjectSchema} from 'enty';
 import {useEffect} from 'react';
 import {asyncUpdate, ExpectsMessage} from './RequestSuite';
 import {mount} from 'enzyme';
-import Hash from '../util/Hash';
 
 describe('exports', () => {
     const api = EntityApi(
