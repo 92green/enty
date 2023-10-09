@@ -157,9 +157,7 @@ describe('Debugging', () => {
         const log = jest.spyOn(console, 'log').mockImplementation(() => {});
         const {Provider} = ProviderFactory({});
         mount(<Provider debug />);
-
         expect(log).toHaveBeenCalled();
-
         log.mockRestore();
     });
 });

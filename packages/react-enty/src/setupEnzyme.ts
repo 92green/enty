@@ -2,11 +2,11 @@ import {configure} from 'enzyme';
 import EnzymeAdapter from '@wojtekmaj/enzyme-adapter-react-17';
 configure({adapter: new EnzymeAdapter()});
 
-const mockConsoleMethod = realConsoleMethod => {
+const mockConsoleMethod = (realConsoleMethod: any) => {
     const ignoredMessages = ['test was not wrapped in act(...)'];
 
-    return (message, ...args) => {
-        const containsIgnoredMessage = ignoredMessages.some(ignoredMessage =>
+    return (message: any, ...args: any[]) => {
+        const containsIgnoredMessage = ignoredMessages.some((ignoredMessage) =>
             message.includes(ignoredMessage)
         );
 
