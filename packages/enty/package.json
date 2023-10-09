@@ -33,7 +33,7 @@
     "lint": "yarn tsdx lint src",
     "prepublishOnly": "yarn build",
     "test": "yarn jest",
-    "test-all": "yarn lint && yarn test && yarn build",
+    "test:all": "yarn lint && yarn test && yarn build",
     "watch": "yarn tsdx watch",
     "size": "size-limit",
     "analyze": "size-limit --why"
