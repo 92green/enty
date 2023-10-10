@@ -1,5 +1,8 @@
-// @flow
 module.exports = {
-    preset: 'blueflag-test',
-    testMatch: ["**/__tests__/**/*-test.js?(x)"]
+    collectCoverage: true,
+    coverageReporters: ['lcov', 'text-summary'],
+    coveragePathIgnorePatterns: ['node_modules', '__tests__'],
+    preset: 'ts-jest',
+    setupFilesAfterEnv: ['<rootDir>/src/setupEnzyme.ts'],
+    testMatch: ['<rootDir>/src/**/__tests__/**/*-test.{ts,tsx}']
 };
