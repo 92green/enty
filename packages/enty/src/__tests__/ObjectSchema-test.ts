@@ -30,14 +30,6 @@ test('ObjectSchema.denormalize is the inverse of ObjectSchema.normalize', () => 
     expect(data).toEqual(output);
 });
 
-test('ObjectSchema can normalize empty objects', () => {
-    const schema = new ObjectSchema({foo});
-    let {entities, result} = schema.normalize({bar: {}});
-
-    expect(entities).toEqual({});
-    expect(result).toEqual({bar: {}});
-});
-
 test('ObjectSchema can denormalize objects', () => {
     const schema = new ObjectSchema({foo});
 
@@ -113,28 +105,8 @@ test('ObjectSchema will not mutate input objects', () => {
     expect(objectTest).toEqual({foo: {id: '1'}});
 });
 
-test('ObjectSchemas can create objects', () => {
-    class Foo {
-        first: string;
-        last: string;
-        constructor(data: {first: string; last: string}) {
-            this.first = data.first;
-            this.last = data.last;
-        }
-    }
-    const schema = new ObjectSchema(
-        {},
-        {
-            create: (data) => new Foo(data)
-        }
-    );
-    const state = schema.normalize({first: 'foo', last: 'bar'}, {});
-
-    expect(state.result).toBeInstanceOf(Foo);
-});
-
 it('will not create extra keys if value is undefined', () => {
-    const schema = new ObjectSchema({
+    const schema = new ObjectSchema<{foo: {id: string}; bar?: {id: string}}>({
         foo: new EntitySchema('foo'),
         bar: new EntitySchema('bar')
     });

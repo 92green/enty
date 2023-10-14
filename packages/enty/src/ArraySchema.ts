@@ -1,48 +1,45 @@
 import {NormalizeState} from './util/definitions';
 import {DenormalizeState} from './util/definitions';
-import {Create} from './util/definitions';
-import {StructuralSchemaInterface} from './util/definitions';
-import {Merge} from './util/definitions';
-import {StructuralSchemaOptions} from './util/definitions';
+import {Structure} from './util/definitions';
+import {StructureOptions} from './util/definitions';
 import {Schema} from './util/definitions';
 import {Entities} from './util/definitions';
-
 import REMOVED_ENTITY from './util/RemovedEntity';
 
-export default class ArraySchema<A extends Schema> implements StructuralSchemaInterface<A> {
-    shape: A;
-    create: Create;
-    merge: Merge;
+export default class ArraySchema<T extends Array<any>> implements Structure<T> {
+    shape: Schema<T[number]>;
+    create: (next: T) => T;
+    merge: (previous: T, next: T) => T;
 
-    constructor(shape: A, options: StructuralSchemaOptions = {}) {
+    constructor(shape: Schema<T[number]>, options: StructureOptions<T> = {}) {
         this.shape = shape;
         this.merge = options.merge || ((_, bb) => bb);
         this.create = options.create || ((aa) => aa);
     }
 
-    normalize(data: any, entities: Entities = {}): NormalizeState {
+    normalize(data: T, entities: Entities = {}): NormalizeState {
         let schemas = {};
+
         const result = data.map((item: any): any => {
             const {result, schemas: childSchemas} = this.shape.normalize(item, entities);
             Object.assign(schemas, childSchemas);
             return result;
         });
 
-        return {entities, schemas, result: this.create(result)};
+        return {entities, schemas, result: this.create(result as T)};
     }
 
-    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): any {
+    denormalize(denormalizeState: DenormalizeState, path: Array<any> = []): T | null {
         const {result, entities} = denormalizeState;
 
-        // Filter out any deleted keys
-        if (result == null) {
-            return result;
-        }
-        // Map denormalize to our result List.
+        if (result == null) return result;
+
         return result
-            .map((item: any): any => {
+            .map((item: unknown) => {
                 return this.shape.denormalize({result: item, entities}, path);
             })
-            .filter((ii: any) => ii !== REMOVED_ENTITY);
+            .filter((ii: unknown) => {
+                return ii !== REMOVED_ENTITY;
+            });
     }
 }
