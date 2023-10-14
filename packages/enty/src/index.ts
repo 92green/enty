@@ -10,11 +10,7 @@ export {UndefinedIdError} from './util/Error';
 
 //
 // Supporting Types
-
 export {NormalizeState} from './util/definitions';
 export {DenormalizeState} from './util/definitions';
-export {StructuralSchemaOptions} from './util/definitions';
-export {EntitySchemaOptions} from './util/definitions';
 export {Schema} from './util/definitions';
-export {StructuralSchemaInterface} from './util/definitions';
-export {EntitySchemaInterface} from './util/definitions';
+export {Structure} from './util/definitions';

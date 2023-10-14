@@ -73,25 +73,6 @@ test('ArraySchema will not mutate input objects', () => {
     expect(arrayTest).toEqual([{id: '1'}]);
 });
 
-test('ArraySchemas can construct custom objects', () => {
-    class Foo {
-        data: string[];
-        constructor(data: string[]) {
-            this.data = data;
-        }
-        map(fn: (x: string) => string) {
-            this.data = this.data.map(fn);
-            return this;
-        }
-    }
-    const schema = new ArraySchema(new ObjectSchema({}), {
-        create: (data) => new Foo(data)
-    });
-    const state = schema.normalize([{foo: 1}, {bar: 2}], {});
-    expect(state.result).toBeInstanceOf(Foo);
-    expect(state.result.data[0]).toEqual({foo: 1});
-});
-
 it('will default replace array on merge', () => {
     const foo = new EntitySchema('foo');
     const schema = new ArraySchema(foo);

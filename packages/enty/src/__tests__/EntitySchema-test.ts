@@ -3,25 +3,20 @@ import ArraySchema from '../ArraySchema';
 import ObjectSchema from '../ObjectSchema';
 import {UndefinedIdError} from '../util/Error';
 
-var foo = new EntitySchema('foo');
-var bar = new EntitySchema('bar');
-var baz = new EntitySchema('baz');
+var foo = new EntitySchema<{id: string}>('foo');
+var bar = new EntitySchema<{id: string; foo: {id: string}}>('bar');
+var baz = new EntitySchema<{id: string; bar: {id: string}}>('baz');
 
 foo.shape = new ObjectSchema({});
-baz.shape = new ObjectSchema({bar});
-bar.shape = new ObjectSchema({foo});
+bar.shape = new ObjectSchema<{id: string; foo: {id: string}}>({foo});
+baz.shape = new ObjectSchema<{id: string; bar: {id: string}}>({bar});
 
 describe('configuration', () => {
     it('can mutate its shape', () => {
-        var schema = new EntitySchema('foo');
+        var schema = new EntitySchema<{}>('foo');
         const shape = new ObjectSchema({});
         schema.shape = shape;
         expect(schema.shape).toBe(shape);
-    });
-
-    it('will default to a ObjectSchema shape', () => {
-        let schemaB = new EntitySchema('foo');
-        expect(schemaB.shape).toBeInstanceOf(ObjectSchema);
     });
 
     it('can override the shapes merge function', () => {
@@ -79,19 +74,10 @@ describe('EntitySchema.normalize', () => {
 
     it('will treat null shapes like an Id schema', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
-            shape: null,
-            id: data => `${data}-foo`
+            id: (data) => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(state.entities.foo['2-foo']).toBe(2);
-    });
-
-    it('will default id function to stringify if shape is null', () => {
-        const NullSchemaEntity = new EntitySchema('foo', {
-            shape: null
-        });
-        const state = NullSchemaEntity.normalize({}, {});
-        expect(state.entities.foo['[object Object]']).toEqual({});
     });
 });
 
@@ -107,11 +93,14 @@ describe('EntitySchema.denormalize', () => {
     });
 
     it('will not cause an infinite recursion', () => {
-        const foo = new EntitySchema('foo');
-        const bar = new EntitySchema('bar');
+        type Foo = {id: string; bar: Bar};
+        type Bar = {id: string; foo: Foo};
 
-        foo.shape = new ObjectSchema({bar});
-        bar.shape = new ObjectSchema({foo});
+        const foo = new EntitySchema<Foo>('foo');
+        const bar = new EntitySchema<Bar>('bar');
+
+        foo.shape = new ObjectSchema<Foo>({bar});
+        bar.shape = new ObjectSchema<Bar>({foo});
 
         const entities = {
             bar: {'1': {id: '1', foo: '1'}},
@@ -135,13 +124,12 @@ describe('EntitySchema.denormalize', () => {
             bar: {'1': {id: '1', foo: null}}
         };
 
-        expect(bar.denormalize({result: '2', entities})).toEqual(undefined);
+        expect(bar.denormalize({result: '2', entities})).toEqual(null);
     });
 
     it('can denormalize null shapes', () => {
         const NullSchemaEntity = new EntitySchema('foo', {
-            shape: null,
-            id: data => `${data}-foo`
+            id: (data) => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
         expect(NullSchemaEntity.denormalize(state)).toBe(2);

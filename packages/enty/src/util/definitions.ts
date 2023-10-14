@@ -1,7 +1,9 @@
+export type Entities = Record<string, Record<string, unknown>>;
+
 export type NormalizeState = {
     entities: Entities;
     result: any;
-    schemas: Record<string, Schema>;
+    schemas: Record<string, Schema<any>>;
 };
 
 export type DenormalizeState = {
@@ -9,48 +11,30 @@ export type DenormalizeState = {
     result: any;
 };
 
-export type StructuralSchemaOptions = {
-    create?: Create;
-    merge?: Merge;
-};
-
-export type EntitySchemaOptions<Shape> = {
-    readonly shape?: Shape;
-    id?: (entity: any) => string;
-    merge?: Merge;
-};
-
 //
 // Options
-
-export type Entities = Record<string, Record<string, any>>;
-export type Normalize = (data: unknown, entities: Entities) => NormalizeState;
-export type Denormalize = (denormalizeState: DenormalizeState, path?: Array<unknown>) => any;
-export type Create = (data: any) => any;
-export type Merge = (previous: any, next: any) => any;
-export type IdAttribute = (data: any) => string;
 
 //
 // Interfaces
 
-export interface EntitySchemaInterface<Shape> {
-    readonly normalize: Normalize;
-    readonly denormalize: Denormalize;
-    shape: Shape | null;
+export interface Schema<T> {
+    normalize: (data: T, entities: Entities) => NormalizeState;
+    denormalize: (data: DenormalizeState, path?: Array<unknown>) => T | null;
+}
+
+export interface Entity<T, Shape> extends Schema<T> {
     name: string;
-    id: (item: unknown) => string;
+    id: (item: T) => string;
+    shape: Shape | null;
 }
 
-export interface StructuralSchemaInterface<Shape> {
-    readonly normalize: Normalize;
-    readonly denormalize: Denormalize;
-    shape: Shape;
-    create: Create;
-    merge: Merge;
+export interface Structure<T> extends Schema<T> {
+    /** @deprecated */
+    create: (value: T) => T;
+    merge: (previous: T, next: T) => T;
 }
 
-export interface Schema {
-    name?: string;
-    readonly normalize: Normalize;
-    readonly denormalize: Denormalize;
-}
+export type StructureOptions<T> = {
+    create?: (value: T) => T;
+    merge?: (previous: T, next: T) => T;
+};
