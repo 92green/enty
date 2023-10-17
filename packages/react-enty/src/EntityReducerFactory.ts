@@ -1,9 +1,9 @@
-import {ObjectSchema, Schema} from 'enty';
+import {Schema} from 'enty';
 import {State, Action} from './util/definitions';
 import {REMOVED_ENTITY} from 'enty';
 import RequestState from './data/RequestState';
 
-export default function EntityReducerFactory(config: {schema?: Schema | ObjectSchema<any>}) {
+export default function EntityReducerFactory(config: {schema?: Schema<any>}) {
     return function EntityReducer(
         previousState: State | null,
         {type, payload, meta = {responseKey: '', name: 'unknown'}}: Action

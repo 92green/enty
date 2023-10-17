@@ -10,7 +10,7 @@ import Hash from './util/Hash';
 type RequestHookConfig = {
     name: string;
     requestAction: Function;
-    schema?: Schema;
+    schema?: Schema<any>;
 };
 
 type Config = {
