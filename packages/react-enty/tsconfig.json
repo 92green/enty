@@ -8,5 +8,5 @@
     "target": "es5",
     "strict": true
   },
-  "include": ["./src/**/*", "types/jest.d.ts"]
+  "include": ["./src/**/*", "types/jest.d.ts", "../enty/src/"]
 }

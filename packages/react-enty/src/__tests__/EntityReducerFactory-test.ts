@@ -19,20 +19,25 @@ const baseState = {
         responseCount: 0
     }
 };
+type Listing = {
+    name: string;
+    fullnameId: string;
+};
 
-var author = new EntitySchema('author', {
-    id: (ii) => ii?.fullnameId,
-    shape: new ObjectSchema({})
-});
+type Subreddit = {
+    name: string;
+    fullnameId: string;
+    topListings: Array<Listing>;
+};
 
 var topListings = new EntitySchema('topListings', {
     id: (ii) => ii?.fullnameId,
-    shape: new ObjectSchema({author})
+    shape: new ObjectSchema<Listing>({})
 });
 
 var subreddit = new EntitySchema('subreddit', {
     id: (ii) => ii?.fullnameId,
-    shape: new ObjectSchema({
+    shape: new ObjectSchema<Subreddit>({
         topListings: new ArraySchema(topListings)
     })
 });

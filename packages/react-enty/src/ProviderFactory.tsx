@@ -9,7 +9,7 @@ import {State, Action, ProviderContextType} from './util/definitions';
 import {Schema} from 'enty';
 
 export type ProviderConfig = {
-    schema?: Schema;
+    schema?: Schema<any>;
     results?: Array<{
         responseKey: string;
         payload: any;
