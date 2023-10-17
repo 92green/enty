@@ -43,7 +43,7 @@ export default class EntitySchema<T> {
             let _ = shape.normalize(data, entities);
             result = _.result;
             schemas = _.schemas;
-            previousEntity = entities[name][id] as T;
+            previousEntity = entities[name][id]?.data as T;
         } else {
             result = data;
         }
@@ -52,8 +52,13 @@ export default class EntitySchema<T> {
         schemas[name] = this;
 
         // Store the entity
-        entities[name][id] =
-            previousEntity && shape ? (this.merge || shape.merge)(previousEntity, result) : result;
+        entities[name][id] = {
+            normalizedAt: Date.now(),
+            data:
+                previousEntity && shape
+                    ? (this.merge || shape.merge)(previousEntity, result)
+                    : result
+        };
 
         return {
             entities,
@@ -68,7 +73,7 @@ export default class EntitySchema<T> {
     ): T | typeof REMOVED_ENTITY | null {
         const {result, entities} = denormalizeState;
         const {shape, name} = this;
-        const entity = entities[name]?.[result] as T | typeof REMOVED_ENTITY;
+        const entity = entities[name]?.[result]?.data as T | typeof REMOVED_ENTITY;
 
         if (entity == null || entity === REMOVED_ENTITY || shape === null) return entity ?? null;
 

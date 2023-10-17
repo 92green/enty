@@ -29,7 +29,7 @@ describe('configuration', () => {
         const {entities} = schema.normalize([{id: 1}]);
         const secondState = schema.normalize([{id: 2}], entities);
 
-        expect(secondState.entities.test.aa).toEqual([{id: 1}, {id: 2}]);
+        expect(secondState.entities.test.aa.data).toEqual([{id: 1}, {id: 2}]);
     });
 });
 
@@ -37,7 +37,7 @@ describe('EntitySchema.normalize', () => {
     test('can normalize entities', () => {
         const {entities, result} = foo.normalize({id: '1'});
         expect(result).toBe('1');
-        expect(entities.foo['1']).toEqual({id: '1'});
+        expect(entities.foo['1'].data).toEqual({id: '1'});
     });
 
     test('will not mutate input objects', () => {
@@ -58,7 +58,7 @@ describe('EntitySchema.normalize', () => {
 
     test('will call merge on definition when an entity already exists', () => {
         const merge = jest.fn();
-        const entities = {foo: {a: {id: 'a', name: 'first'}}};
+        const entities = {foo: {a: {normalizedAt: Date.now(), data: {id: 'a', name: 'first'}}}};
         const schema = new EntitySchema('foo', {
             shape: new ObjectSchema(
                 {},
@@ -77,16 +77,14 @@ describe('EntitySchema.normalize', () => {
             id: (data) => `${data}-foo`
         });
         const state = NullSchemaEntity.normalize(2, {});
-        expect(state.entities.foo['2-foo']).toBe(2);
+        expect(state.entities.foo['2-foo'].data).toBe(2);
     });
 });
 
 describe('EntitySchema.denormalize', () => {
     it('can denormalize entities', () => {
         const entities = {
-            foo: {
-                '1': {id: '1'}
-            }
+            foo: {'1': {normalizedAt: Date.now(), data: {id: '1'}}}
         };
 
         expect(foo.denormalize({result: '1', entities})).toEqual({id: '1'});
@@ -103,8 +101,8 @@ describe('EntitySchema.denormalize', () => {
         bar.shape = new ObjectSchema<Bar>({foo});
 
         const entities = {
-            bar: {'1': {id: '1', foo: '1'}},
-            foo: {'1': {id: '1', bar: '1'}}
+            bar: {'1': {normalizedAt: Date.now(), data: {id: '1', foo: '1'}}},
+            foo: {'1': {normalizedAt: Date.now(), data: {id: '1', bar: '1'}}}
         };
 
         expect(bar.denormalize({result: '1', entities})).toEqual({
@@ -121,7 +119,7 @@ describe('EntitySchema.denormalize', () => {
 
     it('will not denormalize null entities', () => {
         const entities = {
-            bar: {'1': {id: '1', foo: null}}
+            bar: {'1': {normalizedAt: Date.now(), data: {id: '1', foo: null}}}
         };
 
         expect(bar.denormalize({result: '2', entities})).toEqual(null);

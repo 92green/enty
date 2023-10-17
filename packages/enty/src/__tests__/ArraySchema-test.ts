@@ -11,8 +11,8 @@ test('ArraySchema can normalize arrays', () => {
     const schema = new ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
 
-    expect(entities.foo['1']).toEqual({id: '1'});
-    expect(entities.foo['2']).toEqual({id: '2'});
+    expect(entities.foo['1'].data).toEqual({id: '1'});
+    expect(entities.foo['2'].data).toEqual({id: '2'});
     expect(result).toEqual(['1', '2']);
 });
 
@@ -20,8 +20,8 @@ test('ArraySchema can normalize Lists', () => {
     const schema = new ArraySchema(foo);
     const {entities, result} = schema.normalize([{id: '1'}, {id: '2'}]);
 
-    expect(entities.foo['1']).toEqual({id: '1'});
-    expect(entities.foo['2']).toEqual({id: '2'});
+    expect(entities.foo['1'].data).toEqual({id: '1'});
+    expect(entities.foo['2'].data).toEqual({id: '2'});
     expect(result).toEqual(['1', '2']);
 });
 
@@ -30,15 +30,15 @@ test('ArraySchema can normalize nested things in arrays', () => {
     const {entities, result} = schema.normalize([{foo: {id: '1'}}]);
 
     expect(result).toEqual([{foo: '1'}]);
-    expect(entities.foo['1']).toEqual({id: '1'});
+    expect(entities.foo['1'].data).toEqual({id: '1'});
 });
 
 test('ArraySchema can denormalize arrays', () => {
     const schema = new ArraySchema(foo);
     const entities = {
         foo: {
-            '1': {id: '1'},
-            '2': {id: '2'}
+            '1': {normalizedAt: Date.now(), data: {id: '1'}},
+            '2': {normalizedAt: Date.now(), data: {id: '2'}}
         }
     };
     expect(schema.denormalize({result: ['1', '2'], entities})).toEqual([{id: '1'}, {id: '2'}]);
@@ -50,13 +50,12 @@ test('ArraySchema will not return deleted entities', () => {
     const schema = new ArraySchema(foo);
     const entities = {
         foo: {
-            '1': {id: '1'},
-            '2': {id: '2'},
-            '3': REMOVED_ENTITY
+            '1': {normalizedAt: Date.now(), data: {id: '1'}},
+            '2': {normalizedAt: Date.now(), data: {id: '2'}},
+            '3': {normalizedAt: Date.now(), data: REMOVED_ENTITY}
         }
     };
     expect(schema.denormalize({result: ['1', '2', '3'], entities})).toEqual([{id: '1'}, {id: '2'}]);
-
     expect(schema.denormalize({result: null, entities})).toEqual(null);
 });
 

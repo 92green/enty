@@ -1,4 +1,13 @@
-export type Entities = Record<string, Record<string, unknown>>;
+export type Entities = Record<
+    string,
+    Record<
+        string,
+        {
+            normalizedAt: number;
+            data: unknown;
+        }
+    >
+>;
 
 export type NormalizeState = {
     entities: Entities;
