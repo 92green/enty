@@ -32,7 +32,7 @@ type Extras = {
     createRequestHook: <R extends SideEffect>(config: {
         name: string;
         request: R;
-        schema?: Schema;
+        schema?: Schema<any>;
     }) => (options?: {
         key?: string;
         responseKey?: string;
@@ -46,7 +46,7 @@ interface ActionMap extends Record<string, ActionMap | RequestFunction> {}
 
 export default function EntityApi<A extends ActionMap>(
     actionMap: A,
-    schema?: Schema,
+    schema?: Schema<any>,
     results?: ProviderConfig['results']
 ) {
     const {Provider, ProviderHoc, Context} = ProviderFactory({
