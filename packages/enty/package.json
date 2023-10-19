@@ -1,6 +1,6 @@
 {
   "name": "enty",
-  "version": "3.0.0-alpha.2",
+  "version": "3.0.0-alpha.3",
   "description": "Normalizing schemas",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
