@@ -3,7 +3,7 @@
   "version": "3.0.0-alpha.2",
   "description": "React bindings for Enty",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "dist/react-enty/src/index.d.ts",
   "module": "dist/react-enty.esm.js",
   "sideEffects": false,
   "license": "MIT",
